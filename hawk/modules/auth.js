@@ -1,13 +1,12 @@
 var Crypto = require('crypto');
-var mongo = require("./database");
+var Cookies = require('./cookies');
 
 module.exports = (function () {
 
-  var user_id = 0;
+  /* Create sha256 hash for inputString */
+  var generateHash = function (inputString) {
 
-  var generateHash = function (user_id) {
-
-    string = user_id + process.env.SALT;
+    string = inputString + process.env.SALT;
 
     hash = Crypto.createHash('sha256').update(string, 'utf8').digest('hex');
 
@@ -15,17 +14,22 @@ module.exports = (function () {
 
   }
 
-  /**
-  * Return user id or 0
-  */
+  /* Generate 8 symbols password */
+  var generatePassword = function () {
+
+    return Math.random().toString(36).slice(-8);
+
+  }
+
+  /* Return user id or 0 */
   var check = function (cookies) {
 
     // load cookies
-    var uid = getCookies(cookies, 'user_id'),
-        uhash = getCookies(cookies, 'user_hash');
+    var uid = Cookies(cookies, 'user_id'),
+        uhash = Cookies(cookies, 'user_hash');
 
     // check if these cookies exist
-    if ( !(uid && uhash) ) return 0;
+    if ( !uid || !uhash ) return 0;
 
     if (uhash != generateHash(uid)) return 0;
 
@@ -33,16 +37,7 @@ module.exports = (function () {
 
   };
 
-  var getCookies = function (cookies, name) {
-
-    if (!cookies) return undefined;
-
-    var match = cookies.match(new RegExp('\\b'+name+'=([^;]*)'));
-
-    return match ? decodeURIComponent(match[1]) : undefined;
-
-  };
-
+  /* Remove cookies */
   var logout = function (res) {
 
     res.clearCookie('user_id');
@@ -50,6 +45,7 @@ module.exports = (function () {
 
   };
 
+  /* Reset cookies */
   var authUser = function (res, user) {
 
     logout(res);
@@ -65,6 +61,7 @@ module.exports = (function () {
   return {
     check: check,
     generateHash: generateHash,
+    generatePassword: generatePassword,
     authUser: authUser,
     logout: logout
   }

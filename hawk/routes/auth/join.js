@@ -6,6 +6,7 @@ var auth = require("../../modules/auth");
 
 var join = {
 
+  /* Show join form */
   get: function (req, res, next) {
 
     if (userId) {
@@ -17,6 +18,7 @@ var join = {
 
   },
 
+  /* Create new user */
   post: function (req, res, next) {
 
     if (userId) {
@@ -25,7 +27,7 @@ var join = {
     }
 
     var email = req.body.username,
-        password = Math.random().toString(36).slice(-8);
+        password = auth.generatePassword();
 
     console.log(password);
 
@@ -49,7 +51,7 @@ var join = {
 
 };
 
-module.exports = {
-  get: router.get('/', join.get),
-  post: router.post('/', join.post)
-};
+router.get('/', join.get);
+router.post('/', join.post);
+
+module.exports = router;

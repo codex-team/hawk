@@ -28,7 +28,6 @@ app.set('view engine', 'twig');
 // check if client sent cookie
 app.use(function (req, res, next) {
   userId = auth.check(req.headers.cookie);
-  console.log('User id: ' + userId);
   next();
 });
 
@@ -49,12 +48,9 @@ app.use('/garage', garage);
 /** use catcher routes */
 app.use('/catcher', catcher);
 
-app.post('/login', login.post);
-app.use('/login', login.get);
+app.use('/login', login);
 app.use('/logout', logout);
-
-app.post('/join', join.post);
-app.use('/join', join.get);
+app.use('/join', join);
 
 
 // catch 404 and forward to error handler

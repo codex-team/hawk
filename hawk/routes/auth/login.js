@@ -6,6 +6,7 @@ var auth = require('../../modules/auth');
 
 var login = {
 
+  /* Show log in form */
   get: function (req, res, next) {
 
     if (userId) {
@@ -17,6 +18,7 @@ var login = {
 
   },
 
+  /* Log in function */
   post: function (req, res, next) {
 
     if (userId) {
@@ -46,7 +48,7 @@ var login = {
 
 };
 
-module.exports = {
-  get: router.get('/', login.get),
-  post: router.post('/', login.post)
-};
+router.get('/', login.get);
+router.post('/', login.post);
+
+module.exports = router;
