@@ -11,22 +11,27 @@ var join = {
   /* Show join form */
   get: function (req, res, next) {
 
-    if (user.get(req)) {
-      res.redirect('/garage');
-      return;
-    }
+    user.get(req).then(function (found) {
+      console.log(found);
+      if (found) {
+        res.redirect('/garage');
+        return;
+      }
 
-    res.render('yard/auth/join');
+      res.render('yard/auth/join');
+    })
 
   },
 
   /* Create new user */
   post: function (req, res, next) {
 
-    if (user.get(req)) {
-      res.redirect('/garage');
-      return;
-    }
+    user.get(req).then(function (found) {
+      if (found) {
+        res.redirect('/garage');
+        return;
+      }
+    })
 
     var email = req.body.username,
         password = auth.generatePassword();

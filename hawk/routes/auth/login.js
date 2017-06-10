@@ -8,23 +8,25 @@ var login = {
 
   /* Show log in form */
   get: function (req, res, next) {
+    user.get(req).then(function (found) {
+      if (found) {
+        res.redirect('/garage');
+        return;
+      }
 
-    if (user.get(req)) {
-      res.redirect('/garage');
-      return;
-    }
-
-    res.render('yard/auth/login');
-
+      res.render('yard/auth/login');
+    })
   },
 
   /* Log in function */
   post: function (req, res, next) {
 
-    if (user.get(req)) {
-      res.redirect('/garage');
-      return;
-    }
+    user.get(req).then(function (found) {
+      if (found) {
+        res.redirect('/garage');
+        return;
+      }
+    })
 
     var email = req.body.email,
         password = req.body.password;
