@@ -6,3 +6,4 @@ npm-debug.log
 # platform configurations
 .env
 config/mongo.js
+config/email.js
