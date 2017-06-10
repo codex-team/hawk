@@ -9,7 +9,7 @@ module.exports = (function () {
         port = '27017',
         dbname = "db_name";
 
-    connection = protocol + host + ':' + port + "/" + dbname;
+    var connection = protocol + host + ':' + port + "/" + dbname;
 
     return {
       connection: connection
