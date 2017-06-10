@@ -77,33 +77,33 @@ var hawk =
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
 /**
 * Require CSS build
 */
 __webpack_require__(0);
 
-hawk = (function (hawk) {
+hawk = function (hawk) {
 
     'use strict';
 
-    hawk.init = function ( appSettings ) {
+    hawk.init = function (appSettings) {
 
-    	console.log("Initialized");
-
+        console.log("Initialized");
     };
 
     return hawk;
-
-})({});
+}({});
 
 hawk.docReady = function (f) {
 
-    return /in/.test(document.readyState) ? setTimeout(hawk.docReady, 9, f) : f();
-
+    return (/in/.test(document.readyState) ? setTimeout(hawk.docReady, 9, f) : f()
+    );
 };
 
 module.exports = hawk;
-
 
 /***/ })
 /******/ ]);
