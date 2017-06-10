@@ -4,7 +4,7 @@ var websites = require('../models/websites');
 
 /* Show page for new app registration */
 router.get('/create', function(req, res, next) {
-  res.render('yard/websites/create', { title: 'Register new website' });
+  res.render('yard/websites/create');
 });
 
 /* App registration callback */
@@ -23,10 +23,10 @@ router.post('/create', function(req, res, next) {
         return;
     }
 
-    var name = req.body.app_name;
+    var name = req.body.domain;
 
     if (!name) {
-        res.render('yard/websites/result', {title: 'Error', error: "Website domain is empty"});
+        res.render('yard/websites/result', {error: 'Website domain is empty'});
         return;
     }
 
@@ -41,14 +41,16 @@ router.post('/create', function(req, res, next) {
           let server_token = uuid.v4();
 
           websites.add(name, client_token, server_token);
-          res.render(resultTemplate, {
-            title: 'Get your token',
-            client_token: client_token,
-            server_token: server_token
-          });
+
+          res.redirect("/garage?success=1");
+          // res.render(resultTemplate, {
+          //   title: 'Get your token',
+          //   client_token: client_token,
+          //   server_token: server_token
+          // });
         }
         else {
-            res.render('yard/websites/result', {title: 'Error', error: "Website already connected"});
+            res.render('yard/websites/result', {error: 'Website already connected'});
         }
     });
 

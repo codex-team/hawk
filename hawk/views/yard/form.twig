@@ -19,7 +19,9 @@
           required />
       </fieldset>
     {% endfor %}
-    <input class="yard-form__submit button--submit" type="submit" value="{{ submitText }}">
+    {% if submitText is not empty %}
+      <input class="yard-form__submit button--submit" type="submit" value="{{ submitText }}">
+    {% endif %}
   </form>
   <div class="yard-form__desclaimer">{{ desclaimer }}</div>
 </div>
