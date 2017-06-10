@@ -8,6 +8,11 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var apps = require('./routes/apps');
+var garage = require('./routes/garage');
+
+require('dotenv').config();
+/** Catcher routes */
+var catcher = require('./routes/catcher');
 
 var app = express();
 
@@ -26,6 +31,10 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 app.use('/app', apps);
+app.use('/garage', garage);
+
+/** use catcher routes */
+app.use('/catcher', catcher);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -38,11 +47,15 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.error = process.env.ENVIRONMENT === 'DEVELOPMENT' ? err : {};
 
   // render the error page
   res.status(err.status || 500);
   res.render('error');
 });
+
+if (process.env.ENVIRONMENT === 'PRODUCTION') {
+  // Vitaly
+}
 
 module.exports = app;

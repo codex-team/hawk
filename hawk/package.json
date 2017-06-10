@@ -25,17 +25,22 @@
     "file-loader": "^0.11.2",
     "postcss-cssnext": "^2.11.0",
     "postcss-loader": "^2.0.5",
+    "postcss-nested": "^2.0.2",
+    "postcss-nested-ancestors": "^1.0.0",
+    "postcss-nesting": "^4.0.1",
     "postcss-smart-import": "^0.7.4",
     "webpack": "^2.6.1"
   },
   "dependencies": {
-    "body-parser": "^1.17.2",
-    "cookie-parser": "^1.4.3",
-    "debug": "^2.6.8",
-    "express": "^4.15.3",
-    "morgan": "^1.8.2",
-    "serve-favicon": "^2.4.3",
-    "twig": "^0.10.3",
+    "body-parser": "~1.17.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.3",
+    "dotenv": "^4.0.0",
+    "express": "~4.15.2",
+    "mongodb": "^2.2.28",
+    "morgan": "~1.8.1",
+    "serve-favicon": "~2.4.2",
+    "twig": "~0.10.3",
     "ws": "^3.0.0"
   }
 }

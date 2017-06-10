@@ -1,0 +1,22 @@
+module.exports = (function () {
+
+  var mongodb = (function () {
+
+    var protocol = 'mongodb://',
+        host = 'localhost',
+        port = '27017',
+        dbname = "db_name";
+
+    var connection = protocol + host + ':' + port + "/" + dbname;
+
+    return {
+      connection: connection
+    }
+
+  })();
+
+  return {
+    mongodb: mongodb,
+  }
+
+})();
