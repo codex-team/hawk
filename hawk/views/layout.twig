@@ -2,16 +2,13 @@
 <html>
   <head>
     <title>{{ title }}</title>
-    <link rel='stylesheet' href='/build/bundle.css' />
-    <script type="text/javascript" src="/build/bundle.js"></script>
+    <link rel="stylesheet" href="/static/build/bundle.css" />
+    <script type="text/javascript" src="/static/build/bundle.js"></script>
     <script>
-
-	console.log("test");
-
-    hawk.docReady(function () {
+      hawk.docReady(function () {
         hawk.init();
-    });
-</script>
+      });
+    </script>
   </head>
   <body>
     {% block body %}{% endblock %}
