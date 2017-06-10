@@ -64,43 +64,15 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 0 */,
+/* 1 */
+/***/ (function(module, exports) {
 
-/**
-* Require CSS build
-*/
-__webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../stylesheets/hawk.css\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-hawk = (function (hawk) {
-
-    'use strict';
-
-    
-    hawk.init = function ( appSettings ) {
-
-    	console.log("Initialized");
-
-    };
-
-    return hawk;
-
-})({});
-
-hawk.docReady = function (f) {
-
-    return /in/.test(document.readyState) ? setTimeout(codex.docReady, 9, f) : f();
-
-};
-
-/**
-* Load modules
-*/
-
+throw new Error("Module build failed: Error: ENOENT: no such file or directory, open '/Users/admin/Sites/hawk/hawk/public/src/javascripts/hawk.js'\n    at Error (native)");
 
 /***/ })
 /******/ ]);

@@ -20,7 +20,7 @@ hawk = (function (hawk) {
 
 hawk.docReady = function (f) {
 
-    return /in/.test(document.readyState) ? setTimeout(codex.docReady, 9, f) : f();
+    return /in/.test(document.readyState) ? setTimeout(hawk.docReady, 9, f) : f();
 
 };
 
