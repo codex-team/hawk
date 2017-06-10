@@ -1,0 +1,73 @@
+/**
+ * Yard form
+ */
+.yard-form {
+    max-width: 500px;
+    margin: 100px auto;
+
+    @media (--mobile) {
+        padding: 20px;
+        margin: 0 auto;
+    }
+
+    &__title {
+        display: block;
+        margin-bottom: 7px;
+        color: #fff;
+        font-size: 27px;
+        font-weight: bold;
+    }
+
+    &__caption {
+        color: var(--grayOnDark);
+        font-size: 19px;
+    }
+
+    &__container {
+        margin: 30px 0;
+        background: #fff;
+        color: #000;
+        padding: 30px;
+        border-radius: 2px;
+    }
+
+    &__header {
+        margin-bottom: 25px;
+        font-size: 27px;
+        font-weight: 800;
+    }
+
+    &__label {
+        display: block;
+        margin-bottom: 0.7em;
+        font-size: 19px;
+        color: var(--grayText);
+        font-weight: bold;
+    }
+
+    &__desclaimer {
+        color: #fff;
+        font-size: 16px;
+
+        a {
+            color: var(--linkOnDark);
+            border-bottom: 1px solid color(var(--linkOnDark) alpha(50%));
+            padding-bottom: 1px;
+
+            &:hover {
+                color: color(var(--linkOnDark) lightness(+20%));
+                border-bottom-color: color(color(var(--linkOnDark) lightness(+20%)) alpha(50%));
+            }
+        }
+    }
+
+    &__section {
+        border: 0;
+        padding: 0;
+        margin: 0 0 30px;
+    }
+
+    &__submit {
+        font-size: 18px;
+    }
+}

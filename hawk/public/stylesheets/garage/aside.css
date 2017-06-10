@@ -25,13 +25,13 @@
 
     &__heading {
         margin-top: 45px;
-        margin-bottom: 0;
+        margin-bottom: 15px;
         font-size: 14px;
         letter-spacing: 0.07em;
     }
 
     &__section {
-        margin: 15px 0;
+        margin: 0 0 15px;
         font-size: 17px;
     }
 
