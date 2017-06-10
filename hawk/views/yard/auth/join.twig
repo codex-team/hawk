@@ -1,9 +1,19 @@
 {% extends 'layout.twig' %}
 
 {% block body %}
-  <h1>Sign up</h1>
-  <form method="POST" action="/join">
-    <input type="text" name="username" value="">
-    <input type="submit">
-  </form>
+  {% include 'yard/form.twig' with {
+    action: '/join',
+    title: 'Create account',
+    fields: [
+      {
+        label: 'Enter your email',
+        name: 'email',
+        value: '',
+        placeholder: 'name@best-team.com',
+        type: 'email'
+      }
+    ],
+    submitText: 'Register',
+    desclaimer: 'Already have an account? <a href="/login">Login</a>, you, beauty.'
+  } %}
 {% endblock %}

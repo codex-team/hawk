@@ -1,6 +1,7 @@
 :root {
     /** Texts */
-    --grayText: #717171;
+    /*--grayText: #717171;*/
+    --grayText: #555968;
     --grayOnDark: #a1a6b3;
 
     /** Error types modifiers */
@@ -10,12 +11,14 @@
     --clientColor: #87607e;
 
     /** Links */
-    --linkOnDark: #31ffac;
     --linkColor: #00b693;
+    --linkOnDark: #31ffac;
     --hoverColor: #7026bd;
 
     /** Backgrounds */
     --darkGrayBg: #292934;
+    --buttonBg: #c5dff5;
+    --submitButtonBg: #4592da;
 
     /** Borders */
     --lightGrayLine: #edebeb;
