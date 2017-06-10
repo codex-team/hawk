@@ -9,7 +9,8 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var apps = require('./routes/apps');
 
-require('dotenv').config()
+require('dotenv').config();
+
 /** Catcher routes */
 var catcher = require('./routes/catcher');
 
