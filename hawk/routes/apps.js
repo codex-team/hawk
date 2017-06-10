@@ -12,6 +12,11 @@ router.post('/create', function(req, res, next) {
 
     var name = req.body.app_name;
 
+    if (!name) {
+        res.render('token', {title: 'Error', error: "Name is empty"});
+        return;
+    }
+
     /* Check if application is already exists */
     checkApplicationName(name).then(function(result) {
 
