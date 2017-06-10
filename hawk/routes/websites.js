@@ -13,6 +13,19 @@ router.get('/create', function(req, res, next) {
 /* App registration callback */
 router.post('/create', function(req, res, next) {
 
+    'use strict';
+
+    /**
+     * Register site template
+     * @type {String}
+     */
+    let resultTemplate = 'yard/websites/result';
+
+    if (!userId) {
+        res.redirect("/login");
+        return;
+    }
+
     var name = req.body.app_name;
 
     if (!name) {
@@ -36,5 +49,45 @@ router.post('/create', function(req, res, next) {
     });
 
 });
+
+/* Return if application with name specified is not exists */
+function checkApplicationName(name) {
+    return mongo.findOne(db_collection, {'name': name, 'user': userId})
+        .then(function (result) {
+            if (result) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        });
+}
+
+/* Add new application and token to DB */
+function addNewApplication(app_name, client_token, server_token) {
+    return mongo.insertOne(db_collection, {
+            'name': app_name,
+            'client_token': client_token,
+            'server_token': server_token,
+            'user': userId
+        }
+    )
+    .then(function (result) {
+        if (result) {
+            email.init();
+            email.send(
+                {name:'CodeX Hawk', email:'codex.ifmo@yandex.ru'},
+                'ntpcp@yandex.ru',
+                'Your token',
+                'Your client access token: ' + client_token + '\n' + 'Your server access token: ' + server_token,
+                '');
+            return true;
+        }
+        else {
+            return false;
+        }
+    });
+}
+
 
 module.exports = router;
