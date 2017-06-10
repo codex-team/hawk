@@ -1,9 +1,10 @@
 var auth = require('../modules/auth');
 var mongo = require("../modules/database");
+var auth = require('../modules/auth');
 
 module.exports = function () {
 
-  var getUser = function (req) {
+  var get = function (req) {
 
     var userId = auth.check(req.cookies);
 
@@ -11,8 +12,34 @@ module.exports = function () {
 
   };
 
+  var getByParams = function (params) {
+
+    return mongo.findOne('users', params);
+
+  };
+
+  var add = function (email) {
+
+    password = auth.generatePassword();
+
+    console.log(password);
+
+    let user = {
+      'email': email,
+      'password': auth.generateHash(password)
+    };
+
+    return mongo.insertOne('users', user)
+      .then(function(result) {
+        return result.ops[0];
+      });
+
+  };
+
   return {
-    get: getUser,
+    get: get,
+    getByParams: getByParams,
+    add: add
   }
 
 }();

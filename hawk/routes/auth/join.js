@@ -32,28 +32,20 @@ var join = {
         res.redirect('/garage');
         return;
       }
-    })
 
-    var email = req.body.email,
-        password = auth.generatePassword();
 
-    console.log(password);
+      var email = req.body.email;
 
-    let newUser = {
-      'email': email,
-      'password': auth.generateHash(password)
-    };
+      user.add(email).then(function (insertedUser) {
+          if (insertedUser) {
+            auth.authUser(res, insertedUser);
+            res.redirect('/garage');
+          } else {
+            res.render('error', { message: 'Try again later.' });
+          }
+      }).catch(console.log);
 
-    mongo.insertOne('users', newUser)
-      .then(function(result){
-        newUser = result.ops[0];
-        if (user) {
-          auth.authUser(res, newUser);
-          res.redirect('/garage');
-        } else {
-          res.render('error', { message: 'Try again later.' });
-        }
-    }).catch(console.log);
+    });
 
   }
 

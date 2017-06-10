@@ -22,29 +22,31 @@ var login = {
   post: function (req, res, next) {
 
     user.get(req).then(function (found) {
+
       if (found) {
         res.redirect('/garage');
         return;
       }
-    })
 
     var email = req.body.email,
         password = req.body.password;
 
-    let newUser = {
-      'email': email,
-      'password': auth.generateHash(password)
-    };
+      let newUser = {
+        'email': email,
+        'password': auth.generateHash(password)
+      };
 
-    mongo.findOne('users', newUser)
-      .then(function(result){
-        if (result) {
-          auth.authUser(res, result);
-          res.redirect('/garage');
-        } else {
-          res.render('error', { message: 'Try again later.' });
-        }
-    }).catch(console.log);
+      user.getByParams(newUser)
+        .then(function(result){
+          if (result) {
+            auth.authUser(res, result);
+            res.redirect('/garage');
+          } else {
+            res.render('error', { message: 'Try again later.' });
+          }
+      }).catch(console.log);
+
+    });
 
   }
 
