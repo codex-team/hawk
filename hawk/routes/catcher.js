@@ -47,27 +47,36 @@ function getServerErrors(req, res, next) {
       token       = response.access_token,
       backtrace   = response.debug_backtrace;
 
-  query = database.insertOne('http://hawk.ifmo.su', {
-    type        : 'server',
-    tag         : tag,
-    tagMessage  : tagMessage,
-    file        : file,
-    message     : description,
-    line        : line,
-    params      : params,
-    remoteADDR  : remoteADDR,
-    requestMethod : requestMethod,
-    queryString : queryString,
-    referer     : referer,
-    requestTime : requestTime,
-    callStack   : backtrace
-  });
+  database.findOne('hawk_applications', { token : token })
+    .then(function(result) {
 
-  query.then(function(){
-    res.sendStatus(200);
-  }).catch(function(){
-    res.sendStatus(500);
-  });
+      if (result.name != response.error_context._SERVER.SERVER_NAME) {
+        return;
+      }
+
+      query = database.insertOne(result.name, {
+        type        : 'server',
+        tag         : tag,
+        tagMessage  : tagMessage,
+        file        : file,
+        message     : description,
+        line        : line,
+        params      : params,
+        remoteADDR  : remoteADDR,
+        requestMethod : requestMethod,
+        queryString : queryString,
+        referer     : referer,
+        requestTime : requestTime,
+        callStack   : backtrace
+      });
+
+      query.then(function(){
+        res.sendStatus(200);
+      }).catch(function(){
+        res.sendStatus(500);
+      });
+
+    });
 
 }
 

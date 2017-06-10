@@ -28,19 +28,26 @@ module.exports = {
           },
           'postcss-loader'
         ])
+      },
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        options: {
+          presets: ['env']
+        }
       }
     ]
   },
-    plugins: [
-        new ExtractTextPlugin("public/build/bundle.css")
-    ],
+  plugins: [
+      new ExtractTextPlugin("public/build/bundle.css")
+  ],
 
-    devtool: "source-map",
+  devtool: "source-map",
 
-    watch: true,
+  watch: true,
 
-    watchOptions: {
-      aggragateTimeout: 50
-    }
+  watchOptions: {
+    aggragateTimeout: 50
+  }
 
 };
