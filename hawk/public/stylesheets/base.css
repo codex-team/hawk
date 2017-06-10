@@ -1,8 +1,151 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
+/**
+* CodeX Team stylesheets
+*/
+
+/**
+*
+* Base elements rules
+* ================================================
+*
+*/
+
+.hide { display: none !important; }
+.block { display: block; }
+.p_rel { position: relative; }
+.pointer { cursor: pointer; }
 
 a {
-  color: #00B7FF;
+    color: inherit;
+    text-decoration: none;
+}
+
+textarea {
+    resize: vertical;
+}
+
+/**
+* Clearfix hack
+*/
+.clearfix::before,
+.clearfix::after {
+    content: " ";
+    display: table;
+}
+
+.clearfix::after {
+    clear: both;
+}
+
+/**
+* Floating shorthands
+*/
+.fl_l {
+    float: left;
+}
+
+.fl_r {
+    float: right;
+}
+
+.constrain {
+    overflow: hidden;
+}
+
+/**
+* Forms elements
+* =========================================
+*/
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="url"],
+textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    border-radius: 2px;
+    border: 0;
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    background: #f4f5f8;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="search"]:focus,
+input[type="url"]:focus,
+textarea:focus {
+    background: #eef5fd;
+}
+
+.button,
+input[type="submit"] {
+    user-select: none;
+    border-radius: 30px;
+    border: 0;
+    display: inline-block;
+    padding: 12px 24px;
+    color: #3f4b63;
+    vertical-align: top;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: inherit;
+    background-color: #ecf3f9;
+    line-height: 1em;
+}
+
+.button:hover,
+input[type="submit"]:hover {
+    background-color: #4592da;
+    color: #fff;
+    text-decoration: none;
+}
+
+::placeholder {
+    color: var(--grayText);
+}
+
+.button svg {
+    width: 1.2em;
+    height: 1.2em;
+    vertical-align: text-bottom;
+    margin-right: 0.3em;
+}
+
+/**
+* Cancel default list styles
+*/
+ul,
+ol {
+    margin: 0;
+    padding: 0;
+}
+
+li {
+    list-style: none;
+}
+
+/**
+* SVG icons styles
+*/
+svg {
+    fill: currentColor;
+    vertical-align: middle;
+    max-height: 100%;
+}
+
+/**
+* Base site styles
+* =================================
+*/
+body {
+    background: #313543;
+    font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: color(#fff alpha(50%));
 }
