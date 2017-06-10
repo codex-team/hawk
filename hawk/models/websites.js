@@ -1,7 +1,8 @@
 module.exports = function () {
 
   let mongo = require('../modules/database');
-  const websites = 'hawk_websites';
+  let email = require('../modules/email');
+  const collection = 'hawk_websites';
 
   /**
    * Find domain by name and token.
@@ -15,12 +16,12 @@ module.exports = function () {
 
     switch (type) {
       case 'client':
-        return mongo.findOne(websites, {
+        return mongo.findOne(collection, {
           client_token: token,
           name: name
         });
       case 'server':
-        return mongo.findOne(websites, {
+        return mongo.findOne(collection, {
           server_token: token,
           name: name
         });
@@ -33,7 +34,7 @@ module.exports = function () {
    */
   let checkName = function(domain) {
 
-    return mongo.findOne(websites, {
+    return mongo.findOne(collection, {
       'name': domain
     })
       .then(function (result) {
@@ -46,7 +47,7 @@ module.exports = function () {
    */
   let add = function (app_name, client_token, server_token) {
 
-    return mongo.insertOne(websites, {
+    return mongo.insertOne(collection, {
         'name': app_name,
         'client_token': client_token,
         'server_token': server_token
