@@ -10,10 +10,6 @@ var users = require('./routes/users');
 var apps = require('./routes/apps');
 
 require('dotenv').config();
-<<<<<<< HEAD
-=======
-
->>>>>>> d74f9433f7686e64475f393891fe8d4d44160f50
 /** Catcher routes */
 var catcher = require('./routes/catcher');
 
