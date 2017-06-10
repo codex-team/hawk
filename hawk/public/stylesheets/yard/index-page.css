@@ -2,6 +2,10 @@
     padding: 60px;
     font-size: 20px;
 
+    @media (--mobile) {
+        padding: 15px;
+    }
+
     &__title {
         font-size: 2.6em;
         color: #fff;
@@ -9,6 +13,7 @@
 
     &__caption {
         color: color(#fff alpha(50%));
+        line-height: 1.4em;
     }
 
     &__links {
@@ -35,6 +40,7 @@
 
         img {
             margin-top: 1em;
+            max-width: 100%;
         }
     }
 }
