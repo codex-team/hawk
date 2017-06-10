@@ -1,0 +1,10 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+  <h1>Join Hawk</h1>
+  <form method="POST" action="/signup">
+    <input type="text" name="username" value="">
+    <input type="password" name="password" value="">
+    <input type="submit">
+  </form>
+{% endblock %}
