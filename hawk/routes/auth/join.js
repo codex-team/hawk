@@ -42,7 +42,6 @@ var join = {
       .then(function(result){
         user = result.ops[0];
         if (user) {
-
           auth.authUser(res, user);
           res.redirect('/garage');
         } else {
