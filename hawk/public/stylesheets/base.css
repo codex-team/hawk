@@ -63,13 +63,14 @@ input[type="url"],
 textarea {
     width: 100%;
     box-sizing: border-box;
-    padding: 10px;
-    border-radius: 2px;
-    border: 0;
-    font-size: 15px;
+    padding: 13px 18px;
+    font-size: 17px;
     font-family: inherit;
     outline: none;
-    background: #f4f5f8;
+    background: #fff;
+    border: 1px solid #d4d6d8;
+    box-shadow: inset 0 1px 2px 0 rgba(45, 53, 89, 0.18);
+    border-radius: 2px;
 }
 
 input[type="text"]:focus,
@@ -78,30 +79,40 @@ input[type="password"]:focus,
 input[type="search"]:focus,
 input[type="url"]:focus,
 textarea:focus {
-    background: #eef5fd;
+    border-color: #7aa7ff;
+    box-shadow: inset 0 1px 2px 0 rgba(82, 112, 255, 0.38);
 }
 
 .button,
-input[type="submit"] {
+.button--submit {
     user-select: none;
-    border-radius: 30px;
+    border-radius: 2px;
     border: 0;
     display: inline-block;
     padding: 12px 24px;
-    color: #3f4b63;
+    color: color(var(--buttonBg) lightness(-60%));
     vertical-align: top;
     cursor: pointer;
     text-decoration: none;
     font-family: inherit;
-    background-color: #ecf3f9;
+    background-color: var(--buttonBg);
     line-height: 1em;
 }
 
 .button:hover,
-input[type="submit"]:hover {
-    background-color: #4592da;
+.button--submit:hover {
+    background-color: color(var(--buttonBg) lightness(-10%));
+    color: color(var(--buttonBg) lightness(-70%));
+}
+
+.button--submit {
+    background-color: var(--submitButtonBg);
     color: #fff;
-    text-decoration: none;
+
+    &:hover {
+        background-color: color(var(--submitButtonBg) lightness(-15%));
+        color: #fff;
+    }
 }
 
 ::placeholder {

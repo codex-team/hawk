@@ -1,10 +1,26 @@
 {% extends 'layout.twig' %}
 
 {% block body %}
-  <h1>Sign in</h1>
-  <form method="POST" action="/login">
-    <input type="text" name="email" value="">
-    <input type="password" name="password" value="">
-    <input type="submit">
-  </form>
+  {% include 'yard/form.twig' with {
+    action: '/login',
+    title: 'Login',
+    fields: [
+      {
+        label: 'Enter your email',
+        name: 'email',
+        value: '',
+        placeholder: 'name@best-team.com',
+        type: 'email'
+      },
+      {
+        label: 'Password',
+        name: 'password',
+        value: '',
+        placeholder: '*******',
+        type: 'password'
+      }
+    ],
+    submitText: 'Login',
+    desclaimer: 'Dont have an account? Please, <a href="/join">sign up</a> one.'
+  } %}
 {% endblock %}

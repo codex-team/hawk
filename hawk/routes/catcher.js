@@ -1,19 +1,71 @@
-var express = require('express');
+var express  = require('express');
 var database = require('../modules/database'); // Use Mongo
+var events   = require('../models/events');
+var websites = require('../models/websites');
 var router = express.Router();
+var WebSocket = require('ws');
 
 /* GET client errors. */
-router.get('/client', function(req, res, next) {
-  res.render('index', { title: 'Client errors' });
+let reciever = new WebSocket.Server({
+  path: '/catcher/client',
+  port: 8000
 });
+
+var connection = function(ws) {
+  /**
+   * TODO: authorization
+   */
+
+
+  function getClientErrors(message) {
+
+    let event = {
+      type          : 'client',
+      errorMessage  : message.message,
+      errorLocation : message.error_location,
+      location      : message.location,
+      stack         : message.stack,
+      userClient    : message.navigator
+    };
+
+    websites.get('client', message.token, event.location.host)
+      .then( function(sites) {
+        if (!sites) {
+          ws.send(JSON.stringify({type: 'warn', message: 'Access denied'}));
+          ws.close();
+          return;
+        }
+
+        events.add(event.location.host, event);
+
+      })
+      .catch( function() {
+        // handle
+      })
+
+  }
+
+  let receiveMessage = function (message) {
+
+    message = JSON.parse(message);
+    getClientErrors(message);
+
+  };
+
+  ws.on('message', receiveMessage)
+
+};
+
+reciever.on('connection', connection);
+
 
 /* GET server errors. */
 router.post('/server', [getServerErrors]);
 
 function getServerErrors(req, res, next) {
-  response = req.body;
 
-  var tags = [ 'Parsing Error',
+  response = req.body;
+  const tags = [ 'Parsing Error',
            'All errors occurred at once',
            'Warning',
            'Core Warning',
@@ -30,53 +82,42 @@ function getServerErrors(req, res, next) {
            'User Deprecated',
            'Strict Error'];
 
-  let tag         = response.error_type,
-      tagMessage  = tags[response.error_type],
-      file        = response.error_file,
-      description = response.error_description,
-      line        = response.error_line,
-      params      = {
+  let event = {
+      type        : 'server',
+      tag         : response.error_type,
+      tagMessage  : tags[response.error_type],
+      file        : response.error_file,
+      description : response.error_description,
+      line        : response.error_line,
+      params      : {
         post  : response.error_context._POST,
         get   : response.error_context._GET
       },
-      remoteADDR  = response.error_context._SERVER.REMOTE_ADDR,
-      requestMethod = response.error_context._SERVER.REQUEST_METHOD,
-      queryString = response.error_context._SERVER.QUERY_STRING,
-      referer     = response.error_context._SERVER.HTTP_REFERER,
-      requestTime = response.error_context._SERVER.REQUEST_TIME,
-      token       = response.access_token,
-      backtrace   = response.debug_backtrace;
+      remoteADDR    : response.error_context._SERVER.REMOTE_ADDR,
+      requestMethod : response.error_context._SERVER.REQUEST_METHOD,
+      queryString   : response.error_context._SERVER.QUERY_STRING,
+      referer       : response.error_context._SERVER.HTTP_REFERER,
+      serverName    : response.error_context._SERVER.SERVER_NAME,
+      requestTime   : response.error_context._SERVER.REQUEST_TIME,
+      token         : response.access_token,
+      backtrace     : response.debug_backtrace
+  };
 
-  database.findOne('hawk_websites', { token : token })
-    .then(function(result) {
+  websites.get('server', event.token, event.serverName)
+    .then( function(sites) {
 
-      /** get domain name by token and check current server name */
-      if (result.name != response.error_context._SERVER.SERVER_NAME) {
+      if (!sites) {
+        res.sendStatus(403);
         return;
       }
 
-      query = database.insertOne(result.name, {
-        type        : 'server',
-        tag         : tag,
-        tagMessage  : tagMessage,
-        file        : file,
-        message     : description,
-        line        : line,
-        params      : params,
-        remoteADDR  : remoteADDR,
-        requestMethod : requestMethod,
-        queryString : queryString,
-        referer     : referer,
-        requestTime : requestTime,
-        callStack   : backtrace
-      });
+      events.add(event);
 
-      query.then(function(){
-        res.sendStatus(200);
-      }).catch(function(){
-        res.sendStatus(500);
-      });
+      res.sendStatus(200);
 
+    })
+    .catch( function() {
+      res.sendStatus(500);
     });
 
 }

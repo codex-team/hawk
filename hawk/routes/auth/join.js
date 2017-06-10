@@ -33,7 +33,7 @@ var join = {
       }
     })
 
-    var email = req.body.username,
+    var email = req.body.email,
         password = auth.generatePassword();
 
     console.log(password);
