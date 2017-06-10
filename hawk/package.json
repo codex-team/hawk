@@ -2,7 +2,7 @@
   "name": "Hawk",
   "private": true,
   "version": "1.0.0",
-  "description": "Hawk is open source platform allows you to track errors",
+  "description": "Hawk is open source platform allows you to catch errors",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
