@@ -1,0 +1,21 @@
+version: '2'
+
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+    environment:
+      AUTH: "no"
+      USER: root
+      PASS: root
+  node:
+    image: node
+    ports:
+      - 80:80
+    links:
+      - mongodb
+    volumes:
+      - "./src:/var/www"
+    working_dir: /var/www/         ## uses work dir /app
+    entrypoint: node server.js   ## starts application
