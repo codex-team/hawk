@@ -11,9 +11,13 @@
     "url": "git+https://github.com/codex-team/hawk.git"
   },
   "author": "Codex-team",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/codex-team/hawk/issues"
   },
-  "homepage": "https://github.com/codex-team/hawk#readme"
+  "homepage": "https://github.com/codex-team/hawk#readme",
+  "devDependencies": {
+    "extract-text-webpack-plugin": "^2.1.2",
+    "webpack": "^2.6.1"
+  }
 }
