@@ -1,0 +1,12 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+    <div class="garage">
+        <aside class="garage__aside">
+            {% include 'garage/aside.twig' %}
+        </aside>
+        <div class="garage__content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}

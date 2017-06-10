@@ -1,0 +1,71 @@
+.garage-list {
+    padding: 25px;
+
+    &__header {
+        margin-bottom: 25px;
+    }
+}
+
+/**
+ * Errors table
+ */
+.garage-list-item {
+    display: flex;
+    width: 100%;
+    position: relative;
+
+    &::after {
+        content: '';
+        display: block;
+        position: absolute;
+        bottom: 0;
+        height: 1px;
+        width: calc(100% - 100px);
+        background: var(--lightGrayLine);
+        left: 100px;
+    }
+
+    &__left {
+        font-size: 12px;
+        padding-right: 25px;
+        margin: auto 0;
+        width: 100px;
+    }
+
+    &__right {
+        font-weight: bold;
+        font-size: 12px;
+        padding-left: 25px;
+        margin: auto 0;
+        min-width: 150px;
+    }
+
+    &__content {
+        width: 100%;
+        padding: 15px 0;
+    }
+
+    &__title {
+        line-height: 1.5em;
+
+        &:hover {
+            color: var(--hoverColor);
+        }
+    }
+
+    &__caption {
+        margin-top: 5px;
+        color: var(--grayText);
+    }
+
+    &__tag {
+        font-weight: bold;
+        margin-bottom: 3px;
+    }
+
+    &__counter {
+        display: block;
+        font-size: 1.3em;
+    }
+}
+

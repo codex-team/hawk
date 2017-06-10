@@ -37,12 +37,16 @@
   "dependencies": {
     "body-parser": "~1.17.1",
     "cookie-parser": "~1.4.3",
+    "crypto": "0.0.3",
     "debug": "~2.6.3",
     "dotenv": "^4.0.0",
     "express": "~4.15.2",
     "mongodb": "^2.2.28",
     "morgan": "~1.8.1",
+    "nodemailer": "^4.0.1",
     "serve-favicon": "~2.4.2",
-    "twig": "~0.10.3"
+    "twig": "~0.10.3",
+    "uuid": "^3.0.1",
+    "ws": "^3.0.0"
   }
 }
