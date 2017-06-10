@@ -1,17 +1,59 @@
 var express = require('express');
 var database = require('../modules/database'); // Use Mongo
 var router = express.Router();
+var WebSocket = require('ws');
 
 /* GET client errors. */
-router.get('/client', function(req, res, next) {
-  res.render('index', { title: 'Client errors' });
+let reciever = new WebSocket.Server({
+  path: '/catcher/client',
+  port: 8000
 });
+
+var connection = function(ws) {
+  /**
+   * TODO: authorization
+   */
+
+  let receiveMessage = function (message) {
+
+    message = JSON.parse(message);
+    getClientErrors(message);
+
+  };
+
+  ws.on('message', receiveMessage)
+
+};
+
+reciever.on('connection', connection);
+
+function getClientErrors(message) {
+
+  var query;
+
+  var errorMessage  = message.message,
+      errorLocation = message.error_location,
+      location      = message.location,
+      stack         = message.stack,
+      userClient    = message.navigator;
+
+    query = database.insertOne(location.host, {
+      type         : 'client',
+      errorMessage : errorMessage,
+      location     : location,
+      stack        : stack,
+      userClient   : userClient
+    });
+
+}
 
 /* GET server errors. */
 router.post('/server', [getServerErrors]);
 
 function getServerErrors(req, res, next) {
   response = req.body;
+
+  var query;
 
   var tags = [ 'Parsing Error',
            'All errors occurred at once',
@@ -43,32 +85,39 @@ function getServerErrors(req, res, next) {
       requestMethod = response.error_context._SERVER.REQUEST_METHOD,
       queryString = response.error_context._SERVER.QUERY_STRING,
       referer     = response.error_context._SERVER.HTTP_REFERER,
+      serverName  = response.error_context._SERVER.SERVER_NAME,
       requestTime = response.error_context._SERVER.REQUEST_TIME,
       token       = response.access_token,
       backtrace   = response.debug_backtrace;
 
-  query = database.insertOne('http://hawk.ifmo.su', {
-    type        : 'server',
-    tag         : tag,
-    tagMessage  : tagMessage,
-    file        : file,
-    message     : description,
-    line        : line,
-    params      : params,
-    remoteADDR  : remoteADDR,
-    requestMethod : requestMethod,
-    queryString : queryString,
-    referer     : referer,
-    requestTime : requestTime,
-    callStack   : backtrace
-  });
+  database.findOne('hawk_websites', {
+    client_token : token,
+    name : serverName
+  })
+    .then( function() {
+      query = database.insertOne(serverName, {
+        type        : 'server',
+        tag         : tag,
+        tagMessage  : tagMessage,
+        file        : file,
+        message     : description,
+        line        : line,
+        params      : params,
+        remoteADDR  : remoteADDR,
+        requestMethod : requestMethod,
+        queryString : queryString,
+        referer     : referer,
+        requestTime : requestTime,
+        callStack   : backtrace
+      });
 
-  query.then(function(){
-    res.sendStatus(200);
-  }).catch(function(){
-    res.sendStatus(500);
-  });
+      query.then(function(){
+        res.sendStatus(200);
+      }).catch(function(){
+        res.sendStatus(500);
+      });
 
+    })
 }
 
 module.exports = router;
