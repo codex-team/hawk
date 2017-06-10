@@ -1,0 +1,14 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+  <h1>{{title}}</h1>
+  <p>Welcome to {{title}}</p>
+
+  <div>
+    <form name="token" action="/app/create" method="POST">
+      <input type="text" name="app_name" placeholder="Application name">
+      <input type="submit" value="Create">
+    </form>
+  </div>
+
+{% endblock %}
