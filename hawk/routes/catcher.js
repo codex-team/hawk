@@ -50,6 +50,7 @@ function getServerErrors(req, res, next) {
   database.findOne('hawk_websites', { token : token })
     .then(function(result) {
 
+      /** get domain name by token and check current server name */
       if (result.name != response.error_context._SERVER.SERVER_NAME) {
         return;
       }
