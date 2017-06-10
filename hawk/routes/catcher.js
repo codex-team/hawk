@@ -12,7 +12,7 @@ router.post('/server', [getServerErrors]);
 
 function getServerErrors(req, res, next) {
   response = req.body;
-  
+
   var tags = [ 'Parsing Error',
            'All errors occurred at once',
            'Warning',
@@ -30,13 +30,22 @@ function getServerErrors(req, res, next) {
            'User Deprecated',
            'Strict Error'];
 
-  tag = response.error_type;
-  tagMessage = tags[response.error_type];
-  file = response.error_file;
-  description = response.error_description;
-  line = response.error_line;
-  token = response.access_token;
-  backtrace = response.debug_backtrace;
+  let tag         = response.error_type,
+      tagMessage  = tags[response.error_type],
+      file        = response.error_file,
+      description = response.error_description,
+      line        = response.error_line,
+      params      = {
+        post  : response.error_context._POST,
+        get   : response.error_context._GET
+      },
+      remoteADDR  = response.error_context._SERVER.REMOTE_ADDR,
+      requestMethod = response.error_context._SERVER.REQUEST_METHOD,
+      queryString = response.error_context._SERVER.QUERY_STRING,
+      referer     = response.error_context._SERVER.HTTP_REFERER,
+      requestTime = response.error_context._SERVER.REQUEST_TIME,
+      token       = response.access_token,
+      backtrace   = response.debug_backtrace;
 
   query = database.insertOne('http://hawk.ifmo.su', {
     type        : 'server',
@@ -45,6 +54,12 @@ function getServerErrors(req, res, next) {
     file        : file,
     message     : description,
     line        : line,
+    params      : params,
+    remoteADDR  : remoteADDR,
+    requestMethod : requestMethod,
+    queryString : queryString,
+    referer     : referer,
+    requestTime : requestTime,
     callStack   : backtrace
   });
 
