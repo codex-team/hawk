@@ -33,16 +33,16 @@ var join = {
 
     console.log(password);
 
-    let user = {
+    let newUser = {
       'email': email,
       'password': auth.generateHash(password)
     };
 
-    mongo.insertOne('users', user)
+    mongo.insertOne('users', newUser)
       .then(function(result){
-        user = result.ops[0];
+        newUser = result.ops[0];
         if (user) {
-          auth.authUser(res, user);
+          auth.authUser(res, newUser);
           res.redirect('/garage');
         } else {
           res.render('error', { message: 'Try again later.' });

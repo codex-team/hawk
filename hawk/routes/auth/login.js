@@ -29,12 +29,12 @@ var login = {
     var email = req.body.email,
         password = req.body.password;
 
-    let user = {
+    let newUser = {
       'email': email,
       'password': auth.generateHash(password)
     };
 
-    mongo.findOne('users', user)
+    mongo.findOne('users', newUser)
       .then(function(result){
         if (result) {
           auth.authUser(res, result);
