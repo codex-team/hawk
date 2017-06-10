@@ -4,10 +4,12 @@ module.exports = (function () {
 
   var mongodb = (function () {
 
-    var url = "mongodb://localhost:27017",
+    var protocol = 'mongodb://',
+        host = 'localhost',
+        port = '27017',
         dbname = "db_name";
 
-    connection = url + "/" + dbname;
+    connection = protocol + host + ':' + port + "/" + dbname;
 
     return {
       connection: connection
