@@ -37,7 +37,6 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 // check if client sent cookie
 app.use(function (req, res, next) {
   userId = auth.check(req.cookies);
-  console.log(req.cookies);
   next();
 });
 
