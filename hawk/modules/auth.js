@@ -1,5 +1,4 @@
 var Crypto = require('crypto');
-var Cookies = require('./cookies');
 
 module.exports = (function () {
 
@@ -25,8 +24,8 @@ module.exports = (function () {
   var check = function (cookies) {
 
     // load cookies
-    var uid = Cookies(cookies, 'user_id'),
-        uhash = Cookies(cookies, 'user_hash');
+    var uid = cookies.user_id,
+        uhash = cookies.user_hash;
 
     // check if these cookies exist
     if ( !uid || !uhash ) return 0;

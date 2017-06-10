@@ -25,12 +25,6 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'twig');
 
-// check if client sent cookie
-app.use(function (req, res, next) {
-  userId = auth.check(req.headers.cookie);
-  next();
-});
-
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -39,6 +33,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('/static', express.static(path.join(__dirname, 'public')));
+
+// check if client sent cookie
+app.use(function (req, res, next) {
+  userId = auth.check(req.cookies);
+  console.log(req.cookies);
+  next();
+});
 
 app.use('/', index);
 app.use('/users', users);
