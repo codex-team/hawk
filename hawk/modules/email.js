@@ -25,7 +25,16 @@ var email = (function () {
     });
   };
 
-  /* Send email to specified receiver with subject and text */
+  /**
+  * Send email to specified receiver with subject and text
+  *
+  * from    - {name:'CodeX Hawk', email:'hawk@hawk.io'}
+  * to      - 'receiver@mail.com'
+  * subject
+  * text
+  * html
+  */
+
   var send = function (from, to, subject, text, html) {
 
     if (!config.email.auth.user) {
