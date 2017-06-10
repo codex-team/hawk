@@ -1,0 +1,40 @@
+.landing-page {
+    padding: 60px;
+    font-size: 20px;
+
+    &__title {
+        font-size: 2.6em;
+        color: #fff;
+    }
+
+    &__caption {
+        color: color(#fff alpha(50%));
+    }
+
+    &__links {
+        margin-top: 1em;
+        font-weight: bold;
+
+        li {
+            display: inline-block;
+            margin-right: 1em;
+        }
+
+        a {
+            color: #fff;
+
+            &.primary {
+                color: var(--linkOnDark);
+            }
+        }
+    }
+
+    &__figure {
+        margin: 50px 0 0;
+        color: color(#fff alpha(50%));
+
+        img {
+            margin-top: 1em;
+        }
+    }
+}
