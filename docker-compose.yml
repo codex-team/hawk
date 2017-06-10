@@ -17,5 +17,6 @@ services:
       - mongodb
     volumes:
       - "./src:/var/www"
+      - "./node_modules:/var/www/node_modules"
     working_dir: /var/www/         ## uses work dir /app
     entrypoint: node server.js   ## starts application
