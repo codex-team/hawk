@@ -1,6 +1,7 @@
 var express  = require('express');
 var database = require('../modules/database'); // Use Mongo
-var events   = require('../modules/events');
+var events   = require('../models/events');
+var websites = require('../models/websites');
 var router = express.Router();
 var WebSocket = require('ws');
 
@@ -15,6 +16,35 @@ var connection = function(ws) {
    * TODO: authorization
    */
 
+
+  function getClientErrors(message) {
+
+    let event = {
+      type          : 'client',
+      errorMessage  : message.message,
+      errorLocation : message.error_location,
+      location      : message.location,
+      stack         : message.stack,
+      userClient    : message.navigator
+    };
+
+    websites.get('client', message.token, event.location.host)
+      .then( function(sites) {
+        if (!sites) {
+          ws.send(JSON.stringify({type: 'warn', message: 'Access denied'}));
+          ws.close();
+          return;
+        }
+
+        events.add(event.location.host, event);
+
+      })
+      .catch( function() {
+        // handle
+      })
+
+  }
+
   let receiveMessage = function (message) {
 
     message = JSON.parse(message);
@@ -28,28 +58,6 @@ var connection = function(ws) {
 
 reciever.on('connection', connection);
 
-function getClientErrors(message) {
-
-  var query;
-
-  let event = {
-      type          : 'client',
-      errorMessage  : message.message,
-      errorLocation : message.error_location,
-      location      : message.location,
-      stack         : message.stack,
-      userClient    : message.navigator;
-  }
-
-  events.getWebsites(token, location.host)
-    .then( function() {
-      events.addEvent(event);
-    })
-    .catch( function() {
-      // handle
-    })
-
-}
 
 /* GET server errors. */
 router.post('/server', [getServerErrors]);
@@ -92,15 +100,24 @@ function getServerErrors(req, res, next) {
       serverName    : response.error_context._SERVER.SERVER_NAME,
       requestTime   : response.error_context._SERVER.REQUEST_TIME,
       token         : response.access_token,
-      backtrace     : response.debug_backtrace;
-  }
+      backtrace     : response.debug_backtrace
+  };
 
-  events.getWebsites(token, serverName)
-    .then( function() {
-      events.addEvent(event);
+  websites.get('server', event.token, event.serverName)
+    .then( function(sites) {
+
+      if (!sites) {
+        res.sendStatus(403);
+        return;
+      }
+
+      events.add(event);
+
+      res.sendStatus(200);
+
     })
     .catch( function() {
-      // handle
+      res.sendStatus(500);
     });
 
 }
