@@ -3,6 +3,14 @@ module.exports = function () {
   let mongo = require('../modules/database');
   const websites = 'hawk_websites';
 
+  /**
+   * Find domain by name and token.
+   * Token could be client or server, so we should pass @param type
+   *
+   * @param type
+   * @param token
+   * @param name
+   */
   let get = function(type, token, name) {
 
     switch (type) {
@@ -21,7 +29,7 @@ module.exports = function () {
   };
 
   /**
-   * Return if application with name specified is not exists
+   * Return true if application with name specified is not exists
    */
   let checkName = function(domain) {
 
@@ -34,7 +42,7 @@ module.exports = function () {
   };
 
   /**
-   * Add new application and token to DB
+   * Add new domain name and client and server tokens to DB
    */
   let add = function (app_name, client_token, server_token) {
 
