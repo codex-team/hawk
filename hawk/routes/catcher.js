@@ -47,7 +47,7 @@ function getServerErrors(req, res, next) {
       token       = response.access_token,
       backtrace   = response.debug_backtrace;
 
-  database.findOne('hawk_applications', { token : token })
+  database.findOne('hawk_websites', { token : token })
     .then(function(result) {
 
       if (result.name != response.error_context._SERVER.SERVER_NAME) {
