@@ -3,10 +3,10 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
 
-  entry: './hawk/public/src/javascripts/hawk.js',
+  entry: './public/src/javascripts/hawk.js',
 
   output: {
-    filename: './hawk/public/build/bundle.js',
+    filename: './public/build/bundle.js',
     library: 'hawk'
   },
 
@@ -32,7 +32,7 @@ module.exports = {
     ]
   },
     plugins: [
-        new ExtractTextPlugin("hawk/public/build/bundle.css")
+        new ExtractTextPlugin("public/build/bundle.css")
     ],
 
     devtool: "source-map",
