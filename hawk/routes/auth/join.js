@@ -12,13 +12,14 @@ var join = {
   get: function (req, res, next) {
 
     user.get(req).then(function (found) {
-      console.log(found);
+
       if (found) {
         res.redirect('/garage');
         return;
       }
 
       res.render('yard/auth/join');
+
     })
 
   },
