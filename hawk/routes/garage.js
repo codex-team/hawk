@@ -36,8 +36,6 @@ let feed = function (req, res) {
 
 /**
  * Main page dashboard
- * @param  {[type]} req [description]
- * @param  {[type]} res [description]
  */
 let main = function (req, res) {
 
