@@ -1,4 +1,5 @@
 *.sublime-workspace
 *.sublime-project
-
 *.log
+.idea/
+hawk/package-lock.json

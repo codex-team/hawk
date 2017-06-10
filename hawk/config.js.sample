@@ -1,0 +1,28 @@
+module.exports = (function () {
+
+  var port = 3000;
+
+  var mongodb = (function () {
+
+    var protocol = 'mongodb://',
+        host = 'localhost',
+        port = '27017',
+        dbname = "db_name";
+
+    var connection = protocol + host + ':' + port + "/" + dbname;
+
+    return {
+      connection: connection
+    }
+
+  })();
+
+  var salt = 'Dv4-45b-Nt5-sdS';
+
+  return {
+    port: port,
+    mongodb: mongodb,
+    salt: salt
+  }
+
+})();
