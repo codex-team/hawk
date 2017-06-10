@@ -11,6 +11,7 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var signIn = require('./routes/auth/signIn');
 var signUp = require('./routes/auth/signUp');
+var apps = require('./routes/apps');
 
 var app = express();
 
@@ -24,10 +25,11 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/app', apps);
 
 app.post('/signin', signIn.post);
 app.use('/signin', signIn.get);
