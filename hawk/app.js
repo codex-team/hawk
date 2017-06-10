@@ -5,8 +5,13 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var auth = require('./modules/auth');
+
 var index = require('./routes/index');
 var users = require('./routes/users');
+var login = require('./routes/auth/login');
+var logout = require('./routes/auth/logout');
+var join = require('./routes/auth/join');
 var websites = require('./routes/websites');
 var garage = require('./routes/garage');
 
@@ -20,6 +25,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'twig');
 
+
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
@@ -28,6 +34,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
+// check if client sent cookie
+app.use(function (req, res, next) {
+  userId = auth.check(req.cookies);
+  next();
+});
+
 app.use('/', index);
 app.use('/users', users);
 app.use('/websites', websites);
@@ -35,6 +47,11 @@ app.use('/garage', garage);
 
 /** use catcher routes */
 app.use('/catcher', catcher);
+
+app.use('/login', login);
+app.use('/logout', logout);
+app.use('/join', join);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -54,8 +71,5 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-if (process.env.ENVIRONMENT === 'PRODUCTION') {
-  // Vitaly
-}
 
 module.exports = app;
