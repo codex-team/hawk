@@ -4,6 +4,8 @@ let mongo = require('../modules/database');
 
 let feed = function (req, res) {
 
+  'use strict';
+
   let domain = req.params.domain,
       tab = req.params[0].split('/')[1],
       allowedTabs = ['fatal', 'warnings', 'notice', 'javascript'];
@@ -11,8 +13,7 @@ let feed = function (req, res) {
   /**
    * TODO: check if domain registered
    */
-
-  if (!(allowedTabs.indexOf(tab) + 1)) {
+  if (!allowedTabs.includes(tab)) {
     res.sendStatus(400);
     return;
   }
@@ -20,6 +21,7 @@ let feed = function (req, res) {
   if (!tab.length) tab = null;
 
   let query = {};
+
   if (tab) {
     query.tag = tab;
   }
@@ -32,6 +34,19 @@ let feed = function (req, res) {
 
 };
 
+/**
+ * Main page dashboard
+ * @param  {[type]} req [description]
+ * @param  {[type]} res [description]
+ */
+let main = function (req, res) {
+
+  'use strict';
+  res.render('garage/index', {});
+
+};
+
 router.get('/:domain*', feed);
+router.get('/', main);
 
 module.exports = router;

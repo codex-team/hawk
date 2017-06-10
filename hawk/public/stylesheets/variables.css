@@ -1,13 +1,24 @@
 :root {
     /** Texts */
     --grayText: #717171;
+    --grayOnDark: #a1a6b3;
+
+    /** Error types modifiers */
+    --fatalColor: #ff5252;
+    --warningColor: #ffdd5d;
+    --noticeColor: #717171;
+    --clientColor: #87607e;
 
     /** Links */
     --linkOnDark: #31ffac;
     --linkColor: #00b693;
+    --hoverColor: #7026bd;
+
+    /** Backgrounds */
+    --darkGrayBg: #292934;
 
     /** Borders */
-    --lightGrayLine: #eceff3;
+    --lightGrayLine: #edebeb;
 
     /** Bounce timing function for transition */
     --bounceTiming: cubic-bezier(0.6, -0.28, 0.735, 0.045);
