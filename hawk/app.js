@@ -12,7 +12,6 @@ var users = require('./routes/users');
 var login = require('./routes/auth/login');
 var logout = require('./routes/auth/logout');
 var join = require('./routes/auth/join');
-var apps = require('./routes/apps');
 var websites = require('./routes/websites');
 var garage = require('./routes/garage');
 
