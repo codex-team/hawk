@@ -10,11 +10,11 @@ var login = {
   get: function (req, res, next) {
 
     if (userId) {
-      res.redirect('/');
+      res.redirect('/garage');
       return;
     }
 
-    res.render('auth/login');
+    res.render('yard/auth/login');
 
   },
 
@@ -22,23 +22,23 @@ var login = {
   post: function (req, res, next) {
 
     if (userId) {
-      res.redirect('/');
+      res.redirect('/garage');
       return;
     }
 
     var email = req.body.email,
         password = req.body.password;
 
-    user = {
+    let user = {
       'email': email,
       'password': auth.generateHash(password)
-    }
+    };
 
     mongo.findOne('users', user)
       .then(function(result){
         if (result) {
           auth.authUser(res, result);
-          res.render('user', { user: user.email });
+          res.redirect('/garage');
         } else {
           res.render('error', { message: 'Try again later.' });
         }
