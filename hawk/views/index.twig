@@ -1,6 +1,17 @@
 {% extends 'layout.twig' %}
 
 {% block body %}
-  <h1>{{title}}</h1>
-  <p>Welcome to {{title}}</p>
+  <div class="landing-page">
+    <h1 class="landing-page__title">Hawk.io</h1>
+    <p class="landing-page__caption">Fast and lightweight<br/>errors tracking service </p>
+    <ul class="landing-page__links">
+      <li><a class="primary" href="/garage">View demo</a></li>
+      <li><a href="/join">Sign up</a></li>
+      <li><a href="/login">Login</a></li>
+    </ul>
+    <figure class="landing-page__figure">
+      <figcaption>Backend and Frontend errors monitoring</figcaption>
+      <img src="/static/images/index_page/list.png" alt="Backend and Frontend errors monitoring">
+    </figure>
+  </div>
 {% endblock %}

@@ -24,9 +24,17 @@ var mongo = (function () {
       })
   };
 
+  var find = function (c, query) {
+    return getCollection(c)
+      .then(function () {
+        return collection.find(query).toArray();
+      })
+  };
+
   return {
     findOne : findOne,
-    insertOne : insertOne
+    insertOne : insertOne,
+    find: find
   }
 
 })();
