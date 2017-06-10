@@ -1,4 +1,5 @@
 var express = require('express');
+var database = require('../modules/database'); // Use Mongo
 var router = express.Router();
 
 /* GET client errors. */
@@ -7,7 +8,7 @@ router.get('/client', function(req, res, next) {
 });
 
 /* GET server errors. */
-router.post('/server', [getServerErrors, sendStatus]);
+router.post('/server', [getServerErrors]);
 
 function getServerErrors(req, res, next) {
   response = req.body;
@@ -19,16 +20,9 @@ function getServerErrors(req, res, next) {
   token = response.access_token;
   backtrace = response.debug_backtrace;
 
-  if (token) {
-    next(403);
-  } else {
-    next(500)
-  }
-
-}
-
-function sendStatus(req, res) {
+  console.log(database);
   res.sendStatus(200);
+
 }
 
 module.exports = router;

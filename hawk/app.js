@@ -4,7 +4,6 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var config = require('./config');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -50,10 +49,6 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
-});
-
-app.listen(config['port'], function(){
-    console.log('Express server listening on port ' + config.port);
 });
 
 module.exports = app;

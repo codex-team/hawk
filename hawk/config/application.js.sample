@@ -1,0 +1,4 @@
+module.exports = {
+  port : 3000,
+  salt : 'Dv4-45b-Nt5-sdS'
+}
