@@ -21,6 +21,7 @@
     "webpack": "^2.6.1"
   },
   "dependencies": {
-    "express": "^4.15.3"
+    "express": "^4.15.3",
+    "express-generator": "^4.15.0"
   }
 }
