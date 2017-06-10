@@ -1,7 +1,5 @@
 module.exports = (function () {
 
-  var port = 3000;
-
   var mongodb = (function () {
 
     var protocol = 'mongodb://',
@@ -17,12 +15,8 @@ module.exports = (function () {
 
   })();
 
-  var salt = 'Dv4-45b-Nt5-sdS';
-
   return {
-    port: port,
     mongodb: mongodb,
-    salt: salt
   }
 
 })();

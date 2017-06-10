@@ -1,3 +1,9 @@
+# dev folders
 node_modules/
 vendor/
-config.js
+npm-debug.log
+
+# platform configurations
+.env
+config/mongo.js
+config/application.js
