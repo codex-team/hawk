@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var mongo = require("../../database");
+var mongo = require("../../modules/database");
+var auth = require('../../modules/auth');
 
 
 var signin = {
@@ -14,12 +15,14 @@ var signin = {
   post: function (req, res, next) {
 
     var username = req.body.username,
-        password = req.body.password;
+        password = req.body.password + '_test';
 
     mongo.findOne('users', req.body)
       .then(function(result){
         if (result) {
-          res.render('user', { user: req.body.username });
+          res.render('user', { user: username });
+          res.cookie('user_id', username);
+          res.cookie('user_hash', auth.generateHash(username));
         } else {
           res.render('index', { title: 'Wrong user' });
         }

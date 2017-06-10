@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 var mongoClient = require("mongodb").MongoClient;
 var config = require('./config');
 
+var auth = require('./modules/auth');
+
 var index = require('./routes/index');
 var users = require('./routes/users');
 var signIn = require('./routes/auth/signIn');
@@ -18,6 +20,14 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'twig');
+
+// check if client sent cookie
+var userId = 0;
+app.use(function (req, res, next) {
+  userId = auth.check(req.headers.cookie);
+  next();
+});
+
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
