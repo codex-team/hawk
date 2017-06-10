@@ -1,0 +1,21 @@
+:root {
+    /** Texts */
+    --grayText: #717171;
+
+    /** Links */
+    --linkOnDark: #31ffac;
+    --linkColor: #00b693;
+
+    /** Borders */
+    --lightGrayLine: #eceff3;
+
+    /** Bounce timing function for transition */
+    --bounceTiming: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+}
+
+/**
+* Custom media queries
+*/
+@custom-media --tablet all and (max-width: 1050px);
+@custom-media --mobile all and (max-width: 980px);
+@custom-media --retina all and (-webkit-min-device-pixel-ratio: 1.5);
