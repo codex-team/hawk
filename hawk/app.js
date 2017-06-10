@@ -13,6 +13,7 @@ var login = require('./routes/auth/login');
 var logout = require('./routes/auth/logout');
 var join = require('./routes/auth/join');
 var apps = require('./routes/apps');
+var websites = require('./routes/websites');
 var garage = require('./routes/garage');
 
 require('dotenv').config();
@@ -43,7 +44,7 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
-app.use('/app', apps);
+app.use('/websites', websites);
 app.use('/garage', garage);
 
 /** use catcher routes */
