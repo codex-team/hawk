@@ -10,7 +10,7 @@ services:
       USER: root
       PASS: root
   node:
-    image: node
+    build: build/node_image
     ports:
       - 3000:3000
     links:
@@ -19,4 +19,3 @@ services:
       - "./hawk:/var/www"
       - "./hawk/node_modules:/var/www/node_modules"
     working_dir: /var/www/
-    command: bash -c "npm install && npm start"
