@@ -9,7 +9,7 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var apps = require('./routes/apps');
 
-require('dotenv').config()
+require('dotenv').config();
 /** Catcher routes */
 var catcher = require('./routes/catcher');
 
@@ -32,7 +32,7 @@ app.use('/users', users);
 app.use('/app', apps);
 
 /** use catcher routes */
-app.use('/catcher', catcher)
+app.use('/catcher', catcher);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
