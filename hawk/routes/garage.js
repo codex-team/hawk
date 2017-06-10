@@ -28,7 +28,7 @@ let feed = function (req, res) {
 
   mongo.find(domain, query).then(function(result) {
 
-    res.render('garage/list', { title: domain + '/' + tab , errors: result});
+    res.render('garage/index', { title: domain + '/' + tab , errors: result});
 
   });
 
