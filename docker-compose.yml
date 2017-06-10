@@ -10,7 +10,7 @@ services:
       USER: root
       PASS: root
   node:
-    build: 'build/node'
+    image: node
     ports:
       - 3000:3000
     links:
