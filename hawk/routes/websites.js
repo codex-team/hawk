@@ -1,22 +1,29 @@
 var express = require('express');
 var router = express.Router();
-var mongo = require("../modules/database");
-var email = require("../modules/email");
-
-var db_collection = "hawk_websites";
+var mongo = require('../modules/database');
+var email = require('../modules/email');
+var db_collection = 'hawk_websites';
 
 /* Show page for new app registration */
 router.get('/create', function(req, res, next) {
-  res.render('websites/create', { title: 'Register new website' });
+  res.render('yard/websites/create', { title: 'Register new website' });
 });
 
 /* App registration callback */
 router.post('/create', function(req, res, next) {
 
+    'use strict';
+
+    /**
+     * Register site template
+     * @type {String}
+     */
+    let resultTemplate = 'yard/websites/result';
+
     var name = req.body.app_name;
 
     if (!name) {
-        res.render('websites/result', {title: 'Error', error: "Website domain is empty"});
+        res.render(resultTemplate, {title: 'Error', error: "Website domain is empty"});
         return;
     }
 
@@ -30,16 +37,16 @@ router.post('/create', function(req, res, next) {
             var server_token = uuid.v4();
 
             addNewApplication(name, client_token, server_token);
-            res.render('websites/result', {
+            res.render(resultTemplate, {
                 title: 'Get your token',
                 client_token: client_token,
                 server_token: server_token
             });
         }
         else {
-            res.render('websites/result', {title: 'Error', error: "Website already connected"});
+            res.render(resultTemplate, {title: 'Error', error: "Website already connected"});
         }
-    })
+    });
 
 });
 

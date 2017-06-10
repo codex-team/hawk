@@ -1,0 +1,116 @@
+/**
+ * Garage sidebar stylesheets
+ */
+.garage-aside {
+    background: var(--darkGrayBg);
+    padding: 25px;
+    height: 100%;
+    box-sizing: border-box;
+    color: var(--grayOnDark);
+
+    a:hover {
+        color: #fff;
+    }
+
+    &__logo {
+        color: #fff;
+        font-weight: bold;
+        font-size: 20px;
+        margin-bottom: 5px;
+    }
+
+    &__user {
+        font-size: 16px;
+    }
+
+    &__heading {
+        margin-top: 45px;
+        margin-bottom: 0;
+        font-size: 14px;
+        letter-spacing: 0.07em;
+    }
+
+    &__section {
+        margin: 15px 0;
+        font-size: 17px;
+    }
+
+    &__domain {
+        display: block;
+        color: #fff;
+        margin-bottom: 10px;
+        font-size: 1.2em;
+    }
+
+    &__tag {
+        display: flex;
+        padding: 5px 10px;
+        margin: 0 -10px;
+        border-radius: 2px;
+        cursor: pointer;
+
+        &::before {
+            content: '#';
+            display: inline-block;
+            margin-right: 0.5em;
+            opacity: 0.4;
+        }
+
+        &:hover {
+            background: color(var(--darkGrayBg) lightness(-3%));
+        }
+    }
+
+    &__counter {
+        display: inline-block;
+        margin-left: auto;
+        font-weight: bold;
+
+        &::before {
+            content: '';
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            background: var(--grayText);
+            margin-right: 0.3em;
+            vertical-align: middle;
+            border-radius: 50%;
+        }
+
+        &--fatal {
+            color: var(--fatalColor);
+
+            &::before {
+                background: var(--fatalColor);
+            }
+        }
+
+        &--warning {
+            color: var(--warningColor);
+
+            &::before {
+                background: var(--warningColor);
+            }
+        }
+
+        &--notice {
+            color: var(--noticeColor);
+
+            &::before {
+                background: var(--noticeColor);
+            }
+        }
+
+        &--client {
+            color: var(--clientColor);
+
+            &::before {
+                background: var(--clientColor);
+            }
+        }
+    }
+
+    &__add {
+        margin-top: 25px;
+    }
+}

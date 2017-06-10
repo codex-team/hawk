@@ -1,0 +1,31 @@
+<div class="garage-list">
+
+    <div class="garage-list__header">
+        Total 2 139 events ordered by date
+    </div>
+
+    <div class="garage-list-item">
+        <div class="garage-list-item__left">
+            <div class="garage-list-item__tag">Fatal Error</div>
+            <time class="garage-list-item__time">2 hours ago</time>
+        </div>
+        <div class="garage-list-item__content">
+            <a class="garage-list-item__title" href="">
+                Argument 1 passed to Kohana_Upload::type() must be of the type array, string given
+            </a>
+            <div class="garage-list-item__caption   ">
+                /var/www/ifmo.su/application/classes/Model/Methods.php -> line 123
+            </div>
+        </div>
+        <div class="garage-list-item__right">
+            <span class="garage-list-item__counter">134</span>
+            times
+        </div>
+    </div>
+
+
+    {% for error in errors %}
+        <p>{{ loop.index }} - {{ error.message }}</p>
+    {% endfor %}
+
+</div>

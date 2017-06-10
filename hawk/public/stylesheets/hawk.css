@@ -3,6 +3,14 @@
 @import url('base.css');
 
 /**
- * Components
+ * Yard
  */
-@import url('components/index-page.css');
+@import url('yard/index-page.css');
+
+/**
+ * Garage
+ */
+@import url('garage/layout.css');
+@import url('garage/aside.css');
+@import url('garage/header.css');
+@import url('garage/list.css');

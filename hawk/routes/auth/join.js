@@ -10,11 +10,11 @@ var join = {
   get: function (req, res, next) {
 
     if (userId) {
-      res.redirect('/');
+      res.redirect('/garage');
       return;
     }
 
-    res.render('auth/join');
+    res.render('yard/auth/join');
 
   },
 
@@ -22,7 +22,7 @@ var join = {
   post: function (req, res, next) {
 
     if (userId) {
-      res.redirect('/');
+      res.redirect('/garage');
       return;
     }
 
@@ -31,17 +31,17 @@ var join = {
 
     console.log(password);
 
-    user = {
+    let user = {
       'email': email,
       'password': auth.generateHash(password)
-    }
+    };
 
     mongo.insertOne('users', user)
       .then(function(result){
         user = result.ops[0];
         if (user) {
           auth.authUser(res, user);
-          res.render('user', { user: user.email });
+          res.redirect('/garage');
         } else {
           res.render('error', { message: 'Try again later.' });
         }

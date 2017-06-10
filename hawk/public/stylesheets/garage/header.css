@@ -1,0 +1,37 @@
+.garage-header {
+    position: fixed;
+    top: 0;
+    display: flex;
+    box-sizing: border-box;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    padding: 0 25px;
+    border-bottom: 1px solid var(--lightGrayLine);
+
+    &__domain {
+        font-weight: bold;
+        font-size: 1.3em;
+        margin: 0 25px 0 0;
+    }
+
+    &__tab {
+        margin-right: 10px;
+        color: var(--grayText);
+
+        &:not(:last-of-type)::after {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background: color(var(--grayText) alpha(60%));
+            margin-left: 10px;
+            vertical-align: middle;
+            border-radius: 50%;
+        }
+
+        &:hover {
+            color: var(--hoverColor);
+        }
+    }
+}
