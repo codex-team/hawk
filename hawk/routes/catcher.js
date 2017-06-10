@@ -12,7 +12,7 @@ router.post('/server', [getServerErrors]);
 
 function getServerErrors(req, res, next) {
   response = req.body;
-
+  
   var tags = [ 'Parsing Error',
            'All errors occurred at once',
            'Warning',
