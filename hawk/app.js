@@ -11,8 +11,9 @@ var auth = require('./modules/auth');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var signIn = require('./routes/auth/signIn');
-var signUp = require('./routes/auth/signUp');
+var login = require('./routes/auth/login');
+var logout = require('./routes/auth/logout');
+var join = require('./routes/auth/join');
 var apps = require('./routes/apps');
 
 var app = express();
@@ -22,7 +23,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'twig');
 
 // check if client sent cookie
-var userId = 0;
+userId = 0;
 app.use(function (req, res, next) {
   userId = auth.check(req.headers.cookie);
   next();
@@ -41,11 +42,12 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/app', apps);
 
-app.post('/signin', signIn.post);
-app.use('/signin', signIn.get);
+app.post('/login', login.post);
+app.use('/login', login.get);
+app.use('/logout', logout);
 
-app.post('/signup', signUp.post);
-app.use('/signup', signUp.get);
+app.post('/join', join.post);
+app.use('/join', join.get);
 
 
 // catch 404 and forward to error handler

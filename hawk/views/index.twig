@@ -1,8 +1,15 @@
 {% extends 'layout.twig' %}
 
 {% block body %}
+
   <h1>{{title}}</h1>
-  <p>Welcome to {{title}}</p><br>
-  <a href="/signin">Sign in</a><br>
-  <a href="/signup">Sign up</a>
+  <p>Welcome to {{title}}</p>
+
+  {% if userId %}
+    <a href="/logout">Logout</a>
+  {% else %}
+    <a href="/login">Sign in</a><br>
+    <a href="/join">Sign up</a><br>
+  {% endif %}
+
 {% endblock %}

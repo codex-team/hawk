@@ -6,7 +6,7 @@ module.exports = (function () {
 
   var user_id = 0;
 
-  var generateHash = function () {
+  var generateHash = function (user_id) {
 
     string = user_id + config.salt;
 
@@ -44,9 +44,30 @@ module.exports = (function () {
 
   };
 
+  var logout = function (res) {
+
+    res.clearCookie('user_id');
+    res.clearCookie('user_hash');
+
+  };
+
+  var authUser = function (res, user) {
+
+    logout(res);
+
+    var uid = user._id,
+        uhash = generateHash(uid);
+
+    res.cookie('user_id', uid);
+    res.cookie('user_hash', uhash);
+
+  };
+
   return {
-    check : check,
-    generateHash : generateHash
+    check: check,
+    generateHash: generateHash,
+    authUser: authUser,
+    logout: logout
   }
 
 })();
