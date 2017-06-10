@@ -22,7 +22,7 @@ var join = {
   post: function (req, res, next) {
 
     if (userId) {
-      res.redirect('/gargae');
+      res.redirect('/garage');
       return;
     }
 
