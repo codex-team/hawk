@@ -3,5 +3,3 @@
 *.log
 .idea/
 hawk/package-lock.json
-config/email.js
-config/mongo.js

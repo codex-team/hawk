@@ -26,9 +26,15 @@ router.post('/create', function(req, res, next) {
         /* if not exists -> generate token and add to DB*/
         if (result) {
             var uuid = require('uuid');
-            var token = uuid.v4();
-            addNewApplication(name, token);
-            res.render('websites/result', {title: 'Get your token', token: token});
+            var client_token = uuid.v4();
+            var server_token = uuid.v4();
+
+            addNewApplication(name, client_token, server_token);
+            res.render('websites/result', {
+                title: 'Get your token',
+                client_token: client_token,
+                server_token: server_token
+            });
         }
         else {
             res.render('websites/result', {title: 'Error', error: "Website already connected"});
@@ -51,8 +57,8 @@ function checkApplicationName(name) {
 }
 
 /* Add new application and token to DB */
-function addNewApplication(app_name, token) {
-    return mongo.insertOne(db_collection, {'name': app_name, 'token': token})
+function addNewApplication(app_name, client_token, server_token) {
+    return mongo.insertOne(db_collection, {'name': app_name, 'client_token': client_token, 'server_token': server_token})
         .then(function (result) {
             if (result) {
                 email.init();
@@ -60,7 +66,7 @@ function addNewApplication(app_name, token) {
                     {name:'CodeX Hawk', email:'codex.ifmo@yandex.ru'},
                     'ntpcp@yandex.ru',
                     'Your token',
-                    'Your access token: ' + token,
+                    'Your client access token: ' + client_token + '\n' + 'Your server access token: ' + server_token,
                     '');
                 return true;
             }
