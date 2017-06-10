@@ -2,14 +2,14 @@ var express = require('express');
 var router = express.Router();
 var mongo = require("../../modules/database");
 var auth = require('../../modules/auth');
-
+var user = require('../../models/user');
 
 var login = {
 
   /* Show log in form */
   get: function (req, res, next) {
 
-    if (userId) {
+    if (user.get(req)) {
       res.redirect('/garage');
       return;
     }
@@ -21,7 +21,7 @@ var login = {
   /* Log in function */
   post: function (req, res, next) {
 
-    if (userId) {
+    if (user.get(req)) {
       res.redirect('/garage');
       return;
     }

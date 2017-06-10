@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var mongo = require("../../modules/database");
 var auth = require("../../modules/auth");
+var email = require("../../modules/email");
+var user = require('../../models/user');
 
 
 var join = {
@@ -9,7 +11,7 @@ var join = {
   /* Show join form */
   get: function (req, res, next) {
 
-    if (userId) {
+    if (user.get(req)) {
       res.redirect('/garage');
       return;
     }
@@ -21,7 +23,7 @@ var join = {
   /* Create new user */
   post: function (req, res, next) {
 
-    if (userId) {
+    if (user.get(req)) {
       res.redirect('/garage');
       return;
     }
@@ -40,6 +42,7 @@ var join = {
       .then(function(result){
         user = result.ops[0];
         if (user) {
+
           auth.authUser(res, user);
           res.redirect('/garage');
         } else {
