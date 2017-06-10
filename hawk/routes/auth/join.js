@@ -43,7 +43,7 @@ var join = {
         } else {
           res.render('error', { message: 'Try again later.' });
         }
-    });
+    }).catch(console.log);
 
   }
 

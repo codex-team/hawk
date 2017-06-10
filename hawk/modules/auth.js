@@ -1,6 +1,5 @@
 var Crypto = require('crypto');
 var mongo = require("./database");
-var config = require('../config');
 
 module.exports = (function () {
 
@@ -8,7 +7,7 @@ module.exports = (function () {
 
   var generateHash = function (user_id) {
 
-    string = user_id + config.salt;
+    string = user_id + process.env.SALT;
 
     hash = Crypto.createHash('sha256').update(string, 'utf8').digest('hex');
 
@@ -55,7 +54,7 @@ module.exports = (function () {
 
     logout(res);
 
-    var uid = user._id,
+    var uid = user._id.toString(),
         uhash = generateHash(uid);
 
     res.cookie('user_id', uid);

@@ -4,8 +4,6 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var mongoClient = require("mongodb").MongoClient;
-var config = require('./config');
 
 var auth = require('./modules/auth');
 
@@ -15,6 +13,11 @@ var login = require('./routes/auth/login');
 var logout = require('./routes/auth/logout');
 var join = require('./routes/auth/join');
 var apps = require('./routes/apps');
+var garage = require('./routes/garage');
+
+require('dotenv').config();
+/** Catcher routes */
+var catcher = require('./routes/catcher');
 
 var app = express();
 
@@ -23,9 +26,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'twig');
 
 // check if client sent cookie
-userId = 0;
 app.use(function (req, res, next) {
   userId = auth.check(req.headers.cookie);
+  console.log('User id: ' + userId);
   next();
 });
 
@@ -41,6 +44,10 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 app.use('/app', apps);
+app.use('/garage', garage);
+
+/** use catcher routes */
+app.use('/catcher', catcher);
 
 app.post('/login', login.post);
 app.use('/login', login.get);
@@ -61,15 +68,12 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.error = process.env.ENVIRONMENT === 'DEVELOPMENT' ? err : {};
 
   // render the error page
   res.status(err.status || 500);
   res.render('error');
 });
 
-app.listen(config['port'], function(){
-    console.log('Express server listening on port ' + config.port);
-});
 
 module.exports = app;

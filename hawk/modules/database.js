@@ -1,4 +1,4 @@
-var config = require('../config');
+var config = require('../config/mongo');
 var mongoClient = require("mongodb").MongoClient;
 
 var mongo = (function () {
@@ -24,9 +24,17 @@ var mongo = (function () {
       })
   };
 
+  var find = function (c, query) {
+    return getCollection(c)
+      .then(function () {
+        return collection.find(query).toArray();
+      })
+  };
+
   return {
     findOne : findOne,
-    insertOne : insertOne
+    insertOne : insertOne,
+    find: find
   }
 
 })();

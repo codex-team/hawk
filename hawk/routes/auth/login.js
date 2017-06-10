@@ -32,18 +32,15 @@ var login = {
       'password': auth.generateHash(password)
     }
 
-    console.log(user.password);
-
     mongo.findOne('users', user)
       .then(function(result){
         if (result) {
-            console.log(result.password);
-            auth.authUser(res, user);
-            res.render('user', { user: user.email });
+          auth.authUser(res, result);
+          res.render('user', { user: user.email });
         } else {
           res.render('error', { message: 'Try again later.' });
         }
-    });
+    }).catch(console.log);
 
   }
 
