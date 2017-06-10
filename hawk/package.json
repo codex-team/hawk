@@ -1,9 +1,26 @@
 {
-  "name": "hawk",
-  "version": "0.0.0",
+  "name": "hawk.io",
   "private": true,
+  "version": "1.0.0",
+  "description": "Hawk provides open source error tracking that shows you every crash in your stack as it happens, with the details needed to prioritize, identify, reproduce, and fix each issue. It also gives you information your support team can use to reach out to and help those affected and tools that let users send you feedback for peace of mind.",
+  "main": "server.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./bin/www"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codex-team/hawk.git"
+  },
+  "author": "Codex-team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/codex-team/hawk/issues"
+  },
+  "homepage": "https://github.com/codex-team/hawk#readme",
+  "devDependencies": {
+    "extract-text-webpack-plugin": "^2.1.2",
+    "webpack": "^2.6.1"
   },
   "dependencies": {
     "body-parser": "~1.17.1",
@@ -11,7 +28,7 @@
     "debug": "~2.6.3",
     "express": "~4.15.2",
     "morgan": "~1.8.1",
-    "pug": "~2.0.0-beta11",
-    "serve-favicon": "~2.4.2"
+    "serve-favicon": "~2.4.2",
+    "twig": "~0.10.3"
   }
 }

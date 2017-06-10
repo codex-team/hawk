@@ -10,13 +10,13 @@ services:
       USER: root
       PASS: root
   node:
-    image: node
+    build: 'build/node'
     ports:
       - 3000:3000
     links:
       - mongodb
     volumes:
       - "./hawk:/var/www"
-      - "./node_modules:/var/www/node_modules"
-    working_dir: /var/www/         ## uses work dir /app
-    entrypoint: node app.js   ## starts application
+      - "./hawk/node_modules:/var/www/node_modules"
+    working_dir: /var/www/
+    entrypoint: node app.js
