@@ -68,11 +68,45 @@ var hawk =
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */,
-/* 1 */
+/* 0 */
 /***/ (function(module, exports) {
 
-throw new Error("Module build failed: Error: ENOENT: no such file or directory, open '/Users/admin/Sites/hawk/hawk/public/src/javascripts/hawk.js'\n    at Error (native)");
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+* Require CSS build
+*/
+__webpack_require__(0);
+
+hawk = (function (hawk) {
+
+    'use strict';
+
+    
+    hawk.init = function ( appSettings ) {
+
+    	console.log("Initialized");
+
+    };
+
+    return hawk;
+
+})({});
+
+hawk.docReady = function (f) {
+
+    return /in/.test(document.readyState) ? setTimeout(hawk.docReady, 9, f) : f();
+
+};
+
+/**
+* Load modules
+*/
+
 
 /***/ })
 /******/ ]);
