@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var apps = require('./routes/apps');
+var websites = require('./routes/websites');
 var garage = require('./routes/garage');
 
 require('dotenv').config();
@@ -30,7 +30,7 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
-app.use('/app', apps);
+app.use('/websites', websites);
 app.use('/garage', garage);
 
 /** use catcher routes */
