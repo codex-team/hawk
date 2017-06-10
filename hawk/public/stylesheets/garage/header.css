@@ -31,8 +31,22 @@
             border-radius: 50%;
         }
 
+        .counter {
+            display: inline-block;
+            border-radius: 3px;
+            padding: 3px 5px;
+            font-size: 0.9em;
+            background: color(var(--grayText) alpha(10%));
+            line-height: 1em;
+            margin-left: 0.3em;
+        }
+
         &:hover {
             color: var(--hoverColor);
+
+            .counter {
+                background: color(var(--hoverColor) alpha(10%));
+            }
         }
     }
 }
