@@ -1,0 +1,24 @@
+module.exports = (function () {
+
+  var email = (function () {
+
+    var host = 'smtp.yandex.ru',
+        port = 465,
+        auth = {
+          user: '',
+          pass: ''
+        };
+
+    return {
+        host: host,
+        port: port,
+        auth: auth
+    }
+
+  })();
+
+  return {
+    email: email,
+  }
+
+})();
