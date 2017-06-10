@@ -86,7 +86,6 @@ hawk = (function (hawk) {
 
     'use strict';
 
-    
     hawk.init = function ( appSettings ) {
 
     	console.log("Initialized");
@@ -103,9 +102,7 @@ hawk.docReady = function (f) {
 
 };
 
-/**
-* Load modules
-*/
+module.exports = hawk;
 
 
 /***/ })

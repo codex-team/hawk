@@ -20,7 +20,12 @@
   },
   "homepage": "https://github.com/codex-team/hawk#readme",
   "devDependencies": {
+    "css-loader": "^0.28.4",
     "extract-text-webpack-plugin": "^2.1.2",
+    "file-loader": "^0.11.2",
+    "postcss-cssnext": "^2.11.0",
+    "postcss-loader": "^2.0.5",
+    "postcss-smart-import": "^0.7.4",
     "webpack": "^2.6.1"
   },
   "dependencies": {
