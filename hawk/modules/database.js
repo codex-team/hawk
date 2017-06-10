@@ -1,5 +1,6 @@
 var config = require('../config/mongo');
-var mongoClient = require("mongodb").MongoClient;
+var mongodb = require("mongodb");
+var mongoClient = mongodb.MongoClient;
 
 var mongo = (function () {
 
@@ -34,7 +35,8 @@ var mongo = (function () {
   return {
     findOne : findOne,
     insertOne : insertOne,
-    find: find
+    find: find,
+    ObjectId: mongodb.ObjectId
   }
 
 })();

@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var mongo = require("../../modules/database");
 var auth = require("../../modules/auth");
+var email = require("../../modules/email");
+var user = require('../../models/user');
 
 
 var join = {
@@ -9,43 +11,41 @@ var join = {
   /* Show join form */
   get: function (req, res, next) {
 
-    if (userId) {
-      res.redirect('/garage');
-      return;
-    }
+    user.get(req).then(function (found) {
 
-    res.render('yard/auth/join');
+      if (found) {
+        res.redirect('/garage');
+        return;
+      }
+
+      res.render('yard/auth/join');
+
+    })
 
   },
 
   /* Create new user */
   post: function (req, res, next) {
 
-    if (userId) {
-      res.redirect('/garage');
-      return;
-    }
+    user.get(req).then(function (found) {
+      if (found) {
+        res.redirect('/garage');
+        return;
+      }
 
-    var email = req.body.email,
-        password = auth.generatePassword();
 
-    console.log(password);
+      var email = req.body.email;
 
-    let user = {
-      'email': email,
-      'password': auth.generateHash(password)
-    };
+      user.add(email).then(function (insertedUser) {
+          if (insertedUser) {
+            auth.authUser(res, insertedUser);
+            res.redirect('/garage');
+          } else {
+            res.render('error', { message: 'Try again later.' });
+          }
+      }).catch(console.log);
 
-    mongo.insertOne('users', user)
-      .then(function(result){
-        user = result.ops[0];
-        if (user) {
-          auth.authUser(res, user);
-          res.redirect('/garage');
-        } else {
-          res.render('error', { message: 'Try again later.' });
-        }
-    }).catch(console.log);
+    });
 
   }
 

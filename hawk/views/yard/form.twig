@@ -7,7 +7,7 @@
       <fieldset class="yard-form__section">
         <label class="yard-form__label" for="{{ field.name }}">{{ field.label }}</label>
         {% set type = 'text' %}
-        {% if type in field %}
+        {% if field.type is defined and field.type not empty  %}
           {% set type = field.type %}
         {% endif %}
         <input class="yard-form__input"

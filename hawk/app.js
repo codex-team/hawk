@@ -34,12 +34,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
-// check if client sent cookie
-app.use(function (req, res, next) {
-  userId = auth.check(req.cookies);
-  next();
-});
-
 app.use('/', index);
 app.use('/users', users);
 app.use('/websites', websites);
