@@ -66,46 +66,22 @@ router.post('/server', [getServerErrors]);
 
 function getServerErrors(req, res, next) {
 
-  let getTags = function (error_code) {
-    const tags = {
-      1    : 'fatal',    //Error
-      2    : 'warnings', //Warning
-      4    : 'fatal',    //Parsing Error
-      8    : 'notice',   //Notice
-      16   : 'fatal',    //Core Error
-      32   : 'warnings', //Core Warning
-      64   : 'fatal',    //Compile Error
-      128  : 'warnings', //Compile Warning
-      256  : 'fatal',    //User Error
-      512  : 'warnings', //User Warning
-      1024 : 'notice',   //User Notice
-      2048 : 'notice',   //Strict Error
-      4096 : 'fatal',    //Recoverable error
-      8192 : 'notice',   //Deprecated
-      16384: 'notice',   //User Deprecated
-    };
-
-    let error_tags = {
-      fatal: false,
-      warnings: false,
-      notice: false
-    };
-
-    for (let code in tags) {
-      if (code & error_code) {
-        error_tags[tags[code]] = true;
-      }
-    }
-
-    let result = [];
-    for (let tag in error_tags) {
-      if (error_tags[tag]) {
-        result = tag;
-      }
-    }
-
-    return result;
-
+   const tags = {
+    1    : 'fatal',    //Error
+    2    : 'warnings', //Warning
+    4    : 'fatal',    //Parsing Error
+    8    : 'notice',   //Notice
+    16   : 'fatal',    //Core Error
+    32   : 'warnings', //Core Warning
+    64   : 'fatal',    //Compile Error
+    128  : 'warnings', //Compile Warning
+    256  : 'fatal',    //User Error
+    512  : 'warnings', //User Warning
+    1024 : 'notice',   //User Notice
+    2048 : 'notice',   //Strict Error
+    4096 : 'fatal',    //Recoverable error
+    8192 : 'notice',   //Deprecated
+    16384: 'notice',   //User Deprecated
   };
 
   response = req.body;
@@ -113,7 +89,7 @@ function getServerErrors(req, res, next) {
 
   let event = {
       type        : 'server',
-      tag         : getTags(response.error_type),
+      tag         : tags[response.error_type],
       file        : response.error_file,
       message     : response.error_description,
       line        : response.error_line,
