@@ -11,7 +11,7 @@ var join = {
   /* Show join form */
   get: function (req, res, next) {
 
-    user.get(req).then(function (found) {
+    user.current(req).then(function (found) {
 
       if (found) {
         res.redirect('/garage');
@@ -27,7 +27,7 @@ var join = {
   /* Create new user */
   post: function (req, res, next) {
 
-    user.get(req).then(function (found) {
+    user.current(req).then(function (found) {
       if (found) {
         res.redirect('/garage');
         return;

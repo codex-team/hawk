@@ -1,7 +1,9 @@
 <div class="garage-header">
-    <h1 class="garage-header__domain">ifmo.su</h1>
-    <a class="garage-header__tab" href="">Fatal | 12</a>
-    <a class="garage-header__tab" href="">Warnings | 346</a>
-    <a class="garage-header__tab" href="">Notice | 1 223</a>
-    <a class="garage-header__tab" href="">JavaScript Errors | 403</a>
+    <h1 class="garage-header__domain">
+        <a href="/garage/{{ domain.name }}">{{ domain.name }}</a>
+    </h1>
+    <a class="garage-header__tab" href="/garage/{{ domain.name }}/fatal">Fatal | {{ domain.fatal or 0 }}</a>
+    <a class="garage-header__tab" href="/garage/{{ domain.name }}/warnings">Warnings | {{ domain.warnings or 0 }}</a>
+    <a class="garage-header__tab" href="/garage/{{ domain.name }}/notice">Notice | {{ domain.notice or 0 }}</a>
+    <a class="garage-header__tab" href="/garage/{{ domain.name }}/javascript">JavaScript Errors | {{ domain.javascript or 0 }}</a>
 </div>

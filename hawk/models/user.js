@@ -4,11 +4,17 @@ var auth = require('../modules/auth');
 
 module.exports = function () {
 
-  var get = function (req) {
+  var current = function (req) {
 
     var userId = auth.check(req.cookies);
 
     return mongo.findOne('users', {_id: mongo.ObjectId(userId)});
+
+  };
+
+  var get = function (id) {
+
+    return mongo.findOne('users', {_id: mongo.ObjectId(id)});
 
   };
 
@@ -26,7 +32,8 @@ module.exports = function () {
 
     let user = {
       'email': email,
-      'password': auth.generateHash(password)
+      'password': auth.generateHash(password),
+      'domains': []
     };
 
     return mongo.insertOne('users', user)
@@ -37,9 +44,10 @@ module.exports = function () {
   };
 
   return {
-    get: get,
+    current: current,
     getByParams: getByParams,
-    add: add
+    add: add,
+    get: get
   }
 
 }();

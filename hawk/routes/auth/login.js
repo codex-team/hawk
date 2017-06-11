@@ -8,7 +8,7 @@ var login = {
 
   /* Show log in form */
   get: function (req, res, next) {
-    user.get(req).then(function (found) {
+    user.current(req).then(function (found) {
       if (found) {
         res.redirect('/garage');
         return;
@@ -21,7 +21,7 @@ var login = {
   /* Log in function */
   post: function (req, res, next) {
 
-    user.get(req).then(function (found) {
+    user.current(req).then(function (found) {
 
       if (found) {
         res.redirect('/garage');
