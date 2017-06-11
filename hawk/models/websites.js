@@ -54,13 +54,13 @@ module.exports = function () {
    */
   let add = function (app_name, client_token, server_token, user) {
 
-    return mongo.updateOne('users', {_id: mongo.ObjectId(user)}, {$push: {domains: app_name}}).then(function () {
+    return mongo.updateOne('users', {_id: mongo.ObjectId(user._id)}, {$push: {domains: app_name}}).then(function () {
 
       return mongo.insertOne(collection, {
           'name': app_name,
           'client_token': client_token,
           'server_token': server_token,
-          'user': user
+          'user': user._id.toString()
         }
       )
         .then(function (result) {
@@ -68,7 +68,7 @@ module.exports = function () {
             email.init();
             email.send(
               {name: 'CodeX Hawk', email: 'codex.ifmo@yandex.ru'},
-              'ntpcp@yandex.ru',
+              user.email,
               'Your token',
               'Your client access token: ' + client_token + '\n' + 'Your server access token: ' + server_token,
               '');

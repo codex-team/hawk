@@ -22,7 +22,7 @@ var connection = function(ws) {
     let event = {
       type          : 'client',
       tag           : 'javascript',
-      message  : message.message,
+      message       : message.message,
       errorLocation : message.error_location,
       location      : message.location,
       stack         : message.stack,
