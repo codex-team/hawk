@@ -5,23 +5,6 @@ let events = require('../models/events');
 let websites = require('../models/websites');
 let user = require('../models/user');
 
-let feed = function (req, res) {
-  //
-  // 'use strict';
-  //
-  //
-  //   events.current(domain, query).then(function (result) {
-  //
-  //       res.render('garage/layout', {title: domain + '/' + tab, domains: domains});
-  //
-  //   });
-  // });
-
-};
-
-/**
- * Main page dashboard
- */
 let main = function (req, res) {
 
   'use strict';
@@ -37,8 +20,18 @@ let main = function (req, res) {
         currentTag = params.tag,
         allowedTags = ['fatal', 'warnings', 'notice', 'javascript'];
 
+    if (!currentTag && allowedTags.includes(currentDomain)) {
+      currentTag = currentDomain;
+      currentDomain = null;
+    }
+
+    if (currentDomain && !foundUser.domains.includes(currentDomain)) {
+      res.sendStatus(404);
+      return;
+    }
+
     if (currentTag && !allowedTags.includes(currentTag)) {
-      res.sendStatus(400);
+      res.sendStatus(404);
       return;
     }
 
@@ -66,6 +59,7 @@ let main = function (req, res) {
         .then(function() {
 
           let findParams = {};
+
           if (currentTag) {
             findParams.tag = currentTag;
           }
