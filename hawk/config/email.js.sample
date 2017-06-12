@@ -7,12 +7,18 @@ module.exports = (function () {
         auth = {
           user: '',
           pass: ''
+        },
+        /* Sender params */
+        hawk = {
+          name: '',
+          email: ''
         };
 
     return {
         host: host,
         port: port,
-        auth: auth
+        auth: auth,
+        hawk: hawk
     }
 
   })();

@@ -33,7 +33,6 @@ var join = {
         return;
       }
 
-
       var email = req.body.email;
 
       user.add(email).then(function (insertedUser) {

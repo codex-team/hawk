@@ -1,5 +1,6 @@
 var auth = require('../modules/auth');
 var mongo = require("../modules/database");
+var email = require("../modules/email");
 var auth = require('../modules/auth');
 
 module.exports = function () {
@@ -18,20 +19,28 @@ module.exports = function () {
 
   };
 
-  var add = function (email) {
+  var add = function (userEmail) {
 
     password = auth.generatePassword();
 
-    console.log(password);
+    email.init();
+    email.send(
+      userEmail,
+      'Your password',
+      "Here it is: " + password,
+      ''
+    );
 
     let user = {
-      'email': email,
+      'email': userEmail,
       'password': auth.generateHash(password)
     };
 
     return mongo.insertOne('users', user)
       .then(function(result) {
         return result.ops[0];
+      }).catch(function(err) {
+        console.log('Cannot insert user because of %o', err);
       });
 
   };
