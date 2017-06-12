@@ -42,6 +42,14 @@ var mongo = (function () {
       })
   };
 
+  /**
+   * See https://docs.mongodb.com/manual/aggregation/
+   * Use aggregation for custom queries
+   *
+   * @param c - collection name
+   * @param query - array of aggregation commands (see https://docs.mongodb.com/manual/reference/operator/aggregation/interface/)
+   * @returns {Promise.<TResult>}
+   */
   var aggregation = function (c, query) {
     return getCollection(c)
       .then(function (collection) {

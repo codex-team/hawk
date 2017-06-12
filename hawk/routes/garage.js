@@ -20,6 +20,7 @@ let main = function (req, res) {
         currentTag = params.tag,
         allowedTags = ['fatal', 'warnings', 'notice', 'javascript'];
 
+    /** Check if use tag w\o domain */
     if (!currentTag && allowedTags.includes(currentDomain)) {
       currentTag = currentDomain;
       currentDomain = null;

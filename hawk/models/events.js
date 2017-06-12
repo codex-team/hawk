@@ -27,6 +27,11 @@ module.exports = (function() {
 
   };
 
+  /**
+   * Count events by tags (fatal, warnings, notice, javascript)
+   *
+   * @param domain
+   */
   let countTags = function (domain) {
     return mongo.aggregation(domain, [
       {
@@ -37,6 +42,13 @@ module.exports = (function() {
       }])
   };
 
+  /**
+   * Get events for all users domains
+   *
+   * @param user
+   * @param query
+   * @returns {Promise.<TResult>}
+   */
   let getAll = function (user, query) {
 
     let result = [];
