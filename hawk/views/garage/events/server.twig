@@ -1,0 +1,24 @@
+<div class="garage-list-item">
+    <div class="garage-list-item__left">
+        <div class="garage-list-item__tag">
+
+            {% if event.tag == "fatal" %} Fatal Error {% endif %}
+            {% if event.tag == "warnings" %} Warning {% endif %}
+            {% if event.tag =="notice" %} PHP Notice {% endif %}
+
+        </div>
+        <time class="garage-list-item__time">{{ event.time|date('H:i:s') }}</time>
+    </div>
+    <div class="garage-list-item__content">
+        <a class="garage-list-item__title" href="">
+            {{ event.message }}
+        </a>
+        <div class="garage-list-item__caption   ">
+            {{ event.file }} -> {{ event.line }}
+        </div>
+    </div>
+    <div class="garage-list-item__right">
+        <span class="garage-list-item__counter">1</span>
+        times
+    </div>
+</div>

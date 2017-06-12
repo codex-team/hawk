@@ -3,10 +3,11 @@
 {% block body %}
     <div class="garage">
         <aside class="garage__aside">
-            {% include 'garage/aside.twig' %}
+            {% include 'garage/aside.twig' with {domains: domains, user: user} %}
         </aside>
         <div class="garage__content">
-            {% block content %}{% endblock %}
+            {% include 'garage/header.twig' with {domain: currentDomain, tab: currentTag} %}
+            {% include 'garage/list.twig' with { events: events } %}
         </div>
     </div>
 {% endblock %}
