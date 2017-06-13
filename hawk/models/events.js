@@ -1,7 +1,8 @@
 module.exports = (function() {
 
+  'use strict';
+
   let mongo = require('../modules/database');
-  let user = require('./user');
 
   /**
    * Add new event to domain collection
@@ -36,10 +37,10 @@ module.exports = (function() {
     return mongo.aggregation(domain, [
       {
         $group: {
-          _id: "$tag",
+          _id: '$tag',
           count: {$sum: 1}
         }
-      }])
+      }]);
   };
 
   /**
@@ -51,8 +52,13 @@ module.exports = (function() {
    */
   let getAll = function (user, query) {
 
-    let result = [];
-    let queries = [];
+    let result = [],
+        queries = [];
+
+    if (!user.domains) {
+      return Promise.resolve([]);
+    }
+
     user.domains.forEach(function (domain) {
       queries.push(
         get(domain, query)
@@ -63,10 +69,9 @@ module.exports = (function() {
     });
 
     return Promise.all(queries)
-      .then(function () {
-        return result;
-      });
-
+    .then(function () {
+      return result;
+    });
   };
 
   return {

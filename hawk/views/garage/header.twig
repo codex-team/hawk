@@ -1,8 +1,10 @@
 <div class="garage-header">
 
-    <h1 class="garage-header__domain">
-        <a href="/garage/{{ domain.name }}">{{ domain.name }}</a>
-    </h1>
+    {% if domain.name is defined %}
+        <h1 class="garage-header__domain">
+            <a href="/garage/{{ domain.name }}">{{ domain.name }}</a>
+        </h1>
+    {% endif %}
     <a class="garage-header__tab" href="/garage/{{ domain.name }}/fatal">
         Fatal
         <span class="counter">{{ domain.fatal or 0 }}</span>
