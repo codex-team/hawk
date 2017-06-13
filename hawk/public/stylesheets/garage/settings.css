@@ -31,6 +31,7 @@
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
+    margin: 10px 0;
     background: var(--lightGrayBg);
     padding: 15px;
     border-radius: 2px;
