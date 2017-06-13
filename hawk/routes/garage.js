@@ -1,6 +1,5 @@
 let express = require('express');
 let router = express.Router();
-let mongo = require('../modules/database');
 let events = require('../models/events');
 let websites = require('../models/websites');
 let user = require('../models/user');
@@ -35,6 +34,8 @@ let getUser = function (req, res) {
                     tags.forEach(function (tag) {
                         domain[tag._id] = tag.count;
                     });
+                }).catch(function(e) {
+                    console.log('Events Query composing error: %o', e);
                 });
 
             queries.push(query);
@@ -123,7 +124,7 @@ let main = function (req, res) {
     });
 
   }).catch (function (e) {
-    console.log('')
+      console.log('Error while getting user data for main garage page: %o', e);
   });
 
 };
@@ -138,12 +139,16 @@ let settings = function (req, res) {
 
 
 
-  }).then(function () {
-      res.render('garage/settings', {
-        user: userData.user,
-        domains: userData.domains
-      })
   })
+      .then(function () {
+          res.render('garage/settings', {
+            user: userData.user,
+            domains: userData.domains
+          })
+      })
+      .catch (function (e) {
+          console.log('Error while getting user data for settings page: %o', e);
+      })
 
 };
 

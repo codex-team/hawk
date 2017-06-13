@@ -125,7 +125,7 @@ textarea:focus {
 }
 
 ::placeholder {
-    color: var(--grayText);
+    color: color(var(--grayText) alpha(60%));
 }
 
 .button svg {
