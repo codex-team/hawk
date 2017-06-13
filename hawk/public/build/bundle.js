@@ -64,14 +64,65 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-// removed by extract-text-webpack-plugin
+"use strict";
+
+
+module.exports = function () {
+
+    var init = function init() {
+
+        var checkboxes = document.querySelectorAll('.form__checkbox');
+
+        if (!checkboxes) {
+            console.log('There are no checkboxes on page');
+            return;
+        }
+
+        Array.prototype.forEach.call(checkboxes, prepareElements);
+
+        console.log('Checkboxes initialized');
+    };
+
+    var prepareElements = function prepareElements(checkbox) {
+
+        var input = document.createElement('input');
+
+        input.type = 'checkbox';
+        input.classList.add('js-checkbox');
+
+        input.name = checkbox.dataset.name;
+        input.value = checkbox.dataset.value;
+
+        if (checkbox.dataset.checked) {
+            input.checked = true;
+        }
+
+        checkbox.appendChild(input);
+        checkbox.addEventListener('click', checkboxClicked);
+    };
+
+    var checkboxClicked = function checkboxClicked(e) {
+
+        var label = this,
+            input = this.querySelector('.js-checkbox');
+
+        label.classList.toggle('form__checkbox--checked');
+        input.checked = !input.checked;
+
+        e.preventDefault();
+    };
+
+    return {
+        init: init
+    };
+}();
 
 /***/ }),
 /* 1 */
@@ -80,10 +131,62 @@ var hawk =
 "use strict";
 
 
+module.exports = function () {
+
+    var init = function init() {
+
+        var elems = document.getElementsByName('js-copyable');
+
+        if (!elems) {
+            console.log('There are no copyable elements');
+            return;
+        }
+
+        Array.prototype.forEach.call(elems, prepareElements);
+
+        console.log('Copyable module initialized');
+    };
+
+    var prepareElements = function prepareElements(element) {
+
+        element.addEventListener('click', elementClicked);
+    };
+
+    var elementClicked = function elementClicked(e) {
+
+        var selection = window.getSelection(),
+            range = document.createRange();
+
+        range.selectNode(this);
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        document.execCommand('copy');
+        selection.removeAllRanges();
+    };
+
+    return {
+        init: init
+    };
+}();
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 /**
 * Require CSS build
 */
-__webpack_require__(0);
+__webpack_require__(2);
 
 hawk = function (hawk) {
 
@@ -93,6 +196,9 @@ hawk = function (hawk) {
 
         console.log("Initialized");
     };
+
+    hawk.checkbox = __webpack_require__(0);
+    hawk.copyable = __webpack_require__(1);
 
     return hawk;
 }({});

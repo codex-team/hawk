@@ -1,0 +1,42 @@
+<form>
+    <h4 class="form__header">Account settings</h4>
+    <fieldset class="form__section">
+        <label class="form__label" for="email">Change email</label>
+        <input class="form__width-fixed" type="email" id="email" name="email" value="{{ user.email }}">
+    </fieldset>
+    <fieldset class="form__section">
+        <label class="form__label" for="password">Select password</label>
+        <input class="form__width-fixed" type="password" id="password" name="password" placeholder="********">
+    </fieldset>
+
+    <h4 class="form__header">Notifications</h4>
+
+    <fieldset class="form__section">
+        <label class="form__checkbox" data-name="email-notify" data-checked="{{ user.notifies.email}}">Email</label>
+        <label class="form__checkbox" data-name="tg-notify" data-checked="{{ user.notifies.tg}}">Telegram</label>
+        <label class="form__checkbox" data-name="slack-notify" data-checked="{{ user.notifies.slack}}">Slack</label>
+    </fieldset>
+
+    <fieldset class="form__section">
+        <label class="form__label" for="tg-webhook">Telegram Webhook</label>
+        <input class="form__width-fixed"
+               name="tg-webhook"
+               id="tg-webhook"
+               type="url"
+               value="{{ user.tgHook }}"
+               placeholder="https://bot.ifmo.su/dAwf4DeI">
+    </fieldset>
+    <fieldset class="form__section">
+        <label class="form__label" for="slack-webhook">Slack Webhook</label>
+        <input class="form__width-fixed"
+               name="slack-webhook"
+               id="slack-webhook"
+               type="url"
+               value="{{ user.slackHook }}"
+               placeholder="https://bot.ifmo.su/qUdh3jEz">
+    </fieldset>
+
+    <div class="garage-settings__integrations-link">Read more about <a class="inline-link">Telegram and Slack integrations</a></div>
+
+    <input class=" button--submit" type="submit" value="Save">
+</form>

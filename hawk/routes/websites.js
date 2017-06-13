@@ -38,10 +38,9 @@ router.post('/create', function(req, res, next) {
           if (result) {
 
             let uuid = require('uuid');
-            let client_token = uuid.v4();
-            let server_token = uuid.v4();
+            let token = uuid.v4();
 
-            websites.add(name, client_token, server_token, foundUser);
+            websites.add(name, token, foundUser);
 
             res.redirect("/garage?success=1");
             // res.render(resultTemplate, {

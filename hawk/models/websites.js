@@ -52,14 +52,13 @@ module.exports = function () {
   /**
    * Add new domain name and client and server tokens to DB
    */
-  let add = function (app_name, client_token, server_token, user) {
+  let add = function (app_name, token, user) {
 
     return mongo.updateOne('users', {_id: mongo.ObjectId(user._id)}, {$push: {domains: app_name}}).then(function () {
 
       return mongo.insertOne(collection, {
           'name': app_name,
-          'client_token': client_token,
-          'server_token': server_token,
+          'token': token,
           'user': user._id.toString()
         }
       )
@@ -70,7 +69,7 @@ module.exports = function () {
               {name: 'CodeX Hawk', email: 'codex.ifmo@yandex.ru'},
               user.email,
               'Your token',
-              'Your client access token: ' + client_token + '\n' + 'Your server access token: ' + server_token,
+              'Your access token: ' + token,
               '');
             return true;
           }

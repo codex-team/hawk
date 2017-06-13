@@ -10,7 +10,8 @@
     background-color: #fff;
     border-bottom: 1px solid var(--lightGrayLine);
 
-    &__domain {
+    &__domain,
+    &__email {
         font-weight: bold;
         font-size: 1.3em;
         margin: 0 25px 0 0;
@@ -48,5 +49,11 @@
                 background: color(var(--hoverColor) alpha(10%));
             }
         }
+    }
+
+    &__logout {
+        position: absolute;
+        right: 235px;
+        color: var(--redText);
     }
 }
