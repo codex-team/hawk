@@ -1,6 +1,5 @@
 let express = require('express');
 let router = express.Router();
-let mongo = require('../modules/database');
 let events = require('../models/events');
 let websites = require('../models/websites');
 let user = require('../models/user');
@@ -41,15 +40,19 @@ let main = function (req, res) {
       let queries = [];
       domains.forEach(function (domain) {
 
-        if (currentDomain == domain.name) {
+        if (currentDomain === domain.name) {
           currentDomain = domain;
         }
 
         let query = events.countTags(domain.name)
           .then(function (tags) {
-            tags.forEach(function (tag) {
-              domain[tag._id] = tag.count;
-            });
+            if (tags) {
+              tags.forEach(function (tag) {
+                domain[tag._id] = tag.count;
+              });
+            }
+          }).catch(function(e) {
+            console.log('Events Query composing error: %o', e);
           });
 
         queries.push(query);
@@ -86,9 +89,16 @@ let main = function (req, res) {
             events: events
           });
 
+        }).catch(function(e) {
+          console.log('Can not compose events list because of %o', e);
         });
+
+    }).catch(function(e) {
+      console.log('Can not iterate user domains because %o', e);
     });
 
+  }).catch(function(e) {
+    console.log('Can not find user %o', e);
   });
 };
 
