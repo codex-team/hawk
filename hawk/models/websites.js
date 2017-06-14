@@ -2,7 +2,10 @@ module.exports = function () {
 
   let mongo = require('../modules/database');
   let email = require('../modules/email');
-  const collection = 'hawk_websites';
+  let user = require('../models/user');
+  let collections = require('../config/collections');
+
+  const collection = collections.WEBSITES;
 
   /**
    * Find domain by name and token.
@@ -29,6 +32,12 @@ module.exports = function () {
 
   };
 
+  let getByUser = function (user) {
+
+    return mongo.find(collection, {user: user._id.toString()});
+
+  };
+
   /**
    * Return true if application with name specified is not exists
    */
@@ -45,36 +54,41 @@ module.exports = function () {
   /**
    * Add new domain name and client and server tokens to DB
    */
-  let add = function (app_name, client_token, server_token) {
+  let add = function (app_name, token, user) {
 
-    return mongo.insertOne(collection, {
-        'name': app_name,
-        'client_token': client_token,
-        'server_token': server_token
-      }
-    )
-      .then(function (result) {
-        if (result) {
-          email.init();
-          email.send(
-            {name:'CodeX Hawk', email:'codex.ifmo@yandex.ru'},
-            'ntpcp@yandex.ru',
-            'Your token',
-            'Your client access token: ' + client_token + '\n' + 'Your server access token: ' + server_token,
-            '');
-          return true;
+    return mongo.updateOne('users', {_id: mongo.ObjectId(user._id)}, {$push: {domains: app_name}}).then(function () {
+
+      return mongo.insertOne(collection, {
+          'name': app_name,
+          'token': token,
+          'user': user._id.toString()
         }
-        else {
-          return false;
-        }
-      });
+      )
+        .then(function (result) {
+          if (result) {
+            email.init();
+            email.send(
+              {name: 'CodeX Hawk', email: 'codex.ifmo@yandex.ru'},
+              user.email,
+              'Your token',
+              'Your access token: ' + token,
+              '');
+            return true;
+          }
+          else {
+            return false;
+          }
+        });
+    })
+
   };
 
 
   return {
     get: get,
     checkName: checkName,
-    add: add
+    add: add,
+    getByUser: getByUser
   }
 
 }();

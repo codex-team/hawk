@@ -13,6 +13,9 @@ hawk = (function (hawk) {
 
     };
 
+    hawk.checkbox = require('./checkbox');
+    hawk.copyable = require('./copyable');
+
     return hawk;
 
 })({});

@@ -1,19 +1,25 @@
 <div class="garage-header">
-    <h1 class="garage-header__domain">ifmo.su</h1>
-    <a class="garage-header__tab" href="">
+
+    {% if domain.name is defined %}
+        <h1 class="garage-header__page-title">
+            <a href="/garage/{{ domain.name }}">{{ domain.name }}</a>
+        </h1>
+    {% endif %}
+    <a class="garage-header__tab" href="/garage/{{ domain.name }}/fatal">
         Fatal
-        <span class="counter">12</span>
+        <span class="counter">{{ domain.fatal or 0 }}</span>
     </a>
-    <a class="garage-header__tab" href="">
+    <a class="garage-header__tab" href="/garage/{{ domain.name }}/warnings">
         Warnings
-        <span class="counter">346</span>
+        <span class="counter">{{ domain.warnings or 0 }}</span>
     </a>
-    <a class="garage-header__tab" href="">
+    <a class="garage-header__tab" href="/garage/{{ domain.name }}/notice">
         Notice
-        <span class="counter">123</span>
+        <span class="counter">{{ domain.notice or 0 }}</span>
     </a>
-    <a class="garage-header__tab" href="">
+    <a class="garage-header__tab" href="/garage/{{ domain.name }}/javascript">
         JavaScript Errors
-        <span class="counter">403</span>
+        <span class="counter">{{ domain.javascript or 0 }}</span>
     </a>
+
 </div>

@@ -1,0 +1,18 @@
+<div class="garage-list-item">
+    <div class="garage-list-item__left">
+        <div class="garage-list-item__tag">Javascript Error</div>
+        <time class="garage-list-item__time">{{  (event.time / 1000)|round(0, 'floor')|date('H:i:s') }}</time>
+    </div>
+    <div class="garage-list-item__content">
+        <a class="garage-list-item__title" href="">
+            {{ event.message }}
+        </a>
+        <div class="garage-list-item__caption   ">
+            {{ event.errorLocation.file }} -> {{ event.errorLocation.line }} : {{ event.errorLocation.col }}
+        </div>
+    </div>
+    <div class="garage-list-item__right">
+        <span class="garage-list-item__counter">1</span>
+        times
+    </div>
+</div>

@@ -1,0 +1,17 @@
+{% extends 'garage/layout.twig' %}
+
+{% block content %}
+
+    {% include 'garage/settings/header.twig' with {user: user} %}
+
+    <div class="garage-settings">
+        {% include 'garage/settings/domains-list.twig' with {domains: domains} %}
+        {% include 'garage/settings/form.twig' with {user: user} %}
+    </div>
+
+    <script>
+        hawk.docReady(hawk.checkbox.init);
+        hawk.docReady(hawk.copyable.init);
+    </script>
+
+{% endblock %}
