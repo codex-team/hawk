@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var express  = require('express');
 var database = require('../modules/database'); // Use Mongo
 var events   = require('../models/events');
@@ -8,7 +10,7 @@ var WebSocket = require('ws');
 /* GET client errors. */
 let reciever = new WebSocket.Server({
   path: '/catcher/client',
-  port: 8000
+  port: process.env.SOCKET_PORT
 });
 
 var connection = function(ws) {

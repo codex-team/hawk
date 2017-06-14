@@ -1,0 +1,6 @@
+module.exports = {
+
+  USERS_COLLECTION_NAME: 'users',
+  WEBSITES: 'hawk_websites'
+
+};

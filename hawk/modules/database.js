@@ -1,5 +1,5 @@
 var config = require('../config/mongo');
-var mongodb = require("mongodb");
+var mongodb = require('mongodb');
 var mongoClient = mongodb.MongoClient;
 
 var mongo = (function () {

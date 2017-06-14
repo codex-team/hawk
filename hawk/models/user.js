@@ -1,6 +1,9 @@
 var auth = require('../modules/auth');
 var mongo = require("../modules/database");
 var auth = require('../modules/auth');
+var collections = require('../config/collections');
+
+const collection = collections.USERS_COLLECTION_NAME;
 
 module.exports = function () {
 
