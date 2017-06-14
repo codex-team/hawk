@@ -5,7 +5,7 @@ module.exports = (function () {
     var protocol = 'mongodb://',
         host = 'localhost',
         port = '27017',
-        dbname = "db_name";
+        dbname = "hawk";
 
     var connection = protocol + host + ':' + port + "/" + dbname;
 

@@ -14,7 +14,7 @@ if (process.env.ENVIRONMENT === 'PRODUCTION') {
 /**
  * Get port from environment and store in Express.
  */
-var port = normalizePort(process.env.PORT || config['port']);
+var port = normalizePort(process.env.PORT)
 app.set('port', port);
 
 /**

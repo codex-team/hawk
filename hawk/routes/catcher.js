@@ -8,7 +8,7 @@ var WebSocket = require('ws');
 /* GET client errors. */
 let reciever = new WebSocket.Server({
   path: '/catcher/client',
-  port: 8000
+  port: process.env.SOCKET_PORT
 });
 
 var connection = function(ws) {
