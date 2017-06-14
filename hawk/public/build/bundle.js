@@ -74,54 +74,103 @@ var hawk =
 "use strict";
 
 
+/**
+ * Custom checkboxes module
+ *
+ * Just add name 'custom-checkbox' to element
+ * Use data attributes to configure inputs:
+ *  - data-name    -- input name
+ *  - data-value   -- (optional) input value
+ *  - data-checked -- (optional) default input state
+ *
+ * @usage
+ * <label name='custom-checkbox'
+ *        class='form__checkbox'
+ *        data-name='my-checkbox'
+ *        data-checked='true'>
+ *
+ *      My checkbox
+ *
+ * </label>
+ *
+ *
+ * @type {{init}}
+ */
 module.exports = function () {
 
-    var init = function init() {
+  var CLASSES = {
+    customCheckbox: 'form__checkbox',
+    checkedCheckbox: 'form__checkbox--checked',
+    defaultCheckbox: 'default-checkbox'
+  };
 
-        var checkboxes = document.querySelectorAll('.form__checkbox');
+  var NAMES = {
+    customChecbox: 'custom-checkbox'
+  };
 
-        if (!checkboxes) {
-            console.log('There are no checkboxes on page');
-            return;
-        }
+  /**
+   * Prepare elements with 'custom-checkbox' name
+   */
+  var init = function init() {
 
-        Array.prototype.forEach.call(checkboxes, prepareElements);
+    var checkboxes = document.getElementsByName(NAMES.customChecbox);
 
-        console.log('Checkboxes initialized');
-    };
+    if (!checkboxes) {
+      console.log('There are no checkboxes on page');
+      return;
+    }
 
-    var prepareElements = function prepareElements(checkbox) {
+    for (var i = 0; i < checkboxes.length; i++) {
 
-        var input = document.createElement('input');
+      prepareElement(checkboxes[i]);
+    }
 
-        input.type = 'checkbox';
-        input.classList.add('js-checkbox');
+    console.log('Checkboxes initialized');
+  };
 
-        input.name = checkbox.dataset.name;
-        input.value = checkbox.dataset.value;
+  /**
+   * Insert default input into custom checkbox holder and add click listener to holder
+   *
+   * @param checkbox
+   */
+  var prepareElement = function prepareElement(checkbox) {
 
-        if (checkbox.dataset.checked) {
-            input.checked = true;
-        }
+    var input = document.createElement('input');
 
-        checkbox.appendChild(input);
-        checkbox.addEventListener('click', checkboxClicked);
-    };
+    input.type = 'checkbox';
+    input.classList.add(CLASSES.defaultCheckbox);
 
-    var checkboxClicked = function checkboxClicked(e) {
+    input.name = checkbox.dataset.name;
+    input.value = checkbox.dataset.value;
 
-        var label = this,
-            input = this.querySelector('.js-checkbox');
+    if (checkbox.dataset.checked) {
+      checkbox.classList.add(CLASSES.checkedCheckbox);
+      input.checked = true;
+    }
 
-        label.classList.toggle('form__checkbox--checked');
-        input.checked = !input.checked;
+    checkbox.appendChild(input);
+    checkbox.addEventListener('click', checkboxClicked);
+  };
 
-        e.preventDefault();
-    };
+  /**
+   * Add CLASSES.checkedCheckbox class to custom checkbox holder and toggle default input state
+   *
+   * @param e
+   */
+  var checkboxClicked = function checkboxClicked(e) {
 
-    return {
-        init: init
-    };
+    var label = this,
+        input = this.querySelector('.' + CLASSES.defaultCheckbox);
+
+    label.classList.toggle(CLASSES.checkedCheckbox);
+    input.checked = !input.checked;
+
+    e.preventDefault();
+  };
+
+  return {
+    init: init
+  };
 }();
 
 /***/ }),
@@ -131,43 +180,72 @@ module.exports = function () {
 "use strict";
 
 
+/**
+ * Copyable module allows you to add text to copy buffer by click
+ * Just add 'js-copyable' name to element
+ *
+ * @usage
+ * <span name='js-copyable'>Click to copy</span>
+ *
+ * @type {{init}}
+ */
 module.exports = function () {
 
-    var init = function init() {
+  var NAMES = {
+    copyable: 'js-copyable'
+  };
 
-        var elems = document.getElementsByName('js-copyable');
+  /**
+   * Take element by name and pass it to prepareElement function
+   */
+  var init = function init() {
 
-        if (!elems) {
-            console.log('There are no copyable elements');
-            return;
-        }
+    var elems = document.getElementsByName(NAMES.copyable);
 
-        Array.prototype.forEach.call(elems, prepareElements);
+    if (!elems) {
+      console.log('There are no copyable elements');
+      return;
+    }
 
-        console.log('Copyable module initialized');
-    };
+    for (var i = 0; i < elems.length; i++) {
+      prepareElement(elems[i]);
+    }
 
-    var prepareElements = function prepareElements(element) {
+    console.log('Copyable module initialized');
+  };
 
-        element.addEventListener('click', elementClicked);
-    };
+  /**
+   * Add click listener to copyable element
+   *
+   * @param element
+   */
+  var prepareElement = function prepareElement(element) {
 
-    var elementClicked = function elementClicked(e) {
+    element.addEventListener('click', elementClicked);
+  };
 
-        var selection = window.getSelection(),
-            range = document.createRange();
+  /**
+   * Click handler
+   * Create new range, select copyable element and add range to selection. Then exec 'copy' command
+   *
+   * @param e
+   */
+  var elementClicked = function elementClicked(e) {
 
-        range.selectNode(this);
-        selection.removeAllRanges();
-        selection.addRange(range);
+    var selection = window.getSelection(),
+        range = document.createRange();
 
-        document.execCommand('copy');
-        selection.removeAllRanges();
-    };
+    range.selectNode(this);
+    selection.removeAllRanges();
+    selection.addRange(range);
 
-    return {
-        init: init
-    };
+    document.execCommand('copy');
+    selection.removeAllRanges();
+  };
+
+  return {
+    init: init
+  };
 }();
 
 /***/ }),

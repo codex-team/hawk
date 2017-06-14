@@ -1,7 +1,8 @@
 .garage-header {
-    position: fixed;
+    position: sticky;
     top: 0;
     display: flex;
+    flex-flow: row nowrap;
     box-sizing: border-box;
     width: 100%;
     height: 50px;
@@ -10,8 +11,7 @@
     background-color: #fff;
     border-bottom: 1px solid var(--lightGrayLine);
 
-    &__domain,
-    &__email {
+    &__page-title {
         font-weight: bold;
         font-size: 1.3em;
         margin: 0 25px 0 0;
@@ -51,9 +51,10 @@
         }
     }
 
+
     &__logout {
-        position: absolute;
-        right: 235px;
+        margin-left: auto;
         color: var(--redText);
     }
+
 }

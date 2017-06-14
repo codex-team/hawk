@@ -1,20 +1,14 @@
 {% extends 'garage/layout.twig' %}
 
 {% block content %}
-    <div class="garage-header">
-        <h4 class="garage-header__email">gohabereg@gmail.com</h4>
-        <a href="/logout" class="garage-header__logout">Logout</a>
-    </div>
+
+    {% include 'garage/settings/header.twig' with {user: user} %}
+
     <div class="garage-settings">
-        <div class="domains-list">
-            <h4 class="domains-list__header">Domains</h4>
-            {% for domain in domains %}
-                {% include 'garage/settings/domain.twig' with {domain: domain} %}
-            {% endfor %}
-            <a class="domains-list__add-domain" href="/websites/create">+ Add domain</a>
-        </div>
+        {% include 'garage/settings/domains-list.twig' with {domains: domains} %}
         {% include 'garage/settings/form.twig' with {user: user} %}
     </div>
+
     <script>
         hawk.docReady(hawk.checkbox.init);
         hawk.docReady(hawk.copyable.init);

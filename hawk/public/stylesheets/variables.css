@@ -6,6 +6,8 @@
     --redText: #df2f2f;
     --greenText: #00b693;
 
+    --markedTextBg: rgba(255, 221, 93, 0.16);
+
     /** Error types modifiers */
     --fatalColor: #ff5252;
     --warningColor: #ffdd5d;
@@ -17,8 +19,7 @@
     --linkOnDark: #31ffac;
     --hoverColor: #7026bd;
 
-    --inlineLinlColor: #4e37b5;
-    --inlineLinkBg: rgba(255, 221, 93, 0.16);
+    --inlineLinkColor: #4e37b5;
 
     /** Backgrounds */
     --darkGrayBg: #292934;

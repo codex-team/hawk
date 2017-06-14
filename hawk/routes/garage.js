@@ -53,6 +53,9 @@ let getUser = function (req, res) {
         }
 
       })
+      .catch(function (e) {
+          console.log('Can\'t get user because of %o', e);
+      })
 };
 
 let main = function (req, res) {

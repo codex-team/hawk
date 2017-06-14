@@ -12,9 +12,24 @@
     <h4 class="form__header">Notifications</h4>
 
     <fieldset class="form__section">
-        <label class="form__checkbox" data-name="email-notify" data-checked="{{ user.notifies.email}}">Email</label>
-        <label class="form__checkbox" data-name="tg-notify" data-checked="{{ user.notifies.tg}}">Telegram</label>
-        <label class="form__checkbox" data-name="slack-notify" data-checked="{{ user.notifies.slack}}">Slack</label>
+        <label name="custom-checkbox"
+               class="form__checkbox"
+               data-name="email-notify"
+               data-checked="{{ user.notifies.email}}">
+            Email
+        </label>
+        <label name="custom-checkbox"
+               class="form__checkbox"
+               data-name="tg-notify"
+               data-checked="{{ user.notifies.tg}}">
+            Telegram
+        </label>
+        <label name="custom-checkbox"
+               class="form__checkbox"
+               data-name="slack-notify"
+               data-checked="{{ user.notifies.slack}}">
+            Slack
+        </label>
     </fieldset>
 
     <fieldset class="form__section">
