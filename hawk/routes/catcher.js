@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 var express  = require('express');
 var database = require('../modules/database'); // Use Mongo
 var events   = require('../models/events');
