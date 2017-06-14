@@ -4,7 +4,7 @@ var email = require("../modules/email");
 var auth = require('../modules/auth');
 var collections = require('../config/collections');
 
-const collection = collections.USERS_COLLECTION_NAME;
+const collection = collections.USERS;
 
 module.exports = function () {
 
