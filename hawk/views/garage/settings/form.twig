@@ -1,8 +1,11 @@
-<form>
+<form method="POST" action="settings/save">
+
+    {% include 'csrf.twig' with {csrfToken: csrfToken} %}
+
     <h4 class="form__header">Account settings</h4>
     <fieldset class="form__section">
         <label class="form__label" for="email">Change email</label>
-        <input class="form__width-fixed" type="email" id="email" name="email" value="{{ user.email }}">
+        <input class="form__width-fixed" type="email" id="email" name="email" value="{{ user.email }}" required>
     </fieldset>
     <fieldset class="form__section">
         <label class="form__label" for="password">Select password</label>
@@ -15,19 +18,19 @@
         <label name="custom-checkbox"
                class="form__checkbox"
                data-name="email-notify"
-               data-checked="{{ user.notifies.email}}">
+               {{ user.notifies.email ? 'data-checked="true"' :}}>
             Email
         </label>
         <label name="custom-checkbox"
                class="form__checkbox"
                data-name="tg-notify"
-               data-checked="{{ user.notifies.tg}}">
+               {{ user.notifies.tg ? 'data-checked="true"' :}}>
             Telegram
         </label>
         <label name="custom-checkbox"
                class="form__checkbox"
                data-name="slack-notify"
-               data-checked="{{ user.notifies.slack}}">
+               {{ user.notifies.slack ? 'data-checked="true"' :}}>
             Slack
         </label>
     </fieldset>
