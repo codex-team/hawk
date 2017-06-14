@@ -47,10 +47,17 @@ module.exports = function () {
 
   };
 
-  let getInfo = function (req, res) {
+  /**
+   * Get logged user data and his domains data
+   *
+   * @param req
+   * @param res
+   * @returns {Promise.<TResult>}
+   */
+  let getUserAndDomains = function (req, res) {
 
     let currentUser = null,
-      domains = null;
+        domains = null;
 
     return current(req)
       .then(function (currentUser_) {
@@ -101,6 +108,23 @@ module.exports = function () {
       })
   };
 
+  /**
+   * Update user data
+   *  - email
+   *  - password
+   *  - notifies: {
+   *      tg: {bool}
+   *      slack: {bool}
+   *      email: {bool}
+   *    }
+   *  - tgHook
+   *  - slackHook
+   *
+   *
+   * @param user
+   * @param params
+   * @returns {Promise.<TResult>}
+   */
   let update = function (user, params) {
 
     return getByParams({email: params.email})
@@ -130,7 +154,7 @@ module.exports = function () {
     getByParams: getByParams,
     add: add,
     get: get,
-    getInfo: getInfo,
+    getInfo: getUserAndDomains,
     update: update
   }
 

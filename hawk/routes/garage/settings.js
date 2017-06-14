@@ -4,6 +4,12 @@ let user = require('../../models/user');
 
 let csrf = require('../../modules/csrf');
 
+/**
+ * Garage settings page
+ *
+ * @param req
+ * @param res
+ */
 let index = function (req, res) {
 
   let userData;
@@ -25,7 +31,12 @@ let index = function (req, res) {
 
 };
 
-
+/**
+ * Settings update handler
+ * 
+ * @param req
+ * @param res
+ */
 let update = function (req, res) {
 
   let post = req.body;

@@ -3,6 +3,12 @@ let router = express.Router();
 let user = require('../../models/user');
 let events = require('../../models/events');
 
+/**
+ * Garage events lists (route /garage/<domain>/<tag>)
+ *
+ * @param req
+ * @param res
+ */
 let index = function (req, res) {
 
     'use strict';
