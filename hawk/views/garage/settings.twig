@@ -6,7 +6,7 @@
 
     <div class="garage-settings">
         {% include 'garage/settings/domains-list.twig' with {domains: domains} %}
-        {% include 'garage/settings/form.twig' with {user: user} %}
+        {% include 'garage/settings/form.twig' with {user: user, csrfToken: csrfToken} %}
     </div>
 
     <script>

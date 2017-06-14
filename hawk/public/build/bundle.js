@@ -141,7 +141,10 @@ module.exports = function () {
     input.classList.add(CLASSES.defaultCheckbox);
 
     input.name = checkbox.dataset.name;
-    input.value = checkbox.dataset.value;
+
+    if (checkbox.dataset.value) {
+      input.value = checkbox.dataset.value;
+    }
 
     if (checkbox.dataset.checked) {
       checkbox.classList.add(CLASSES.checkedCheckbox);

@@ -1,26 +1,30 @@
 var auth = require('../modules/auth');
 var mongo = require("../modules/database");
 var auth = require('../modules/auth');
+var websites = require('./websites');
+var events = require('./events');
 
 module.exports = function () {
+
+  let collection = 'users';
 
   var current = function (req) {
 
     var userId = auth.check(req.cookies);
 
-    return mongo.findOne('users', {_id: mongo.ObjectId(userId)});
+    return mongo.findOne(collection, {_id: mongo.ObjectId(userId)});
 
   };
 
   var get = function (id) {
 
-    return mongo.findOne('users', {_id: mongo.ObjectId(id)});
+    return mongo.findOne(collection, {_id: mongo.ObjectId(id)});
 
   };
 
   var getByParams = function (params) {
 
-    return mongo.findOne('users', params);
+    return mongo.findOne(collection, params);
 
   };
 
@@ -36,9 +40,87 @@ module.exports = function () {
       'domains': []
     };
 
-    return mongo.insertOne('users', user)
+    return mongo.insertOne(collection, user)
       .then(function(result) {
         return result.ops[0];
+      });
+
+  };
+
+  let getInfo = function (req, res) {
+
+    let currentUser = null,
+      domains = null;
+
+    return current(req)
+      .then(function (currentUser_) {
+
+        currentUser = currentUser_;
+
+        if (!currentUser) {
+          res.sendStatus(403);
+          return;
+        }
+
+        return websites.getByUser(currentUser)
+
+      })
+      .then(function (domains_) {
+
+        domains = domains_;
+
+        let queries = [];
+        domains.forEach(function (domain) {
+
+          let query = events.countTags(domain.name)
+              .then(function (tags) {
+                tags.forEach(function (tag) {
+                  domain[tag._id] = tag.count;
+                });
+              }).catch(function(e) {
+                console.log('Events Query composing error: %o', e);
+              });
+
+          queries.push(query);
+
+        });
+
+        return Promise.all(queries);
+
+      })
+      .then(function () {
+
+        return {
+          user: currentUser,
+          domains: domains
+        }
+
+      })
+      .catch(function (e) {
+        console.log('Can\'t get user because of %o', e);
+      })
+  };
+
+  let update = function (user, params) {
+
+    return getByParams({email: params.email})
+      .then(function (foundUser) {
+        if (foundUser && foundUser._id != user._id) {
+          throw Error('Email already registered');
+        }
+      })
+      .then(function () {
+
+        if (params.password) {
+          params.password = auth.generateHash(params.password);
+        }
+
+        return mongo
+          .updateOne(collection,
+            {_id: mongo.ObjectId(user._id)},
+            {$set: params}
+          );
+
       });
 
   };
@@ -47,7 +129,9 @@ module.exports = function () {
     current: current,
     getByParams: getByParams,
     add: add,
-    get: get
+    get: get,
+    getInfo: getInfo,
+    update: update
   }
 
 }();
