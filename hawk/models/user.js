@@ -105,7 +105,7 @@ module.exports = function () {
 
     return getByParams({email: params.email})
       .then(function (foundUser) {
-        if (foundUser && foundUser._id != user._id) {
+        if (foundUser && foundUser._id.toString() != user._id.toString()) {
           throw Error('Email already registered');
         }
       })
