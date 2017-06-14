@@ -3,7 +3,9 @@ module.exports = function () {
   let mongo = require('../modules/database');
   let email = require('../modules/email');
   let user = require('../models/user');
-  const collection = 'hawk_websites';
+  let collections = require('../config/collections');
+
+  const collection = collections.WEBSITES;
 
   /**
    * Find domain by name and token.

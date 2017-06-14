@@ -59,7 +59,6 @@
     }
 
     &__token {
-        margin-right: 30px;
         min-width: 280px;
         padding: 3px 10px;
         color: var(--greenText);
@@ -71,7 +70,8 @@
     }
 
     &__unlink {
-        color: var(--redText);
+         margin-left: 30px;
+         color: var(--redText);
         cursor: pointer
     }
 
