@@ -7,11 +7,9 @@ var events = require('./events');
 
 var collections = require('../config/collections');
 
-const collection = collections.USERS;
-
 module.exports = function () {
 
-  let collection = 'users';
+  const collection = collections.USERS;
 
   var current = function (req) {
 
