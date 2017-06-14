@@ -41,14 +41,9 @@ module.exports = function () {
     );
 
     let user = {
-<<<<<<< HEAD
       'email': email,
       'password': auth.generateHash(password),
       'domains': []
-=======
-      'email': userEmail,
-      'password': auth.generateHash(password)
->>>>>>> password-email
     };
 
     return mongo.insertOne('users', user)
