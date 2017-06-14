@@ -1,0 +1,78 @@
+.garage-settings {
+    padding: 25px;
+}
+
+.garage-settings__integrations-link {
+    margin-bottom: 20px;
+
+    a {
+        background: var(--markedTextBg);
+    }
+
+}
+
+.domains-list {
+    &__header {
+        margin: 0 0 25px;
+        font-size: 27px;
+        font-weight: 800;
+    }
+
+    &__add-domain {
+         display: block;
+         margin: 20px 0;
+         color: #00b693;
+         font-size: 25px;
+         font-weight: 700;
+
+        &:hover {
+            color: var(--hoverColor);
+        }
+    }
+
+}
+
+.domains-list-item {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    margin: 10px 0;
+    background: var(--lightGrayBg);
+    padding: 15px;
+    border-radius: 2px;
+
+    &__favicon {
+        width: 30px;
+        height: 30px;
+        background: #fff;
+    }
+
+    &__name {
+        margin: 0 15px;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    &__token-label {
+        margin: 0 15px 0 auto;
+        color: var(--grayOnDark);
+    }
+
+    &__token {
+        margin-right: 30px;
+        min-width: 280px;
+        padding: 3px 10px;
+        color: var(--greenText);
+        background: #fafafa;
+        border-radius: 2px;
+        cursor: pointer;
+        text-align: center;
+        font-size: 0.9em;
+    }
+
+    &__unlink {
+        color: var(--redText);
+        cursor: pointer
+    }
+
+}

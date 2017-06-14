@@ -6,8 +6,7 @@
             {% include 'garage/aside.twig' with {domains: domains, user: user} %}
         </aside>
         <div class="garage__content">
-            {% include 'garage/header.twig' with {domain: currentDomain, tab: currentTag} %}
-            {% include 'garage/list.twig' with { events: events } %}
+            {% block content %}{% endblock %}
         </div>
     </div>
 {% endblock %}
