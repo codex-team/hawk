@@ -24,7 +24,7 @@ let connection = function(ws) {
 
   function getClientErrors(message) {
 
-    let location = message.error_location.file + message.error_location.line + '' + message.error_location.col;
+    let location = message.error_location.file + ':' + message.error_location.line + ':' + message.error_location.col;
     let event = {
       type          : 'client',
       tag           : 'javascript',
