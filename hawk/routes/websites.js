@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var websites = require('../models/websites');
-var user = require('../models/user');
+let express = require('express');
+let router = express.Router();
+let websites = require('../models/websites');
+let user = require('../models/user');
 
 /* Show page for new app registration */
 router.get('/create', function(req, res, next) {
@@ -24,7 +24,7 @@ router.post('/create', function(req, res, next) {
         return;
       }
 
-      var name = req.body.domain;
+      let name = req.body.domain;
 
       if (!name) {
         res.render('yard/websites/result', {error: 'Website domain is empty'});

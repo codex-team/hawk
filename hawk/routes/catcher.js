@@ -1,17 +1,22 @@
-var express  = require('express');
-var database = require('../modules/database'); // Use Mongo
-var events   = require('../models/events');
-var websites = require('../models/websites');
-var router = express.Router();
-var WebSocket = require('ws');
+let express  = require('express');
+let database = require('../modules/database'); // Use Mongo
+let events   = require('../models/events');
+let websites = require('../models/websites');
+let router = express.Router();
+let WebSocket = require('ws');
+let Crypto = require('crypto');
 
 /* GET client errors. */
 let reciever = new WebSocket.Server({
   path: '/catcher/client',
-  port: process.env.SOCKET_PORT
+  port: 8000//process.env.SOCKET_PORT
 });
 
-var connection = function(ws) {
+let md5 = function (input) {
+  return Crypto.createHash('md5').update(input, 'utf8').digest('hex');
+};
+
+let connection = function(ws) {
   /**
    * TODO: authorization
    */
@@ -19,6 +24,7 @@ var connection = function(ws) {
 
   function getClientErrors(message) {
 
+    let location = message.error_location.file + message.error_location.line + '' + message.error_location.col;
     let event = {
       type          : 'client',
       tag           : 'javascript',
@@ -26,6 +32,7 @@ var connection = function(ws) {
       errorLocation : message.error_location,
       location      : message.location,
       stack         : message.stack,
+      groupHash     : md5(location),
       userClient    : message.navigator,
       time          : Math.floor(message.time / 1000)
     };
@@ -84,7 +91,8 @@ function getServerErrors(req, res, next) {
     16384: 'notice',   //User Deprecated
   };
 
-  response = req.body;
+  let response = req.body,
+      location = response.error_file + response.error_line;
 
 
   let event = {
@@ -106,7 +114,8 @@ function getServerErrors(req, res, next) {
     serverName    : response.error_context._SERVER.SERVER_NAME,
     time          : response.error_context._SERVER.REQUEST_TIME,
     token         : response.access_token,
-    backtrace     : response.debug_backtrace
+    backtrace     : response.debug_backtrace,
+    groupHash     : md5(location)
   };
 
   websites.get(event.token, event.serverName)

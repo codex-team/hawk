@@ -1,39 +1,38 @@
-var auth = require('../modules/auth');
-var mongo = require("../modules/database");
-var email = require("../modules/email");
-var auth = require('../modules/auth');
-var websites = require('./websites');
-var events = require('./events');
+let auth = require('../modules/auth');
+let mongo = require("../modules/database");
+let email = require("../modules/email");
+let websites = require('./websites');
+let events = require('./events');
 
-var collections = require('../config/collections');
+let collections = require('../config/collections');
 
 module.exports = function () {
 
   const collection = collections.USERS;
 
-  var current = function (req) {
+  let current = function (req) {
 
-    var userId = auth.check(req.cookies);
+    let userId = auth.check(req.cookies);
 
     return mongo.findOne(collection, {_id: mongo.ObjectId(userId)});
 
   };
 
-  var get = function (id) {
+  let get = function (id) {
 
     return mongo.findOne(collection, {_id: mongo.ObjectId(id)});
 
   };
 
-  var getByParams = function (params) {
+  let getByParams = function (params) {
 
     return mongo.findOne(collection, params);
 
   };
 
-  var add = function (userEmail) {
+  let add = function (userEmail) {
 
-    password = auth.generatePassword();
+    let password = auth.generatePassword();
 
     email.init();
     email.send(

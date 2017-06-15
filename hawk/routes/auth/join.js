@@ -1,12 +1,11 @@
-var express = require('express');
-var router = express.Router();
-var mongo = require("../../modules/database");
-var auth = require("../../modules/auth");
-var email = require("../../modules/email");
-var user = require('../../models/user');
+let express = require('express');
+let router = express.Router();
+let auth = require("../../modules/auth");
+let email = require("../../modules/email");
+let user = require('../../models/user');
 
 
-var join = {
+let join = {
 
   /* Show join form */
   get: function (req, res, next) {
@@ -33,7 +32,7 @@ var join = {
         return;
       }
 
-      var email = req.body.email;
+      let email = req.body.email;
 
       user.add(email).then(function (insertedUser) {
           if (insertedUser) {

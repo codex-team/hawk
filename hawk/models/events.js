@@ -34,10 +34,9 @@ module.exports = (function() {
 
     if (group) {
       pipline.push({$group: {
-        _id: "$stack",
+        _id: "$groupHash",
         type: {$first: "$type"},
         tag: {$first: "$tag"},
-        stack: {$first: "$stack"},
         errorLocation: {$first: "$errorLocation"},
         message: {$first: "$message"},
         time: {$last: "$time"},
