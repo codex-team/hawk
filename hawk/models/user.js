@@ -44,7 +44,7 @@ module.exports = function () {
     );
 
     let user = {
-      'email': email,
+      'email': userEmail,
       'password': auth.generateHash(password),
       'domains': []
     };

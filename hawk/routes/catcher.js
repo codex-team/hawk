@@ -30,7 +30,7 @@ var connection = function(ws) {
       time          : message.time
     };
 
-    websites.get('client', message.token, event.location.host)
+    websites.get(message.token, event.location.host)
       .then( function(site) {
         if (!site) {
           ws.send(JSON.stringify({type: 'warn', message: 'Access denied'}));
@@ -107,7 +107,7 @@ function getServerErrors(req, res, next) {
       backtrace     : response.debug_backtrace
   };
 
-  websites.get('server', event.token, event.serverName)
+  websites.get(event.token, event.serverName)
     .then( function(sites) {
 
       if (!sites) {

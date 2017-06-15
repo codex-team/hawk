@@ -11,24 +11,15 @@ module.exports = function () {
    * Find domain by name and token.
    * Token could be client or server, so we should pass @param type
    *
-   * @param type
    * @param token
    * @param name
    */
-  let get = function(type, token, name) {
+  let get = function(token, name) {
 
-    switch (type) {
-      case 'client':
-        return mongo.findOne(collection, {
-          client_token: token,
-          name: name
-        });
-      case 'server':
-        return mongo.findOne(collection, {
-          server_token: token,
-          name: name
-        });
-    }
+    return mongo.findOne(collection, {
+      token: token,
+      name: name
+    });
 
   };
 
