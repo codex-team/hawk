@@ -1,13 +1,13 @@
 'use strict';
-var config = require('../config/email');
-var nodemailer = require("nodemailer");
+let config = require('../config/email');
+let nodemailer = require("nodemailer");
 
 module.exports = function () {
 
-  var transporter;
+  let transporter;
 
   /* Init transporter with date from config */
-  var init = function () {
+  let init = function () {
 
     if (!config.email.auth.user) {
       console.log('Email config: user is missed');
@@ -35,7 +35,7 @@ module.exports = function () {
   * text
   * html
   */
-  var send = function (to, subject, text, html) {
+  let send = function (to, subject, text, html) {
 
     if (!config.email.auth.user) {
       console.log('Email config: user is missed');

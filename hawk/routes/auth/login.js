@@ -1,10 +1,9 @@
-var express = require('express');
-var router = express.Router();
-var mongo = require("../../modules/database");
-var auth = require('../../modules/auth');
-var user = require('../../models/user');
+let express = require('express');
+let router = express.Router();
+let auth = require('../../modules/auth');
+let user = require('../../models/user');
 
-var login = {
+let login = {
 
   /* Show log in form */
   get: function (req, res, next) {
@@ -28,7 +27,7 @@ var login = {
         return;
       }
 
-    var email = req.body.email,
+    let email = req.body.email,
         password = req.body.password;
 
       let newUser = {

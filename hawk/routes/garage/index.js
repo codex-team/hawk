@@ -59,7 +59,7 @@ let index = function (req, res) {
 
       if (currentDomain) {
 
-        return events.get(currentDomain.name, findParams);
+        return events.get(currentDomain.name, findParams, true);
 
       } else {
 
