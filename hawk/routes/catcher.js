@@ -9,7 +9,7 @@ let Crypto = require('crypto');
 /* GET client errors. */
 let reciever = new WebSocket.Server({
   path: '/catcher/client',
-  port: 8000//process.env.SOCKET_PORT
+  port: process.env.SOCKET_PORT
 });
 
 let md5 = function (input) {
