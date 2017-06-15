@@ -17,14 +17,58 @@ module.exports = (function() {
   };
 
   /**
-   * Get domain events by query
+   * Get domain events
    *
-   * @param domain
-   * @param query
+   * @param {string} domain - domain name
+   * @param {object} query  - find params (tag, for example)
+   * @param {bool} group  - if true, group same events
+   * @param {object} sort - sort params, by default sorting by time
+   * @param {number} skip - number of events to skip
+   * @param {number} limit - number of events to return
    */
-  let get = function (domain, query) {
+  let get = function (domain, query, group, sort, limit, skip) {
 
-    return mongo.find(domain, query, {time: -1});
+    let pipline = [
+      {$match: query}
+    ];
+
+    if (group) {
+      pipline.push({$group: {
+        _id: "$stack",
+        type: {$first: "$type"},
+        tag: {$first: "$tag"},
+        stack: {$first: "$stack"},
+        errorLocation: {$first: "$errorLocation"},
+        message: {$first: "$message"},
+        time: {$last: "$time"},
+        count: {$sum: 1}
+      }})
+    }
+
+    if (!sort) {
+      sort = {
+        time: -1
+      }
+    }
+
+    pipline.push({
+      $sort: sort
+    });
+
+    if (skip) {
+      pipline.push({
+        $skip: skip
+      })
+    }
+
+    if (limit) {
+      pipline.push({
+        $limit: limit
+      })
+    }
+
+
+    return mongo.aggregation(domain, pipline)
 
   };
 

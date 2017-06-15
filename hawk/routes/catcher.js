@@ -27,7 +27,7 @@ var connection = function(ws) {
       location      : message.location,
       stack         : message.stack,
       userClient    : message.navigator,
-      time          : message.time
+      time          : Math.floor(message.time / 1000)
     };
 
     websites.get(message.token, event.location.host)
@@ -88,23 +88,25 @@ function getServerErrors(req, res, next) {
 
 
   let event = {
-      type        : 'server',
-      tag         : tags[response.error_type],
-      file        : response.error_file,
-      message     : response.error_description,
-      line        : response.error_line,
-      params      : {
-        post  : response.error_context._POST,
-        get   : response.error_context._GET
-      },
-      remoteADDR    : response.error_context._SERVER.REMOTE_ADDR,
-      requestMethod : response.error_context._SERVER.REQUEST_METHOD,
-      queryString   : response.error_context._SERVER.QUERY_STRING,
-      referer       : response.error_context._SERVER.HTTP_REFERER,
-      serverName    : response.error_context._SERVER.SERVER_NAME,
-      time          : response.error_context._SERVER.REQUEST_TIME,
-      token         : response.access_token,
-      backtrace     : response.debug_backtrace
+    type        : 'server',
+    tag         : tags[response.error_type],
+    errorLocation: {
+      file: response.error_file,
+      line: response.error_line
+    },
+    params: {
+      post: response.error_context._POST,
+      get : response.error_context._GET
+    },
+    message       : response.error_description,
+    remoteADDR    : response.error_context._SERVER.REMOTE_ADDR,
+    requestMethod : response.error_context._SERVER.REQUEST_METHOD,
+    queryString   : response.error_context._SERVER.QUERY_STRING,
+    referer       : response.error_context._SERVER.HTTP_REFERER,
+    serverName    : response.error_context._SERVER.SERVER_NAME,
+    time          : response.error_context._SERVER.REQUEST_TIME,
+    token         : response.access_token,
+    backtrace     : response.debug_backtrace
   };
 
   websites.get(event.token, event.serverName)
