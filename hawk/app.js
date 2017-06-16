@@ -51,7 +51,7 @@ app.use('/join', join);
 /**
  * Catcher
  */
-var catcher = require('./routes/catcher');
+var catcher = require('./routes/catcher/catcher');
 app.use('/catcher', catcher);
 
 

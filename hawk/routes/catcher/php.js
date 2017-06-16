@@ -1,79 +1,19 @@
 let express  = require('express');
-let database = require('../modules/database'); // Use Mongo
-let events   = require('../models/events');
-let websites = require('../models/websites');
 let router = express.Router();
-let WebSocket = require('ws');
+let events   = require('../../models/events');
+let websites = require('../../models/websites');
 let Crypto = require('crypto');
-
-/* GET client errors. */
-let reciever = new WebSocket.Server({
-  path: '/catcher/client',
-  port: process.env.SOCKET_PORT
-});
 
 let md5 = function (input) {
   return Crypto.createHash('md5').update(input, 'utf8').digest('hex');
 };
-
-let connection = function(ws) {
-  /**
-   * TODO: authorization
-   */
-
-
-  function getClientErrors(message) {
-
-    let location = message.error_location.file + ':' + message.error_location.line + ':' + message.error_location.col;
-    let event = {
-      type          : 'client',
-      tag           : 'javascript',
-      message       : message.message,
-      errorLocation : message.error_location,
-      location      : message.location,
-      stack         : message.stack,
-      groupHash     : md5(location),
-      userClient    : message.navigator,
-      time          : Math.floor(message.time / 1000)
-    };
-
-    websites.get(message.token, event.location.host)
-      .then( function(site) {
-        if (!site) {
-          ws.send(JSON.stringify({type: 'warn', message: 'Access denied'}));
-          ws.close();
-          return;
-        }
-
-        events.add(event.location.host, event);
-
-      })
-      .catch( function() {
-        // handle
-      })
-
-  }
-
-  let receiveMessage = function (message) {
-
-    message = JSON.parse(message);
-    getClientErrors(message);
-
-  };
-
-  ws.on('message', receiveMessage)
-
-};
-
-reciever.on('connection', connection);
-
 
 /* GET server errors. */
 router.post('/server', [getServerErrors]);
 
 function getServerErrors(req, res, next) {
 
-   const tags = {
+  const tags = {
     1    : 'fatal',    //Error
     2    : 'warnings', //Warning
     4    : 'fatal',    //Parsing Error
@@ -92,7 +32,8 @@ function getServerErrors(req, res, next) {
   };
 
   let response = req.body,
-      location = response.error_file + response.error_line;
+    location = response.error_file + response.error_line;
+
 
 
   let event = {
