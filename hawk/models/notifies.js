@@ -43,6 +43,12 @@ module.exports = function () {
     if (user.notifies.email) {
 
       Twig.renderFile(templatesPath + templates.email, {event: event, domain: domain}, function (err, html) {
+
+        if (err) {
+          console.log('Can not render notify template because of ', err);
+          return;
+        }
+
         email.init();
         email.send(
           user.email,
