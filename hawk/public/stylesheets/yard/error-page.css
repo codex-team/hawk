@@ -1,0 +1,14 @@
+.error-page {
+    margin-bottom: 50px;
+    color: #fff;
+
+    &__title {
+        font-weight: bold;
+        font-size: 50px;
+    }
+
+    &__message {
+        margin-top: 10px;
+        font-size: 20px;
+    }
+}

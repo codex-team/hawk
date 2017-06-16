@@ -1,7 +1,7 @@
 let express = require('express');
 let router = express.Router();
-let websites = require('../models/websites');
-let user = require('../models/user');
+let websites = require('../../models/websites');
+let user = require('../../models/user');
 
 /* Show page for new app registration */
 router.get('/create', function(req, res, next) {
@@ -20,7 +20,7 @@ router.post('/create', function(req, res, next) {
       let resultTemplate = 'yard/websites/result';
 
       if (!foundUser) {
-        res.redirect("/login");
+        res.redirect('/login');
         return;
       }
 
@@ -42,14 +42,14 @@ router.post('/create', function(req, res, next) {
 
             websites.add(name, token, foundUser);
 
-            res.redirect("/garage?success=1");
+            res.redirect('/garage?success=1');
             // res.render(resultTemplate, {
             //   title: 'Get your token',
             //   client_token: client_token,
             //   server_token: server_token
             // });
-          }
-          else {
+
+          } else {
             res.render('yard/websites/result', {error: 'Website already connected'});
           }
         });

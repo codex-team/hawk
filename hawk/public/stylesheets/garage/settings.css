@@ -1,14 +1,9 @@
 .garage-settings {
     padding: 25px;
-}
 
-.garage-settings__integrations-link {
-    margin-bottom: 20px;
-
-    a {
-        background: var(--markedTextBg);
+    &__integrations-link {
+        margin-bottom: 25px;
     }
-
 }
 
 .domains-list {
@@ -19,17 +14,16 @@
     }
 
     &__add-domain {
-         display: block;
-         margin: 20px 0;
-         color: #00b693;
-         font-size: 25px;
-         font-weight: 700;
+        display: block;
+        margin: 20px 0;
+        color: #00b693;
+        font-size: 25px;
+        font-weight: 700;
 
         &:hover {
             color: var(--hoverColor);
         }
     }
-
 }
 
 .domains-list-item {
@@ -70,9 +64,8 @@
     }
 
     &__unlink {
-         margin-left: 30px;
-         color: var(--redText);
-        cursor: pointer
+        margin-left: 30px;
+        color: var(--redText);
+        cursor: pointer;
     }
-
 }
