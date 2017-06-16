@@ -4,7 +4,9 @@ let WebSocket = require('ws');
 let Crypto = require('crypto');
 
 let md5 = function (input) {
+
   return Crypto.createHash('md5').update(input, 'utf8').digest('hex');
+
 };
 
 /* GET client errors. */
@@ -13,7 +15,8 @@ let reciever = new WebSocket.Server({
   port: process.env.SOCKET_PORT
 });
 
-let connection = function(ws) {
+let connection = function (ws) {
+
   /**
    * TODO: authorization
    */
@@ -35,19 +38,22 @@ let connection = function(ws) {
     };
 
     websites.get(message.token, event.location.host)
-      .then( function(site) {
+      .then( function (site) {
+
         if (!site) {
+
           ws.send(JSON.stringify({type: 'warn', message: 'Access denied'}));
           ws.close();
           return;
+
         }
 
         events.add(event.location.host, event);
 
       })
-      .catch( function() {
+      .catch( function () {
         // handle
-      })
+      });
 
   }
 
@@ -58,7 +64,7 @@ let connection = function(ws) {
 
   };
 
-  ws.on('message', receiveMessage)
+  ws.on('message', receiveMessage);
 
 };
 
