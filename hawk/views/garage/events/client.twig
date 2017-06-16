@@ -5,10 +5,10 @@
     </div>
     <div class="garage-list-item__content">
         <a class="garage-list-item__title" href="">
-            {{ event.message }}
+            {{ event.message }}{{ event.id }}
         </a>
         <div class="garage-list-item__caption">
-            {{ event.errorLocation.file }} -> {{ event.errorLocation.line }} : {{ event.errorLocation.col }}
+            {{ event.errorLocation.file }} -> {{ event.errorLocation.line }}:{{ event.errorLocation.col }}
         </div>
     </div>
     <div class="garage-list-item__right">

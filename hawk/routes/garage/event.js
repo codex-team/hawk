@@ -1,7 +1,5 @@
 let express = require('express');
 let router = express.Router();
-let user = require('../../models/user');
-let events = require('../../models/events');
 
 /**
  * Garage events lists (route /garage/<domain>/<tag>)
@@ -11,7 +9,7 @@ let events = require('../../models/events');
  */
 let index = function (req, res) {
 
-    'use strict';
+  'use strict';
 
   let userData,
       currentDomain,
@@ -85,6 +83,6 @@ let index = function (req, res) {
 
 };
 
-router.get('/:domain?/:tag?', index);
+router.get('/event/:id?', index);
 
 module.exports = router;
