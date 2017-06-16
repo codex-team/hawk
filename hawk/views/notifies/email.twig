@@ -9,8 +9,9 @@
 <p>{{ event.errorLocation.file }} -> {{ event.errorLocation.line }}{{ event.errorLocation.col ? ':'~event.errorLocation.col : ''}}</p>
 
 {% if event.stack %}
-<p>Stack:</p>
-<p>{{ event.stack }}</p>
+  <p>Stack:</p>
+  <p>{{ event.stack }}</p>
+{% endif %}
 
 {% if event.type == 'server' %}
     <p>Page: <a href="{{ event.location.url }}">{{ event.location.url }}</a></p>
