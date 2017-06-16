@@ -21,6 +21,7 @@
 
     &__settings {
         margin-top: 5px;
+        font-size: 0.9em;
     }
 
     &__user {

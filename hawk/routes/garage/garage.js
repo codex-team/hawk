@@ -1,9 +1,9 @@
 let express = require('express');
 let router = express.Router();
 
-let index = require('./garage/index');
-let settings = require('./garage/settings');
-let event = require('./garage/event');
+let index = require('./index');
+let settings = require('./settings');
+let event = require('./event');
 
 router.use(event);
 router.use(settings);
