@@ -4,7 +4,9 @@
   <div class="event">
     <div class="event__header">
       <span class="event__domain">{{ currentDomain.name }}</span>
-      <span class="event__type event__type--javascript">JavaScript Error</span>
+      <span class="event__type event__type--{{ event.tag }}">
+        {{ event.tag == 'javascript' ? 'JavaScript Error' : event.tag|capitalize }}
+      </span>
     </div>
     <div class="event__content clearfix">
       <div class="event__counter">

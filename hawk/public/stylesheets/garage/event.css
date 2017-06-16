@@ -10,6 +10,18 @@
     &__type {
         margin-right: 20px;
 
+        &--fatal {
+            color: var(--fatalColor);
+        }
+
+        &--warnings {
+            color: var(--warningColor);
+        }
+
+        &--notice {
+            color: var(--noticeColor);
+        }
+
         &--javascript {
             color: var(--clientColor);
         }
