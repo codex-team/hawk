@@ -1,19 +1,21 @@
 {% extends 'layout.twig' %}
 
 {% block body %}
-  {% include 'yard/form.twig' with {
-    action: '/join',
-    title: 'Create account',
-    fields: [
-      {
-        label: 'Enter your email',
-        name: 'email',
-        value: '',
-        placeholder: 'name@best-team.com',
-        type: 'email'
-      }
-    ],
-    submitText: 'Register',
-    desclaimer: 'Already have an account? <a href="/login">Login</a>, you, beauty.'
-  } %}
+  <div class="yard">
+    {% include 'yard/form.twig' with {
+      action: '/join',
+      title: 'Create account',
+      fields: [
+        {
+          label: 'Enter your email',
+          name: 'email',
+          value: '',
+          placeholder: 'name@best-team.com',
+          type: 'email'
+        }
+      ],
+      submitText: 'Register',
+      desclaimer: 'Already have an account? <a href="/login">Login</a>, you, beauty.'
+    } %}
+  </div>
 {% endblock %}

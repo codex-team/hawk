@@ -1,19 +1,21 @@
 {% extends 'layout.twig' %}
 
 {% block body %}
-  {% include 'yard/form.twig' with {
-    action: '/websites/create',
-    title: 'Register new website',
-    fields: [
-      {
-        label: 'Enter your site\'s domain name',
-        name: 'domain',
-        value: '',
-        placeholder: 'apple.com',
-        type: 'text'
-      }
-    ],
-    submitText: 'Register website',
-    desclaimer: ''
-  } %}
+  <div class="yard">
+    {% include 'yard/form.twig' with {
+      action: '/websites/create',
+      title: 'Register new website',
+      fields: [
+        {
+          label: 'Enter your site\'s domain name',
+          name: 'domain',
+          value: '',
+          placeholder: 'apple.com',
+          type: 'text'
+        }
+      ],
+      submitText: 'Register website',
+      desclaimer: ''
+    } %}
+  </div>
 {% endblock %}

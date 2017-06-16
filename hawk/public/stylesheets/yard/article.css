@@ -1,0 +1,37 @@
+/**
+ * Static article page
+ * Uses in Platform documentation
+ */
+.article {
+    max-width: 550px;
+    margin: 80px auto;
+    font-size: 19px;
+
+    /**
+     * Hawk.io header
+     * =================
+     */
+    &__header {
+        margin-bottom: 60px;
+
+        &-title {
+            font-size: 53px;
+            font-weight: 800;
+        }
+
+        &-caption {
+            font-size: 26px;
+            color: var(--grayText);
+        }
+    }
+
+    /**
+     * Article content
+     * =================
+     */
+    h1 {
+        margin: 0 0 20px;
+        font-size: 33px;
+        font-weight: 800;
+    }
+}

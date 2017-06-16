@@ -233,16 +233,11 @@ html {
 }
 
 body {
-    min-height: 100%;
-}
-
-body {
-    background: #313543;
     font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
     display: flex;
     align-items: stretch;
-    font-size: 15px;
+    min-height: 100%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color: color(#fff alpha(50%));
+    font-size: 15px;
 }
