@@ -1,20 +1,7 @@
-<h2>Hawk catches an error on {{ domain }}!</h2>>
+<h4>Hello. Something happened on {{ domain }}, take a look</h4>
+<p>{{ event.message }}</p>
 
-<h3>{{ event.message }}</h3>
+<div style="margin-bottom: 20px;">{{ event.errorLocation.file }} -> {{ event.errorLocation.line }}{{ event.errorLocation.col ? ':'~event.errorLocation.col : ''}}</div>
 
-<p>Type: {{ event.type }}</p>
-<p>Tag: {{ event.tag }}</p>
-
-<p>Location:</p>
-<p>{{ event.errorLocation.file }} -> {{ event.errorLocation.line }}{{ event.errorLocation.col ? ':'~event.errorLocation.col : ''}}</p>
-
-{% if event.stack %}
-  <p>Stack:</p>
-  <p>{{ event.stack }}</p>
-{% endif %}
-
-{% if event.type == 'server' %}
-    <p>Page: <a href="{{ event.location.url }}">{{ event.location.url }}</a></p>
-{% else %}
-    <p>Page: <a href="{{ event.queryString }}">{{ event.queryString }}</a></p>
-{% endif %}
+<div><a href="/garage/{{ domain }}/event/{{ event._id }}">Error page</a></div>
+<div><a href="/garage/settings">Mailing settings</a></div>
