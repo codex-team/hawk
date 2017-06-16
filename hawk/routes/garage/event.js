@@ -1,5 +1,7 @@
 let express = require('express');
 let router = express.Router();
+let user = require('../../models/user');
+let events = require('../../models/events');
 
 /**
  * Garage events lists (route /garage/<domain>/<tag>)
@@ -13,7 +15,7 @@ let index = function (req, res) {
 
   let userData,
       currentDomain,
-      currentTag;
+      eventId;
 
   user.getInfo(req, res)
     .then(function (userData_) {
@@ -22,21 +24,11 @@ let index = function (req, res) {
           allowedTags = ['fatal', 'warnings', 'notice', 'javascript'];
 
       currentDomain = params.domain;
-      currentTag = params.tag;
+      eventId = params.id;
       userData = userData_;
 
-      /** Check if use tag w\o domain */
-      if (!currentTag && allowedTags.includes(currentDomain)) {
-        currentTag = currentDomain;
-        currentDomain = null;
-      }
 
       if (currentDomain && !userData.user.domains.includes(currentDomain)) {
-        res.sendStatus(404);
-        return;
-      }
-
-      if (currentTag && !allowedTags.includes(currentTag)) {
         res.sendStatus(404);
         return;
       }
@@ -49,31 +41,18 @@ let index = function (req, res) {
 
       });
 
-      let findParams = {};
-
-      if (currentTag) {
-        findParams.tag = currentTag;
-      }
-
-      if (currentDomain) {
-
-        return events.get(currentDomain.name, findParams, true);
-
-      } else {
-
-        return events.getAll(userData.user, findParams);
-
-      }
+      return events.get(currentDomain.name, {groupHash: eventId}, true)
 
     })
-    .then(function (events) {
+    .then(function (event) {
 
-      res.render('garage/index', {
+      console.log(event[0]);
+
+      res.render('garage/events/client-separate', {
         user: userData.user,
         domains: userData.domains,
         currentDomain: currentDomain,
-        currentTag: currentTag,
-        events: events
+        event: event[0]
       });
 
     })
@@ -83,6 +62,6 @@ let index = function (req, res) {
 
 };
 
-router.get('/event/:id?', index);
+router.get('/:domain/event/:id', index);
 
 module.exports = router;

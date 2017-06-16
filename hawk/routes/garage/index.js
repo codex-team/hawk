@@ -70,6 +70,8 @@ let index = function (req, res) {
     })
     .then(function (events) {
 
+      console.log(events);
+
       res.render('garage/index', {
         user: userData.user,
         domains: userData.domains,

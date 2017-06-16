@@ -1,34 +1,36 @@
 {% extends 'garage/layout.twig' %}
 
 {% block content %}
+
   {% include 'garage/header.twig' with {domain: currentDomain, tab: currentTag} %}
+
   <div class="event">
     <div class="event__header">
-      <span class="event__domain">ifmo.su</span>
+      <span class="event__domain">{{ currentDomain.name }}</span>
       <span class="event__type event__type--javascript">JavaScript Error</span>
     </div>
     <div class="event__content clearfix">
       <div class="event__counter">
         <div class="event__counter-number">
-          <div class="event__counter-number--digit">223</div>
+          <div class="event__counter-number--digit">{{ event.count }}</div>
           times
         </div>
-        <div class="event__counter-date">since<br>12 mar 2017</div>
+        <div class="event__counter-date">since<br>{{ event.time|date('d M Y') }}</div>
       </div>
       <div class="event__title">
-        Uncaught SecurityError: Failed to read the 'contentDocument' property from 'HTMLIFrameElement': Blocked a frame with origin "https://spark.ru" from accessing a cross-origin frame.
+        {{ event.message }}
       </div>
       <div class="event__path">
-        https://yastatic.net/pcode/adfox/loader.js -> 1:9535
+        {{ event.errorLocation.file }} -> {{event.errorLocation.line}}:{{event.errorLocation.col}}
       </div>
-    </div>
+    <!-- </div>
     <div class="event__device">
       <div class="event__device-param event__device-param--mobile">
         Mobile
       </div>
       <div class="event__device-param event__device-param--screen-size">
         1280x1024
-      </div>
+      </div> -->
     </div>
   </div>
 
@@ -40,17 +42,13 @@
     -webkit-font-smoothing: antialiased;
   }*/
 
-  /*.clearfix:after {
+  .clearfix:after {
       content: "";
       display: table;
       clear: both;
-  }*/
+  }
 
   .event {
-    /*position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;*/
     background-color: #2A2836;
     padding: 20px 30px;
   }
