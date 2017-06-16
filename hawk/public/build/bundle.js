@@ -116,6 +116,7 @@ module.exports = function () {
     var checkboxes = document.getElementsByName(NAMES.customChecbox);
 
     if (!checkboxes) {
+
       console.log('There are no checkboxes on page');
       return;
     }
@@ -143,10 +144,12 @@ module.exports = function () {
     input.name = checkbox.dataset.name;
 
     if (checkbox.dataset.value) {
+
       input.value = checkbox.dataset.value;
     }
 
     if (checkbox.dataset.checked) {
+
       checkbox.classList.add(CLASSES.checkedCheckbox);
       input.checked = true;
     }
@@ -206,11 +209,13 @@ module.exports = function () {
     var elems = document.getElementsByName(NAMES.copyable);
 
     if (!elems) {
+
       console.log('There are no copyable elements');
       return;
     }
 
     for (var i = 0; i < elems.length; i++) {
+
       prepareElement(elems[i]);
     }
 
@@ -233,7 +238,7 @@ module.exports = function () {
    *
    * @param e
    */
-  var elementClicked = function elementClicked(e) {
+  var elementClicked = function elementClicked() {
 
     var selection = window.getSelection(),
         range = document.createRange();
@@ -269,25 +274,27 @@ module.exports = function () {
 */
 __webpack_require__(2);
 
-hawk = function (hawk) {
+var hawk = function (self) {
 
-    'use strict';
+  'use strict';
 
-    hawk.init = function (appSettings) {
+  self.init = function () {
 
-        console.log("Initialized");
-    };
+    console.log('Initialized');
+  };
 
-    hawk.checkbox = __webpack_require__(0);
-    hawk.copyable = __webpack_require__(1);
+  self.checkbox = __webpack_require__(0);
+  self.copyable = __webpack_require__(1);
 
-    return hawk;
+  return self;
 }({});
 
 hawk.docReady = function (f) {
 
-    return (/in/.test(document.readyState) ? setTimeout(hawk.docReady, 9, f) : f()
-    );
+  'use strict';
+
+  return (/in/.test(document.readyState) ? window.setTimeout(hawk.docReady, 9, f) : f()
+  );
 };
 
 module.exports = hawk;

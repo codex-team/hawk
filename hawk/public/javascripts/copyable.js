@@ -21,12 +21,16 @@ module.exports = function () {
     let elems = document.getElementsByName(NAMES.copyable);
 
     if (!elems) {
-        console.log('There are no copyable elements');
-        return;
+
+      console.log('There are no copyable elements');
+      return;
+
     }
 
     for (let i = 0; i < elems.length; i++) {
-        prepareElement(elems[i]);
+
+      prepareElement(elems[i]);
+
     }
 
     console.log('Copyable module initialized');
@@ -50,10 +54,10 @@ module.exports = function () {
    *
    * @param e
    */
-  let elementClicked = function (e) {
+  let elementClicked = function () {
 
     let selection = window.getSelection(),
-        range     = document.createRange();
+      range     = document.createRange();
 
     range.selectNode(this);
     selection.removeAllRanges();
@@ -66,6 +70,6 @@ module.exports = function () {
 
   return {
     init: init
-  }
+  };
 
 }();

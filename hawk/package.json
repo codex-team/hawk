@@ -24,6 +24,8 @@
     "babel-loader": "^7.0.0",
     "babel-preset-env": "^1.5.2",
     "css-loader": "^0.28.4",
+    "eslint": "^4.0.0",
+    "eslint-loader": "^1.8.0",
     "extract-text-webpack-plugin": "^2.1.2",
     "file-loader": "^0.11.2",
     "postcss-cssnext": "^2.11.0",

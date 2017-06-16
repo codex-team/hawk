@@ -40,8 +40,10 @@ module.exports = function () {
     let checkboxes = document.getElementsByName(NAMES.customChecbox);
 
     if (!checkboxes) {
+
       console.log('There are no checkboxes on page');
       return;
+
     }
 
     for (let i = 0; i < checkboxes.length; i++) {
@@ -69,12 +71,16 @@ module.exports = function () {
     input.name = checkbox.dataset.name;
 
     if (checkbox.dataset.value) {
+
       input.value = checkbox.dataset.value;
+
     }
-    
+
     if (checkbox.dataset.checked) {
+
       checkbox.classList.add(CLASSES.checkedCheckbox);
       input.checked = true;
+
     }
 
     checkbox.appendChild(input);
@@ -90,7 +96,7 @@ module.exports = function () {
   let checkboxClicked = function (e) {
 
     let label = this,
-        input = this.querySelector('.'+CLASSES.defaultCheckbox);
+      input = this.querySelector('.'+CLASSES.defaultCheckbox);
 
     label.classList.toggle(CLASSES.checkedCheckbox);
     input.checked = !input.checked;
@@ -101,6 +107,6 @@ module.exports = function () {
 
   return {
     init: init
-  }
+  };
 
 }();
