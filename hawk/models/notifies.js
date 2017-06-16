@@ -24,7 +24,13 @@ module.exports = function () {
    */
   let send = function (user, domain, event) {
 
-    Twig.renderFile(templatesPath + templates.messenger, {event: event, domain: domain}, function (err, html) {
+    let renderParams = {
+      event: event,
+      domain: domain,
+      hostName: process.env.HOST_NAME
+    };
+
+    Twig.renderFile(templatesPath + templates.messenger, renderParams, function (err, html) {
 
       if (err) {
         console.log('Can not render notify template because of ', err);
@@ -42,7 +48,7 @@ module.exports = function () {
 
     if (user.notifies.email) {
 
-      Twig.renderFile(templatesPath + templates.email, {event: event, domain: domain}, function (err, html) {
+      Twig.renderFile(templatesPath + templates.email, renderParams, function (err, html) {
 
         if (err) {
           console.log('Can not render notify template because of ', err);

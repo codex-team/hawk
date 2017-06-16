@@ -2,14 +2,6 @@
 
 <code>{{ event.message }}</code>
 
-Type: {{ event.type }}
-Tag: {{ event.tag }}
-
-Location:
 {{ event.errorLocation.file }} -> {{ event.errorLocation.line }}{{ event.errorLocation.col ? ':'~event.errorLocation.col : ''}}
 
-Stack:
-{{ event.stack }}
-
-Page:
-{{ event.location.url }}
+{{ hostName }}/garage/{{ domain }}/event/{{ event._id }}
