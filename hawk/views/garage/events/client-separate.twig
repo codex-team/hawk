@@ -2,7 +2,7 @@
 
 {% block content %}
 
-  {% include 'garage/header.twig' with {domain: currentDomain, tab: currentTag} %}
+  
 
   <div class="event">
     <div class="event__header">
@@ -34,98 +34,4 @@
     </div>
   </div>
 
-  <style>
-
-  /*body {
-    font-family: Lato, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-    font-size: 15px;
-    -webkit-font-smoothing: antialiased;
-  }*/
-
-  .clearfix:after {
-      content: "";
-      display: table;
-      clear: both;
-  }
-
-  .event {
-    background-color: #2A2836;
-    padding: 20px 30px;
-  }
-
-  .event__domain {
-    color: #A0A6B2;
-    margin-right: 20px;
-  }
-
-  .event__type {
-    margin-right: 20px;
-  }
-
-  .event__type--javascript {
-    color: #9788D8;
-  }
-
-  .event__counter {
-    color: #FFF;
-    text-align: center;
-    vertical-align: middle;
-    margin-left: 30px;
-  }
-
-  .event__counter-number {
-    margin-bottom: 10px;
-  }
-
-  .event__counter-number--digit {
-    font-size: 30px;
-    font-weight: 700;
-  }
-
-  .event__counter-date {
-    color: #A0A6B2;
-    font-size: 12px;
-  }
-
-
-
-  .event__content {
-    margin: 20px 0;
-  }
-
-  .event__counter {
-    float: right;
-  }
-
-  .event__title {
-    color: #FFF;
-    font-size: 20px;
-    margin-bottom: 20px;
-    overflow: hidden;
-  }
-
-  .event__path {
-    color: #A0A6B2;
-  }
-
-  .event__device {}
-
-  .event__device-param {
-    display: inline-block;
-    background-color: #EFF0F2;
-    padding: 4px 8px;
-    border-radius: 2px;
-    color: #717171;
-    margin-right: 15px;
-  }
-
-  .event__device-param--mobile:before {
-    /* insert mobile phone symbol */
-  }
-
-  .event__device-param--screen-size:before {
-    /* insert screen symbol */
-  }
-
-  </style>
 {% endblock %}

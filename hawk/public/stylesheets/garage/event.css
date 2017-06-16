@@ -1,0 +1,68 @@
+.event {
+    background-color: #2a2836;
+    padding: 20px 30px;
+
+    &__domain {
+        color: #a0a6b2;
+        margin-right: 20px;
+    }
+
+    &__type {
+        margin-right: 20px;
+
+        &--javascript {
+            color: #9788d8;
+        }
+    }
+
+    &__counter {
+        color: #fff;
+        text-align: center;
+        vertical-align: middle;
+        margin-left: 30px;
+
+        &-number {
+            margin-bottom: 10px;
+
+            &--digit {
+                font-size: 30px;
+                font-weight: 700;
+            }
+        }
+
+        &-date {
+            color: #a0a6b2;
+            font-size: 12px;
+        }
+    }
+
+    &__content {
+        margin: 20px 0;
+    }
+
+    &__counter {
+        float: right;
+    }
+
+    &__title {
+        color: #fff;
+        font-size: 20px;
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
+    &__path {
+        color: #a0a6b2;
+    }
+
+    &__device {
+        &-param {
+            display: inline-block;
+            background-color: #eff0f2;
+            padding: 4px 8px;
+            border-radius: 2px;
+            color: #717171;
+            margin-right: 15px;
+        }
+    }
+}
