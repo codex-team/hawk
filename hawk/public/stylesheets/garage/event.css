@@ -1,0 +1,64 @@
+.event {
+    background-color: var(--darkGrayBg);
+    padding: 20px 30px;
+    color: var(--grayOnDark);
+
+    &__domain {
+        margin-right: 20px;
+    }
+
+    &__type {
+        margin-right: 20px;
+
+        &--fatal {
+            color: var(--fatalColor);
+        }
+
+        &--warnings {
+            color: var(--warningColor);
+        }
+
+        &--notice {
+            color: var(--noticeColor);
+        }
+
+        &--javascript {
+            color: var(--clientColor);
+        }
+    }
+
+    &__counter {
+        color: #fff;
+        text-align: center;
+        vertical-align: middle;
+        margin-left: 30px;
+
+        &-number {
+            margin-bottom: 10px;
+
+            &--digit {
+                font-size: 30px;
+                font-weight: 700;
+            }
+        }
+
+        &-date {
+            font-size: 12px;
+        }
+    }
+
+    &__content {
+        margin: 20px 0;
+    }
+
+    &__counter {
+        float: right;
+    }
+
+    &__title {
+        color: #fff;
+        font-size: 20px;
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+}

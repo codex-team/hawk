@@ -28,12 +28,12 @@ module.exports = (function() {
    */
   let get = function (domain, query, group, sort, limit, skip) {
 
-    let pipline = [
+    let pipeline = [
       {$match: query}
     ];
 
     if (group) {
-      pipline.push({$group: {
+      pipeline.push({$group: {
         _id: "$groupHash",
         type: {$first: "$type"},
         tag: {$first: "$tag"},
@@ -50,24 +50,24 @@ module.exports = (function() {
       }
     }
 
-    pipline.push({
+    pipeline.push({
       $sort: sort
     });
 
     if (skip) {
-      pipline.push({
+      pipeline.push({
         $skip: skip
       })
     }
 
     if (limit) {
-      pipline.push({
+      pipeline.push({
         $limit: limit
       })
     }
 
 
-    return mongo.aggregation(domain, pipline)
+    return mongo.aggregation(domain, pipeline)
 
   };
 

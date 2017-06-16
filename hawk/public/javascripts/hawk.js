@@ -3,26 +3,28 @@
 */
 require('../stylesheets/hawk.css');
 
-hawk = (function (hawk) {
+let hawk = (function ( self ) {
 
-    'use strict';
+  'use strict';
 
-    hawk.init = function ( appSettings ) {
+  self.init = function ( ) {
 
-    	console.log("Initialized");
+    console.log('Initialized');
 
-    };
+  };
 
-    hawk.checkbox = require('./checkbox');
-    hawk.copyable = require('./copyable');
+  self.checkbox = require('./checkbox');
+  self.copyable = require('./copyable');
 
-    return hawk;
+  return self;
 
 })({});
 
 hawk.docReady = function (f) {
 
-    return /in/.test(document.readyState) ? setTimeout(hawk.docReady, 9, f) : f();
+  'use strict';
+
+  return /in/.test(document.readyState) ? window.setTimeout(hawk.docReady, 9, f) : f();
 
 };
 
