@@ -5,8 +5,9 @@
 /**
  * Yard
  */
-@import url('yard/index-page.css');
 @import url('yard/form.css');
+@import url('yard/index-page.css');
+@import url('yard/error-page.css');
 
 /**
  * Garage

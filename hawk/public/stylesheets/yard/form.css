@@ -5,6 +5,10 @@
     max-width: 500px;
     margin: 100px auto;
 
+    @media (--desktop) {
+        min-width: 500px;
+    }
+
     @media (--mobile) {
         padding: 20px;
         margin: 0 auto;

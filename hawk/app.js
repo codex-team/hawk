@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -5,28 +7,13 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var auth = require('./modules/auth');
-
-var index = require('./routes/index');
-var users = require('./routes/users');
-var login = require('./routes/auth/login');
-var logout = require('./routes/auth/logout');
-var join = require('./routes/auth/join');
-var websites = require('./routes/websites');
-var garage = require('./routes/garage');
-
 require('dotenv').config();
-
-
-/** Catcher routes */
-var catcher = require('./routes/catcher');
 
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'twig');
-
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -36,17 +23,37 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
-app.use('/users', users);
-app.use('/websites', websites);
+
+
+/**
+ * Garage
+ */
+var garage = require('./routes/garage/garage');
 app.use('/garage', garage);
 
-/** use catcher routes */
-app.use('/catcher', catcher);
+/**
+ * Yard
+ */
+var index = require('./routes/yard/index');
+var login = require('./routes/yard/auth/login');
+var logout = require('./routes/yard/auth/logout');
+var join = require('./routes/yard/auth/join');
+var websites = require('./routes/yard/websites');
 
+app.use('/', index);
+app.use('/websites', websites);
 app.use('/login', login);
 app.use('/logout', logout);
 app.use('/join', join);
+
+
+
+/**
+ * Catcher
+ */
+var catcher = require('./routes/catcher');
+app.use('/catcher', catcher);
+
 
 
 // catch 404 and forward to error handler
@@ -64,7 +71,22 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+
+  let errorPageData;
+
+  if (err.status === 404){
+    errorPageData = {
+      title: '404',
+      message : 'Page not found'
+    };
+  } else {
+    errorPageData = {
+      title: ':(',
+      message : 'Sorry, dude. Looks like some of our services is busy.'
+    };
+  }
+
+  res.render('yard/errors/error', errorPageData);
 });
 
 
