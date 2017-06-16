@@ -9,7 +9,7 @@ let md5 = function (input) {
 };
 
 /* GET server errors. */
-router.post('/server', [getServerErrors]);
+router.post('/php', [getServerErrors]);
 
 function getServerErrors(req, res, next) {
 
