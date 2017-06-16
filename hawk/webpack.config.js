@@ -1,6 +1,9 @@
 var webpack           = require('webpack');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
+require('dotenv').config();
+var DevelopmendMode = process.env.ENVIRONMENT === 'DEVELOPMENT'
+
 module.exports = {
 
   entry: './public/javascripts/hawk.js',
@@ -55,7 +58,7 @@ module.exports = {
           {
             loader: "eslint-loader",
             options: {
-              fix: false
+              fix: !DevelopmendMode
             }
           }
         ]
@@ -68,7 +71,7 @@ module.exports = {
 
   devtool: "source-map",
 
-  watch: true,
+  watch: DevelopmendMode,
 
   watchOptions: {
     aggragateTimeout: 50
