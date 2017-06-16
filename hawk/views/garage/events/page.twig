@@ -1,0 +1,28 @@
+{% extends 'garage/layout.twig' %}
+
+{% block content %}
+  <div class="event">
+    <div class="event__header">
+      <span class="event__domain">{{ currentDomain.name }}</span>
+      <span class="event__type event__type--{{ event.tag }}">
+        {{ event.tag == 'javascript' ? 'JavaScript Error' : event.tag|capitalize }}
+      </span>
+    </div>
+    <div class="event__content clearfix">
+      <div class="event__counter">
+        <div class="event__counter-number">
+          <div class="event__counter-number--digit">{{ event.count }}</div>
+          times
+        </div>
+        <div class="event__counter-date">since<br>{{ event.time|date('d M Y') }}</div>
+      </div>
+      <div class="event__title">
+        {{ event.message }}
+      </div>
+      <div class="event__path">
+        {% set col = event.errorLocation.col %}
+        {{ event.errorLocation.file }} -> {{ event.errorLocation.line }}{{ col ? ':' ~ col : '' }}
+      </div>
+    </div>
+  </div>
+{% endblock %}

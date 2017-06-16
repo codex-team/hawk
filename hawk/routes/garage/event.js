@@ -11,71 +11,48 @@ let events = require('../../models/events');
  */
 let index = function (req, res) {
 
-    'use strict';
+  'use strict';
 
   let userData,
-      currentDomain,
-      currentTag;
+    currentDomain,
+    eventId;
 
   user.getInfo(req, res)
     .then(function (userData_) {
 
-      let params = req.params,
-          allowedTags = ['fatal', 'warnings', 'notice', 'javascript'];
+      let params = req.params;
 
       currentDomain = params.domain;
-      currentTag = params.tag;
+      eventId = params.id;
       userData = userData_;
 
-      /** Check if use tag w\o domain */
-      if (!currentTag && allowedTags.includes(currentDomain)) {
-        currentTag = currentDomain;
-        currentDomain = null;
-      }
-
       if (currentDomain && !userData.user.domains.includes(currentDomain)) {
-        res.sendStatus(404);
-        return;
-      }
 
-      if (currentTag && !allowedTags.includes(currentTag)) {
         res.sendStatus(404);
         return;
+
       }
 
       userData.domains.forEach(function (domain) {
 
         if (domain.name == currentDomain) {
+
           currentDomain = domain;
+
         }
 
       });
 
-      let findParams = {};
-
-      if (currentTag) {
-        findParams.tag = currentTag;
-      }
-
-      if (currentDomain) {
-
-        return events.get(currentDomain.name, findParams, true);
-
-      } else {
-
-        return events.getAll(userData.user, findParams);
-
-      }
+      return events.get(currentDomain.name, {groupHash: eventId}, true);
 
     })
-    .then(function (events) {
+    .then(function (event) {
 
-      res.render('garage/index', {
+      res.render('garage/events/page', {
         user: userData.user,
         domains: userData.domains,
         currentDomain: currentDomain,
-        currentTag: currentTag,
-        events: events
+        event: event[0]
       });
 
     })
@@ -87,6 +64,6 @@ let index = function (req, res) {
 
 };
 
-router.get('/:domain?/:tag?', index);
+router.get('/:domain/event/:id', index);
 
 module.exports = router;

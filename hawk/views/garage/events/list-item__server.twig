@@ -10,7 +10,7 @@
         <time class="garage-list-item__time">{{ event.time|date('H:i:s') }}</time>
     </div>
     <div class="garage-list-item__content">
-        <a class="garage-list-item__title" href="">
+        <a class="garage-list-item__title" href="/garage/{{domain.name}}/event/{{event._id}}">
             {{ event.message }}
         </a>
         <div class="garage-list-item__caption   ">
