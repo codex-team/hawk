@@ -1,9 +1,6 @@
 {% extends 'garage/layout.twig' %}
 
 {% block content %}
-
-  
-
   <div class="event">
     <div class="event__header">
       <span class="event__domain">{{ currentDomain.name }}</span>
@@ -21,17 +18,9 @@
         {{ event.message }}
       </div>
       <div class="event__path">
-        {{ event.errorLocation.file }} -> {{event.errorLocation.line}}:{{event.errorLocation.col}}
+        {% set col = event.errorLocation.col %}
+        {{ event.errorLocation.file }} -> {{ event.errorLocation.line }}{{ col ? ':' ~ col : '' }}
       </div>
-    <!-- </div>
-    <div class="event__device">
-      <div class="event__device-param event__device-param--mobile">
-        Mobile
-      </div>
-      <div class="event__device-param event__device-param--screen-size">
-        1280x1024
-      </div> -->
     </div>
   </div>
-
 {% endblock %}

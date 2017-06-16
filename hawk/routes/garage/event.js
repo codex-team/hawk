@@ -14,41 +14,41 @@ let index = function (req, res) {
   'use strict';
 
   let userData,
-      currentDomain,
-      eventId;
+    currentDomain,
+    eventId;
 
   user.getInfo(req, res)
     .then(function (userData_) {
 
-      let params = req.params,
-          allowedTags = ['fatal', 'warnings', 'notice', 'javascript'];
+      let params = req.params;
 
       currentDomain = params.domain;
       eventId = params.id;
       userData = userData_;
 
-
       if (currentDomain && !userData.user.domains.includes(currentDomain)) {
+
         res.sendStatus(404);
         return;
+
       }
 
       userData.domains.forEach(function (domain) {
 
         if (domain.name == currentDomain) {
+
           currentDomain = domain;
+
         }
 
       });
 
-      return events.get(currentDomain.name, {groupHash: eventId}, true)
+      return events.get(currentDomain.name, {groupHash: eventId}, true);
 
     })
     .then(function (event) {
 
-      console.log(event[0]);
-
-      res.render('garage/events/client-separate', {
+      res.render('garage/events/page', {
         user: userData.user,
         domains: userData.domains,
         currentDomain: currentDomain,
@@ -57,7 +57,9 @@ let index = function (req, res) {
 
     })
     .catch (function (e) {
+
       console.log('Error while getting user data for main garage page: %o', e);
+
     });
 
 };
