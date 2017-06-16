@@ -2,6 +2,8 @@ let express  = require('express');
 let database = require('../modules/database'); // Use Mongo
 let events   = require('../models/events');
 let websites = require('../models/websites');
+let user = require('../models/user');
+let notifies = require('../models/notifies');
 let router = express.Router();
 let WebSocket = require('ws');
 let Crypto = require('crypto');
@@ -45,11 +47,25 @@ let connection = function(ws) {
           return;
         }
 
-        events.add(event.location.host, event);
+        return user.get(site.user)
+          .then(function (foundUser) {
+
+            notifies.send(foundUser, event.location.host, event);
+
+            events.add(event.location.host, event)
+              .catch(function (e) {
+                console.log('Can not add event because of ', e)
+              })
+
+          })
+          .catch(function (e) {
+            console.log('Can not find user because of ', e)
+          }) ;
+
 
       })
-      .catch( function() {
-        // handle
+      .catch( function(e) {
+        ws.send(JSON.stringify({type: 'error', message: e.message}))
       })
 
   }
@@ -119,16 +135,22 @@ function getServerErrors(req, res, next) {
   };
 
   websites.get(event.token, event.serverName)
-    .then( function(sites) {
+    .then( function(site) {
 
-      if (!sites) {
+      if (!site) {
         res.sendStatus(403);
         return;
       }
 
-      events.add(event.serverName, event);
+      user.get(site.user)
+        .then(function (foundUser) {
 
-      res.sendStatus(200);
+        notifies.send(foundUser, event.serverName, event);
+
+        events.add(event.serverName, event);
+        res.sendStatus(200);
+
+        });
 
     })
     .catch( function() {

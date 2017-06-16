@@ -1,0 +1,19 @@
+<h2>Hawk catches an error on {{ domain }}!</h2>>
+
+<h3>{{ event.message }}</h3>
+
+<p>Type: {{ event.type }}</p>
+<p>Tag: {{ event.tag }}</p>
+
+<p>Location:</p>
+<p>{{ event.errorLocation.file }} -> {{ event.errorLocation.line }}{{ event.errorLocation.col ? ':'~event.errorLocation.col : ''}}</p>
+
+{% if event.stack %}
+<p>Stack:</p>
+<p>{{ event.stack }}</p>
+
+{% if event.type == 'server' %}
+    <p>Page: <a href="{{ event.location.url }}">{{ event.location.url }}</a></p>
+{% else %}
+    <p>Page: <a href="{{ event.queryString }}">{{ event.queryString }}</a></p>
+{% endif %}
