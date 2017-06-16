@@ -2,7 +2,7 @@ var webpack           = require('webpack');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 require('dotenv').config();
-var DevelopmendMode = process.env.ENVIRONMENT === 'DEVELOPMENT'
+var DevelopmendMode = process.env.ENVIRONMENT === 'DEVELOPMENT';
 
 module.exports = {
 
@@ -17,7 +17,7 @@ module.exports = {
     rules: [
       {
         test : /\.(png|jpg|svg)$/,
-        use : "file-loader?name=[path][name].[ext]"
+        use : 'file-loader?name=[path][name].[ext]'
       },
       {
         /**
@@ -56,9 +56,9 @@ module.exports = {
           },
           /** ES lint For webpack build */
           {
-            loader: "eslint-loader",
+            loader: 'eslint-loader',
             options: {
-              fix: !DevelopmendMode
+              fix: DevelopmendMode
             }
           }
         ]
@@ -66,10 +66,10 @@ module.exports = {
     ]
   },
   plugins: [
-      new ExtractTextPlugin("public/build/bundle.css")
+      new ExtractTextPlugin('public/build/bundle.css')
   ],
 
-  devtool: "source-map",
+  devtool: 'source-map',
 
   watch: DevelopmendMode,
 

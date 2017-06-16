@@ -26,9 +26,10 @@
             "objectsInArrays": true,
             "arraysInArrays": true
         }],
-        "quotes": [2, "single", "avoid-escape"],
+        "quotes": [1, "single", "avoid-escape"],
         "eqeqeq": 0,
         "brace-style": [2, "1tbs"],
+
         "comma-spacing": [2, {
             "before": false,
             "after": true
@@ -49,13 +50,29 @@
             "markers": ["=", "!"]
         }],
         "semi": [2, "always"],
-        "indent": [2, 4, {
+        "indent": [2, 2, {
             "SwitchCase": 1
         }],
         "camelcase": [2, {
             "properties": "always"
         }],
         "newline-after-var": [1, "always"],
+
+    },
+    "globals":{
+        "document": true,
+        "module": true,
+        "require": true,
+        "window": true,
+        "console" : true,
+        "codex": true,
+        "VERSION" : true,
+        "Promise" : true,
+        "MutationObserver": true,
+        "FormData": true,
+        "XMLHttpRequest": true,
+        "ActiveXObject": true,
+        "FileReader": true
 
     }
 }
