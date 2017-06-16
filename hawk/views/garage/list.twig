@@ -8,7 +8,7 @@
 
         {% for event in events %}
             {% set tmpl = "garage/events/list-item__" ~ event.type ~ ".twig" %}
-            {% include tmpl with { domain: domain, event: event} %}
+            {% include tmpl with { domain: domain, event: event } %}
         {% endfor %}
 
     {% else %}
