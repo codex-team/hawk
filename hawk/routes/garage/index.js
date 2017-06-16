@@ -70,8 +70,6 @@ let index = function (req, res) {
     })
     .then(function (events) {
 
-      console.log(events);
-
       res.render('garage/index', {
         user: userData.user,
         domains: userData.domains,
@@ -82,7 +80,9 @@ let index = function (req, res) {
 
     })
     .catch (function (e) {
+
       console.log('Error while getting user data for main garage page: %o', e);
+
     });
 
 };
