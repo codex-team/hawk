@@ -1,9 +1,9 @@
 .event {
-    background-color: #2a2836;
+    background-color: var(--darkGrayBg);
     padding: 20px 30px;
+    color: var(--grayOnDark);
 
     &__domain {
-        color: #a0a6b2;
         margin-right: 20px;
     }
 
@@ -11,7 +11,7 @@
         margin-right: 20px;
 
         &--javascript {
-            color: #9788d8;
+            color: var(--clientColor);
         }
     }
 
@@ -31,7 +31,6 @@
         }
 
         &-date {
-            color: #a0a6b2;
             font-size: 12px;
         }
     }
@@ -49,20 +48,5 @@
         font-size: 20px;
         margin-bottom: 20px;
         overflow: hidden;
-    }
-
-    &__path {
-        color: #a0a6b2;
-    }
-
-    &__device {
-        &-param {
-            display: inline-block;
-            background-color: #eff0f2;
-            padding: 4px 8px;
-            border-radius: 2px;
-            color: #717171;
-            margin-right: 15px;
-        }
     }
 }
