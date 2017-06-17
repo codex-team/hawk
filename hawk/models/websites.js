@@ -48,12 +48,12 @@ module.exports = function () {
   /**
    * Add new domain name and client and server tokens to DB
    */
-  let add = function (app_name, token, user) {
+  let add = function (domain, token, user) {
 
-    return mongo.updateOne('users', {_id: mongo.ObjectId(user._id)}, {$push: {domains: app_name}}).then(function () {
+    return mongo.updateOne('users', {_id: mongo.ObjectId(user._id)}, {$push: {domains: domain}}).then(function () {
 
       return mongo.insertOne(collection, {
-        'name': app_name,
+        'name': domain,
         'token': token,
         'user': user._id.toString()
       })
@@ -64,8 +64,8 @@ module.exports = function () {
             email.init();
             email.send(
               user.email,
-              app_name + ' token',
-              'Here is an access token for domain ' + app_name + ':\n' + token,
+              domain + ' token',
+              'Here is an access token for domain ' + domain + ':\n' + token,
               '');
             return true;
 
