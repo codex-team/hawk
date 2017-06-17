@@ -38,8 +38,11 @@ module.exports = function () {
       'name': domain
     })
       .then(function (result) {
+
         return !result;
+
       });
+
   };
 
   /**
@@ -50,27 +53,31 @@ module.exports = function () {
     return mongo.updateOne('users', {_id: mongo.ObjectId(user._id)}, {$push: {domains: app_name}}).then(function () {
 
       return mongo.insertOne(collection, {
-          'name': app_name,
-          'token': token,
-          'user': user._id.toString()
-        }
-      )
+        'name': app_name,
+        'token': token,
+        'user': user._id.toString()
+      })
         .then(function (result) {
+
           if (result) {
+
             email.init();
             email.send(
-              {name: 'CodeX Hawk', email: 'codex.ifmo@yandex.ru'},
               user.email,
-              'Your token',
-              'Your access token: ' + token,
+              app_name + ' token',
+              'Here is an access token for domain ' + app_name + ':\n' + token,
               '');
             return true;
-          }
-          else {
+
+          } else {
+
             return false;
+
           }
+
         });
-    })
+
+    });
 
   };
 
@@ -80,6 +87,6 @@ module.exports = function () {
     checkName: checkName,
     add: add,
     getByUser: getByUser
-  }
+  };
 
 }();
