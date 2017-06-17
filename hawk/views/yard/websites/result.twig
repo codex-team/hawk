@@ -1,13 +1,13 @@
 {% extends 'layout.twig' %}
 
 {% block body %}
-
-  {% include 'yard/form.twig' with {
-    action: '/websites/create',
-    title: error,
-    fields: [],
-    submitText: '',
-    desclaimer: ''
-  } %}
-
+  <div class="yard">
+    {% include 'yard/form.twig' with {
+      action: '/websites/create',
+      title: error,
+      fields: [],
+      submitText: '',
+      desclaimer: ''
+    } %}
+  </div>
 {% endblock %}

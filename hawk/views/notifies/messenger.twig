@@ -2,6 +2,6 @@
 
 <code>{{ event.message }}</code>
 
-{{ event.errorLocation.file }} -> {{ event.errorLocation.line }}{{ event.errorLocation.col ? ':'~event.errorLocation.col : ''}}
+{{ event.errorLocation.full }}
 
 {{ hostName }}/garage/{{ domain }}/event/{{ event._id }}
