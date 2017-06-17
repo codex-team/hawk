@@ -4,4 +4,5 @@
 
 {{ event.errorLocation.full }}
 
-https://{{ hostName }}/garage/{{ domain }}/event/{{ event.groupHash }}
+{% set url = 'https://' ~ hostName ~ '/garage/' ~ domain ~ '/event/' ~ event.groupHash %}
+<a href='{{ url }}'>{{ url }}</a>
