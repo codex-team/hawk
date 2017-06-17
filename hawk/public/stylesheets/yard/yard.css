@@ -1,0 +1,8 @@
+/**
+ * Yard page with dark background
+ */
+.yard {
+    width: 100%;
+    background: #313543;
+    color: var(--grayOnDark);
+}

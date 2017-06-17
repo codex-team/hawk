@@ -1,12 +1,10 @@
 :root {
     /** Texts */
-    /*--grayText: #717171;*/
     --grayText: #555968;
     --grayOnDark: #a1a6b3;
     --redText: #df2f2f;
     --greenText: #00b693;
-
-    --markedTextBg: rgba(255, 221, 93, 0.16);
+    --pinkColor: #bc1453;
 
     /** Error types modifiers */
     --fatalColor: #ff5252;
@@ -15,11 +13,9 @@
     --clientColor: #87607e;
 
     /** Links */
-    --linkColor: #00b693;
+    --linkColor: #4e37b5;
     --linkOnDark: #31ffac;
     --hoverColor: #7026bd;
-
-    --inlineLinkColor: #4e37b5;
 
     /** Backgrounds */
     --darkGrayBg: #292934;
@@ -29,6 +25,7 @@
 
     /** Borders */
     --lightGrayLine: #edebeb;
+    --grayLine: #d4d6d8;
 
     /** Bounce timing function for transition */
     --bounceTiming: cubic-bezier(0.6, -0.28, 0.735, 0.045);
