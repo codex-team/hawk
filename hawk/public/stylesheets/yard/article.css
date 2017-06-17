@@ -3,25 +3,67 @@
  * Uses in Platform documentation
  */
 .article {
-    max-width: 550px;
+    position: relative;
+    max-width: 600px;
     margin: 80px auto;
+    padding: 15px;
     font-size: 19px;
+    line-height: 1.5em;
 
     /**
      * Hawk.io header
      * =================
      */
     &__header {
-        margin-bottom: 60px;
+        margin-bottom: 80px;
 
         &-title {
             font-size: 53px;
             font-weight: 800;
+            line-height: 1.4em;
         }
 
         &-caption {
-            font-size: 26px;
+            font-size: 24px;
             color: var(--grayText);
+        }
+    }
+
+    /**
+     * Navigation
+     * =================
+     */
+    &__navigation {
+        position: sticky;
+        top: 30px;
+        font-size: 15px;
+
+        &-content {
+            position: absolute;
+            top: 0;
+            left: -300px;
+
+            @media all and (max-width: 1250px) {
+                left: -220px;
+            }
+        }
+
+        @media all and (max-width: 1100px) {
+            position: static;
+            margin: -30px 0 60px;
+
+            &-content {
+                position: static;
+            }
+        }
+
+        a {
+            display: block;
+            border-bottom: 1px solid color(var(--linkColor) alpha(20%)) !important;
+        }
+
+        .second {
+            margin-left: 2em;
         }
     }
 
@@ -30,8 +72,53 @@
      * =================
      */
     h1 {
-        margin: 0 0 20px;
-        font-size: 33px;
         font-weight: 800;
+        margin-bottom: 1em;
+        line-height: 1.1em;
+    }
+
+    h2 {
+        margin-top: 2em;
+        font-weight: 800;
+    }
+
+    h3 {
+        margin: 1.3em 0 0.5em;
+    }
+
+    a {
+        color: var(--linkColor);
+        border-bottom: 1px solid color(var(--linkColor) alpha(50%));
+        cursor: pointer;
+
+        &:hover {
+            color: var(--hoverColor);
+            border-bottom-color: color(var(--hoverColor) alpha(50%));
+        }
+    }
+
+    pre {
+        @media (--mobile) {
+            white-space: pre-line;
+        }
+    }
+
+    abbr {
+        display: inline-block;
+        background: color(var(--pinkColor) alpha(7%));
+        padding: 0 7px;
+        margin-right: 0.2em;
+        border-radius: 2px;
+        color: var(--pinkColor);
+        text-decoration: none;
+        font-size: 0.9em;
+    }
+
+    ul {
+        li {
+            margin: 0.6em 0;
+            list-style-type: disc;
+            list-style-position: inside;
+        }
     }
 }

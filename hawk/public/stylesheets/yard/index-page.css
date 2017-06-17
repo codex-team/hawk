@@ -23,6 +23,7 @@
         li {
             display: inline-block;
             margin-right: 1em;
+            margin-bottom: 0.6em;
         }
 
         a {
@@ -35,7 +36,7 @@
     }
 
     &__figure {
-        margin: 50px 0 0;
+        margin: 30px 0 0;
         color: color(#fff alpha(50%));
 
         img {
