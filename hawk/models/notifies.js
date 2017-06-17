@@ -30,8 +30,6 @@ module.exports = function () {
       hostName: process.env.HOST_NAME
     };
 
-    console.log(event);
-
     Twig.renderFile(templatesPath + templates.messenger, renderParams, function (err, html) {
 
       if (err) {
