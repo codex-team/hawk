@@ -29,7 +29,7 @@ module.exports = function () {
   /**
   * Send email to specified receiver with subject and text
   *
-  * from    - {name:'CodeX Hawk', email:'hawk@hawk.io'}
+  * from    - {name:'Hawk.so Team', email:'team@hawk.so'}
   * to      - 'receiver@mail.com'
   * subject
   * text
