@@ -14,8 +14,10 @@ let join = {
     user.current(req).then(function (found) {
 
       if (found) {
+
         res.redirect('/garage');
         return;
+
       }
 
       res.render('yard/auth/join');
@@ -28,20 +30,28 @@ let join = {
   post: function (req, res, next) {
 
     user.current(req).then(function (found) {
+
       if (found) {
+
         res.redirect('/garage');
         return;
+
       }
 
       let email = req.body.email;
 
       user.add(email).then(function (insertedUser) {
-          if (insertedUser) {
-            auth.authUser(res, insertedUser);
-            res.redirect('/garage');
-          } else {
-            res.render('error', { message: 'Try again later.' });
-          }
+
+        if (insertedUser) {
+
+          res.redirect('/login?status=success');
+
+        } else {
+
+          res.render('error', { message: 'Try again later.' });
+
+        }
+
       }).catch(console.log);
 
     });
