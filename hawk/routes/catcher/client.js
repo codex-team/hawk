@@ -25,6 +25,11 @@ let connection = function (ws) {
   function getClientErrors(message) {
 
     let location = message.error_location.file + ':' + message.error_location.line + ':' + message.error_location.col;
+
+    message.error_location.full = message.error_location.file + ' -> ' +
+                                  message.error_location.line + ':' +
+                                  message.error_location.col;
+
     let event = {
       type          : 'client',
       tag           : 'javascript',
@@ -33,7 +38,7 @@ let connection = function (ws) {
       location      : message.location,
       stack         : message.stack,
       groupHash     : md5(location),
-      userClient    : message.navigator,
+      userAgent     : message.navigator,
       time          : Math.floor(message.time / 1000)
     };
 

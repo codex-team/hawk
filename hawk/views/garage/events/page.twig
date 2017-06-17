@@ -20,8 +20,7 @@
         {{ event.message }}
       </div>
       <div class="event__path">
-        {% set col = event.errorLocation.col %}
-        {{ event.errorLocation.file }} -> {{ event.errorLocation.line }}{{ col ? ':' ~ col : '' }}
+        {{ event.errorLocation.full }}
       </div>
     </div>
   </div>
