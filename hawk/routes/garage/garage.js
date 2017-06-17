@@ -1,9 +1,9 @@
 let express = require('express');
 let router = express.Router();
 
-let index = require('./index');
-let settings = require('./settings');
 let event = require('./event');
+let settings = require('./settings');
+let index = require('./index');
 
 router.use(event);
 router.use(settings);
