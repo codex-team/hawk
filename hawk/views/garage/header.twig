@@ -1,23 +1,22 @@
 <div class="garage-header">
 
-    {% if domain.name is defined %}
-        <h1 class="garage-header__page-title">
-            <a href="/garage/{{ domain.name }}">{{ domain.name }}</a>
-        </h1>
-    {% endif %}
-    <a class="garage-header__tab" href="/garage/{{ domain.name }}/fatal">
+    {% set url = "/garage/" ~ domain.name %}
+    <h1 class="garage-header__page-title">
+        <a href="{{ url }}">{{ domain.name }}</a>
+    </h1>
+    <a class="garage-header__tab" href="{{ url }}/fatal">
         Fatal
         <span class="counter">{{ domain.fatal or 0 }}</span>
     </a>
-    <a class="garage-header__tab" href="/garage/{{ domain.name }}/warnings">
+    <a class="garage-header__tab" href="{{ url }}/warnings">
         Warnings
         <span class="counter">{{ domain.warnings or 0 }}</span>
     </a>
-    <a class="garage-header__tab" href="/garage/{{ domain.name }}/notice">
+    <a class="garage-header__tab" href="{{ url }}/notice">
         Notice
         <span class="counter">{{ domain.notice or 0 }}</span>
     </a>
-    <a class="garage-header__tab" href="/garage/{{ domain.name }}/javascript">
+    <a class="garage-header__tab" href="{{ url }}/javascript">
         JavaScript Errors
         <span class="counter">{{ domain.javascript or 0 }}</span>
     </a>

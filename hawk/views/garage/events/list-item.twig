@@ -1,20 +1,16 @@
 <div class="garage-list-item">
     <div class="garage-list-item__left">
         <div class="garage-list-item__tag">
-
-            {% if event.tag == "fatal" %} Fatal Error {% endif %}
-            {% if event.tag == "warnings" %} Warning {% endif %}
-            {% if event.tag =="notice" %} PHP Notice {% endif %}
-
+            {{ event.tag == 'javascript' ? 'JavaScript Error' : event.tag|capitalize }}
         </div>
         <time class="garage-list-item__time">{{ event.time|date('H:i:s') }}</time>
     </div>
     <div class="garage-list-item__content">
-        <a class="garage-list-item__title" href="/garage/{{domain.name}}/event/{{event._id}}">
+        <a class="garage-list-item__title" href="/garage/{{ domain.name }}/event/{{ event._id }}">
             {{ event.message }}
         </a>
-        <div class="garage-list-item__caption   ">
-            {{ event.errorLocation.file }} -> {{ event.errorLocation.line }}
+        <div class="garage-list-item__caption">
+            {{ event.errorLocation.full }}
         </div>
     </div>
     <div class="garage-list-item__right">

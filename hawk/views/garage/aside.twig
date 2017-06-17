@@ -9,23 +9,24 @@
     <h4 class="garage-aside__heading">DOMAINS</h4>
 
     {% for domain in domains %}
+        {% set url = "/garage/" ~ domain.name %}
         <section class="garage-aside__section">
-            <a href="/garage/{{ domain.name }}">{{ domain.name }}</a>
-            <a class="garage-aside__domain" href="/garage/{{ domain.name }}">
+            <a href="{{ url }}">{{ domain.name }}</a>
+            <a class="garage-aside__domain" href="{{ url }}">
             </a>
-            <a class="garage-aside__tag" href="/garage/{{ domain.name }}/fatal">
+            <a class="garage-aside__tag" href="{{ url }}/fatal">
                 fatal
                 <span class="garage-aside__counter garage-aside__counter--fatal">{{ domain.fatal or 0 }}</span>
             </a>
-            <a class="garage-aside__tag" href="/garage/{{ domain.name }}/warnings">
+            <a class="garage-aside__tag" href="{{ url }}/warnings">
                 warnings
                 <span class="garage-aside__counter garage-aside__counter--warning">{{ domain.warnings or 0 }}</span>
             </a>
-            <a class="garage-aside__tag" href="/garage/{{ domain.name }}/notice">
+            <a class="garage-aside__tag" href="{{ url }}/notice">
                 notice
                 <span class="garage-aside__counter garage-aside__counter--notice">{{ domain.notice or 0 }}</span>
             </a>
-            <a class="garage-aside__tag" href="/garage/{{ domain.name }}/javascript">
+            <a class="garage-aside__tag" href="{{ url }}/javascript">
                 javascript
                 <span class="garage-aside__counter garage-aside__counter--client">{{ domain.javascript or 0 }}</span>
             </a>
