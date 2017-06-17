@@ -2,6 +2,8 @@ let express  = require('express');
 let router = express.Router();
 let events   = require('../../models/events');
 let websites = require('../../models/websites');
+let user = require('../../models/user');
+let notifies = require('../../models/notifies');
 let Crypto = require('crypto');
 
 let md5 = function (input) {
@@ -114,18 +116,34 @@ let getServerErrors = function (req, res) {
   };
 
   websites.get(event.token, event.location.host)
-    .then( function (sites) {
+    .then( function (site) {
 
-      if (!sites) {
+      if (!site) {
 
         res.sendStatus(403);
         return;
 
       }
+      return user.get(site.user)
+        .then(function (foundUser) {
 
-      events.add(event.location.host, event);
+          notifies.send(foundUser, event.location.host, event);
 
-      res.sendStatus(200);
+          events.add(event.location.host, event)
+            .then(function () {
+
+              res.sendStatus(200);
+
+            })
+            .catch(function (e) {
+
+              console.log('Can not add event because of ', e);
+              res.sendStatus(500);
+
+            });
+
+        });
+
 
     })
     .catch( function () {

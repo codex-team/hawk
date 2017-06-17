@@ -12,13 +12,8 @@ let csrf = require('../../modules/csrf');
  */
 let index = function (req, res) {
 
-  let userData;
-  console.log(req.csrfToken());
   user.getInfo(req, res)
-    .then(function (userData_) {
-      userData = userData_;
-    })
-    .then(function () {
+    .then(function (userData) {
       res.render('garage/settings', {
         user: userData.user,
         domains: userData.domains,

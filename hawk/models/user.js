@@ -3,7 +3,6 @@ let mongo = require("../modules/database");
 let email = require("../modules/email");
 let websites = require('./websites');
 let events = require('./events');
-
 let collections = require('../config/collections');
 
 module.exports = function () {
@@ -45,7 +44,12 @@ module.exports = function () {
     let user = {
       'email': userEmail,
       'password': auth.generateHash(password),
-      'domains': []
+      'domains': [],
+      'notifies': {
+        'tg': false,
+        'email': false,
+        'slack': false
+      }
     };
 
     return mongo.insertOne(collection, user)

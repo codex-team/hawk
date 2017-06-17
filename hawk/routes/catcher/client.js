@@ -1,5 +1,7 @@
 let events   = require('../../models/events');
 let websites = require('../../models/websites');
+let notifies = require('../../models/notifies');
+let user = require('../../models/user');
 let WebSocket = require('ws');
 let Crypto = require('crypto');
 
@@ -53,11 +55,25 @@ let connection = function (ws) {
 
         }
 
-        events.add(event.location.host, event);
+        return user.get(site.user)
+          .then(function (foundUser) {
+
+            notifies.send(foundUser, event.location.host, event);
+
+            events.add(event.location.host, event)
+              .catch(function (e) {
+
+                console.log('Can not add event because of ', e);
+
+              });
+
+          });
 
       })
-      .catch( function () {
-        // handle
+      .catch( function (e) {
+
+        ws.send(JSON.stringify({type: 'error', message: e.message}))
+
       });
 
   }
