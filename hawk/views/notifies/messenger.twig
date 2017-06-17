@@ -1,7 +1,8 @@
-⚠️<b>Error on {{ domain }}</b>
+⚠️ <b>Error on {{ domain }}</b>
 
 <code>{{ event.message }}</code>
 
 {{ event.errorLocation.full }}
 
-{{ hostName }}/garage/{{ domain }}/event/{{ event._id }}
+{% set url = 'https://' ~ hostName ~ '/garage/' ~ domain ~ '/event/' ~ event.groupHash %}
+<a href='{{ url }}'>{{ url }}</a>

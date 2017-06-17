@@ -38,39 +38,46 @@ module.exports = function () {
       'name': domain
     })
       .then(function (result) {
+
         return !result;
+
       });
+
   };
 
   /**
    * Add new domain name and client and server tokens to DB
    */
-  let add = function (app_name, token, user) {
+  let add = function (domain, token, user) {
 
-    return mongo.updateOne('users', {_id: mongo.ObjectId(user._id)}, {$push: {domains: app_name}}).then(function () {
+    return mongo.updateOne('users', {_id: mongo.ObjectId(user._id)}, {$push: {domains: domain}}).then(function () {
 
       return mongo.insertOne(collection, {
-          'name': app_name,
-          'token': token,
-          'user': user._id.toString()
-        }
-      )
+        'name': domain,
+        'token': token,
+        'user': user._id.toString()
+      })
         .then(function (result) {
+
           if (result) {
+
             email.init();
             email.send(
-              {name: 'CodeX Hawk', email: 'codex.ifmo@yandex.ru'},
               user.email,
-              'Your token',
-              'Your access token: ' + token,
+              domain + ' token',
+              'Here is an access token for domain ' + domain + ':\n' + token,
               '');
             return true;
-          }
-          else {
+
+          } else {
+
             return false;
+
           }
+
         });
-    })
+
+    });
 
   };
 
@@ -80,6 +87,6 @@ module.exports = function () {
     checkName: checkName,
     add: add,
     getByUser: getByUser
-  }
+  };
 
 }();

@@ -48,6 +48,13 @@ let index = function (req, res) {
     })
     .then(function (event) {
 
+      if (!event[0]) {
+
+        res.sendStatus(404);
+        return;
+
+      }
+
       res.render('garage/events/page', {
         user: userData.user,
         domains: userData.domains,
@@ -64,6 +71,6 @@ let index = function (req, res) {
 
 };
 
-router.get('/:domain/event/:id', index);
+router.get('/:domain/event/:id?', index);
 
 module.exports = router;

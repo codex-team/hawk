@@ -33,15 +33,22 @@ module.exports = function () {
     Twig.renderFile(templatesPath + templates.messenger, renderParams, function (err, html) {
 
       if (err) {
+
         console.log('Can not render notify template because of ', err);
         return;
+
       }
 
       if (user.notifies.tg && user.tgHook) {
+
         request.post({url: user.tgHook, form: {message: html, parse_mode: 'HTML'}})
+
       }
+
       if (user.notifies.slack && user.slackHook) {
+
         request.post({url: user.slackHook, form: {message: html, parse_mode: 'HTML'}})
+
       }
 
     });
@@ -51,8 +58,10 @@ module.exports = function () {
       Twig.renderFile(templatesPath + templates.email, renderParams, function (err, html) {
 
         if (err) {
+
           console.log('Can not render notify template because of ', err);
           return;
+
         }
 
         email.init();
