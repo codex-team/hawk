@@ -113,7 +113,7 @@ let getServerErrors = function (req, res) {
     }
   };
 
-  websites.get(event.token, event.serverName)
+  websites.get(event.token, event.location.host)
     .then( function (sites) {
 
       if (!sites) {
@@ -123,7 +123,7 @@ let getServerErrors = function (req, res) {
 
       }
 
-      events.add(event.serverName, event);
+      events.add(event.location.host, event);
 
       res.sendStatus(200);
 
