@@ -6,8 +6,6 @@
     {% if message %}
       <div class="yard-form__message yard-form__message--{{ message.type }}">{{ message.text }}</div>
     {% endif %}
-    <div class="yard-form__message yard-form__message--error">{{ errorMessage }}</div>
-    <div class="yard-form__message yard-form__message--notify">{{ notifyMessage }}</div>
     {% for field in fields %}
       <fieldset class="yard-form__section">
         <label class="yard-form__label" for="{{ field.name }}">{{ field.label }}</label>
