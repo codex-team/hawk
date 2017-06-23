@@ -105,9 +105,8 @@ module.exports = function () {
    */
   let getUserAndDomains = function (req, res) {
 
-    let
-      currentUser = null,
-      domains = null;
+    let currentUser = null,
+        domains = null;
 
     return current(req)
       .then(function (currentUser_) {
