@@ -5,6 +5,7 @@
     --redText: #df2f2f;
     --greenText: #00b693;
     --pinkColor: #bc1453;
+    --errorMessage: #cd4949;
 
     /** Error types modifiers */
     --fatalColor: #ff5252;

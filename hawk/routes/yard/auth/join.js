@@ -48,8 +48,8 @@ let join = {
 
               if (insertedUser) {
 
-                auth.authUser(res, insertedUser);
-                res.redirect('/garage');
+                res.redirect('/login?success=1');
+                return;
 
               } else {
 
@@ -61,7 +61,12 @@ let join = {
 
         }).catch(function () {
 
-          res.render('error', { message: 'User with this email ia already registered. Enter the other email or try to remember password.' });
+          res.render('yard/auth/join', {
+            message: {
+              type: 'error',
+              text: 'This email already registred. Please, <a href="/login">login</a>.'
+            }
+          });
           return;
 
         });

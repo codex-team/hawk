@@ -3,6 +3,11 @@
   <div class="yard-form__caption">Fast and lightweight errors tracking service</div>
   <form class="yard-form__container" method="POST" action="{{ action }}">
     <div class="yard-form__header">{{ title }}</div>
+    {% if message %}
+      <div class="yard-form__message yard-form__message--{{ message.type }}">{{ message.text }}</div>
+    {% endif %}
+    <div class="yard-form__message yard-form__message--error">{{ errorMessage }}</div>
+    <div class="yard-form__message yard-form__message--notify">{{ notifyMessage }}</div>
     {% for field in fields %}
       <fieldset class="yard-form__section">
         <label class="yard-form__label" for="{{ field.name }}">{{ field.label }}</label>
