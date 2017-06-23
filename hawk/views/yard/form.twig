@@ -3,6 +3,9 @@
   <div class="yard-form__caption">Fast and lightweight errors tracking service</div>
   <form class="yard-form__container" method="POST" action="{{ action }}">
     <div class="yard-form__header">{{ title }}</div>
+    {% if message %}
+      <div class="yard-form__message yard-form__message--{{ message.type }}">{{ message.text }}</div>
+    {% endif %}
     {% for field in fields %}
       <fieldset class="yard-form__section">
         <label class="yard-form__label" for="{{ field.name }}">{{ field.label }}</label>
@@ -23,5 +26,5 @@
       <input class="yard-form__submit button--submit" type="submit" value="{{ submitText }}">
     {% endif %}
   </form>
-  <div class="yard-form__desclaimer">{{ desclaimer }}</div>
+  <div class="yard-form__disclaimer">{{ disclaimer }}</div>
 </div>
