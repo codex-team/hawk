@@ -3,9 +3,44 @@
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
-var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var winston = require('winston');
+
+/** Setup loggers **/
+winston.loggers.add('access', {
+  file: {
+    level: 'debug',
+    filename: 'logs/access.log',
+    timestamp: true
+  }
+});
+
+winston.loggers.add('console', {
+  console: {
+    level: 'debug',
+    colorize: true,
+    timestamp: true,
+    handleExceptions: true,
+    humanReadableUnhandledException: true
+  },
+  file: {
+    level: 'debug',
+    filename: 'logs/errors.log',
+    timestamp: true,
+    handleExceptions: true,
+    humanReadableUnhandledException: true
+  }
+});
+
+global.logger = winston.loggers.get('console');
+let accessLogger = winston.loggers.get('access');
+
+accessLogger.stream = {
+  write: function (message) {
+    accessLogger.info(message);
+  }
+}
 
 require('dotenv').config();
 
@@ -17,13 +52,13 @@ app.set('view engine', 'twig');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+
+app.use(require("morgan")("combined", { stream: accessLogger.stream }));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('/static', express.static(path.join(__dirname, 'public')));
-
-
 
 /**
  * Garage
