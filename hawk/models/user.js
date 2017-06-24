@@ -62,14 +62,17 @@ module.exports = function () {
 
   let add = function (userEmail) {
 
-    let password = auth.generatePassword();
+    let password = auth.generatePassword(),
+        unsubscribeToken = auth.generatePassword(),
+        passwordResetToken = auth.generatePassword();
 
     email.init();
     email.send(
       userEmail,
       'Your password',
-      'Here it is: ' + password,
-      ''
+      '',
+      'Here it is: ' + password + '<br \><br \>' +
+      'You can always : <a href="http://' + process.env.SERVER_NAME + '/unsubscribe?token=' + unsubscribeToken + '">unsubscribe</a>'
     );
 
     let user = {
@@ -80,7 +83,9 @@ module.exports = function () {
         'tg': false,
         'email': false,
         'slack': false
-      }
+      },
+      'unsubscribe': unsubscribeToken,
+      'password_reset': passwordResetToken
     };
 
     return mongo.insertOne(collection, user)
