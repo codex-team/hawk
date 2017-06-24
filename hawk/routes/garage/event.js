@@ -65,7 +65,7 @@ let index = function (req, res) {
     })
     .catch (function (e) {
 
-      console.log('Error while getting user data for main garage page: %o', e);
+      logger.log('error', 'Error while getting user data for main garage page: %o', e);
 
     });
 

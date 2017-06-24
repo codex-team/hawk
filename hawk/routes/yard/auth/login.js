@@ -62,7 +62,11 @@ let login = {
           } else {
             res.render('error', { message: 'Try again later.' });
           }
-      }).catch(console.log);
+      }).catch(function (e) {
+
+        logger.log('error', 'Can\'t fin user because of ', e);
+
+      });
 
     });
 

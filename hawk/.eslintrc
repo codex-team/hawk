@@ -72,7 +72,8 @@
         "FormData": true,
         "XMLHttpRequest": true,
         "ActiveXObject": true,
-        "FileReader": true
-
+        "FileReader": true,
+        "logger": true,
+        "global": true
     }
 }
