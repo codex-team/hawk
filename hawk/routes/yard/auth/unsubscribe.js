@@ -11,16 +11,19 @@ let unsubscribe = {
   /* Show join form */
   get: function (req, res, next) {
 
-    let token = req.param('token');
+    let token = req.query.token;
 
-    let params = {
-        'unsubscribe': token
-    };
+    let findParams = {
+          'unsubscribe_token' : token
+        },
+        updateParams = {
+          'notifies.email' : false
+        };
 
-    user.getByParams(params)
+    user.getByParams(findParams)
       .then(function(result){
           if (result) {
-              user.update(result, {unsubscribe : true});
+              user.update(result, updateParams);
               res.redirect('/');
           } else {
               res.render('error', { message: 'Token is invalid.' });

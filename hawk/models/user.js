@@ -72,7 +72,7 @@ module.exports = function () {
       'Your password',
       '',
       'Here it is: ' + password + '<br \><br \>' +
-      'You can always : <a href="http://' + process.env.SERVER_NAME + '/unsubscribe?token=' + unsubscribeToken + '">unsubscribe</a>'
+      'You can always : <a href="' + process.env.SERVER_NAME + 'unsubscribe?token=' + unsubscribeToken + '">unsubscribe</a>'
     );
 
     let user = {
@@ -84,8 +84,8 @@ module.exports = function () {
         'email': false,
         'slack': false
       },
-      'unsubscribe': unsubscribeToken,
-      'password_reset': passwordResetToken
+      'unsubscribe_token': unsubscribeToken,
+      'password_reset_token': passwordResetToken
     };
 
     return mongo.insertOne(collection, user)
