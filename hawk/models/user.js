@@ -70,9 +70,8 @@ module.exports = function () {
     email.send(
       userEmail,
       'Your password',
-      '',
-      'Here it is: ' + password + '<br \><br \>' +
-      'You can always : <a href="' + process.env.SERVER_NAME + 'unsubscribe?token=' + unsubscribeToken + '">unsubscribe</a>'
+      'Here it is: ' + password,
+      ''
     );
 
     let user = {
