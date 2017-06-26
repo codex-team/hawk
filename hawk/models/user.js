@@ -100,10 +100,9 @@ module.exports = function () {
    * Get logged user data and his domains data
    *
    * @param req
-   * @param res
    * @returns {Promise.<TResult>}
    */
-  let getUserAndDomains = function (req, res) {
+  let getUserAndDomains = function (req) {
 
     let currentUser = null,
         domains = null;
@@ -115,8 +114,7 @@ module.exports = function () {
 
         if (!currentUser) {
 
-          res.sendStatus(403);
-          return;
+          throw Error(403);
 
         }
 
@@ -212,6 +210,10 @@ module.exports = function () {
 
   };
 
+  function getDomains() {
+    // body...
+  }
+
   return {
     current: current,
     getByParams: getByParams,
@@ -219,7 +221,8 @@ module.exports = function () {
     get: get,
     getInfo: getUserAndDomains,
     update: update,
-    checkParamUniqness: checkParamUniqness
+    checkParamUniqness: checkParamUniqness,
+    getDomains
   };
 
 }();
