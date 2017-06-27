@@ -1,0 +1,24 @@
+<div>
+	<font color="#000000" style="font-size:15px;">
+		Hello. We’ve got a {{ event.tag|capitalize }} Error on {{ domain }}. Please, take a look.
+	</font>
+</div>
+<div style="padding-top: 15px;">
+	<font color="#000000" style="font-size:16px; line-height: 1.5em;">
+			<b>{{ event.message }}</b>
+	</font>
+</div>
+<div style="padding-top: 15px">
+	<font color="#717171" style="font-size:16px;">
+			<a style="color: #717171; text-decoration: none;">{{ event.errorLocation.full }}</a>
+	</font>
+</div>
+<div style="padding-top: 25px;">
+	<a href="https://{{ hostName }}/garage/{{ domain }}/event/{{ event.groupHash }}" 
+		style="background-color: #00bd95; display: inline-block; text-decoration: none; 
+		color: #ffffff; padding: 10px 15px; border-radius: 3px;">
+			<font color="#ffffff" style="font-size:15px;line-height:18px;">
+				View traceback
+			</font>
+	</a>
+</div>
