@@ -27,7 +27,8 @@ module.exports = function () {
     let renderParams = {
       event: event,
       domain: domain,
-      hostName: process.env.HOST_NAME
+      serverUrl: process.env.SERVER_URL,
+      unsubscribeToken: user.unsubscribe_token
     };
 
     Twig.renderFile(templatesPath + templates.messenger, renderParams, function (err, html) {

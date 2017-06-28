@@ -66,7 +66,9 @@ module.exports = function () {
 
   let add = function (userEmail) {
 
-    let password = auth.generatePassword();
+    let password = auth.generatePassword(),
+        unsubscribeToken = auth.generatePassword(),
+        passwordResetToken = auth.generatePassword();
 
     /** Debug mode */
     if (process.env.ENVIRONMENT == 'DEVELOPMENT') {
@@ -94,7 +96,9 @@ module.exports = function () {
         'tg': false,
         'email': false,
         'slack': false
-      }
+      },
+      'unsubscribe_token': unsubscribeToken,
+      'password_reset_token': passwordResetToken
     };
 
     return mongo.insertOne(collection, user)
