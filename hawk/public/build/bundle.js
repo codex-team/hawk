@@ -378,7 +378,7 @@ module.exports = function () {
     var error = function error() {
 
       hawk.notifier.show({
-        message: 'Sorry, there is server error',
+        message: 'Sorry, there is a server error',
         style: 'error'
       });
     };

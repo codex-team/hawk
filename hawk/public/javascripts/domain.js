@@ -21,7 +21,7 @@ module.exports = function () {
     let error = function () {
 
       hawk.notifier.show({
-        message: 'Sorry, there is server error',
+        message: 'Sorry, there is a server error',
         style: 'error'
       });
 
