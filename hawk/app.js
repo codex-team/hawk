@@ -11,6 +11,12 @@ require('dotenv').config();
 
 var app = express();
 
+/**
+ * User model
+ * @uses  for getting current user data
+ */
+let user = require('./models/user');
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'twig');
@@ -23,6 +29,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
+
+app.use(function(req,res,next) {
+  user.getInfo(req).then(function(userData) {
+    res.locals.user = userData.user;
+    res.locals.userDomains = userData.domains;
+    next();
+  });
+});
 
 
 /**
@@ -68,6 +82,8 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = process.env.ENVIRONMENT === 'DEVELOPMENT' ? err : {};
+
+  console.log("Error thrown: ", err);
 
   // render the error page
   res.status(err.status || 500);

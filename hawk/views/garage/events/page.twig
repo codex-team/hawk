@@ -11,7 +11,7 @@
     <div class="event__content clearfix">
       <div class="event__counter">
         <div class="event__counter-number">
-          <div class="event__counter-number--digit">{{ event.count }}</div>
+          <div class="event__counter-number--digit">{{ events|length }}</div>
           times
         </div>
         <div class="event__counter-date">since<br>{{ event.time|date('d M Y') }}</div>
@@ -24,5 +24,22 @@
       </div>
     </div>
   </div>
-  <pre>{{ dump(event) }}</pre>
+  <table>
+    {% for item in events %}
+      <tr>
+        {# <td>{{ item.type }}</td> #}
+        {# <td>{{ item.tag }}</td> #}
+        {# <td>{{ item.message }}</td> #}
+        <td>{{ item.time|date }}</td>
+        <td>{{ item.errorLocation.full }}</td>
+        <td>{{ item.location.url }}</td>
+        <td>{{ item.stack }}</td>
+        <td>{{ item.userAgent.browser.name }}</td>
+        <td>{{ item.userAgent.browser.version }}</td>
+        <td>{{ item.userAgent.device.os }}</td>
+        <td>{{ item.userAgent.device.type }}</td>
+        <td>{{ item.userAgent.device.width }} x {{ item.userAgent.device.height }}</td>
+      </tr>
+    {% endfor %}
+  </table>
 {% endblock %}

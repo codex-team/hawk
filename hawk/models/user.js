@@ -102,7 +102,7 @@ module.exports = function () {
    * @param req
    * @returns {Promise.<TResult>}
    */
-  let getUserAndDomains = function (req) {
+  let getInfo = function (req) {
 
     let currentUser = null,
         domains = null;
@@ -155,12 +155,12 @@ module.exports = function () {
         return {
           user: currentUser,
           domains: domains
-        }
+        };
 
       })
       .catch(function (e) {
         console.log('Can\'t get user because of %o', e);
-      })
+      });
   };
 
   /**
@@ -219,7 +219,7 @@ module.exports = function () {
     getByParams: getByParams,
     add: add,
     get: get,
-    getInfo: getUserAndDomains,
+    getInfo: getInfo,
     update: update,
     checkParamUniqness: checkParamUniqness,
     getDomains
