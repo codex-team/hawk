@@ -93,4 +93,8 @@
     &__submit {
         font-size: 18px;
     }
+
+    &__error {
+      color: var(--errorMessage);
+    }
 }

@@ -7,6 +7,7 @@ module.exports = function () {
 
   /**
    * Native Node URL module
+   * Use to parse URL's
    * @see https://nodejs.org/api/url.html#url_constructor_new_url_input_base
    */
   const url = require('url');
@@ -64,14 +65,17 @@ module.exports = function () {
          */
         let parsedURL = url.parse(domain);
 
-        /** empty string */
-        if (!parsedURL.href && !parsedURL.pathname) {
-          return;
+        /**
+         * If hostname and protocol aren't valid
+         * refresh page with error message
+         */
+        if (!parsedURL.host && !parsedURL.protocol) {
+          throw new Error('Invalid domain name, please try again');
         }
 
         return mongo.insertOne(collection, {
           'protocol' : parsedURL.protocol || 'http',
-          'name': parsedURL.host || parsedURL.pathname,
+          'name': parsedURL.host,
           'token': token,
           'user': user._id.toString()
         });
