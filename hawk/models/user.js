@@ -36,7 +36,7 @@ module.exports = function () {
    * @param  {object} param  params dictionary
    * @return {Promise}       True of False
    */
-  let checkParamUniqness = function (param) {
+  let checkParamUniqueness = function (param) {
 
     return new Promise(function (resolve, reject) {
 
@@ -54,7 +54,11 @@ module.exports = function () {
           }
 
         })
-        .catch(console.log);
+        .catch(function (e) {
+
+          logger.log('error', 'Can\'t check param uniqueness because of error ', e);
+
+        });
 
     });
 
@@ -90,7 +94,7 @@ module.exports = function () {
 
       }).catch(function (err) {
 
-        console.log('Cannot insert user because of %o', err);
+        logger.log('error', 'Cannot insert user because of %o', err);
 
       });
 
@@ -141,7 +145,7 @@ module.exports = function () {
 
             }).catch(function (e) {
 
-              console.log('Events Query composing error: %o', e);
+              logger.log('error', 'Events Query composing error: %o', e);
 
             });
 
@@ -161,7 +165,9 @@ module.exports = function () {
 
       })
       .catch(function (e) {
-        console.log('Can\'t get user because of %o', e);
+
+        logger.log('Can\'t get user because of %o', e);
+
       })
   };
 
@@ -219,7 +225,7 @@ module.exports = function () {
     get: get,
     getInfo: getUserAndDomains,
     update: update,
-    checkParamUniqness: checkParamUniqness
+    checkParamUniqueness: checkParamUniqueness
   };
 
 }();

@@ -210,7 +210,7 @@ module.exports = function () {
 
     if (!checkboxes) {
 
-      console.log('There are no checkboxes on page');
+      logger.info('There are no checkboxes on page');
       return;
     }
 

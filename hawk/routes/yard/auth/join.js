@@ -40,7 +40,7 @@ let join = {
 
       let email = req.body.email;
 
-      user.checkParamUniqness({email: email})
+      user.checkParamUniqueness({email: email})
         .then(function (isEmailExist) {
 
           return user.add(email)
@@ -57,7 +57,11 @@ let join = {
 
               }
 
-            }).catch(console.log);
+            }).catch(function (e) {
+
+              logger.log('error', 'Can\'t add user because of ', e);
+
+            });
 
         }).catch(function () {
 

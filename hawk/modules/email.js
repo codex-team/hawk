@@ -1,6 +1,6 @@
 'use strict';
 let config = require('../config/email');
-let nodemailer = require("nodemailer");
+let nodemailer = require('nodemailer');
 
 module.exports = function () {
 
@@ -10,8 +10,10 @@ module.exports = function () {
   let init = function () {
 
     if (!config.email.auth.user) {
-      console.log('Email config: user is missed');
+
+      logger.log('warn', 'Email config: user is missed');
       return;
+
     }
 
     transporter = nodemailer.createTransport({
@@ -38,13 +40,17 @@ module.exports = function () {
   let send = function (to, subject, text, html) {
 
     if (!config.email.auth.user) {
-      console.log('Email config: user is missed');
+
+      logger.log('warn', 'Email config: user is missed');
       return;
+
     }
 
     if (!config.email.hawk.name) {
-      console.log('Email config: sender is missed');
+
+      logger.log('warn', 'Email config: sender is missed');
       return;
+
     }
 
     let mailOptions = {
@@ -56,10 +62,15 @@ module.exports = function () {
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
+
       if (error) {
-        return console.log(error);
+
+        return logger.log('error', 'Error while sending email ', error);
+
       }
-      console.log('Message %s sent: %s', info.messageId, info.response);
+
+      logger.info('Message %s sent: %s', info.messageId, info.response);
+
     });
 
   };
@@ -67,6 +78,6 @@ module.exports = function () {
   return {
     init : init,
     send : send
-  }
+  };
 
 }();

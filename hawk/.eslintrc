@@ -73,6 +73,8 @@
         "XMLHttpRequest": true,
         "ActiveXObject": true,
         "FileReader": true,
+        "logger": true,
+        "global": true,
         "hawk": true
     }
 }

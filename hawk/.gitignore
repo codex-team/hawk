@@ -8,3 +8,4 @@ npm-debug.log
 config/mongo.js
 config/email.js
 config/collections.js
+/logs
