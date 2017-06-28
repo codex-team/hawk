@@ -30,6 +30,14 @@ app.use(cookieParser());
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 
+/**
+ * Sets response scoped variables
+ *
+ * res.locals.user        — current authored user
+ * res.locals.userDomains — domains list for current user
+ *
+ * @fires user.getInfo
+ */
 app.use(function(req,res,next) {
   user.getInfo(req).then(function(userData) {
     res.locals.user = userData.user;
