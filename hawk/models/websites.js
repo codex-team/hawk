@@ -5,6 +5,7 @@ module.exports = function () {
   let user = require('../models/user');
   let collections = require('../config/collections');
 
+  const url = require('url');
   const collection = collections.WEBSITES;
 
   /**
@@ -53,14 +54,15 @@ module.exports = function () {
     return mongo.updateOne('users', {_id: mongo.ObjectId(user._id)}, {$push: {domains: domain}})
       .then(function () {
 
-        /** get protocol and domain name */
-        let domainInfo = domain.split(/:\/\//),
-            protocol = domainInfo[0],
-            domainName = domainInfo[1];
+        /**
+         * Using Node URL module
+         * @see https://nodejs.org/api/url.html#url_constructor_new_url_input_base
+         */
+        let parsedURL = url.parse(domain);
 
         return mongo.insertOne(collection, {
-          'protocol' : protocol,
-          'name': domainName,
+          'protocol' : parsedURL.protocol,
+          'name': parsedURL.host,
           'token': token,
           'user': user._id.toString()
         });
