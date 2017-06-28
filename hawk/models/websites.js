@@ -5,6 +5,12 @@ module.exports = function () {
   let user = require('../models/user');
   let collections = require('../config/collections');
 
+  /**
+   * Native Node URL module
+   * Use to parse URL's
+   * @see https://nodejs.org/api/url.html#url_constructor_new_url_input_base
+   */
+  const url = require('url');
   const collection = collections.WEBSITES;
 
   /**
@@ -50,35 +56,61 @@ module.exports = function () {
    */
   let add = function (domain, token, user) {
 
-    return mongo.updateOne('users', {_id: mongo.ObjectId(user._id)}, {$push: {domains: domain}}).then(function () {
+    return mongo.updateOne('users', {_id: mongo.ObjectId(user._id)}, {$push: {domains: domain}})
+      .then(function () {
 
-      return mongo.insertOne(collection, {
-        'name': domain,
-        'token': token,
-        'user': user._id.toString()
+        /**
+         * Using Node URL module to get domain name and protocol
+         * to see all features you can in documentation page
+         */
+        let parsedURL = url.parse(domain);
+
+        /**
+         * If hostname and protocol aren't valid
+         * refresh page with error message
+         */
+        if (!parsedURL.host && !parsedURL.protocol) {
+          throw new Error('Invalid domain name, please try again');
+        }
+
+        return mongo.insertOne(collection, {
+          'protocol' : parsedURL.protocol || 'http',
+          'name': parsedURL.host,
+          'token': token,
+          'user': user._id.toString()
+        });
+
       })
-        .then(function (result) {
+      .then(function (result) {
 
-          if (result) {
+        if (result) {
+
+          if (process.env.ENVIRONMENT == 'DEVELOPMENT') {
+
+            console.log('Domain: ', domain);
+            console.log('Token: ', token);
+
+          } else {
 
             email.init();
             email.send(
               user.email,
               domain + ' token',
               'Here is an access token for domain ' + domain + ':\n' + token,
-              '');
-            return true;
-
-          } else {
-
-            return false;
+              ''
+            );
 
           }
 
-        });
+          return true;
 
-    });
+        } else {
 
+          return false;
+
+        }
+
+      });
   };
 
   /**
@@ -116,8 +148,7 @@ module.exports = function () {
       });
 
   };
-
-
+  
   return {
     get: get,
     checkName: checkName,
