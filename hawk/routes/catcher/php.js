@@ -137,7 +137,7 @@ let getServerErrors = function (req, res) {
             })
             .catch(function (e) {
 
-              console.log('Can not add event because of ', e);
+              logger.log('error', 'Can not add event because of ', e);
               res.sendStatus(500);
 
             });

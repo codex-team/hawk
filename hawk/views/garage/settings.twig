@@ -10,8 +10,17 @@
     </div>
 
     <script>
+        var tokenCopied = function (e) {
+
+              hawk.notifier.show({
+                message: 'Token was copied',
+                style: 'success'
+              })
+
+        }
+
         hawk.docReady(hawk.checkbox.init);
-        hawk.docReady(hawk.copyable.init);
+        hawk.docReady(hawk.copyable.init.bind(null, tokenCopied));
     </script>
 
 {% endblock %}

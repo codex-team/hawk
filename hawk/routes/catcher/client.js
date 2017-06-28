@@ -63,7 +63,7 @@ let connection = function (ws) {
             events.add(event.location.host, event)
               .catch(function (e) {
 
-                console.log('Can not add event because of ', e);
+                logger.log('error', 'Can not add event because of ', e);
 
               });
 
