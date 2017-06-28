@@ -111,7 +111,7 @@ module.exports = function () {
       })
       .catch(function (e) {
 
-        console.log('Can\' remove domain ', e);
+        logger.log('error', 'Can\' remove domain ', e);
 
       });
 
