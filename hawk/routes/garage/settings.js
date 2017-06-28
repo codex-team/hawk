@@ -73,6 +73,13 @@ let update = function (req, res) {
 
 };
 
+/**
+ * Unlink domain action
+ * Remove domain data from database and unlink it from user's domains list
+ *
+ * @param req
+ * @param res
+ */
 let unlinkDomain = function (req, res) {
 
   user.current(req)
