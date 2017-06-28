@@ -1,43 +1,43 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
-		<meta name="language" content="en-us">
-		<meta charset="utf-8">
-		<style type="text/css">
-			td {
-				font-family: inherit;
-			}
-		</style>
-	</head>
+  <head>
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+    <meta name="language" content="en-us">
+    <meta charset="utf-8">
+    <style type="text/css">
+      td {
+        font-family: inherit;
+      }
+    </style>
+  </head>
 
-	{% set footer %}
-		<a href="https://{{ hostName }}/garage/settings" style="color:#7f87a2;">Notifications preferences</a>
-	{% endset %}
+  {% set footer %}
+    <a href="https://{{ hostName }}/garage/settings" style="color:#7f87a2;">Notifications preferences</a>
+  {% endset %}
 
-	<body style="background-color: #e7ebf6; ">
-		<table cellpadding="0" cellspacing="0" border="0" width="100%">
-			<table cellpadding="0" cellspacing="0"  width="90%" align="center" style="max-width: 660px; 
-				padding-right: 30px; padding-left: 30px; padding-bottom: 100px; font-family: Lato, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto','Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;">
-				<div style="padding-top: 45px; padding-left: 30px;">
-					<font color="#000000" style="font-size: 23px; font-weight: 700;">
-						<a href="https://hawk.so" style="color: #000000; text-decoration: none;">Hawk.so</a>
-					</font>
-				</div>
-				<div style="padding-top: 3px; padding-bottom: 23px; padding-left: 30px;">
-					<font color="#606989" style="font-size: 15px; font-weight: 400;">
-						Fast and lightweight error tracking service
-					</font>
-				</div>	
-				<div style="background-color: #ffffff; padding: 30px; border: 1px solid #dddeef; border-radius: 3px;">
-					{% include 'error-content.twig' %}
-				</div>
-				<div style="padding-top: 23px; padding-left: 34px;">
-					<font color="#7f87a2" style="font-size:15px;text-decoration:underline">
-						{{ footer }}
-					</font>
-				</div>
-			</table>
-		</table>
-	</body>
+  <body style="background-color: #e7ebf6; ">
+    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+      <table cellpadding="0" cellspacing="0"  width="90%" align="center" style="max-width: 660px; 
+        padding-right: 30px; padding-left: 30px; padding-bottom: 100px; font-family: Lato, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto','Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;">
+        <div style="padding-top: 45px; padding-left: 30px;">
+          <font color="#000000" style="font-size: 23px; font-weight: 700;">
+            <a href="https://hawk.so" style="color: #000000; text-decoration: none;">Hawk.so</a>
+          </font>
+        </div>
+        <div style="padding-top: 3px; padding-bottom: 23px; padding-left: 30px;">
+          <font color="#606989" style="font-size: 15px; font-weight: 400;">
+            Fast and lightweight error tracking service
+          </font>
+        </div>  
+        <div style="background-color: #ffffff; padding: 30px; border: 1px solid #dddeef; border-radius: 3px;">
+          {% include 'error-content.twig' %}
+        </div>
+        <div style="padding-top: 23px; padding-left: 34px;">
+          <font color="#7f87a2" style="font-size:15px;text-decoration:underline">
+            {{ footer }}
+          </font>
+        </div>
+      </table>
+    </table>
+  </body>
 </html>
