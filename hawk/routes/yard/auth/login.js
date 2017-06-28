@@ -64,7 +64,7 @@ let login = {
           }
       }).catch(function (e) {
 
-        logger.log('error', 'Can\'t fin user because of ', e);
+        logger.log('error', 'Can\'t find user because of ', e);
 
       });
 

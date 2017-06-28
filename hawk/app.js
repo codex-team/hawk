@@ -55,7 +55,7 @@ winston.loggers.add('console', {
   dailyRotateFile: {
     level: 'debug',
     filename: 'logs/errors/.log',
-    datePattern: '.yyyy-MM',
+    datePattern: 'yyyy-MM',
     prepend: true,
     timestamp: true,
     handleExceptions: true,
