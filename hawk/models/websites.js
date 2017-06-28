@@ -81,12 +81,49 @@ module.exports = function () {
 
   };
 
+  /**
+   * Remove domain from database and unlink it from user account
+   *
+   * @param owner - domain owner
+   * @param token - domain token
+   * @returns {Promise.<TResult>}
+   */
+  let remove = function (owner, token) {
+
+    return mongo.findOne(collections.WEBSITES, {
+      token: token,
+      user: owner._id.toString()
+    })
+      .then(function (domain) {
+
+        /* Remove domain from list of user`s domains */
+        return mongo.updateOne(collections.USERS, {_id: owner._id}, {$pull: {domains: domain}});
+
+      })
+      .then(function () {
+
+        /* Remove domain from database */
+        return mongo.remove(collections.WEBSITES, {
+          user: owner._id.toString(),
+          token: token
+        });
+
+      })
+      .catch(function (e) {
+
+        console.log('Can\' remove domain ', e);
+
+      });
+
+  };
+
 
   return {
     get: get,
     checkName: checkName,
     add: add,
-    getByUser: getByUser
+    getByUser: getByUser,
+    remove: remove
   };
 
 }();
