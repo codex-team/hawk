@@ -13,7 +13,7 @@ services:
     build: build/node_image
     ports:
       - 3000:3000
-      - 8000:8000
+      - 8070:8070
     links:
       - mongodb
     volumes:
