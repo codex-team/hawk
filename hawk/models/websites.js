@@ -50,37 +50,53 @@ module.exports = function () {
    */
   let add = function (domain, token, user) {
 
-    return mongo.updateOne('users', {_id: mongo.ObjectId(user._id)}, {$push: {domains: domain}}).then(function () {
+    return mongo.updateOne('users', {_id: mongo.ObjectId(user._id)}, {$push: {domains: domain}})
+      .then(function () {
 
-      return mongo.insertOne(collection, {
-        'name': domain,
-        'token': token,
-        'user': user._id.toString()
+        /** get protocol and domain name */
+        let domainInfo = domain.split(/:\/\//),
+            protocol = domainInfo[0],
+            domainName = domainInfo[1];
+
+        return mongo.insertOne(collection, {
+          'protocol' : protocol,
+          'name': domainName,
+          'token': token,
+          'user': user._id.toString()
+        });
+
       })
-        .then(function (result) {
+      .then(function (result) {
 
-          if (result) {
+        if (result) {
+
+          if (process.env.ENVIRONMENT == 'DEVELOPMENT') {
+
+            console.log('Domain: ', domain);
+            console.log('Token: ', token);
+
+          } else {
 
             email.init();
             email.send(
               user.email,
               domain + ' token',
               'Here is an access token for domain ' + domain + ':\n' + token,
-              '');
-            return true;
-
-          } else {
-
-            return false;
+              ''
+            );
 
           }
 
-        });
+          return true;
 
-    });
+        } else {
 
+          return false;
+
+        }
+
+      });
   };
-
 
   return {
     get: get,

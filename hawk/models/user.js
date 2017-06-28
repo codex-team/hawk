@@ -64,13 +64,23 @@ module.exports = function () {
 
     let password = auth.generatePassword();
 
-    email.init();
-    email.send(
-      userEmail,
-      'Your password',
-      'Here it is: ' + password,
-      ''
-    );
+    /** Debug mode */
+    if (process.env.ENVIRONMENT == 'DEVELOPMENT') {
+
+      console.log("Your email: ", userEmail);
+      console.log("Your password: ", password);
+
+    } else {
+
+      email.init();
+      email.send(
+        userEmail,
+        'Your password',
+        'Here it is: ' + password,
+        ''
+      );
+
+    }
 
     let user = {
       'email': userEmail,
