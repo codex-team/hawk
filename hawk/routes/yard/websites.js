@@ -45,7 +45,13 @@ router.post('/create', function(req, res, next) {
                 res.redirect('/garage?success=1');
               })
               .catch(function(error) {
-                res.render('yard/websites/create', { error : error.message } );
+
+                let message = {
+                  type : 'error',
+                  text : error.message
+                };
+
+                res.render('yard/websites/create', { message : message } );
               });
 
             // res.render(resultTemplate, {

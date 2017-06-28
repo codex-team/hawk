@@ -22,9 +22,6 @@
           required />
       </fieldset>
     {% endfor %}
-    {% if error is defined and not empty %}
-      <div class="yard-form__error">{{ error }}</div>
-    {% endif %}
     {% if submitText is not empty %}
       <input class="yard-form__submit button--submit" type="submit" value="{{ submitText }}">
     {% endif %}
