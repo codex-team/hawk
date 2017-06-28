@@ -281,10 +281,12 @@ module.exports = function () {
 
 /**
  * Copyable module allows you to add text to copy buffer by click
- * Just add 'js-copyable' name to element
+ * Just add 'js-copyable' name to element and call init method
  *
  * @usage
  * <span name='js-copyable'>Click to copy</span>
+ *
+ * You can pass callback function to init method. Callback will fire when something has copied
  *
  * @type {{init}}
  */
@@ -296,6 +298,8 @@ module.exports = function () {
 
   /**
    * Take element by name and pass it to prepareElement function
+   *
+   * @param {Function} copiedCallback - fires when something has copied
    */
   var init = function init(copiedCallback) {
 
@@ -316,9 +320,10 @@ module.exports = function () {
   };
 
   /**
-   * Add click listener to copyable element
+   * Add click and copied listeners to copyable element
    *
    * @param element
+   * @param copiedCallback
    */
   var prepareElement = function prepareElement(element, copiedCallback) {
 
@@ -342,6 +347,10 @@ module.exports = function () {
     document.execCommand('copy');
     selection.removeAllRanges();
 
+    /**
+     * We create new CustomEvent and dispatch it on copyable element
+     * Consist copied text in detail property
+     */
     var CopiedEvent = new CustomEvent('copied', {
       bubbles: false,
       cancelable: false,
