@@ -210,10 +210,6 @@ module.exports = function () {
 
   };
 
-  function getDomains() {
-    // body...
-  }
-
   return {
     current: current,
     getByParams: getByParams,
@@ -221,8 +217,7 @@ module.exports = function () {
     get: get,
     getInfo: getInfo,
     update: update,
-    checkParamUniqness: checkParamUniqness,
-    getDomains
+    checkParamUniqness: checkParamUniqness
   };
 
 }();
