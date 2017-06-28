@@ -5,6 +5,10 @@ module.exports = function () {
   let user = require('../models/user');
   let collections = require('../config/collections');
 
+  /**
+   * Native Node URL module
+   * @see https://nodejs.org/api/url.html#url_constructor_new_url_input_base
+   */
   const url = require('url');
   const collection = collections.WEBSITES;
 
@@ -55,14 +59,19 @@ module.exports = function () {
       .then(function () {
 
         /**
-         * Using Node URL module
-         * @see https://nodejs.org/api/url.html#url_constructor_new_url_input_base
+         * Using Node URL module to get domain name and protocol
+         * to see all features you can in documentation page
          */
         let parsedURL = url.parse(domain);
 
+        /** empty string */
+        if (!parsedURL.href && !parsedURL.pathname) {
+          return;
+        }
+
         return mongo.insertOne(collection, {
-          'protocol' : parsedURL.protocol,
-          'name': parsedURL.host,
+          'protocol' : parsedURL.protocol || 'http',
+          'name': parsedURL.host || parsedURL.pathname,
           'token': token,
           'user': user._id.toString()
         });
