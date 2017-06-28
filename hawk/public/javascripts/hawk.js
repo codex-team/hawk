@@ -15,6 +15,8 @@ let hawk = (function ( self ) {
 
   self.checkbox = require('./checkbox');
   self.copyable = require('./copyable');
+  self.ajax     = require('./ajax');
+  self.domain = require('./domain');
 
   return self;
 

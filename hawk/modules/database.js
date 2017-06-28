@@ -57,14 +57,26 @@ let mongo = (function () {
       });
   };
 
+  let remove = function (c, query) {
+
+    return getCollection(c)
+      .then(function (collection) {
+
+        return collection.remove(query);
+
+      });
+
+  };
+
   return {
     findOne : findOne,
     insertOne : insertOne,
     find: find,
     ObjectId: mongodb.ObjectId,
     aggregation: aggregation,
-    updateOne: updateOne
-  }
+    updateOne: updateOne,
+    remove: remove
+  };
 
 })();
 

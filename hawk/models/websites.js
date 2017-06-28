@@ -81,12 +81,40 @@ module.exports = function () {
 
   };
 
+  let remove = function (owner, token) {
+
+    return mongo.findOne(collections.WEBSITES, {
+      token: token,
+      user: owner._id.toString()
+    })
+      .then(function (domain) {
+
+        return mongo.updateOne(collections.USERS, {_id: owner._id}, {$pull: {domains: domain}});
+
+      })
+      .then(function () {
+
+        return mongo.remove(collections.WEBSITES, {
+          user: owner._id.toString(),
+          token: token
+        });
+
+      })
+      .catch(function (e) {
+
+        console.log('Can\' remove domain ', e);
+
+      });
+
+  };
+
 
   return {
     get: get,
     checkName: checkName,
     add: add,
-    getByUser: getByUser
+    getByUser: getByUser,
+    remove: remove
   };
 
 }();

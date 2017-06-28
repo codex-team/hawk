@@ -1,6 +1,7 @@
 let express = require('express');
 let router = express.Router();
 let user = require('../../models/user');
+let websites = require('../../models/websites');
 
 let csrf = require('../../modules/csrf');
 
@@ -21,14 +22,14 @@ let index = function (req, res) {
       })
     })
     .catch (function (e) {
-      console.log('Error while getting user data for settings page: %o', e);
+      logger.log('error', 'Error while getting user data for settings page: %o', e);
     })
 
 };
 
 /**
  * Settings update handler
- * 
+ *
  * @param req
  * @param res
  */
@@ -72,7 +73,31 @@ let update = function (req, res) {
 
 };
 
+let unlinkDomain = function (req, res) {
+
+  user.current(req)
+    .then(function (currentUser) {
+
+      let token = req.query.token;
+
+      websites.remove(currentUser, token)
+        .then(function () {
+
+          res.sendStatus(200);
+
+        })
+        .catch(function () {
+
+          res.sendStatus(500);
+
+        });
+
+    });
+
+};
+
 router.get('/settings', csrf, index);
 router.post('/settings/save', csrf, update);
+router.get('/settings/unlink', csrf, unlinkDomain);
 
 module.exports = router;

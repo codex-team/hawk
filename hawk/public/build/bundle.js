@@ -64,11 +64,104 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * AJAX module
+ */
+module.exports = function () {
+
+  /**
+   * @usage codex.ajax.call();
+   */
+  var call = function call(data) {
+
+    if (!data || !data.url) return;
+
+    var XMLHTTP = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject('Microsoft.XMLHTTP'),
+        successFunction = function successFunction() {},
+        errorFunction = function errorFunction() {};
+
+    data.async = true;
+    data.type = data.type || 'GET';
+    data.data = data.data || '';
+    data['content-type'] = data['content-type'] || 'application/json; charset=utf-8';
+    successFunction = data.success || successFunction;
+    errorFunction = data.error || errorFunction;
+
+    if (data.type === 'GET' && data.data) {
+
+      data.url = /\?/.test(data.url) ? data.url + '&' + data.data : data.url + '?' + data.data;
+    }
+
+    if (data.withCredentials) {
+
+      XMLHTTP.withCredentials = true;
+    }
+
+    if (data.beforeSend && typeof data.beforeSend === 'function') {
+
+      if (!data.beforeSend.call()) {
+
+        return;
+      }
+    }
+
+    XMLHTTP.open(data.type, data.url, data.async);
+
+    /**
+     * If we send FormData, we need no content-type header
+     */
+    if (!isFormData(data.data)) {
+
+      XMLHTTP.setRequestHeader('Content-type', data['content-type']);
+    }
+
+    XMLHTTP.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    XMLHTTP.onreadystatechange = function () {
+
+      if (XMLHTTP.readyState === 4) {
+
+        if (XMLHTTP.status === 200) {
+
+          successFunction(XMLHTTP.responseText);
+        } else {
+
+          errorFunction(XMLHTTP.statusText);
+        }
+      }
+    };
+
+    XMLHTTP.send(data.data);
+  };
+
+  /**
+   * Function for checking is it FormData object to send.
+   * @param {Object} object to check
+   * @return boolean
+   */
+  function isFormData(object) {
+
+    return typeof object.append === 'function';
+  }
+
+  return {
+
+    call: call
+
+  };
+}();
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -180,7 +273,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -257,13 +350,50 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 2 */
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function () {
+
+  var unlink = function unlink(button, token) {
+
+    var success = function success() {
+
+      window.alert('Domain unlinked');
+      button.parentNode.remove();
+    };
+
+    var error = function error() {
+
+      window.alert('Sory, there are server error');
+    };
+
+    hawk.ajax.call({
+      data: 'token=' + token,
+      type: 'GET',
+      success: success,
+      error: error,
+      beforeSend: window.confirm.bind(null, 'Are you sure?'),
+      url: 'settings/unlink'
+    });
+  };
+
+  return {
+    unlink: unlink
+  };
+}();
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -272,7 +402,7 @@ module.exports = function () {
 /**
 * Require CSS build
 */
-__webpack_require__(2);
+__webpack_require__(4);
 
 var hawk = function (self) {
 
@@ -283,8 +413,10 @@ var hawk = function (self) {
     console.log('Initialized');
   };
 
-  self.checkbox = __webpack_require__(0);
-  self.copyable = __webpack_require__(1);
+  self.checkbox = __webpack_require__(1);
+  self.copyable = __webpack_require__(2);
+  self.ajax = __webpack_require__(0);
+  self.domain = __webpack_require__(3);
 
   return self;
 }({});
