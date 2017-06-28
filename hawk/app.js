@@ -5,8 +5,21 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+
+require('dotenv').config();
+
+/** * Loggers ***/
+/* Main logger */
 var winston = require('winston');
+
+/* Allow rotate log files by date */
+require('winston-daily-rotate-file');
+
+/* Express middleware logger */
 var morgan = require('morgan');
+/** */
+
+/* File system */
 var fs = require('fs');
 
 /** Setup loggers **/
@@ -33,7 +46,7 @@ if (!fs.existsSync(errorsDir)) {
 
 }
 
-require('winston-daily-rotate-file');
+/* HTTP requests logger */
 winston.loggers.add('access', {
   dailyRotateFile: {
     level: 'debug',
@@ -44,6 +57,7 @@ winston.loggers.add('access', {
   }
 });
 
+/* Global logger */
 winston.loggers.add('console', {
   console: {
     level: 'debug',
@@ -63,7 +77,12 @@ winston.loggers.add('console', {
   }
 });
 
+/**
+  * @usage logger.log(level, message)
+  *        logger[level](message)
+  */
 global.logger = winston.loggers.get('console');
+
 let accessLogger = winston.loggers.get('access');
 
 accessLogger.stream = {
@@ -76,7 +95,6 @@ accessLogger.stream = {
 
 };
 
-require('dotenv').config();
 
 var app = express();
 
