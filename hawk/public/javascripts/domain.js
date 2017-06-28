@@ -1,27 +1,51 @@
 module.exports = function () {
 
+  /**
+   * Unlink domain handler
+   *
+   * @param button
+   * @param token - domain token
+   */
   let unlink = function (button, token) {
 
     let success = function () {
 
-      window.alert('Domain unlinked');
+      hawk.notifier.show({
+        message: 'Domain was successfully unlinked',
+        style: 'success'
+      });
       button.parentNode.remove();
 
     };
 
     let error = function () {
 
-      window.alert('Sory, there are server error');
+      hawk.notifier.show({
+        message: 'Sorry, there is server error',
+        style: 'error'
+      });
 
     };
 
-    hawk.ajax.call({
-      data: 'token='+token,
-      type: 'GET',
-      success: success,
-      error: error,
-      beforeSend: window.confirm.bind(null, 'Are you sure?'),
-      url: 'settings/unlink'
+    let sendAjax = function () {
+
+      hawk.ajax.call({
+        data: 'token='+token,
+        type: 'GET',
+        success: success,
+        error: error,
+        url: 'settings/unlink'
+      });
+
+    };
+
+    let domain = button.dataset.name;
+
+    hawk.notifier.show({
+      message: 'Confirm ' + domain + ' unlinking',
+      type: 'confirm',
+      okText: 'Unlink',
+      okHandler: sendAjax
     });
 
   };

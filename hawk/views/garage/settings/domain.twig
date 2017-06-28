@@ -3,5 +3,5 @@
     <span class="domains-list-item__name">{{ domain.name }}</span>
     <span class="domains-list-item__token-label">Domain token</span>
     <span name="js-copyable" title="Click to copy" class="domains-list-item__token">{{ domain.token }}</span>
-    <a class="domains-list-item__unlink" data-token="{{ domain.token }}" onclick="hawk.domain.unlink(this, '{{domain.token }}')">Unlink</a>
+    <a class="domains-list-item__unlink" data-name="{{ domain.name}}" onclick="hawk.domain.unlink(this, '{{domain.token }}')">Unlink</a>
 </div>

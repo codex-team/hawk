@@ -64,7 +64,7 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -120,7 +120,7 @@ module.exports = function () {
     /**
      * If we send FormData, we need no content-type header
      */
-    if (!isFormData(data.data)) {
+    if (!isFormData_(data.data)) {
 
       XMLHTTP.setRequestHeader('Content-type', data['content-type']);
     }
@@ -148,10 +148,10 @@ module.exports = function () {
    * @param {Object} object to check
    * @return boolean
    */
-  function isFormData(object) {
+  var isFormData_ = function isFormData_(object) {
 
-    return typeof object.append === 'function';
-  }
+    return object instanceof FormData;
+  };
 
   return {
 
@@ -358,26 +358,49 @@ module.exports = function () {
 
 module.exports = function () {
 
+  /**
+   * Unlink domain handler
+   *
+   * @param button
+   * @param token - domain token
+   */
   var unlink = function unlink(button, token) {
 
     var success = function success() {
 
-      window.alert('Domain unlinked');
+      hawk.notifier.show({
+        message: 'Domain was successfully unlinked',
+        style: 'success'
+      });
       button.parentNode.remove();
     };
 
     var error = function error() {
 
-      window.alert('Sory, there are server error');
+      hawk.notifier.show({
+        message: 'Sorry, there is server error',
+        style: 'error'
+      });
     };
 
-    hawk.ajax.call({
-      data: 'token=' + token,
-      type: 'GET',
-      success: success,
-      error: error,
-      beforeSend: window.confirm.bind(null, 'Are you sure?'),
-      url: 'settings/unlink'
+    var sendAjax = function sendAjax() {
+
+      hawk.ajax.call({
+        data: 'token=' + token,
+        type: 'GET',
+        success: success,
+        error: error,
+        url: 'settings/unlink'
+      });
+    };
+
+    var domain = button.dataset.name;
+
+    hawk.notifier.show({
+      message: 'Confirm ' + domain + ' unlinking',
+      type: 'confirm',
+      okText: 'Unlink',
+      okHandler: sendAjax
     });
   };
 
@@ -388,12 +411,98 @@ module.exports = function () {
 
 /***/ }),
 /* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var notifier = function (e) {
+  function t(r) {
+    if (n[r]) return n[r].exports;var c = n[r] = { i: r, l: !1, exports: {} };return e[r].call(c.exports, c, c.exports, t), c.l = !0, c.exports;
+  }var n = {};return t.m = e, t.c = n, t.i = function (e) {
+    return e;
+  }, t.d = function (e, n, r) {
+    t.o(e, n) || Object.defineProperty(e, n, { configurable: !1, enumerable: !0, get: r });
+  }, t.n = function (e) {
+    var n = e && e.__esModule ? function () {
+      return e.default;
+    } : function () {
+      return e;
+    };return t.d(n, "a", n), n;
+  }, t.o = function (e, t) {
+    return Object.prototype.hasOwnProperty.call(e, t);
+  }, t.p = "", t(t.s = 2);
+}([function (e, t, n) {
+  "use strict";
+  e.exports = function () {
+    var e = { wrapper: "cdx-notifies", notification: "cdx-notify", crossBtn: "cdx-notify__cross", okBtn: "cdx-notify__button--confirm", cancelBtn: "cdx-notify__button--cancel", input: "cdx-notify__input", btn: "cdx-notify__button", btnsWrapper: "cdx-notify__btns-wrapper" },
+        t = function t(_t) {
+      var n = document.createElement("DIV"),
+          r = document.createElement("DIV"),
+          c = _t.message,
+          i = _t.style;return n.classList.add(e.notification), i && n.classList.add(e.notification + "--" + i), n.innerHTML = c, r.classList.add(e.crossBtn), r.addEventListener("click", n.remove.bind(n)), n.appendChild(r), n;
+    };return { alert: t, confirm: function confirm(n) {
+        var r = t(n),
+            c = document.createElement("div"),
+            i = document.createElement("button"),
+            a = document.createElement("button"),
+            o = r.querySelector(e.crossBtn),
+            d = n.cancelHandler,
+            s = n.okHandler;return c.classList.add(e.btnsWrapper), i.innerHTML = n.okText || "Confirm", a.innerHTML = n.cancelText || "Cancel", i.classList.add(e.btn), a.classList.add(e.btn), i.classList.add(e.okBtn), a.classList.add(e.cancelBtn), d && "function" == typeof d && (a.addEventListener("click", d), o.addEventListener("click", d)), s && "function" == typeof s && i.addEventListener("click", s), i.addEventListener("click", r.remove.bind(r)), a.addEventListener("click", r.remove.bind(r)), c.appendChild(i), c.appendChild(a), r.appendChild(c), r;
+      }, prompt: function prompt(n) {
+        var r = t(n),
+            c = document.createElement("div"),
+            i = document.createElement("button"),
+            a = document.createElement("input"),
+            o = r.querySelector(e.crossBtn),
+            d = n.cancelHandler,
+            s = n.okHandler;return c.classList.add(e.btnsWrapper), i.innerHTML = n.okText || "Ok", i.classList.add(e.btn), i.classList.add(e.okBtn), a.classList.add(e.input), n.placeholder && a.setAttribute("placeholder", n.placeholder), n.default && (a.value = n.default), n.inputType && (a.type = n.inputType), d && "function" == typeof d && o.addEventListener("click", d), s && "function" == typeof s && i.addEventListener("click", function () {
+          s(a.value);
+        }), i.addEventListener("click", r.remove.bind(r)), c.appendChild(a), c.appendChild(i), r.appendChild(c), r;
+      }, wrapper: function wrapper() {
+        var t = document.createElement("DIV");return t.classList.add(e.wrapper), t;
+      } };
+  }();
+}, function (e, t) {}, function (e, t, n) {
+  "use strict"; /*!
+                * Codex JavaScript Notification module
+                * https://github.com/codex-team/js-notifier
+                *
+                * Codex Team - https://ifmo.su
+                *
+                * MIT License | (c) Codex 2017
+                */
+
+  e.exports = function () {
+    function e() {
+      if (i) return !0;i = r.wrapper(), document.body.appendChild(i);
+    }function t(t) {
+      if (t.message) {
+        e();var n = null,
+            a = t.time || 8e3;switch (t.type) {case "confirm":
+            n = r.confirm(t);break;case "prompt":
+            n = r.prompt(t);break;default:
+            n = r.alert(t), window.setTimeout(function () {
+              n.remove();
+            }, a);}i.appendChild(n), n.classList.add(c);
+      }
+    }n(1);var r = n(0),
+        c = "cdx-notify--bounce-in",
+        i = null;return { show: t };
+  }();
+}]);
+
+/*** EXPORTS FROM exports-loader ***/
+module.exports = notifier;
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -402,7 +511,7 @@ module.exports = function () {
 /**
 * Require CSS build
 */
-__webpack_require__(4);
+__webpack_require__(5);
 
 var hawk = function (self) {
 
@@ -417,6 +526,7 @@ var hawk = function (self) {
   self.copyable = __webpack_require__(2);
   self.ajax = __webpack_require__(0);
   self.domain = __webpack_require__(3);
+  self.notifier = __webpack_require__(4);
 
   return self;
 }({});

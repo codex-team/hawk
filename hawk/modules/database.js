@@ -57,6 +57,13 @@ let mongo = (function () {
       });
   };
 
+  /**
+   * Remove documents from database bu query params
+   *
+   * @param c - collection name
+   * @param query
+   * @returns {Promise.<TResult>}
+   */
   let remove = function (c, query) {
 
     return getCollection(c)

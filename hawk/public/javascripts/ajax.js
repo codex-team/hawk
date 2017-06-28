@@ -48,7 +48,7 @@ module.exports = (function () {
     /**
      * If we send FormData, we need no content-type header
      */
-    if (!isFormData(data.data)) {
+    if (!isFormData_(data.data)) {
 
       XMLHTTP.setRequestHeader('Content-type', data['content-type']);
 
@@ -82,11 +82,11 @@ module.exports = (function () {
    * @param {Object} object to check
    * @return boolean
    */
-  function isFormData(object) {
+  let isFormData_ = function (object) {
 
-    return typeof object.append === 'function';
+    return object instanceof FormData;
 
-  }
+  };
 
   return {
 
