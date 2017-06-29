@@ -2,6 +2,9 @@ let request = require('request');
 let Twig = require('twig');
 let email = require('../modules/email');
 
+/** Notifications config **/
+let config = require('../config/notifications');
+
 module.exports = function () {
 
   const templatesPath = 'views/notifies/';
@@ -11,7 +14,8 @@ module.exports = function () {
   };
 
   let timers = {};
-  const WAIT_TIME = 10 * 1000; // 30 seconds
+  /* Time to wait before send notification about repeated events */
+  const GROUP_TIME = config.GROUP_TIME;
 
   /**
    * Send notifications about new event using user settings
@@ -24,8 +28,15 @@ module.exports = function () {
    * @param user
    * @param domain
    * @param event
+   * @times times
    */
   let send_ =function (user, domain, event, times) {
+
+    if (!times) {
+
+      return;
+
+    }
 
     let renderParams = {
       event: event,
@@ -83,17 +94,28 @@ module.exports = function () {
 
   };
 
-
+  /**
+   * Set new Timeout for event and send notification about first event.
+   * If there are no more new events in timeout was set, notification will send by private send_ method
+   * Otherwise, if new events are coming, Timeout will be restart
+   *
+   * @param user
+   * @param domain
+   * @param event
+   */
   let send = function (user, domain, event) {
 
 
     let timer = timers[event.groupHash];
 
+    /* Check if this event has come few time ago */
     if (timer) {
 
       clearTimeout(timer.timeout);
 
     } else {
+
+      send_(user, domain, event, 1);
 
       timers[event.groupHash] = {
         times: 0
@@ -103,8 +125,8 @@ module.exports = function () {
 
     }
 
+    timer.timeout = setTimeout(send_, GROUP_TIME, user, domain, event, timer.times);
     timer.times++;
-    timer.timeout = setTimeout(send_, WAIT_TIME, user, domain, event, timer.times);
 
   };
 

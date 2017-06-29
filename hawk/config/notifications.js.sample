@@ -1,0 +1,6 @@
+module.exports = {
+
+  /* Time to wait before send notification about new event */
+  GROUP_TIME: 30 * 1000 // 30 seconds
+
+};
