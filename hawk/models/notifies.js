@@ -10,6 +10,9 @@ module.exports = function () {
     email: 'email.twig'
   };
 
+  let timers = {};
+  const WAIT_TIME = 10 * 1000; // 30 seconds
+
   /**
    * Send notifications about new event using user settings
    *
@@ -22,13 +25,15 @@ module.exports = function () {
    * @param domain
    * @param event
    */
-  let send = function (user, domain, event) {
+  let send_ =function (user, domain, event, times) {
 
     let renderParams = {
       event: event,
       domain: domain,
-      hostName: process.env.HOST_NAME
+      hostName: process.env.HOST_NAME,
+      times: times
     };
+
 
     Twig.renderFile(templatesPath + templates.messenger, renderParams, function (err, html) {
 
@@ -41,13 +46,13 @@ module.exports = function () {
 
       if (user.notifies.tg && user.tgHook) {
 
-        request.post({url: user.tgHook, form: {message: html, parse_mode: 'HTML'}})
+        request.post({url: user.tgHook, form: {message: html, parse_mode: 'HTML'}});
 
       }
 
       if (user.notifies.slack && user.slackHook) {
 
-        request.post({url: user.slackHook, form: {message: html, parse_mode: 'HTML'}})
+        request.post({url: user.slackHook, form: {message: html, parse_mode: 'HTML'}});
 
       }
 
@@ -71,14 +76,40 @@ module.exports = function () {
           '',
           html
         );
-      })
+
+      });
+
     }
 
+  };
+
+
+  let send = function (user, domain, event) {
+
+
+    let timer = timers[event.groupHash];
+
+    if (timer) {
+
+      clearTimeout(timer.timeout);
+
+    } else {
+
+      timers[event.groupHash] = {
+        times: 0
+      };
+
+      timer = timers[event.groupHash];
+
+    }
+
+    timer.times++;
+    timer.timeout = setTimeout(send_, WAIT_TIME, user, domain, event, timer.times);
 
   };
 
   return {
     send: send
-  }
+  };
 
 }();
