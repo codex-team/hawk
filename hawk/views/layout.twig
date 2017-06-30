@@ -3,11 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="language" content="en-us">
-    <title>{{ meta.title is defined ? meta.title : 'Hawk.so' }}</title>
-    <meta property="og:title" content="{{ meta.title is defined ? meta.title : 'Hawk.so' }}" />
+    <title>{{ meta.title or 'Hawk.so' }}</title>
+    <meta property="og:title" content="{{ meta.title or 'Hawk.so' }}" />
     <meta property="og:site_name" content="Hawk">
-    <meta name="description" property="og:description" content="{{ meta.description is defined ? meta.description : 'Fast and lightweight
-errors tracking service' }}" />
+    <meta name="description" property="og:description" content="{{ meta.description or 'Fast and lightweight
+errors tracking service.' }}" />
     <link rel="stylesheet" href="/static/build/bundle.css" />
     <link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i,900" rel="stylesheet">
     <script type="text/javascript" src="/static/build/bundle.js"></script>
