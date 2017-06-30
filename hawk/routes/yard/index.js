@@ -23,7 +23,7 @@ router.get('/docs', function (req, res, next) {
     meta : {
 
       title : 'Platform documentation',
-      description : 'Hawk.so is a clever and easy-to-use error tracker. It helps improve your applications.\nTo learn how to start using Hawk..'
+      description : 'Docs page helps you start using Hawk. Get token and connent your project right now.'
 
     }
 
