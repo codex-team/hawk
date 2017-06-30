@@ -68,24 +68,6 @@ module.exports = function () {
 
     let password = auth.generatePassword();
 
-    /** Debug mode */
-    if (process.env.ENVIRONMENT == 'DEVELOPMENT') {
-
-      console.log("Your email: ", userEmail);
-      console.log("Your password: ", password);
-
-    } else {
-
-      email.init();
-      email.send(
-        userEmail,
-        'Your password',
-        'Here it is: ' + password,
-        ''
-      );
-
-    }
-
     let user = {
       'email': userEmail,
       'password': auth.generateHash(password),
@@ -99,6 +81,26 @@ module.exports = function () {
 
     return mongo.insertOne(collection, user)
       .then(function (result) {
+
+        logger.info('Register new user ' + userEmail);
+
+        /** Debug mode */
+        if (process.env.ENVIRONMENT == 'DEVELOPMENT') {
+
+          console.log("Your email: ", userEmail);
+          console.log("Your password: ", password);
+
+        } else {
+
+          email.init();
+          email.send(
+            userEmail,
+            'Your password',
+            'Here it is: ' + password,
+            ''
+          );
+
+        }
 
         return result.ops[0];
 

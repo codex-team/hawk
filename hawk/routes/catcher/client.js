@@ -19,11 +19,6 @@ let reciever = new WebSocket.Server({
 
 let connection = function (ws) {
 
-  /**
-   * TODO: authorization
-   */
-
-
   function getClientErrors(message) {
 
     let location = message.error_location.file + ':' + message.error_location.line + ':' + message.error_location.col;
@@ -43,6 +38,8 @@ let connection = function (ws) {
       userAgent     : message.navigator,
       time          : Math.floor(message.time / 1000)
     };
+
+    logger.info('Got javascript error from ' + event.location.host);
 
     websites.get(message.token, event.location.host)
       .then( function (site) {
