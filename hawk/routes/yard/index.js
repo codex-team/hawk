@@ -20,10 +20,10 @@ router.get('/docs', function (req, res, next) {
 
   res.render('yard/docs/index', {
 
-    main: {
+    meta : {
 
-      title : 'Hawk.so Docs',
-      description : 'Hawk.so is a clever and easy-to-use error tracker. It helps improve your applications. To learn how to start using Hawk..'
+      title : 'Platform documentation',
+      description : 'Hawk.so is a clever and easy-to-use error tracker. It helps improve your applications.\nTo learn how to start using Hawk..'
 
     }
 
