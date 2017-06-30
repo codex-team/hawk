@@ -10,7 +10,7 @@ module.exports = function () {
   const templatesPath = 'views/notifies/';
   const templates = {
     messenger: 'messenger.twig',
-    email: 'email/email.twig'
+    email: 'email/notify.twig'
   };
 
   let timers = {};

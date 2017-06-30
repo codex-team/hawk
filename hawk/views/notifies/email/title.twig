@@ -1,3 +1,3 @@
-{% block title %}
-  {{ event.tag|capitalize }} Error on {{ domain }}
-{% endblock %} 
+{% extends '../layout.twig' %}
+
+{% set title = "{{ event.tag|capitalize }} Error on {{ domain }}" %}
