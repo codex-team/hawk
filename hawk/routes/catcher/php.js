@@ -12,57 +12,6 @@ let md5 = function (input) {
 
 };
 
-let getStack = function (backtrace) {
-
-  backtrace = backtrace.pop();
-
-  let file = backtrace.file,
-      line = backtrace.line,
-      func = backtrace.function,
-      obj  = backtrace.object,
-      cls  = backtrace.class,
-      type = backtrace.type,
-      args = backtrace.args;
-
-  let stack = file+ '(' + line + '): ';
-
-  switch (type) {
-
-    case '->':
-      stack += obj + type + func;
-      break;
-
-    case '::':
-      stack += cls + type + func;
-      break;
-
-    default:
-      stack += func;
-
-  }
-
-  if (args.length) {
-
-    let argsString = '(';
-    for (let i = 0; i < args.length; i++) {
-
-      argsString += args[i];
-
-      argsString += (i == args.length - 1 ? ')' : ',');
-
-    }
-
-    stack += argsString;
-    return stack;
-
-  }
-
-  stack += '()';
-  return stack;
-
-};
-
-
 let getServerErrors = function (req, res) {
 
   const tags = {
@@ -92,7 +41,7 @@ let getServerErrors = function (req, res) {
     token: response.access_token,
     groupHash: md5(location),
     message: response.error_description,
-    stack: getStack(response.debug_backtrace),
+    stack: response.debug_backtrace,
     time: response.error_context._SERVER.REQUEST_TIME,
     errorLocation: {
       file: response.error_file,
