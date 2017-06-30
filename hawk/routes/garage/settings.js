@@ -21,7 +21,7 @@ let index = function (req, res) {
         domains: userData.domains,
         csrfToken: req.csrfToken(),
         meta : {
-          title : 'Settings'
+          title : 'User settings'
         }
       });
 
