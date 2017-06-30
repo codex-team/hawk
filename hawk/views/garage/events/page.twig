@@ -24,22 +24,43 @@
       </div>
     </div>
   </div>
-  <table>
-    {% for item in events %}
-      <tr>
-        {# <td>{{ item.type }}</td> #}
-        {# <td>{{ item.tag }}</td> #}
-        {# <td>{{ item.message }}</td> #}
-        <td>{{ item.time|date }}</td>
-        <td>{{ item.errorLocation.full }}</td>
-        <td>{{ item.location.url }}</td>
-        <td>{{ item.stack }}</td>
-        <td>{{ item.userAgent.browser.name }}</td>
-        <td>{{ item.userAgent.browser.version }}</td>
-        <td>{{ item.userAgent.device.os }}</td>
-        <td>{{ item.userAgent.device.type }}</td>
-        <td>{{ item.userAgent.device.width }} x {{ item.userAgent.device.height }}</td>
-      </tr>
-    {% endfor %}
-  </table>
+  <div class="garage_page">
+    <h3>Traceback</h3>
+    <div class="stack-table">
+      {{ event.stack|nl2br }}
+    </div>
+    <h3>Repeations</h3>
+    <table class="repeations">
+      {% for item in events %}
+        <tr>
+          {# <td>{{ item.type }}</td> #}
+          {# <td>{{ item.tag }}</td> #}
+          {# <td>{{ item.message }}</td> #}
+          <td class="repeations__date">
+            {{ item.time|date('d M, H:i') }}
+          </td>
+          <td>
+            {{ item.userAgent.device.os }},
+            {{ item.userAgent.browser.name }}
+            {{ item.userAgent.browser.version }}
+          </td>
+          {# <td>{{ item.errorLocation.full }}</td> #}
+          <td>{{ item.location.url }}</td>
+          {# <td>{{ item.stack }}</td> #}
+          <td>
+            {% if item.userAgent.device.type == 'mobile' %}
+              <span class="event-badge">
+                {{ item.userAgent.device.width }}x{{ item.userAgent.device.height }}
+              </span>
+            {% else %}
+              <span class="event-badge">
+                {{ item.userAgent.device.width }}x{{ item.userAgent.device.height }}
+              </span>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
 {% endblock %}
+
