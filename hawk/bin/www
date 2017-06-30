@@ -7,9 +7,6 @@ var app = require('../app');
 var debug = require('debug')('hawk:server');
 var http = require('http');
 
-if (process.env.ENVIRONMENT === 'PRODUCTION') {
-  return;
-}
 
 /**
  * Get port from environment and store in Express.
