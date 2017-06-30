@@ -40,9 +40,20 @@ router.post('/create', function(req, res, next) {
             let uuid = require('uuid');
             let token = uuid.v4();
 
-            websites.add(name, token, foundUser);
+            websites.add(name, token, foundUser)
+              .then(function() {
+                res.redirect('/garage?success=1');
+              })
+              .catch(function(error) {
 
-            res.redirect('/garage?success=1');
+                let message = {
+                  type : 'error',
+                  text : error.message
+                };
+
+                res.render('yard/websites/create', { message : message } );
+              });
+
             // res.render(resultTemplate, {
             //   title: 'Get your token',
             //   client_token: client_token,
@@ -52,7 +63,9 @@ router.post('/create', function(req, res, next) {
           } else {
             res.render('yard/websites/result', {error: 'Website already connected'});
           }
+
         });
+
     });
 
 });

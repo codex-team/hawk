@@ -57,14 +57,33 @@ let mongo = (function () {
       });
   };
 
+  /**
+   * Remove documents from database bu query params
+   *
+   * @param c - collection name
+   * @param query
+   * @returns {Promise.<TResult>}
+   */
+  let remove = function (c, query) {
+
+    return getCollection(c)
+      .then(function (collection) {
+
+        return collection.remove(query);
+
+      });
+
+  };
+
   return {
     findOne : findOne,
     insertOne : insertOne,
     find: find,
     ObjectId: mongodb.ObjectId,
     aggregation: aggregation,
-    updateOne: updateOne
-  }
+    updateOne: updateOne,
+    remove: remove
+  };
 
 })();
 
