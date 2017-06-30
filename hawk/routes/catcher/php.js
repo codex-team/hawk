@@ -115,6 +115,8 @@ let getServerErrors = function (req, res) {
     }
   };
 
+  logger.info('Got php error from ' + event.location.host);
+
   websites.get(event.token, event.location.host)
     .then( function (site) {
 

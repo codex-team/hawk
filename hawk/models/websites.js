@@ -85,6 +85,8 @@ module.exports = function () {
 
         if (result) {
 
+          logger.info('Register new domain: ' + domain);
+
           if (process.env.ENVIRONMENT == 'DEVELOPMENT') {
 
             console.log('Domain: ', domain);
