@@ -15,15 +15,22 @@ let index = function (req, res) {
 
   user.getInfo(req, res)
     .then(function (userData) {
+
       res.render('garage/settings', {
         user: userData.user,
         domains: userData.domains,
-        csrfToken: req.csrfToken()
-      })
+        csrfToken: req.csrfToken(),
+        meta : {
+          title : 'Settings'
+        }
+      });
+
     })
     .catch (function (e) {
+
       logger.log('error', 'Error while getting user data for settings page: %o', e);
-    })
+
+    });
 
 };
 
@@ -58,17 +65,23 @@ let update = function (req, res) {
       if (post['slack-webhook']) params.slackHook = post['slack-webhook'];
 
       if (!params.email) {
+
         throw Error('Email should be passed');
+
       }
 
-      return user.update(currentUser, params)
+      return user.update(currentUser, params);
 
     })
     .then(function () {
+
       res.redirect('/garage/settings?success=1');
+
     })
     .catch(function (e) {
+
       res.redirect('/garage/settings?success=0&message='+e.message);
+
     });
 
 };
