@@ -1,13 +1,13 @@
 {% extends '../layout.twig' %}
 
-{% set title = "{{ event.tag|capitalize }} Error on {{ domain }}" %}
+{% set title = "{{ event.tag == 'javascript' ? 'JavaScript Error' : event.tag|capitalize }}" %}
 
 {% block content %}
-  <table cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff">
+  <table cellpadding="0" cellspacing="0" border="0">
     <tr>
       <td>
         <font color="#000000" style="font-size:15px;">
-          Hello. We’ve got a {{ event.tag|capitalize }} Error on {{ domain }}. Please, take a look.
+          Hello. We’ve got a {{ event.tag == 'javascript' ? 'JavaScript Error' : event.tag|capitalize }} on {{ domain }}. Please, take a look.
         </font>
       </td>
     </tr>
