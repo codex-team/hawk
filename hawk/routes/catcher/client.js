@@ -88,14 +88,25 @@ let connection = function (ws) {
 
 reciever.on('connection', connection);
 
+/**
+ * Parse stack string for different browsers
+ *
+ * @param event
+ * @returns {*}
+ */
 let parseStack = function (event) {
 
   const REGEXPS = {
+    /* FF example: throwError@http://localhost:63342/hawk.client/index.html:10:28 */
     FF_SAFARI_OPERA_11: /(.*)@(\S+)\:(\d+):(\d+)/,
+
+    /* Chrome example: at throwError (index.html?_ijt=pnsmb0fcsfavevcnj0g1a9sq:10) */
     CHROME_IE: /^\s*at (.*) \((\S+):(\d+):(\d+)\)/m,
-    SAFARI_NATIVE: /^(eval@)?(\[native code\])?$/,
+
+    /* Opera <11 regexps */
     OPERA_9: /Line (\d+).*script (?:in )?(\S+)/i,
     OPERA_10: /Line (\d+).*script (?:in )?(\S+)(?:: In function (\S+))?$/i,
+
   };
 
   let stack = event.stack;
@@ -104,7 +115,7 @@ let parseStack = function (event) {
 
     let filtered = stack.split('\n').filter(function (line) {
 
-      return REGEXPS.CHROME_IE.test(line) && !/^Error created at/.test(line);
+      return REGEXPS.CHROME_IE.test(line);
 
     });
 
@@ -133,7 +144,7 @@ let parseStack = function (event) {
 
     let filtered = stack.split('\n').filter(function (line) {
 
-      return !/^Error created at/.test(line) && !REGEXPS.SAFARI_NATIVE.test(line) && REGEXPS.FF_SAFARI_OPERA_11.test(line);
+      return !/^Error created at/.test(line) && REGEXPS.FF_SAFARI_OPERA_11.test(line);
 
     });
 
@@ -213,7 +224,7 @@ let parseStack = function (event) {
 
   } else {
 
-    console.log('Can\'t parse this ****');
+    /* Unsupported stack format, just split by \n */
     stack = stack.split('\n').map(function (line) {
 
       return {
