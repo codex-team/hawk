@@ -59,7 +59,10 @@ let index = function (req, res) {
         user: userData.user,
         domains: userData.domains,
         currentDomain: currentDomain,
-        event: event[0]
+        event: event[0],
+        meta : {
+          title : event[0].message
+        }
       });
 
     })
