@@ -23,7 +23,7 @@ router.get('/docs', function (req, res, next) {
     meta : {
 
       title : 'Platform documentation',
-      description : 'Complete documentation on how to start using Hawk on your project.'
+      description : 'Guide for integration and usage.'
 
     }
 
