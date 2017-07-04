@@ -3,11 +3,98 @@
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
-var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 require('dotenv').config();
+
+/** * Loggers ***/
+/* Main logger */
+var winston = require('winston');
+
+/* Allow rotate log files by date */
+require('winston-daily-rotate-file');
+
+/* Express middleware logger */
+var morgan = require('morgan');
+/** */
+
+/* File system */
+var fs = require('fs');
+
+/** Setup loggers **/
+
+var logsDir = './logs',
+  accessDir = logsDir + '/access',
+  errorsDir = logsDir + '/errors';
+
+if (!fs.existsSync(logsDir)) {
+
+  fs.mkdirSync(logsDir);
+  fs.mkdirSync(accessDir);
+  fs.mkdirSync(errorsDir);
+
+}
+if (!fs.existsSync(accessDir)) {
+
+  fs.mkdirSync(accessDir);
+
+}
+if (!fs.existsSync(errorsDir)) {
+
+  fs.mkdirSync(errorsDir);
+
+}
+
+/* HTTP requests logger */
+winston.loggers.add('access', {
+  dailyRotateFile: {
+    level: 'debug',
+    filename: 'logs/access/.log',
+    datePattern: 'yyyy-MM',
+    prepend: true,
+    timestamp: true
+  }
+});
+
+/* Global logger */
+winston.loggers.add('console', {
+  console: {
+    level: 'debug',
+    colorize: true,
+    timestamp: true,
+    handleExceptions: true,
+    humanReadableUnhandledException: true
+  },
+  dailyRotateFile: {
+    level: 'debug',
+    filename: 'logs/errors/.log',
+    datePattern: 'yyyy-MM',
+    prepend: true,
+    timestamp: true,
+    handleExceptions: true,
+    humanReadableUnhandledException: true
+  }
+});
+
+/**
+  * @usage logger.log(level, message)
+  *        logger[level](message)
+  */
+global.logger = winston.loggers.get('console');
+
+let accessLogger = winston.loggers.get('access');
+
+accessLogger.stream = {
+
+  write: function (message) {
+
+    accessLogger.info(message);
+
+  }
+
+};
+
 
 var app = express();
 
@@ -23,33 +110,14 @@ app.set('view engine', 'twig');
 
 // uncomment after placing your favicon in /public
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+
+/** We use morgan as express middleware to link winston and express **/
+app.use(morgan('combined', { stream: accessLogger.stream }));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('/static', express.static(path.join(__dirname, 'public')));
-
-
-/**
- * Sets response scoped variables
- *
- * res.locals.user        — current authored user
- * res.locals.userDomains — domains list for current user
- *
- * @fires user.getInfo
- */
-app.use(function (req, res, next) {
-
-  user.getInfo(req).then(function (userData) {
-
-    res.locals.user = userData.user;
-    res.locals.userDomains = userData.domains;
-    next();
-
-  });
-
-});
-
 
 /**
  * Garage

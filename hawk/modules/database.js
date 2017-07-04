@@ -9,39 +9,64 @@ let mongo = (function () {
   let connection = mongoClient.connect(config.mongodb.connection);
 
   let getCollection = function (c) {
-    return connection.then(function(db) { return db.collection(c); });
+
+    return connection.then(function (db) {
+
+      return db.collection(c);
+
+    });
+
   };
 
   let insertOne = function (c, object) {
+
     return getCollection(c)
       .then(function (collection) {
+
         return collection.insertOne(object);
+
       });
+
   };
 
   let findOne = function (c, object) {
+
     return getCollection(c)
       .then(function (collection) {
+
         return collection.findOne(object);
+
       });
+
   };
 
   let find = function (c, query, sort) {
+
     return getCollection(c)
       .then(function (collection) {
+
         let cursor = collection.find(query);
+
         if (sort) {
+
           cursor = cursor.sort(sort);
+
         }
         return cursor.toArray();
+
       });
+
   };
 
   let updateOne = function (c, query, update) {
+
     return getCollection(c)
       .then(function (collection) {
+
         return collection.updateOne(query, update);
+
       });
+
   };
 
   /**
@@ -54,10 +79,32 @@ let mongo = (function () {
    * @returns {Promise.<TResult>}
    */
   let aggregation = function (c, query) {
+
     return getCollection(c)
       .then(function (collection) {
+
         return collection.aggregate(query).toArray();
+
       });
+
+  };
+
+  /**
+   * Remove documents from database bu query params
+   *
+   * @param c - collection name
+   * @param query
+   * @returns {Promise.<TResult>}
+   */
+  let remove = function (c, query) {
+
+    return getCollection(c)
+      .then(function (collection) {
+
+        return collection.remove(query);
+
+      });
+
   };
 
   return {
@@ -66,7 +113,8 @@ let mongo = (function () {
     find: find,
     ObjectId: mongodb.ObjectId,
     aggregation: aggregation,
-    updateOne: updateOne
+    updateOne: updateOne,
+    remove: remove
   };
 
 })();

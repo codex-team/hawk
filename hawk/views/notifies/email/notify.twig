@@ -1,0 +1,44 @@
+{% extends '../layout.twig' %}
+
+{% set title = "{{ event.tag == 'javascript' ? 'JavaScript Error' : event.tag|capitalize }}" %}
+
+{% block content %}
+  <table cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td>
+        <font color="#000000" style="font-size:15px;">
+          Hello. We’ve got a {{ event.tag == 'javascript' ? 'JavaScript Error' : event.tag|capitalize }} on {{ domain }}. Please, take a look.
+        </font>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding-top: 15px;">
+        <font color="#000000" style="font-size:16px; line-height: 1.5em;">
+            <b>{{ event.message }}</b>
+        </font>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding-top: 15px;">
+        <font color="#717171" style="font-size:16px;">
+            <a href="javascript: void(0);" style="color: #717171; text-decoration: none;">{{ event.errorLocation.full }}</a>
+        </font>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding-top: 25px;">
+        <a href="https://{{ hostName }}/garage/{{ domain }}/event/{{ event.groupHash }}" 
+          style="background-color: #00bd95; display: inline-block; text-decoration: none; 
+          color: #ffffff; padding: 10px 15px; border-radius: 3px;">
+            <font color="#ffffff" style="font-size:15px;line-height:18px;">
+              View traceback
+            </font>
+        </a>
+      </td>
+    </tr>
+  </table>
+{% endblock %}
+
+{% block footer %}
+  <a href="https://{{ hostName }}/garage/settings" style="color:#7f87a2;">Notifications preferences</a>
+{% endblock %}
