@@ -48,19 +48,12 @@
           <td>{{ item.location.url }}</td>
           {# <td>{{ item.stack }}</td> #}
           <td>
-            {% if item.userAgent.device.type == 'mobile' %}
-              <span class="event-badge">
-                {{ item.userAgent.device.width }}x{{ item.userAgent.device.height }}
-              </span>
-            {% else %}
-              <span class="event-badge">
-                {{ item.userAgent.device.width }}x{{ item.userAgent.device.height }}
-              </span>
-            {% endif %}
+            <span class="event-badge">
+              {{ item.userAgent.device.width }}x{{ item.userAgent.device.height }}
+            </span>
           </td>
         </tr>
       {% endfor %}
     </table>
   </div>
 {% endblock %}
-
