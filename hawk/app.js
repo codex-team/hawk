@@ -169,7 +169,7 @@ app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = process.env.ENVIRONMENT === 'DEVELOPMENT' ? err : {};
 
-  console.log('Error thrown: ', err);
+  logger.log('Error thrown: ', err);
 
   // render the error page
   res.status(err.status || 500);

@@ -59,10 +59,6 @@ let event = function (req, res) {
       })
       .catch(function() {
         res.sendStatus(404);
-<<<<<<< HEAD
-      });
-  });
-=======
         return;
 
       }
@@ -84,7 +80,6 @@ let event = function (req, res) {
 
     });
 
->>>>>>> master
 };
 
 router.get('/:domain/event/:id?', event);
