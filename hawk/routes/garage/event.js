@@ -11,19 +11,26 @@ let events = require('../../models/events');
  * @return {Promise}
  */
 function getDomainInfo(userDomains, domainName) {
-  return new Promise(function(resolve, reject) {
+
+  return new Promise(function (resolve, reject) {
 
     /** Get domain info by user domain */
     userDomains.forEach( domain => {
+
       if (domain.name === domainName) {
+
         resolve(domain);
         return;
+
       }
+
     });
 
     /** If passed domain name was not found in user domains list */
     reject();
+
   });
+
 }
 
 /**
@@ -37,7 +44,7 @@ let event = function (req, res) {
   Promise.resolve({
     domainName: req.params.domain,
     eventId: req.params.id
-  }).then(function(params) {
+  }).then(function (params) {
 
     /**
      * Current user's domains list stored in res.locals.userDomains
@@ -47,33 +54,38 @@ let event = function (req, res) {
     let userDomains = res.locals.userDomains;
 
     getDomainInfo(userDomains, params.domainName)
-      .then(function(currentDomain) {
+      .then(function (currentDomain) {
+
         events.get(currentDomain.name, {groupHash: params.eventId}, false)
-          .then(function(events) {
+          .then(function (events) {
+
             res.render('garage/events/page', {
               currentDomain,
               event: events[0],
               events: events
             });
+
           });
+
       })
-      .catch(function() {
+      .catch(function () {
+
         res.sendStatus(404);
         return;
 
-      }
-
-      res.render('garage/events/page', {
-        user: userData.user,
-        domains: userData.domains,
-        currentDomain: currentDomain,
-        event: event[0],
-        meta : {
-          title : event[0].message
-        }
       });
 
-    })
+    res.render('garage/events/page', {
+      user: userData.user,
+      domains: userData.domains,
+      currentDomain: currentDomain,
+      event: event[0],
+      meta : {
+        title : event[0].message
+      }
+    });
+
+  })
     .catch (function (e) {
 
       logger.log('error', 'Error while getting user data for main garage page: %o', e);
