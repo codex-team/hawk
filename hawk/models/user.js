@@ -73,8 +73,8 @@ module.exports = function () {
       'password': auth.generateHash(password),
       'domains': [],
       'notifies': {
-        'email': true,
         'tg': false,
+        'email': false,
         'slack': false
       }
     };
