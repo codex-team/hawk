@@ -82,7 +82,7 @@ let index = function (req, res) {
 
       res.render('garage/index', {
         user: userData.user,
-        domains: userData.domains,
+        userDomains: userData.domains,
         currentDomain: currentDomain,
         currentTag: currentTag,
         events: events,
