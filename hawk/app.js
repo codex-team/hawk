@@ -120,6 +120,26 @@ app.use(cookieParser());
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 /**
+* Sets response scoped variables
+*
+* res.locals.user        — current authored user
+* res.locals.userDomains — domains list for current user
+*
+* @fires user.getInfo
+*/
+app.use(function (req, res, next) {
+
+  user.getInfo(req).then(function (userData) {
+
+    res.locals.user = userData.user;
+    res.locals.userDomains = userData.domains;
+    next();
+
+  });
+
+});
+
+/**
  * Garage
  */
 var garage = require('./routes/garage/garage');
@@ -169,7 +189,7 @@ app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = process.env.ENVIRONMENT === 'DEVELOPMENT' ? err : {};
 
-  logger.log('Error thrown: ', err);
+  logger.error('Error thrown: ', err);
 
   // render the error page
   res.status(err.status || 500);
