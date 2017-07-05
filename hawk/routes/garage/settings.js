@@ -1,6 +1,7 @@
 let express = require('express');
 let router = express.Router();
 let user = require('../../models/user');
+let websites = require('../../models/websites');
 
 let csrf = require('../../modules/csrf');
 
@@ -14,21 +15,28 @@ let index = function (req, res) {
 
   user.getInfo(req, res)
     .then(function (userData) {
+
       res.render('garage/settings', {
         user: userData.user,
         domains: userData.domains,
-        csrfToken: req.csrfToken()
-      })
+        csrfToken: req.csrfToken(),
+        meta : {
+          title : 'User settings'
+        }
+      });
+
     })
     .catch (function (e) {
-      console.log('Error while getting user data for settings page: %o', e);
-    })
+
+      logger.log('error', 'Error while getting user data for settings page: %o', e);
+
+    });
 
 };
 
 /**
  * Settings update handler
- * 
+ *
  * @param req
  * @param res
  */
@@ -57,22 +65,59 @@ let update = function (req, res) {
       if (post['slack-webhook']) params.slackHook = post['slack-webhook'];
 
       if (!params.email) {
+
         throw Error('Email should be passed');
+
       }
 
-      return user.update(currentUser, params)
+      return user.update(currentUser, params);
 
     })
     .then(function () {
+
       res.redirect('/garage/settings?success=1');
+
     })
     .catch(function (e) {
+
       res.redirect('/garage/settings?success=0&message='+e.message);
+
+    });
+
+};
+
+/**
+ * Unlink domain action
+ * Remove domain data from database and unlink it from user's domains list
+ *
+ * @param req
+ * @param res
+ */
+let unlinkDomain = function (req, res) {
+
+  user.current(req)
+    .then(function (currentUser) {
+
+      let token = req.query.token;
+
+      websites.remove(currentUser, token)
+        .then(function () {
+
+          res.sendStatus(200);
+
+        })
+        .catch(function () {
+
+          res.sendStatus(500);
+
+        });
+
     });
 
 };
 
 router.get('/settings', csrf, index);
 router.post('/settings/save', csrf, update);
+router.get('/settings/unlink', csrf, unlinkDomain);
 
 module.exports = router;

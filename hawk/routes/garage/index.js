@@ -11,17 +11,17 @@ let events = require('../../models/events');
  */
 let index = function (req, res) {
 
-    'use strict';
+  'use strict';
 
   let userData,
-      currentDomain,
-      currentTag;
+    currentDomain,
+    currentTag;
 
   user.getInfo(req, res)
     .then(function (userData_) {
 
       let params = req.params,
-          allowedTags = ['fatal', 'warnings', 'notice', 'javascript'];
+        allowedTags = ['fatal', 'warnings', 'notice', 'javascript'];
 
       currentDomain = params.domain;
       currentTag = params.tag;
@@ -29,24 +29,32 @@ let index = function (req, res) {
 
       /** Check if use tag w\o domain */
       if (!currentTag && allowedTags.includes(currentDomain)) {
+
         currentTag = currentDomain;
         currentDomain = null;
+
       }
 
       if (currentDomain && !userData.user.domains.includes(currentDomain)) {
+
         res.sendStatus(404);
         return;
+
       }
 
       if (currentTag && !allowedTags.includes(currentTag)) {
+
         res.sendStatus(404);
         return;
+
       }
 
       userData.domains.forEach(function (domain) {
 
         if (domain.name == currentDomain) {
+
           currentDomain = domain;
+
         }
 
       });
@@ -54,7 +62,9 @@ let index = function (req, res) {
       let findParams = {};
 
       if (currentTag) {
+
         findParams.tag = currentTag;
+
       }
 
       if (currentDomain) {
@@ -75,13 +85,16 @@ let index = function (req, res) {
         domains: userData.domains,
         currentDomain: currentDomain,
         currentTag: currentTag,
-        events: events
+        events: events,
+        meta : {
+          title : 'Garage'
+        }
       });
 
     })
     .catch (function (e) {
 
-      console.log('Error while getting user data for main garage page: %o', e);
+      logger.log('error', 'Error while getting user data for main garage page: %o', e);
 
     });
 

@@ -1,6 +1,6 @@
 let auth = require('../modules/auth');
-let mongo = require("../modules/database");
-let email = require("../modules/email");
+let mongo = require('../modules/database');
+let email = require('../modules/email');
 let websites = require('./websites');
 let events = require('./events');
 let collections = require('../config/collections');
@@ -29,17 +29,44 @@ module.exports = function () {
 
   };
 
+
+  /**
+   * Check if object with given params already exist in database.
+   *
+   * @param  {object} param  params dictionary
+   * @return {Promise}       True of False
+   */
+  let checkParamUniqueness = function (param) {
+
+    return new Promise(function (resolve, reject) {
+
+      getByParams(param)
+        .then(function (user) {
+
+          if (!user) {
+
+            resolve();
+
+          } else {
+
+            reject();
+
+          }
+
+        })
+        .catch(function (e) {
+
+          logger.log('error', 'Can\'t check param uniqueness because of error ', e);
+
+        });
+
+    });
+
+  };
+
   let add = function (userEmail) {
 
     let password = auth.generatePassword();
-
-    email.init();
-    email.send(
-      userEmail,
-      'Your password',
-      "Here it is: " + password,
-      ''
-    );
 
     let user = {
       'email': userEmail,
@@ -53,10 +80,34 @@ module.exports = function () {
     };
 
     return mongo.insertOne(collection, user)
-      .then(function(result) {
+      .then(function (result) {
+
+        logger.info('Register new user ' + userEmail);
+
+        /** Debug mode */
+        if (process.env.ENVIRONMENT == 'DEVELOPMENT') {
+
+          console.log("Your email: ", userEmail);
+          console.log("Your password: ", password);
+
+        } else {
+
+          email.init();
+          email.send(
+            userEmail,
+            'Your password',
+            'Here it is: ' + password,
+            ''
+          );
+
+        }
+
         return result.ops[0];
-      }).catch(function(err) {
-        console.log('Cannot insert user because of %o', err);
+
+      }).catch(function (err) {
+
+        logger.log('error', 'Cannot insert user because of %o', err);
+
       });
 
   };
@@ -79,11 +130,13 @@ module.exports = function () {
         currentUser = currentUser_;
 
         if (!currentUser) {
+
           res.sendStatus(403);
           return;
+
         }
 
-        return websites.getByUser(currentUser)
+        return websites.getByUser(currentUser);
 
       })
       .then(function (domains_) {
@@ -94,13 +147,19 @@ module.exports = function () {
         domains.forEach(function (domain) {
 
           let query = events.countTags(domain.name)
-              .then(function (tags) {
-                tags.forEach(function (tag) {
-                  domain[tag._id] = tag.count;
-                });
-              }).catch(function(e) {
-                console.log('Events Query composing error: %o', e);
+            .then(function (tags) {
+
+              tags.forEach(function (tag) {
+
+                domain[tag._id] = tag.count;
+
               });
+
+            }).catch(function (e) {
+
+              logger.log('error', 'Events Query composing error: %o', e);
+
+            });
 
           queries.push(query);
 
@@ -118,7 +177,9 @@ module.exports = function () {
 
       })
       .catch(function (e) {
-        console.log('Can\'t get user because of %o', e);
+
+        logger.log('Can\'t get user because of %o', e);
+
       })
   };
 
@@ -143,14 +204,20 @@ module.exports = function () {
 
     return getByParams({email: params.email})
       .then(function (foundUser) {
+
         if (foundUser && foundUser._id.toString() != user._id.toString()) {
+
           throw Error('Email already registered');
+
         }
+
       })
       .then(function () {
 
         if (params.password) {
+
           params.password = auth.generateHash(params.password);
+
         }
 
         return mongo
@@ -169,7 +236,8 @@ module.exports = function () {
     add: add,
     get: get,
     getInfo: getUserAndDomains,
-    update: update
-  }
+    update: update,
+    checkParamUniqueness: checkParamUniqueness
+  };
 
 }();

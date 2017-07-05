@@ -20,3 +20,8 @@
 @import url('garage/list.css');
 @import url('garage/settings.css');
 @import url('garage/event.css');
+
+/**
+ * Notifier
+ */
+@import url('~codex-notifier/notifier.css');

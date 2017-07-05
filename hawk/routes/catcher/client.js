@@ -19,11 +19,6 @@ let reciever = new WebSocket.Server({
 
 let connection = function (ws) {
 
-  /**
-   * TODO: authorization
-   */
-
-
   function getClientErrors(message) {
 
     let location = message.error_location.file + ':' + message.error_location.line + ':' + message.error_location.col;
@@ -44,6 +39,8 @@ let connection = function (ws) {
       time          : Math.floor(message.time / 1000)
     };
 
+    logger.info('Got javascript error from ' + event.location.host);
+
     websites.get(message.token, event.location.host)
       .then( function (site) {
 
@@ -63,7 +60,7 @@ let connection = function (ws) {
             events.add(event.location.host, event)
               .catch(function (e) {
 
-                console.log('Can not add event because of ', e);
+                logger.log('error', 'Can not add event because of ', e);
 
               });
 

@@ -14,8 +14,10 @@ let join = {
     user.current(req).then(function (found) {
 
       if (found) {
+
         res.redirect('/garage');
         return;
+
       }
 
       res.render('yard/auth/join');
@@ -28,21 +30,50 @@ let join = {
   post: function (req, res, next) {
 
     user.current(req).then(function (found) {
+
       if (found) {
+
         res.redirect('/garage');
         return;
+
       }
 
       let email = req.body.email;
 
-      user.add(email).then(function (insertedUser) {
-          if (insertedUser) {
-            auth.authUser(res, insertedUser);
-            res.redirect('/garage');
-          } else {
-            res.render('error', { message: 'Try again later.' });
-          }
-      }).catch(console.log);
+      user.checkParamUniqueness({email: email})
+        .then(function (isEmailExist) {
+
+          return user.add(email)
+            .then(function (insertedUser) {
+
+              if (insertedUser) {
+
+                res.redirect('/login?success=1');
+                return;
+
+              } else {
+
+                res.render('error', { message: 'Try again later.' });
+
+              }
+
+            }).catch(function (e) {
+
+              logger.log('error', 'Can\'t add user because of ', e);
+
+            });
+
+        }).catch(function () {
+
+          res.render('yard/auth/join', {
+            message: {
+              type: 'error',
+              text: 'This email already registred. Please, <a href="/login">login</a>.'
+            }
+          });
+          return;
+
+        });
 
     });
 

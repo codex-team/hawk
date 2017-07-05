@@ -65,6 +65,7 @@
         "require": true,
         "window": true,
         "console" : true,
+        "CustomEvent": true,
         "codex": true,
         "VERSION" : true,
         "Promise" : true,
@@ -72,7 +73,9 @@
         "FormData": true,
         "XMLHttpRequest": true,
         "ActiveXObject": true,
-        "FileReader": true
-
+        "FileReader": true,
+        "logger": true,
+        "global": true,
+        "hawk": true
     }
 }

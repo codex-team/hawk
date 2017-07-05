@@ -9,14 +9,31 @@ let login = {
 
   /* Show log in form */
   get: function (req, res, next) {
+
     user.current(req).then(function (found) {
+
       if (found) {
+
         res.redirect('/garage');
         return;
+
+      };
+
+      let message = {};
+
+      if (req.query.success) {
+
+        message = {
+          type: 'notify',
+          text: 'We have send a password for account to your mailbox. Check it out.'
+        };
+
       }
 
-      res.render('yard/auth/login');
+      res.render('yard/auth/login', { message: message });
+
     });
+
   },
 
   /* Log in function */
@@ -45,7 +62,11 @@ let login = {
           } else {
             res.render('error', { message: 'Try again later.' });
           }
-      }).catch(console.log);
+      }).catch(function (e) {
+
+        logger.log('error', 'Can\'t find user because of ', e);
+
+      });
 
     });
 

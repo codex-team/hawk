@@ -3,13 +3,32 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('yard/index', { title: 'Main page' });
+/**
+ * Home page
+ */
+router.get('/', function (req, res, next) {
+
+  res.render('yard/index');
+
 });
 
-router.get('/docs', function(req, res, next) {
-  res.render('yard/docs/index', { title: 'Main page' });
+
+/**
+ * Docs page
+ */
+router.get('/docs', function (req, res, next) {
+
+  res.render('yard/docs/index', {
+
+    meta : {
+
+      title : 'Platform documentation',
+      description : 'Guide for integration and usage.'
+
+    }
+
+  });
+
 });
 
 module.exports = router;

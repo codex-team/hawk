@@ -48,22 +48,32 @@ let index = function (req, res) {
     })
     .then(function (event) {
 
+      if (!event[0]) {
+
+        res.sendStatus(404);
+        return;
+
+      }
+
       res.render('garage/events/page', {
         user: userData.user,
         domains: userData.domains,
         currentDomain: currentDomain,
-        event: event[0]
+        event: event[0],
+        meta : {
+          title : event[0].message
+        }
       });
 
     })
     .catch (function (e) {
 
-      console.log('Error while getting user data for main garage page: %o', e);
+      logger.log('error', 'Error while getting user data for main garage page: %o', e);
 
     });
 
 };
 
-router.get('/:domain/event/:id', index);
+router.get('/:domain/event/:id?', index);
 
 module.exports = router;

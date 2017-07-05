@@ -5,6 +5,12 @@ module.exports = function () {
   let user = require('../models/user');
   let collections = require('../config/collections');
 
+  /**
+   * Native Node URL module
+   * Use to parse URL's
+   * @see https://nodejs.org/api/url.html#url_constructor_new_url_input_base
+   */
+  const url = require('url');
   const collection = collections.WEBSITES;
 
   /**
@@ -38,48 +44,119 @@ module.exports = function () {
       'name': domain
     })
       .then(function (result) {
+
         return !result;
+
       });
+
   };
 
   /**
    * Add new domain name and client and server tokens to DB
    */
-  let add = function (app_name, token, user) {
+  let add = function (domain, token, user) {
 
-    return mongo.updateOne('users', {_id: mongo.ObjectId(user._id)}, {$push: {domains: app_name}}).then(function () {
+    return mongo.updateOne('users', {_id: mongo.ObjectId(user._id)}, {$push: {domains: domain}})
+      .then(function () {
 
-      return mongo.insertOne(collection, {
-          'name': app_name,
+        /**
+         * Using Node URL module to get domain name and protocol
+         * to see all features you can in documentation page
+         */
+        let parsedURL = url.parse(domain);
+
+        /**
+         * If hostname and protocol aren't valid
+         * refresh page with error message
+         */
+        if (!parsedURL.host && !parsedURL.protocol) {
+          throw new Error('Invalid domain name, please try again');
+        }
+
+        return mongo.insertOne(collection, {
+          'protocol' : parsedURL.protocol || 'http',
+          'name': parsedURL.host,
           'token': token,
           'user': user._id.toString()
-        }
-      )
-        .then(function (result) {
-          if (result) {
+        });
+
+      })
+      .then(function (result) {
+
+        if (result) {
+
+          logger.info('Register new domain: ' + domain);
+
+          if (process.env.ENVIRONMENT == 'DEVELOPMENT') {
+
+            console.log('Domain: ', domain);
+            console.log('Token: ', token);
+
+          } else {
+
             email.init();
             email.send(
-              {name: 'CodeX Hawk', email: 'codex.ifmo@yandex.ru'},
               user.email,
-              'Your token',
-              'Your access token: ' + token,
-              '');
-            return true;
-          }
-          else {
-            return false;
-          }
-        });
-    })
+              domain + ' token',
+              'Here is an access token for domain ' + domain + ':\n' + token,
+              ''
+            );
 
+          }
+
+          return true;
+
+        } else {
+
+          return false;
+
+        }
+
+      });
   };
 
+  /**
+   * Remove domain from database and unlink it from user account
+   *
+   * @param owner - domain owner
+   * @param token - domain token
+   * @returns {Promise.<TResult>}
+   */
+  let remove = function (owner, token) {
 
+    return mongo.findOne(collections.WEBSITES, {
+      token: token,
+      user: owner._id.toString()
+    })
+      .then(function (domain) {
+
+        /* Remove domain from list of user`s domains */
+        return mongo.updateOne(collections.USERS, {_id: owner._id}, {$pull: {domains: domain}});
+
+      })
+      .then(function () {
+
+        /* Remove domain from database */
+        return mongo.remove(collections.WEBSITES, {
+          user: owner._id.toString(),
+          token: token
+        });
+
+      })
+      .catch(function (e) {
+
+        logger.log('error', 'Can\' remove domain ', e);
+
+      });
+
+  };
+  
   return {
     get: get,
     checkName: checkName,
     add: add,
-    getByUser: getByUser
-  }
+    getByUser: getByUser,
+    remove: remove
+  };
 
 }();
