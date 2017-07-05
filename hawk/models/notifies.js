@@ -10,7 +10,7 @@ module.exports = function () {
   const templatesPath = 'views/notifies/';
   const templates = {
     messenger: 'messenger.twig',
-    email: 'email.twig'
+    email: 'email/notify.twig'
   };
 
   let timers = {};
@@ -50,7 +50,7 @@ module.exports = function () {
 
       if (err) {
 
-        logger.log('error', 'Can not render notify template because of ', err);
+        logger.error('Can not render notify template because of ', err);
         return;
 
       }
@@ -75,7 +75,7 @@ module.exports = function () {
 
         if (err) {
 
-          logger.log('error', 'Can not render notify template because of ', err);
+          logger.error('Can not render notify template because of ', err);
           return;
 
         }

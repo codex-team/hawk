@@ -77,6 +77,8 @@ let connection = function (ws) {
 
   let receiveMessage = function (message) {
 
+    console.log('Client catcher recieved a message: %o', message);
+
     message = JSON.parse(message);
     getClientErrors(message);
 

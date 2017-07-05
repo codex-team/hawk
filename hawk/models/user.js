@@ -73,8 +73,8 @@ module.exports = function () {
       'password': auth.generateHash(password),
       'domains': [],
       'notifies': {
+        'email': true,
         'tg': false,
-        'email': false,
         'slack': false
       }
     };
@@ -87,8 +87,8 @@ module.exports = function () {
         /** Debug mode */
         if (process.env.ENVIRONMENT == 'DEVELOPMENT') {
 
-          console.log("Your email: ", userEmail);
-          console.log("Your password: ", password);
+          console.log('Your email: ', userEmail);
+          console.log('Your password: ', password);
 
         } else {
 
@@ -116,13 +116,12 @@ module.exports = function () {
    * Get logged user data and his domains data
    *
    * @param req
-   * @param res
    * @returns {Promise.<TResult>}
    */
-  let getUserAndDomains = function (req, res) {
+  let getInfo = function (req) {
 
     let currentUser = null,
-        domains = null;
+      domains = null;
 
     return current(req)
       .then(function (currentUser_) {
@@ -131,8 +130,7 @@ module.exports = function () {
 
         if (!currentUser) {
 
-          res.sendStatus(403);
-          return;
+          throw Error(403);
 
         }
 
@@ -144,6 +142,7 @@ module.exports = function () {
         domains = domains_;
 
         let queries = [];
+
         domains.forEach(function (domain) {
 
           let query = events.countTags(domain.name)
@@ -157,7 +156,7 @@ module.exports = function () {
 
             }).catch(function (e) {
 
-              logger.log('error', 'Events Query composing error: %o', e);
+              logger.error('Events Query composing error: ', e);
 
             });
 
@@ -173,14 +172,15 @@ module.exports = function () {
         return {
           user: currentUser,
           domains: domains
-        }
+        };
 
       })
       .catch(function (e) {
 
-        logger.log('Can\'t get user because of %o', e);
+        logger.error('Can\'t get user because of ', e);
 
-      })
+      });
+
   };
 
   /**
@@ -235,7 +235,7 @@ module.exports = function () {
     getByParams: getByParams,
     add: add,
     get: get,
-    getInfo: getUserAndDomains,
+    getInfo: getInfo,
     update: update,
     checkParamUniqueness: checkParamUniqueness
   };
