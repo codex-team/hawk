@@ -50,7 +50,7 @@ module.exports = function () {
 
       if (err) {
 
-        logger.log('error', 'Can not render notify template because of ', err);
+        logger.error('Can not render notify template because of ', err);
         return;
 
       }
@@ -75,7 +75,7 @@ module.exports = function () {
 
         if (err) {
 
-          logger.log('error', 'Can not render notify template because of ', err);
+          logger.error('Can not render notify template because of ', err);
           return;
 
         }

@@ -69,13 +69,15 @@ let connection = function (ws) {
       })
       .catch( function (e) {
 
-        ws.send(JSON.stringify({type: 'error', message: e.message}))
+        ws.send(JSON.stringify({type: 'error', message: e.message}));
 
       });
 
   }
 
   let receiveMessage = function (message) {
+
+    console.log('Client catcher recieved a message: %o', message);
 
     message = JSON.parse(message);
     getClientErrors(message);
