@@ -36,22 +36,26 @@ let index = function (req, res) {
 
   }
 
-  res.locals.userDomains.forEach(function (domain) {
+  if (currentDomain) {
 
-    if (domain.name == currentDomain) {
+    res.locals.userDomains.forEach(function (domain) {
 
-      currentDomain = domain;
+      if (domain.name == currentDomain) {
+
+        currentDomain = domain;
+
+      }
+
+    });
+
+    if (!currentDomain.name) {
+
+      res.sendStatus(404);
+      return;
 
     }
 
-  });
-
-  if (!currentDomain) {
-
-    res.sendStatus(404);
-    return;
-
-  }
+  };
 
   let findParams = {};
 
