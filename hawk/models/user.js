@@ -156,7 +156,7 @@ module.exports = function () {
 
             }).catch(function (e) {
 
-              logger.log('error', 'Events Query composing error: %o', e);
+              logger.error('Events Query composing error: ', e);
 
             });
 
@@ -177,7 +177,7 @@ module.exports = function () {
       })
       .catch(function (e) {
 
-        logger.log('Can\'t get user because of %o', e);
+        logger.error('Can\'t get user because of ', e);
 
       });
 
