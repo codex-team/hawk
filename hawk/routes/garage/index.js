@@ -29,13 +29,6 @@ let index = function (req, res) {
 
   }
 
-  if (currentDomain && !res.locals.userDomains.includes(currentDomain)) {
-
-    res.sendStatus(404);
-    return;
-
-  }
-
   if (currentTag && !allowedTags.includes(currentTag)) {
 
     res.sendStatus(404);
@@ -52,6 +45,13 @@ let index = function (req, res) {
     }
 
   });
+
+  if (!currentDomain) {
+
+    res.sendStatus(404);
+    return;
+
+  }
 
   let findParams = {};
 

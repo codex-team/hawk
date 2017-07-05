@@ -15,7 +15,7 @@ let index = function (req, res) {
 
   res.render('garage/settings', {
     user: res.locals.user,
-    domains: res.locals.domains,
+    domains: res.locals.userDomains,
     csrfToken: req.csrfToken(),
     meta : {
       title : 'User settings'
