@@ -13,24 +13,14 @@ let csrf = require('../../modules/csrf');
  */
 let index = function (req, res) {
 
-  user.getInfo(req, res)
-    .then(function (userData) {
-
-      res.render('garage/settings', {
-        user: userData.user,
-        domains: userData.domains,
-        csrfToken: req.csrfToken(),
-        meta : {
-          title : 'User settings'
-        }
-      });
-
-    })
-    .catch (function (e) {
-
-      logger.log('error', 'Error while getting user data for settings page: %o', e);
-
-    });
+  res.render('garage/settings', {
+    user: res.locals.user,
+    domains: res.locals.userDomains,
+    csrfToken: req.csrfToken(),
+    meta : {
+      title : 'User settings'
+    }
+  });
 
 };
 

@@ -62,3 +62,48 @@
         overflow: hidden;
     }
 }
+
+/**
+ * Stack table
+ */
+.stack-table {
+    border: 1px solid var(--lightGrayLine);
+    border-radius: 3px;
+    padding: 25px;
+}
+
+/**
+ * Repeations list
+ */
+.repeations {
+    width: 100%;
+
+    td {
+        padding: 15px;
+
+        &:first-of-type {
+            padding-left: 0;
+        }
+
+        &:last-of-type {
+            padding-left: 0;
+            text-align: right;
+        }
+    }
+
+    &__date {
+        color: var(--grayText);
+    }
+
+}
+
+/**
+ * Event badge: mobile, desctom;
+ */
+.event-badge {
+    display: inline-block;
+    border-radius: 3px;
+    padding: 2px 5px;
+    background: var(--lightGrayBg);
+    font-size: 0.9em;
+}

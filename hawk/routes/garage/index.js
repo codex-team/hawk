@@ -1,6 +1,5 @@
 let express = require('express');
 let router = express.Router();
-let user = require('../../models/user');
 let events = require('../../models/events');
 
 /**
@@ -13,76 +12,77 @@ let index = function (req, res) {
 
   'use strict';
 
-  let userData,
-    currentDomain,
+  let currentDomain,
     currentTag;
 
-  user.getInfo(req, res)
-    .then(function (userData_) {
+  let params = req.params,
+    allowedTags = ['fatal', 'warnings', 'notice', 'javascript'];
 
-      let params = req.params,
-        allowedTags = ['fatal', 'warnings', 'notice', 'javascript'];
+  currentDomain = params.domain;
+  currentTag = params.tag;
 
-      currentDomain = params.domain;
-      currentTag = params.tag;
-      userData = userData_;
+  /** Check if use tag w\o domain */
+  if (!currentTag && allowedTags.includes(currentDomain)) {
 
-      /** Check if use tag w\o domain */
-      if (!currentTag && allowedTags.includes(currentDomain)) {
+    currentTag = currentDomain;
+    currentDomain = null;
 
-        currentTag = currentDomain;
-        currentDomain = null;
+  }
 
-      }
+  if (currentTag && !allowedTags.includes(currentTag)) {
 
-      if (currentDomain && !userData.user.domains.includes(currentDomain)) {
+    res.sendStatus(404);
+    return;
 
-        res.sendStatus(404);
-        return;
+  }
 
-      }
+  if (currentDomain) {
 
-      if (currentTag && !allowedTags.includes(currentTag)) {
+    res.locals.userDomains.forEach(function (domain) {
 
-        res.sendStatus(404);
-        return;
+      if (domain.name == currentDomain) {
 
-      }
-
-      userData.domains.forEach(function (domain) {
-
-        if (domain.name == currentDomain) {
-
-          currentDomain = domain;
-
-        }
-
-      });
-
-      let findParams = {};
-
-      if (currentTag) {
-
-        findParams.tag = currentTag;
+        currentDomain = domain;
 
       }
 
-      if (currentDomain) {
+    });
 
-        return events.get(currentDomain.name, findParams, true);
+    if (!currentDomain.name) {
 
-      } else {
+      res.sendStatus(404);
+      return;
 
-        return events.getAll(userData.user, findParams);
+    }
 
-      }
+  };
 
-    })
+  let findParams = {};
+
+  if (currentTag) {
+
+    findParams.tag = currentTag;
+
+  }
+
+  Promise.resolve().then(function () {
+
+    if (currentDomain) {
+
+      return events.get(currentDomain.name, findParams, true);
+
+    } else {
+
+      return events.getAll(res.locals.user, findParams);
+
+    }
+
+  })
     .then(function (events) {
 
       res.render('garage/index', {
-        user: userData.user,
-        domains: userData.domains,
+        user: res.locals.user,
+        userDomains: res.locals.userDomains,
         currentDomain: currentDomain,
         currentTag: currentTag,
         events: events,
@@ -94,7 +94,7 @@ let index = function (req, res) {
     })
     .catch (function (e) {
 
-      logger.log('error', 'Error while getting user data for main garage page: %o', e);
+      logger.error('Error while getting user data for main garage page: ', e);
 
     });
 

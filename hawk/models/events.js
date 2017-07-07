@@ -34,20 +34,20 @@ module.exports = (function() {
 
     if (group) {
       pipeline.push({$group: {
-        _id: "$groupHash",
-        type: {$first: "$type"},
-        tag: {$first: "$tag"},
-        errorLocation: {$first: "$errorLocation"},
-        message: {$first: "$message"},
-        time: {$last: "$time"},
+        _id: '$groupHash',
+        type: {$first: '$type'},
+        tag: {$first: '$tag'},
+        errorLocation: {$first: '$errorLocation'},
+        message: {$first: '$message'},
+        time: {$last: '$time'},
         count: {$sum: 1}
-      }})
+      }});
     }
 
     if (!sort) {
       sort = {
         time: -1
-      }
+      };
     }
 
     pipeline.push({
@@ -57,17 +57,17 @@ module.exports = (function() {
     if (skip) {
       pipeline.push({
         $skip: skip
-      })
+      });
     }
 
     if (limit) {
       pipeline.push({
         $limit: limit
-      })
+      });
     }
 
 
-    return mongo.aggregation(domain, pipeline)
+    return mongo.aggregation(domain, pipeline);
 
   };
 
