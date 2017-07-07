@@ -12,12 +12,24 @@ let md5 = function (input) {
 
 };
 
-
+/**
+ * Server-side receiver for Python's exceptions.
+ * It takes followings json params in request:
+ *
+ * @param req.body.token
+ * @param req.body.domain
+ * @param req.body.message
+ * @param req.body.errorLocation.file
+ * @param req.body.errorLocation.line
+ * @param req.body.errorLocation.full
+ * @param req.body.stack
+ * @param req.body.time
+ */
 let getPythonErrors = function (req, res) {
 
   let response = req.body,
-      location = response.errorLocation.file + ':' + response.errorLocation.line,
-      host = response.domain;
+    location = response.errorLocation.file + ':' + response.errorLocation.line,
+    host = response.domain;
 
   let event = {
     type          : 'python',
@@ -52,7 +64,7 @@ let getPythonErrors = function (req, res) {
             })
             .catch(function (e) {
 
-              console.log('Can not add event because of ', e);
+              logger.error('Can not add event because of ', e);
               res.sendStatus(500);
 
             });
