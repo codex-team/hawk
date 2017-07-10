@@ -7,7 +7,7 @@ let chai = require('chai'),
 
 describe('MODULE.AUTH', function() {
 
-  describe('Check function', function() {
+  describe('#Check function', function() {
 
     it('testing fake cookies', function() {
 
@@ -23,7 +23,7 @@ describe('MODULE.AUTH', function() {
 
   });
 
-  describe('generateHash function', function() {
+  describe('#generateHash function', function() {
 
     let string,
         result;
