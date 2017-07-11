@@ -1,3 +1,7 @@
+/**
+ * Testing Auth modules
+ * Every public function must have 3 or more cases
+ */
 let auth = require('../../modules/auth');
 
 let chai = require('chai'),
@@ -7,10 +11,16 @@ let chai = require('chai'),
 
 describe('MODULE.AUTH', function() {
 
+  /**
+   * Function #Check
+   * checks user existance by cookies
+   * @see /modules/auth.js#check
+   */
   describe('#Check function', function() {
 
     it('testing fake cookies', function() {
 
+        /** setting random hash and id */
         let user_id = '5953d6cf3e89e4000f6eade4',
             user_hash = '35ba436493f5a2cbb73071d1df31cfe2027ad2c338329d5d389acfdc3ec2071c';
             cookies = {
@@ -23,6 +33,11 @@ describe('MODULE.AUTH', function() {
 
   });
 
+  /**
+   * Function #generateHash
+   * generates hash from string. Uses sha256 method
+   * @see /modules/auth.js#generateHash
+   */
   describe('#generateHash function', function() {
 
     let string,
