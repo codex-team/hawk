@@ -18,13 +18,13 @@
             {% for errorType in ['fatal', 'warnings', 'notice', 'javascript'] %}
               {% set countErrors = attribute(domain, errorType) or 0 %}
               <a class="garage-aside__tag" href="{{ url }}/{{ errorType }}">
-                  {{ errorType }}
+                {{ errorType }}
 
-                  {% if countErrors %}
-                  <span class="garage-aside__counter garage-aside__counter--{{ errorType }}">
-                    {{ countErrors }}
-                  </span>
-                  {% endif %}
+                {% if countErrors %}
+                <span class="garage-aside__counter garage-aside__counter--{{ errorType }}">
+                  {{ countErrors }}
+                </span>
+                {% endif %}
               </a>
             {% endfor %}
 

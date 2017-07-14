@@ -76,7 +76,6 @@
             display: inline-block;
             width: 5px;
             height: 5px;
-            background: var(--grayText);
             margin-right: 0.3em;
             margin-top: -0.3em;
             vertical-align: middle;
