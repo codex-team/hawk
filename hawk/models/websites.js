@@ -115,7 +115,7 @@ module.exports = function () {
               email.init();
               email.send(
                 user.email,
-                domain + ' token',
+                'Integration token for ' + domain,
                 '',
                 html
               );
