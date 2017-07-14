@@ -48,7 +48,7 @@
     }
 
     &__content {
-        margin: 20px 0;
+        margin-top: 20px;
     }
 
     &__counter {
@@ -58,8 +58,11 @@
     &__title {
         color: #fff;
         font-size: 20px;
-        margin-bottom: 20px;
         overflow: hidden;
+    }
+
+    &__path {
+        margin: 20px 0;
     }
 }
 
@@ -122,6 +125,7 @@
 
     &__user-agent {
         margin: 0 15px;
+        max-width: 220px;
         flex-grow: 1;
     }
 
@@ -133,17 +137,28 @@
         color: var(--linkColor);
         margin: 0 15px;
         flex-grow: 1;
+
+        &:hover {
+            color: var(--hoverColor);
+        }
+
     }
 
     &__stack {
         margin-left: auto;
-        color: var(--grayText);
+        color: var(--lightGrayText);
         cursor: pointer;
 
-        & img {
+        & svg {
             margin-right: 7px;
             vertical-align: top;
         }
+
+        &:hover,
+        &--opened {
+            color: var(--grayText)
+        }
+
     }
 
 }
@@ -157,6 +172,7 @@
     border-radius: 3px;
     padding: 5px;
     background: var(--lightGrayBg);
+    color: var(--noticeColor);
     font-size: 0.9em;
 
     &--mobile {

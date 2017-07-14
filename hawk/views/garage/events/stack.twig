@@ -1,4 +1,4 @@
-<div class="stack-table {{ hide ? 'hide' : '' }}">
+<div class="stack-table {{ not main ? 'hide' : '' }}" {{ not main ? 'data-event="'~event._id~'"' : ''}}>
     {% for item in event.stack %}
         <div class="stack-table__row">
             <div class="stack-table__file">{{ item.func }}@{{ item.file }}</div>

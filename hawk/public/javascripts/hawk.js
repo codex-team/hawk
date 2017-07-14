@@ -18,6 +18,7 @@ let hawk = (function ( self ) {
   self.ajax     = require('./ajax');
   self.domain   = require('./domain');
   self.notifier = require('exports-loader?notifier!codex-notifier');
+  self.event    = require('./event');
 
   return self;
 

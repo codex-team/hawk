@@ -22,11 +22,14 @@
       <div class="event__path">
         {{ event.errorLocation.full }}
       </div>
+      <div class="event-badge event-badge--{{ event.userAgent.device.type }}">
+        {{ event.userAgent.device.width }} x {{ event.userAgent.device.height }}
+      </div>
     </div>
   </div>
   <div class="garage_page">
     <h3>Traceback</h3>
-    {% include 'garage/events/stack.twig' with {event: event} %}
+    {% include 'garage/events/stack.twig' with {event: event, main: true} %}
     <h3>Repeations</h3>
     {% include 'garage/events/pages/'~event.type~'.twig' with {events: events} %}
   </div>

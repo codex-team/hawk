@@ -5,6 +5,7 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var twigExtensions = require('./modules/twig');
 
 require('dotenv').config();
 
