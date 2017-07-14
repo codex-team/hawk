@@ -14,22 +14,20 @@
             <a href="{{ url }}">{{ domain.name }}</a>
             <a class="garage-aside__domain" href="{{ url }}">
             </a>
-            <a class="garage-aside__tag" href="{{ url }}/fatal">
-                fatal
-                <span class="garage-aside__counter garage-aside__counter--fatal">{{ domain.fatal or 0 }}</span>
-            </a>
-            <a class="garage-aside__tag" href="{{ url }}/warnings">
-                warnings
-                <span class="garage-aside__counter garage-aside__counter--warning">{{ domain.warnings or 0 }}</span>
-            </a>
-            <a class="garage-aside__tag" href="{{ url }}/notice">
-                notice
-                <span class="garage-aside__counter garage-aside__counter--notice">{{ domain.notice or 0 }}</span>
-            </a>
-            <a class="garage-aside__tag" href="{{ url }}/javascript">
-                javascript
-                <span class="garage-aside__counter garage-aside__counter--client">{{ domain.javascript or 0 }}</span>
-            </a>
+
+            {% for errorType in ['fatal', 'warnings', 'notice', 'javascript'] %}
+              {% set countErrors = attribute(domain, errorType) or 0 %}
+              <a class="garage-aside__tag" href="{{ url }}/{{ errorType }}">
+                  {{ errorType }}
+
+                  {% if countErrors %}
+                  <span class="garage-aside__counter garage-aside__counter--{{ errorType }}">
+                    {{ countErrors }}
+                  </span>
+                  {% endif %}
+              </a>
+            {% endfor %}
+
         </section>
     {% endfor %}
 
