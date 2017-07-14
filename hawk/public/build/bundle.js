@@ -570,26 +570,137 @@ module.exports = hawk;
 
 var popup = function (self) {
 
+  /**
+   * List of element classes that needs to find
+   */
   var elements_ = {
-    items: 'garage-list-item'
+    eventItems: 'garage-list-item',
+    eventItemTitle: 'garage-list-item__title',
+    tracebackPopup: 'traceback-popup',
+    tracebackContent: 'traceback-popup__content',
+    tracebackClosingButton: 'traceback-popup__closing-button'
   };
 
-  var errorItems = null;
-
-  self.init = function () {
-
-    errorItems = document.getElementsByClassName(elements_.items);
-    addItemHandlerOnClick_(errorItems);
+  var styles_ = {
+    showTracebackPopup: 'traceback-popup--show'
   };
 
   /**
-   * add event listeners
+   * event items
+   */
+  var errorItems = null;
+
+  /**
+   * traceback popup wrapper
+   */
+  var tracebackPopup = null;
+
+  /**
+   * popup's content
+   */
+  var tracebackContent = null;
+
+  /**
+   * popup's closing button
+   */
+  var tracebackClosingButton = null;
+
+  /**
+   * @protected
+   * Initialize popup module.
+   * find all necessary elements and add listeners
+   */
+  self.init = function () {
+
+    errorItems = document.getElementsByClassName(elements_.eventItems);
+
+    tracebackPopup = document.getElementsByClassName(elements_.tracebackPopup);
+    tracebackPopup = tracebackPopup.length ? tracebackPopup[0] : null;
+
+    tracebackContent = document.getElementsByClassName(elements_.tracebackContent);
+    tracebackContent = tracebackContent.length ? tracebackContent[0] : null;
+
+    tracebackClosingButton = document.getElementsByClassName(elements_.tracebackClosingButton);
+    tracebackClosingButton = tracebackClosingButton.length ? tracebackClosingButton[0] : null;
+
+    if (tracebackContent && tracebackClosingButton && errorItems) {
+
+      addClosingButtonHandler_();
+      addItemHandlerOnClick_(errorItems);
+    }
+  };
+
+  /**
+   * @protected
+   * Removes class that display's popup
+   */
+  self.close = function () {
+
+    tracebackPopup.classList.remove(styles_.showTracebackPopup);
+  };
+
+  /**
+   * @protected
+   * Adds class that display's popup
+   */
+  self.open = function () {
+
+    tracebackPopup.classList.add(styles_.showTracebackPopup);
+  };
+
+  /**
+   * @private
+   * close popup when cross icon clicked
+   */
+  var addClosingButtonHandler_ = function addClosingButtonHandler_() {
+
+    tracebackClosingButton.addEventListener('click', function () {
+
+      self.close();
+    }, false);
+  };
+
+  var sendPopupRequest_ = function sendPopupRequest_(event) {
+
+    // event.preventDefault();
+
+    console.log('her');
+    var that = this,
+        title = that.getElementsByClassName(elements_.eventItemTitle),
+        url = title.length ? title[0].href : null;
+
+    if (url) {
+
+      hawk.ajax.call({
+        url: url + '?popup=true',
+        method: 'GET',
+        success: handleSuccessResponse_,
+        error: handleErrorResponse_
+      });
+    }
+  };
+
+  var handleSuccessResponse_ = function handleSuccessResponse_(response) {
+
+    tracebackContent.innerHTML = response;
+    self.open();
+  };
+
+  var handleErrorResponse_ = function handleErrorResponse_(response) {};
+
+  /**
+   * @private
+   *
+   * delegate and add event listeners to the items
+   * prevent clicks on items and show popup via traceback content
+   *
+   * @param {Object} items - found elemens
    */
   var addItemHandlerOnClick_ = function addItemHandlerOnClick_(items) {
 
     for (var i = 0; i < items.length; i++) {
 
-      items[i].addEventListener('click', function () {}, false);
+      items[i].addEventListener('click', sendPopupRequest_, false);
     }
   };
 

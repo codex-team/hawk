@@ -11,7 +11,7 @@ module.exports = function () {
   /**
    * Function for include svg on page
    *
-   * @usage svg('path/from/root/dir)
+   * @example svg('path/from/root/dir)
    *
    * @param path - path from project root dir
    *

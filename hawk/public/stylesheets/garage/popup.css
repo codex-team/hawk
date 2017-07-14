@@ -1,5 +1,5 @@
 .traceback-popup {
-  /*display: none;*/
+  display: none;
   position: fixed;
   top: 0;
   left: var(--garage-aside-width);
@@ -15,6 +15,10 @@
   &__closing-button {
     position: absolute;
     margin: 15px;
+  }
+
+  &__closing-button:hover {
+    cursor: pointer;
   }
 
   &__content {

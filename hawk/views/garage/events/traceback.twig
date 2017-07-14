@@ -1,0 +1,55 @@
+<div class="event">
+  <div class="event__header">
+    <span class="event__domain">school332.ru</span>
+    <span class="event__type event__type--{{ event.tag }}">
+      {{ event.tag == 'javascript' ? 'JavaScript Error' : event.tag|capitalize }}
+    </span>
+  </div>
+  <div class="event__content clearfix">
+    <div class="event__counter">
+      <div class="event__counter-number">
+        <div class="event__counter-number--digit">5</div>
+        times
+      </div>
+      <div class="event__counter-date">since<br>23-06-2017</div>
+    </div>
+    <div class="event__title">
+      ReferenceError: codex is not defined
+    </div>
+    <div class="event__path">
+      https://school332.ru/ -> 433:9
+    </div>
+  </div>
+</div>
+<div class="garage_page">
+  <h3>Traceback</h3>
+  <div class="stack-table">
+    {{ event.stack|nl2br }}
+  </div>
+  <h3>Repeations</h3>
+  <table class="repeations">
+    {% for item in events %}
+      <tr>
+        {# <td>{{ item.type }}</td> #}
+        {# <td>{{ item.tag }}</td> #}
+        {# <td>{{ item.message }}</td> #}
+        <td class="repeations__date">
+          {{ item.time|date('d M, H:i') }}
+        </td>
+        <td>
+          {{ item.userAgent.device.os }},
+          {{ item.userAgent.browser.name }}
+          {{ item.userAgent.browser.version }}
+        </td>
+        {# <td>{{ item.errorLocation.full }}</td> #}
+        <td>{{ item.location.url }}</td>
+        {# <td>{{ item.stack }}</td> #}
+        <td>
+          <span class="event-badge">
+            {{ item.userAgent.device.width }}x{{ item.userAgent.device.height }}
+          </span>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+</div>

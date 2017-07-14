@@ -59,11 +59,23 @@ let event = function (req, res) {
         events.get(currentDomain.name, {groupHash: params.eventId}, false)
           .then(function (events) {
 
-            res.render('garage/events/page', {
-              currentDomain,
-              event: events[0],
-              events: events
-            });
+            if (req.query.popup) {
+
+              res.render('garage/events/traceback', {
+                currentDomain,
+                event: events[0],
+                events: events
+              });
+
+            } else {
+
+              res.render('garage/events/page', {
+                currentDomain,
+                event: events[0],
+                events: events
+              });
+
+            }
 
           });
 
