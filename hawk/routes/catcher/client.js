@@ -4,6 +4,7 @@ let notifies = require('../../models/notifies');
 let user = require('../../models/user');
 let WebSocket = require('ws');
 let Crypto = require('crypto');
+let stack = require('../../modules/stack');
 
 let md5 = function (input) {
 
@@ -33,7 +34,7 @@ let connection = function (ws) {
       message       : message.message,
       errorLocation : message.error_location,
       location      : message.location,
-      stack         : message.stack,
+      stack         : stack.parse(message),
       groupHash     : md5(location),
       userAgent     : message.navigator,
       time          : Math.floor(message.time / 1000)
