@@ -4,6 +4,7 @@ let notifies = require('../../models/notifies');
 let user = require('../../models/user');
 let WebSocket = require('ws');
 let Crypto = require('crypto');
+let stack = require('../../modules/stack');
 
 let md5 = function (input) {
 
@@ -33,7 +34,7 @@ let connection = function (ws) {
       message       : message.message,
       errorLocation : message.error_location,
       location      : message.location,
-      stack         : parseStack(message),
+      stack         : stack.parse(message),
       groupHash     : md5(location),
       userAgent     : message.navigator,
       time          : Math.floor(message.time / 1000)
@@ -89,154 +90,3 @@ let connection = function (ws) {
 };
 
 reciever.on('connection', connection);
-
-/**
- * Parse stack string for different browsers
- *
- * @param event
- * @returns {*}
- */
-let parseStack = function (event) {
-
-  const REGEXPS = {
-    /* FF example: throwError@http://localhost:63342/hawk.client/index.html:10:28 */
-    FF_SAFARI_OPERA_11: /(.*)@(\S+)\:(\d+):(\d+)/,
-
-    /* Chrome example: at throwError (index.html?_ijt=pnsmb0fcsfavevcnj0g1a9sq:10) */
-    CHROME_IE: /^\s*at (.*) \((\S+):(\d+):(\d+)\)/m,
-
-    /* Opera <11 regexps */
-    OPERA_9: /Line (\d+).*script (?:in )?(\S+)/i,
-    OPERA_10: /Line (\d+).*script (?:in )?(\S+)(?:: In function (\S+))?$/i,
-
-  };
-
-  let stack = event.stack;
-
-  let parseChromeIE = function () {
-
-    let filtered = stack.split('\n').filter(function (line) {
-
-      return REGEXPS.CHROME_IE.test(line);
-
-    });
-
-    return filtered.map(function (line) {
-
-      if (/eval/.test(line)) {
-
-        /* Replace eval calls to expected format */
-        line = line.replace(/eval \(/, '').replace(/, .*:\d+:\d+\)/, '');
-
-      }
-
-      let matches = REGEXPS.CHROME_IE.exec(line);
-
-      return {
-        func: matches[1],
-        file: matches[2],
-        line: matches[3],
-        col: matches[4]
-      };
-
-    });
-
-  };
-  let parseSafariOpera11FF = function () {
-
-    let filtered = stack.split('\n').filter(function (line) {
-
-      return !/^Error created at/.test(line) && REGEXPS.FF_SAFARI_OPERA_11.test(line);
-
-    });
-
-    return filtered.map(function (line) {
-
-      let matches = REGEXPS.FF_SAFARI_OPERA_11.exec(line);
-
-      return {
-        func: matches[1],
-        file: matches[2],
-        line: matches[3],
-        col: matches[4]
-      };
-
-    });
-
-  };
-  let parseOpera9 = function () {
-
-    let filtered = event.message.split('\n').filter(function (line) {
-
-      return REGEXPS.OPERA_9.test(line);
-
-    });
-
-    return filtered.map(function (line) {
-
-      let matches = REGEXPS.OPERA_9.exec(line);
-
-      return {
-        file: matches[2],
-        line: matches[1]
-      };
-
-    });
-
-  };
-
-  let parseOpera10 = function () {
-
-    let filtered = stack.split('\n').filter(function (line) {
-
-      return REGEXPS.OPERA_10.test(line);
-
-    });
-
-
-    return filtered.map(function (line) {
-
-      let matches = REGEXPS.OPERA_9.exec(line);
-
-      return {
-        func: matches[3] || undefined,
-        file: matches[2],
-        line: matches[1]
-      };
-
-    });
-
-  };
-
-  if (REGEXPS.OPERA_9.test(event.message)) {
-
-    stack = parseOpera9();
-
-  } else if (REGEXPS.OPERA_10.test(stack)) {
-
-    stack = parseOpera10();
-
-  } else if (REGEXPS.CHROME_IE.test(stack)) {
-
-    stack = parseChromeIE();
-
-  } else if (REGEXPS.FF_SAFARI_OPERA_11.test(stack)) {
-
-    stack = parseSafariOpera11FF();
-
-  } else {
-
-    /* Unsupported stack format, just split by \n */
-    stack = stack.split('\n').map(function (line) {
-
-      return {
-        file: line
-      };
-
-    });
-
-  }
-
-  return stack;
-
-};
