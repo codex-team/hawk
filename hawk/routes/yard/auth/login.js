@@ -69,7 +69,15 @@ let login = {
 
         } else {
 
-          res.render('error', { message: 'Try again later.' });
+          let params = {
+            message: {
+              type: 'error',
+              text: 'Wrong email or password.'
+            },
+            email: req.body.email
+          };
+
+          res.render('yard/auth/login', params);
 
         }
 
