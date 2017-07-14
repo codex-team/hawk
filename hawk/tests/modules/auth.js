@@ -4,12 +4,12 @@
  */
 let auth = require('../../modules/auth');
 
+require('dotenv').config();
+
 let chai = require('chai'),
     assert = chai.assert,
     expect = chai.expect,
     should = chai.should();
-
-process.env.SALT = 'Dv4-45b-Nt5-sdS';
 
 describe('MODULE.AUTH', function() {
 

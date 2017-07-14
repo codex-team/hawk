@@ -1,7 +1,6 @@
-let protocol = 'http',
-    domain   = 'hawk.io',
-    port     = '3000';
-    app      = protocol + '://' + domain + ':' + port;
+require('dotenv').config();
+
+let app = process.env.PROTOCOL + '://' + process.env.HOST_NAME + ':' + process.env.PORT;
 
 let chai = require('chai'),
     chaiHttp = require('chai-http'),
