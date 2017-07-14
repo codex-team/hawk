@@ -64,6 +64,14 @@
     &__path {
         margin: 20px 0;
     }
+
+    &-badge {
+
+        &:not(:first-of-type) {
+             margin-left: 20px;
+         }
+
+    }
 }
 
 /**
@@ -109,6 +117,7 @@
  * Repeations list
  */
 .repeations {
+
     width: 100%;
 
     &__row {
@@ -125,12 +134,12 @@
 
     &__user-agent {
         margin: 0 15px;
-        max-width: 220px;
+        width: 100px;
         flex-grow: 1;
     }
 
     & .event-badge {
-        margin: 0 15px;
+        margin: 0 10px;
     }
 
     &__path {
@@ -154,8 +163,7 @@
             vertical-align: top;
         }
 
-        &:hover,
-        &--opened {
+        &:hover {
             color: var(--grayText)
         }
 
@@ -230,4 +238,76 @@
 
     }
 
+    &--device-size {
+
+        & svg {
+            margin: -3px 3px 0;
+        }
+
+    }
+
+}
+
+.request {
+
+    & a {
+        color: var(--linkColor);
+
+        &:hover {
+            color: var(--hoverColor);
+        }
+
+    }
+
+    &-params {
+
+         border: 1px solid var(--lightGrayLine);
+         border-radius: 3px;
+         margin: 20px 0;
+         padding: 15px 25px;
+
+
+        &__header {
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--lightGrayLine);
+            font-size: 16px;
+        }
+
+        &__item {
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--lightGrayLine);
+
+            &:last-child {
+                border-bottom: 0;
+                padding-bottom: 0;
+            }
+
+        }
+
+        &__field {
+            width: 150px;
+            min-width: 150px;
+            color: #8a92a5;
+        }
+
+        &__value {
+            flex-grow: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+    }
+
+}
+
+.event-info {
+
+     &--opened {
+         color: var(--grayText)
+     }
 }

@@ -8,29 +8,10 @@
         {{ event.tag == 'javascript' ? 'JavaScript Error' : event.tag|capitalize }}
       </span>
     </div>
-    <div class="event__content clearfix">
-      <div class="event__counter">
-        <div class="event__counter-number">
-          <div class="event__counter-number--digit">{{ events|length }}</div>
-          times
-        </div>
-        <div class="event__counter-date">since<br>{{ event.time|date('d M Y') }}</div>
-      </div>
-      <div class="event__title">
-        {{ event.message }}
-      </div>
-      <div class="event__path">
-        {{ event.errorLocation.full }}
-      </div>
-      <div class="event-badge event-badge--{{ event.userAgent.device.type }}">
-        {{ event.userAgent.device.width }} x {{ event.userAgent.device.height }}
-      </div>
-    </div>
+    {% block eventContent %}{% endblock %}
   </div>
   <div class="garage_page">
-    <h3>Traceback</h3>
-    {% include 'garage/events/stack.twig' with {event: event, main: true} %}
-    <h3>Repeations</h3>
-    {% include 'garage/events/pages/'~event.type~'.twig' with {events: events} %}
+    {% block eventInfo %}{%  endblock %}
+    {% block repeations %}{% endblock %}
   </div>
 {% endblock %}

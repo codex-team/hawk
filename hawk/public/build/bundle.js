@@ -64,7 +64,7 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -432,6 +432,34 @@ module.exports = function () {
 "use strict";
 
 
+module.exports = function () {
+
+  /**
+   * Hide and show error repeations stack on event page
+   *
+   * @param stackButton
+   * @param eventId
+   */
+  var toggleStack = function toggleStack(stackButton, eventId) {
+
+    var eventInfo = document.querySelector('.event-info[data-event="' + eventId + '"]');
+
+    eventInfo.classList.toggle('hide');
+    stackButton.classList.toggle('event-info--opened');
+  };
+
+  return {
+    toggleStack: toggleStack
+  };
+}();
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var notifier = function (e) {
   function t(r) {
     if (n[r]) return n[r].exports;var c = n[r] = { i: r, l: !1, exports: {} };return e[r].call(c.exports, c, c.exports, t), c.l = !0, c.exports;
@@ -512,13 +540,13 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -527,7 +555,7 @@ module.exports = notifier;
 /**
 * Require CSS build
 */
-__webpack_require__(5);
+__webpack_require__(6);
 
 var hawk = function (self) {
 
@@ -542,8 +570,8 @@ var hawk = function (self) {
   self.copyable = __webpack_require__(2);
   self.ajax = __webpack_require__(0);
   self.domain = __webpack_require__(3);
-  self.notifier = __webpack_require__(4);
-  self.event = __webpack_require__(9);
+  self.notifier = __webpack_require__(5);
+  self.event = __webpack_require__(4);
 
   return self;
 }({});
@@ -557,36 +585,6 @@ hawk.docReady = function (f) {
 };
 
 module.exports = hawk;
-
-/***/ }),
-/* 7 */,
-/* 8 */,
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = function () {
-
-  /**
-   * Hide and show error repeations stack on event page
-   *
-   * @param stackButton
-   * @param eventId
-   */
-  var toggleStack = function toggleStack(stackButton, eventId) {
-
-    var stackTable = document.querySelector('.stack-table[data-event="' + eventId + '"]');
-
-    stackTable.classList.toggle('hide');
-    stackButton.classList.toggle('repeations__stack--opened');
-  };
-
-  return {
-    toggleStack: toggleStack
-  };
-}();
 
 /***/ })
 /******/ ]);

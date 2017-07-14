@@ -8,10 +8,10 @@ module.exports = function () {
    */
   let toggleStack = function (stackButton, eventId) {
 
-    let stackTable = document.querySelector('.stack-table[data-event="'+eventId+'"]');
+    let eventInfo = document.querySelector('.event-info[data-event="'+eventId+'"]');
 
-    stackTable.classList.toggle('hide');
-    stackButton.classList.toggle('repeations__stack--opened');
+    eventInfo.classList.toggle('hide');
+    stackButton.classList.toggle('event-info--opened');
 
   };
 
