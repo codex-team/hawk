@@ -4,6 +4,8 @@ let express = require('express');
 let router = express.Router();
 let auth = require('../../../modules/auth');
 let user = require('../../../models/user');
+let Twig = require('twig');
+let email = require('../../../modules/email');
 
 
 let join = {
@@ -11,71 +13,95 @@ let join = {
   /* Show join form */
   get: function (req, res, next) {
 
-    user.current(req).then(function (found) {
+    if (res.locals.user) {
 
-      if (found) {
+      res.redirect('/garage');
+      return;
 
-        res.redirect('/garage');
-        return;
+    }
 
-      }
-
-      res.render('yard/auth/join');
-
-    });
+    res.render('yard/auth/join');
 
   },
 
   /* Create new user */
   post: function (req, res, next) {
 
-    user.current(req).then(function (found) {
+    if (res.locals.user) {
 
-      if (found) {
+      res.redirect('/garage');
+      return;
 
-        res.redirect('/garage');
-        return;
+    }
 
-      }
+    let newUserEmail = req.body.email;
 
-      let email = req.body.email;
+    user.checkParamUniqueness({email: newUserEmail})
+      .then(function (isEmailExist) {
 
-      user.checkParamUniqueness({email: email})
-        .then(function (isEmailExist) {
+        return user.add(newUserEmail)
+          .then(function ({insertedUser, password}) {
 
-          return user.add(email)
-            .then(function (insertedUser) {
+            if (insertedUser) {
 
-              if (insertedUser) {
+              if (process.env.ENVIRONMENT == 'DEVELOPMENT') {
 
-                res.redirect('/login?success=1&email=' + email);
-                return;
+                console.log('Your email: ', insertedUser.email);
+                console.log('Your password: ', password);
 
               } else {
 
-                res.render('error', { message: 'Try again later.' });
+                let renderParams = {
+                  password: password
+                };
+
+                Twig.renderFile('views/notifies/email/join.twig', renderParams, function (err, html) {
+
+                  if (err) {
+
+                    logger.error('Can not render notify template because of ', err);
+                    return;
+
+                  }
+
+                  email.init();
+                  email.send(
+                    insertedUser.email,
+                    'Welcome to Hawk.so',
+                    '',
+                    html
+                  );
+
+                });
 
               }
 
-            }).catch(function (e) {
+              res.redirect('/login?success=1&email=' + insertedUser.email);
+              return;
 
-              logger.log('error', 'Can\'t add user because of ', e);
+            } else {
 
-            });
+              res.render('error', { message: 'Try again later.' });
 
-        }).catch(function () {
-
-          res.render('yard/auth/join', {
-            message: {
-              type: 'error',
-              text: 'This email already registred. Please, <a href="/login">login</a>.'
             }
+
+          }).catch(function (e) {
+
+            logger.log('error', 'Can\'t add user because of ', e);
+
           });
-          return;
 
+      }).catch(function () {
+
+        res.render('yard/auth/join', {
+          message: {
+            type: 'error',
+            text: 'This email already registred. Please, <a href="/login">login</a>.'
+          }
         });
+        return;
 
-    });
+      });
 
   }
 
