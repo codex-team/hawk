@@ -9,19 +9,21 @@ let chai = require('chai'),
     expect = chai.expect,
     should = chai.should();
 
+process.env.SALT = 'Dv4-45b-Nt5-sdS';
+
 describe('MODULE.AUTH', function() {
 
   /**
-   * Function #Check
-   * checks user existance by cookies
+   * Function auth.check.
+   * call function with fake and normal cookies
    * @see /modules/auth.js#check
    */
-  describe('#Check function', function() {
+  describe('Testing auth.check()', function() {
 
-    it('testing fake cookies', function() {
+    it('Call with fake \'user_id\' or \'user_hash\' cookies. Expect 0', function() {
 
         /** setting random hash and id */
-        let user_id = '5953d6cf3e89e4000f6eade4',
+        let user_id = '35ba436493f5a2cbb73071d1dfs',
             user_hash = '35ba436493f5a2cbb73071d1df31cfe2027ad2c338329d5d389acfdc3ec2071c';
             cookies = {
               user_id, user_hash
@@ -29,43 +31,41 @@ describe('MODULE.AUTH', function() {
 
         let result = auth.check(cookies);
 
+        expect(result).to.be.equal(0);
+
+    });
+
+    it('Call with normal \'user_id\' or \'user_hash\' cookies. Expect user\'s id', function() {
+
+        /** setting regular hash and id */
+        let user_id = '5953d6cf3e89e4000f6eade4',
+            user_hash = '35ba436493f5a2cbb73071d1df31cfe2027ad2c338329d5d389acfdc3ec2071c';
+            cookies = {
+              user_id, user_hash
+            };
+
+        let result = auth.check(cookies);
+        expect(result).to.be.equal(user_id);
+
     });
 
   });
 
   /**
-   * Function #generateHash
-   * generates hash from string. Uses sha256 method
+   * Function auth.generateHash
+   * Call with some string to generate hash
    * @see /modules/auth.js#generateHash
    */
-  describe('#generateHash function', function() {
+  describe('Testing auth.generateHash()', function() {
 
     let string,
         result;
 
-    it('make hash from string `Hello, Hawk`', function() {
+    it('Call with string `Hello, Hawk`. Expect `14efe23cd58c36d3a2da96f17144ff69d01402133f3cf2da96a24f4d6cf71a0f`', function() {
 
         string = 'Hello, Hawk';
         result = auth.generateHash(string);
-
-        expect(result).to.equal('3f375c925483cbb8dc500a52180d24af5408815202b2e17104f5995354a36cd2');
-    });
-
-    it ('make hash from string `Codex-Team`', function() {
-
-      string = 'Codex-Team';
-      result = auth.generateHash(string);
-
-      result.should.be.equal('a49170a667e72ef4cb99800db2f4ec6c2181884842e55879d019f5dd13e5c8d3');
-
-    });
-
-    it ('this test must fail... hash from Hawk mustn`t be `dflgdkfg`', function() {
-
-      string = 'Hawk';
-      result = auth.generateHash(string);
-
-      result.should.not.equal('Bgig;dflgdkfg');
+        expect(result).to.equal('14efe23cd58c36d3a2da96f17144ff69d01402133f3cf2da96a24f4d6cf71a0f');
 
     });
 

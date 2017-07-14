@@ -19,7 +19,7 @@ describe('Testing Routes: /login page', function() {
    * 2) Response mustn't contain any errors
    * 3) Expect text/html content-type
    */
-  it ('Check /login page', function(done) {
+  it ('Request /login page', function(done) {
 
       chai.request(app)
         .get('/login')
@@ -38,7 +38,7 @@ describe('Testing Routes: /login page', function() {
    * User gets login page with correct cookies:
    * If user has correct data, he must be redirected to /garage
    */
-  it ('Case 1 #GET: User has correct cookies', function(done) {
+  it ('Case 1 #GET: User has correct `user_id` and `user_hash` cookies. Expect redirect to /garage without errors', function(done) {
 
     chai.request(app)
       .get('/login')
@@ -57,7 +57,7 @@ describe('Testing Routes: /login page', function() {
    * If user doesn't have any cookie, he must see login page with form
    * content-type must be text/html
    */
-  it ('Case 2 #GET: User does not have cookies', function(done) {
+  it ('Case 2 #GET: User does not have `user_id` and `user_hash` cookies. Expect current page content without errors', function(done) {
 
     chai.request(app)
       .get('/login')
@@ -78,7 +78,7 @@ describe('Testing Routes: /login page', function() {
    * After authentification user must be redirected to the /garage
    * content-type: text/html
    */
-  it ('Case 3 #POST: Send correct data', function(done) {
+  it ('Case 3 #POST: Send correct `email` and `password` to sign in. Expect redirect to /garage page', function(done) {
 
     let email    = 'morgan-_-95@mail.ru',
         password = '22mrhpvi';
@@ -103,7 +103,7 @@ describe('Testing Routes: /login page', function() {
    * If POST data is not correct, show 'Try again' page
    * content-type: text/html
    */
-  it ('Case 4 #POST: Send incorrect data', function(done) {
+  it ('Case 4 #POST: Send incorrect `email` and `password`. Expect to see current /login page without errors', function(done) {
 
     let email    = 'morgan-_-95@mail.ru',
         password = 'somepassword';
@@ -130,7 +130,7 @@ describe('Testing Routes: /login page', function() {
    * Must refresh page or show login page
    * content-type: text/html
    */
-  it ('Case 5 #POST: Send empty data', function(done) {
+  it ('Case 5 #POST: Send empty `email` and `password`. Expect to see /login page', function(done) {
 
     chai.request(app)
       .post('/login')
@@ -147,7 +147,7 @@ describe('Testing Routes: /login page', function() {
           done();
 
       });
-    
+
   });
 
 });
