@@ -27,19 +27,19 @@ let md5 = function (input) {
  */
 let getPythonErrors = function (req, res) {
 
-  let response = req.body,
-    location = response.errorLocation.file + ':' + response.errorLocation.line,
-    host = response.domain;
+  let request = req.body,
+    location = request.errorLocation.file + ':' + request.errorLocation.line,
+    host = request.domain;
 
   let event = {
     type          : 'python',
     tag           : 'fatal',
-    token         : response.token,
-    message       : response.message,
-    errorLocation : response.errorLocation,
-    stack         : response.stack,
+    token         : request.token,
+    message       : request.message,
+    errorLocation : request.errorLocation,
+    stack         : request.stack,
     groupHash     : md5(location),
-    time          : response.time
+    time          : request.time
   };
 
   websites.get(event.token, host)
