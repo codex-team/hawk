@@ -1,10 +1,8 @@
 module.exports = function () {
 
   let mongo = require('../modules/database');
-  let email = require('../modules/email');
-  let user = require('../models/user');
+  // let user = require('../models/user');
   let collections = require('../config/collections');
-  let Twig = require('twig');
 
   /**
    * Native Node URL module
@@ -67,10 +65,10 @@ module.exports = function () {
         let parsedURL = url.parse(domain);
 
         /**
-         * If hostname and protocol aren't valid
+         * If hostname isn't valid
          * refresh page with error message
          */
-        if (!parsedURL.host && !parsedURL.protocol) {
+        if (!parsedURL.host && !parsedURL.pathname) {
 
           throw new Error('Invalid domain name, please try again');
 
@@ -78,59 +76,10 @@ module.exports = function () {
 
         return mongo.insertOne(collection, {
           'protocol' : parsedURL.protocol || 'http',
-          'name': parsedURL.host,
+          'name': parsedURL.host || parsedURL.pathname,
           'token': token,
           'user': user._id.toString()
         });
-
-      })
-      .then(function (result) {
-
-        if (result) {
-
-          logger.info('Register new domain: ' + domain);
-
-          if (process.env.ENVIRONMENT == 'DEVELOPMENT') {
-
-            console.log('Domain: ', domain);
-            console.log('Token: ', token);
-
-          } else {
-
-            let renderParams = {
-              domain: domain,
-              token: token,
-              serverUrl: process.env.SERVER_URL
-            };
-
-            Twig.renderFile('views/notifies/email/domain.twig', renderParams, function (err, html) {
-
-              if (err) {
-
-                logger.error('Can not render notify template because of ', err);
-                return;
-
-              }
-
-              email.init();
-              email.send(
-                user.email,
-                'Integration token for ' + domain,
-                '',
-                html
-              );
-
-            });
-
-          }
-
-          return true;
-
-        } else {
-
-          return false;
-
-        }
 
       });
 
