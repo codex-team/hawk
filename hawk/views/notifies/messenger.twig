@@ -1,8 +1,8 @@
-⚠️ <b>Error on {{ domain }} {{ times > 1 ? times ~ ' times' : '' }}</b>
+🙀 <b>We have catched {{ times > 1 ? times ~ ' errors' : 'an error' }} on {{ domain }}</b>
 
 <code>{{ event.message }}</code>
 
 {{ event.errorLocation.full }}
 
-{% set url = 'https://' ~ hostName ~ '/garage/' ~ domain ~ '/event/' ~ event.groupHash %}
+{% set url = serverUrl ~ '/garage/' ~ domain ~ '/event/' ~ event.groupHash %}
 <a href='{{ url }}'>{{ url }}</a>
