@@ -7,7 +7,7 @@
     <tr>
       <td>
         <font color="#000000" style="font-size:15px;">
-          Hello. We’ve got a {{ event.tag == 'javascript' ? 'JavaScript Error' : event.tag|capitalize }} on {{ domain }}. Please, take a look.
+          <span style="line-height: 0.9em; margin-right: 5px;">🙀</span> We have catched {{ times > 1 ? times : 'a' }} {{ event.tag == 'javascript' ? 'JavaScript error' : event.tag }}{{ times > 1 and event.tag != 'warnings' ? 's' : '' }} on {{ domain }}. Please, take a look.
         </font>
       </td>
     </tr>
@@ -27,8 +27,8 @@
     </tr>
     <tr>
       <td style="padding-top: 25px;">
-        <a href="https://{{ hostName }}/garage/{{ domain }}/event/{{ event.groupHash }}" 
-          style="background-color: #00bd95; display: inline-block; text-decoration: none; 
+        <a href="https://{{ hostName }}/garage/{{ domain }}/event/{{ event.groupHash }}"
+          style="background-color: #00bd95; display: inline-block; text-decoration: none;
           color: #ffffff; padding: 10px 15px; border-radius: 3px;">
             <font color="#ffffff" style="font-size:15px;line-height:18px;">
               View traceback

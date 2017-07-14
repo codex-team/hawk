@@ -80,10 +80,22 @@ module.exports = function () {
 
         }
 
+        let emailSubject = ' on ' + domain + ': «' + event.message + '»';
+
+        if (times > 1) {
+
+          emailSubject = times + ' errors' + emailSubject;
+
+        } else {
+
+          emailSubject = 'Error' + emailSubject;
+
+        }
+
         email.init();
         email.send(
           user.email,
-          'Error on ' + domain,
+          emailSubject,
           '',
           html
         );
