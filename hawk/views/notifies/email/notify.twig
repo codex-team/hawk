@@ -8,7 +8,7 @@
       <td>
         <font color="#000000" style="font-size:15px;">
           <span style="line-height: 0.9em; margin-right: 5px;">🙀</span>
-          We have catched {{ times > 1 ? times : 'a' }} {{ event.tag == 'javascript' ? 'JavaScript error' : event.tag }}{{ times > 1 and event.tag != 'warnings' ? 's' : '' }} on {{ domain }}. Please, take a look.
+          We have catched {{ times > 1 ? times : 'a' }} {{ event.tag | event-type }}{{ times > 1 ? 's' : '' }} on {{ domain }}. Please, take a look.
         </font>
       </td>
     </tr>
