@@ -4,6 +4,7 @@ module.exports = function () {
   let email = require('../modules/email');
   let user = require('../models/user');
   let collections = require('../config/collections');
+  let Twig = require('twig');
 
   /**
    * Native Node URL module
@@ -20,7 +21,7 @@ module.exports = function () {
    * @param token
    * @param name
    */
-  let get = function(token, name) {
+  let get = function (token, name) {
 
     return mongo.findOne(collection, {
       token: token,
@@ -38,7 +39,7 @@ module.exports = function () {
   /**
    * Return true if application with name specified is not exists
    */
-  let checkName = function(domain) {
+  let checkName = function (domain) {
 
     return mongo.findOne(collection, {
       'name': domain
@@ -70,7 +71,9 @@ module.exports = function () {
          * refresh page with error message
          */
         if (!parsedURL.host && !parsedURL.protocol) {
+
           throw new Error('Invalid domain name, please try again');
+
         }
 
         return mongo.insertOne(collection, {
@@ -94,13 +97,30 @@ module.exports = function () {
 
           } else {
 
-            email.init();
-            email.send(
-              user.email,
-              domain + ' token',
-              'Here is an access token for domain ' + domain + ':\n' + token,
-              ''
-            );
+            let renderParams = {
+              domain: domain,
+              token: token,
+              serverUrl: process.env.SERVER_URL
+            };
+
+            Twig.renderFile('views/notifies/email/domain.twig', renderParams, function (err, html) {
+
+              if (err) {
+
+                logger.error('Can not render notify template because of ', err);
+                return;
+
+              }
+
+              email.init();
+              email.send(
+                user.email,
+                domain + ' token',
+                '',
+                html
+              );
+
+            });
 
           }
 
@@ -113,6 +133,7 @@ module.exports = function () {
         }
 
       });
+
   };
 
   /**
@@ -150,7 +171,7 @@ module.exports = function () {
       });
 
   };
-  
+
   return {
     get: get,
     checkName: checkName,
