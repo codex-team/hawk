@@ -26,15 +26,13 @@ module.exports = function () {
 
 
   /**
-   * Function for getting
+   * Function for getting full named event-type
    *
-   * @usage svg('path/from/root/dir)
+   * @usage {{ event.tag | event-type }}
    *
-   * @param path - path from project root dir
+   * @param eventTag - 'fatal', 'warnings', 'notice' or 'javascript' type of error
    *
-   * TODO: location independence
-   *
-   * @returns {String} - svg code
+   * @returns {String} - full named event-type
    *
    */
   twig.extendFilter('event-type', function (eventTag) {
