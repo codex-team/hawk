@@ -169,16 +169,12 @@ app.use('/login', login);
 app.use('/logout', logout);
 app.use('/join', join);
 
-
-
 /**
  * Catcher
  */
 var catcher = require('./routes/catcher/catcher');
 
 app.use('/catcher', catcher);
-
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
