@@ -33,7 +33,6 @@ module.exports = function () {
    * @param eventTag - 'fatal', 'warnings', 'notice' or 'javascript' type of error
    *
    * @returns {String} - full named event-type
-   *
    */
   twig.extendFilter('event-type', function (eventTag) {
     switch (eventTag) {
