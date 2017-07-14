@@ -33,6 +33,10 @@
         color: #000;
         padding: 30px;
         border-radius: 2px;
+
+        @media (--desktop) {
+            margin: 30px -30px;
+        }
     }
 
     &__header {
