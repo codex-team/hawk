@@ -1,7 +1,6 @@
 module.exports = function () {
 
   let mongo = require('../modules/database');
-  // let user = require('../models/user');
   let collections = require('../config/collections');
 
   /**
