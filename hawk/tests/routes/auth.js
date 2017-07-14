@@ -56,7 +56,7 @@ describe('Testing Routes: /login page', function() {
    * If user doesn't have any cookie, he must see login page with form
    * content-type must be text/html
    */
-  it ('Case 2 #GET: User does not have `user_id` and `user_hash` cookies. Expect current page content without errors', function(done) {
+  it ('Case 2 #GET: User does not have `user_id` and `user_hash` cookies. Expect /login page content without HTTP errors', function(done) {
 
     chai.request(app)
       .get('/login')
@@ -102,7 +102,7 @@ describe('Testing Routes: /login page', function() {
    * If POST data is not correct, show 'Try again' page
    * content-type: text/html
    */
-  it ('Case 4 #POST: Send incorrect `email` and `password`. Expect to see current /login page without errors', function(done) {
+  it ('Case 4 #POST: Send incorrect `email` and `password`. Expect to see current /login page without HTTP errors', function(done) {
 
     let email    = 'morgan-_-95@mail.ru',
         password = 'somepassword';
