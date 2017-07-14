@@ -10,65 +10,74 @@ let login = {
   /* Show log in form */
   get: function (req, res, next) {
 
-    user.current(req).then(function (found) {
+    if (res.locals.user) {
 
-      if (found) {
+      res.redirect('/garage');
+      return;
 
-        res.redirect('/garage');
-        return;
+    }
 
+    let params = {
+      message: null,
+      email: ''
+    };
+
+    if (req.query.success) {
+
+      params.message = {
+        type: 'notify',
+        text: 'We have send a password for account to your mailbox. Check it out.'
       };
 
-      let message = {};
+    }
 
-      if (req.query.success) {
+    if (req.query.email) {
 
-        message = {
-          type: 'notify',
-          text: 'We have send a password for account to your mailbox. Check it out.'
-        };
+      params.email = req.query.email;
 
-      }
+    }
 
-      res.render('yard/auth/login', { message: message });
-
-    });
+    res.render('yard/auth/login', params);
 
   },
 
   /* Log in function */
   post: function (req, res, next) {
 
-    user.current(req).then(function (found) {
+    if (res.locals.user) {
 
-      if (found) {
-        res.redirect('/garage');
-        return;
-      }
+      res.redirect('/garage');
+      return;
+
+    }
 
     let email = req.body.email,
-        password = req.body.password;
+      password = req.body.password;
 
-      let newUser = {
-        'email': email,
-        'password': auth.generateHash(password)
-      };
+    let newUser = {
+      'email': email,
+      'password': auth.generateHash(password)
+    };
 
-      user.getByParams(newUser)
-        .then(function(result){
-          if (result) {
-            auth.authUser(res, result);
-            res.redirect('/garage');
-          } else {
-            res.render('error', { message: 'Try again later.' });
-          }
+    user.getByParams(newUser)
+      .then(function (result) {
+
+        if (result) {
+
+          auth.authUser(res, result);
+          res.redirect('/garage');
+
+        } else {
+
+          res.render('error', { message: 'Try again later.' });
+
+        }
+
       }).catch(function (e) {
 
         logger.log('error', 'Can\'t find user because of ', e);
 
       });
-
-    });
 
   }
 

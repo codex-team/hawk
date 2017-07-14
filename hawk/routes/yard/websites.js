@@ -1,10 +1,21 @@
+'use strict';
+
 let express = require('express');
 let router = express.Router();
 let websites = require('../../models/websites');
 let user = require('../../models/user');
+let Twig = require('twig');
+let email = require('../../modules/email');
 
 /* Show page for new app registration */
 router.get('/create', function (req, res, next) {
+
+  if (!res.locals.user) {
+
+    res.redirect('/login');
+    return;
+
+  }
 
   res.render('yard/websites/create');
 
@@ -13,73 +24,103 @@ router.get('/create', function (req, res, next) {
 /* App registration callback */
 router.post('/create', function (req, res, next) {
 
-  'use strict';
-  user.current(req).then(function (foundUser) {
+  if (!res.locals.user) {
 
-    /**
-       * Register site template
-       * @type {String}
-       */
-    let resultTemplate = 'yard/websites/result';
+    res.redirect('/login');
+    return;
 
-    if (!foundUser) {
+  }
 
-      res.redirect('/login');
-      return;
+  /**
+     * Register site template
+     * @type {String}
+     */
+  let resultTemplate = 'yard/websites/result',
+    domain = req.body.domain;
 
-    }
+  if (!domain) {
 
-    let name = req.body.domain;
+    res.render('yard/websites/result', {error: 'Website domain is empty'});
+    return;
 
-    if (!name) {
+  }
 
-      res.render('yard/websites/result', {error: 'Website domain is empty'});
-      return;
+  /* Check if application is already exists */
+  websites.checkName(domain)
+    .then(function (result) {
 
-    }
+      /* if not exists -> generate token and add to DB*/
+      if (result) {
 
-    /* Check if application is already exists */
-    websites.checkName(name)
-      .then(function (result) {
+        let uuid = require('uuid');
+        let token = uuid.v4();
 
-        /* if not exists -> generate token and add to DB*/
-        if (result) {
+        websites.add(domain, token, res.locals.user)
+          .then(function (insertResult) {
 
-          let uuid = require('uuid');
-          let token = uuid.v4();
+            if (!insertResult) {
 
-          websites.add(name, token, foundUser)
-            .then(function () {
+              throw new Error('Something went wrong. Try again later.');
 
-              res.redirect('/garage?success=1');
+            }
 
-            })
-            .catch(function (error) {
+            logger.info('Register new domain: ' + domain);
 
-              let message = {
-                type : 'error',
-                text : error.message
+            if (process.env.ENVIRONMENT == 'DEVELOPMENT') {
+
+              console.log('Domain: ', domain);
+              console.log('Token: ', token);
+
+            } else {
+
+              let renderParams = {
+                domain: domain,
+                token: token,
+                serverUrl: process.env.SERVER_URL
               };
 
-              res.render('yard/websites/create', { message : message } );
+              Twig.renderFile('views/notifies/email/domain.twig', renderParams, function (err, html) {
 
-            });
+                if (err) {
 
-          // res.render(resultTemplate, {
-          //   title: 'Get your token',
-          //   client_token: client_token,
-          //   server_token: server_token
-          // });
+                  logger.error('Can not render notify template because of ', err);
+                  return;
 
-        } else {
+                }
 
-          res.render('yard/websites/result', {error: 'Website already connected'});
+                email.init();
+                email.send(
+                  res.locals.user.email,
+                  'Integration token for ' + domain,
+                  '',
+                  html
+                );
 
-        }
+              });
 
-      });
+            }
 
-  });
+            res.redirect('/garage?success=1');
+
+          })
+          .catch(function (error) {
+
+            let message = {
+              type : 'error',
+              text : error.message
+            };
+
+            res.render('yard/websites/create', { message : message } );
+
+          });
+
+      } else {
+
+        res.render('yard/websites/result', {error: 'Website already connected'});
+
+      }
+
+    });
 
 });
 
