@@ -37,7 +37,7 @@ module.exports = function () {
     let renderParams = {
       event: event,
       domain: domain,
-      hostName: process.env.HOST_NAME,
+      serverUrl: process.env.SERVER_URL,
       times: times
     };
 
