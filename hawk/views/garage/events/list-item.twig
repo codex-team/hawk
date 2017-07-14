@@ -15,6 +15,82 @@
     </div>
     <div class="garage-list-item__right">
         <span class="garage-list-item__counter">{{ event.count }}</span>
-        times
     </div>
+</div>
+
+<div class="traceback-popup">
+  <div class="traceback-popup__closing-button">
+    <svg width="19px" height="19px" viewBox="0 0 19 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <!-- Generator: Sketch 45.2 (43514) - http://www.bohemiancoding.com/sketch -->
+        <desc>Created with Sketch.</desc>
+        <defs></defs>
+        <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g id="Event-page" transform="translate(-271.000000, -26.000000)" fill="#FFFFFF">
+                <g id="Event" transform="translate(249.000000, 0.000000)">
+                    <g id="icon/cross" transform="translate(15.000000, 19.000000)">
+                        <path d="M15.0625,15.0625 L6.4375,15.0625 L6.4375,15.0625 C5.64359067,15.0625 5,15.7060907 5,16.5 C5,17.2939093 5.64359067,17.9375 6.4375,17.9375 L15.0625,17.9375 L15.0625,26.5625 C15.0625,27.3564093 15.7060907,28 16.5,28 L16.5,28 C17.2939093,28 17.9375,27.3564093 17.9375,26.5625 L17.9375,26.5625 L17.9375,17.9375 L26.5625,17.9375 C27.3564093,17.9375 28,17.2939093 28,16.5 L28,16.5 C28,15.7060907 27.3564093,15.0625 26.5625,15.0625 L26.5625,15.0625 L17.9375,15.0625 L17.9375,6.4375 C17.9375,5.64359067 17.2939093,5 16.5,5 L16.5,5 L16.5,5 C15.7060907,5 15.0625,5.64359067 15.0625,6.4375 L15.0625,6.4375 L15.0625,15.0625 Z" id="Combined-Shape" transform="translate(16.500000, 16.500000) rotate(-315.000000) translate(-16.500000, -16.500000) "></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </svg>
+  </div>
+  <div class="traceback-popup__content">
+    <!-- Tempale -->
+    <div class="event">
+      <div class="event__header">
+        <span class="event__domain">school332.ru</span>
+        <span class="event__type event__type--{{ event.tag }}">
+          {{ event.tag == 'javascript' ? 'JavaScript Error' : event.tag|capitalize }}
+        </span>
+      </div>
+      <div class="event__content clearfix">
+        <div class="event__counter">
+          <div class="event__counter-number">
+            <div class="event__counter-number--digit">5</div>
+            times
+          </div>
+          <div class="event__counter-date">since<br>23-06-2017</div>
+        </div>
+        <div class="event__title">
+          ReferenceError: codex is not defined
+        </div>
+        <div class="event__path">
+          https://school332.ru/ -> 433:9
+        </div>
+      </div>
+    </div>
+    <div class="garage_page">
+      <h3>Traceback</h3>
+      <div class="stack-table">
+        {{ event.stack|nl2br }}
+      </div>
+      <h3>Repeations</h3>
+      <table class="repeations">
+        {% for item in events %}
+          <tr>
+            {# <td>{{ item.type }}</td> #}
+            {# <td>{{ item.tag }}</td> #}
+            {# <td>{{ item.message }}</td> #}
+            <td class="repeations__date">
+              {{ item.time|date('d M, H:i') }}
+            </td>
+            <td>
+              {{ item.userAgent.device.os }},
+              {{ item.userAgent.browser.name }}
+              {{ item.userAgent.browser.version }}
+            </td>
+            {# <td>{{ item.errorLocation.full }}</td> #}
+            <td>{{ item.location.url }}</td>
+            {# <td>{{ item.stack }}</td> #}
+            <td>
+              <span class="event-badge">
+                {{ item.userAgent.device.width }}x{{ item.userAgent.device.height }}
+              </span>
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
 </div>

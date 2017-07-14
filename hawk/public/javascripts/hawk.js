@@ -9,6 +9,7 @@ let hawk = (function ( self ) {
 
   self.init = function ( ) {
 
+    self.popup.init();
     console.log('Initialized');
 
   };
@@ -18,6 +19,7 @@ let hawk = (function ( self ) {
   self.ajax     = require('./ajax');
   self.domain   = require('./domain');
   self.notifier = require('exports-loader?notifier!codex-notifier');
+  self.popup    = require('./popup');
 
   return self;
 

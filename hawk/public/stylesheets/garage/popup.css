@@ -1,0 +1,23 @@
+.traceback-popup {
+  /*display: none;*/
+  position: fixed;
+  top: 0;
+  left: var(--garage-aside-width);
+  right: 0;
+  bottom: 0;
+  background: color(var(--darkGrayBg) alpha(80%));
+  z-index: 9999;
+
+  &--show {
+    display: block;
+  }
+
+  &__closing-button {
+    position: absolute;
+    margin: 15px;
+  }
+
+  &__content {
+    margin-left: 50px;
+  }
+}

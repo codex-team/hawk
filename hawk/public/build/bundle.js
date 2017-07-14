@@ -535,6 +535,7 @@ var hawk = function (self) {
 
   self.init = function () {
 
+    self.popup.init();
     console.log('Initialized');
   };
 
@@ -543,6 +544,7 @@ var hawk = function (self) {
   self.ajax = __webpack_require__(0);
   self.domain = __webpack_require__(3);
   self.notifier = __webpack_require__(4);
+  self.popup = __webpack_require__(9);
 
   return self;
 }({});
@@ -556,6 +558,45 @@ hawk.docReady = function (f) {
 };
 
 module.exports = hawk;
+
+/***/ }),
+/* 7 */,
+/* 8 */,
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var popup = function (self) {
+
+  var elements_ = {
+    items: 'garage-list-item'
+  };
+
+  var errorItems = null;
+
+  self.init = function () {
+
+    errorItems = document.getElementsByClassName(elements_.items);
+    addItemHandlerOnClick_(errorItems);
+  };
+
+  /**
+   * add event listeners
+   */
+  var addItemHandlerOnClick_ = function addItemHandlerOnClick_(items) {
+
+    for (var i = 0; i < items.length; i++) {
+
+      items[i].addEventListener('click', function () {}, false);
+    }
+  };
+
+  return self;
+}({});
+
+module.exports = popup;
 
 /***/ })
 /******/ ]);

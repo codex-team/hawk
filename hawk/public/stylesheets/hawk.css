@@ -25,3 +25,8 @@
  * Notifier
  */
 @import url('~codex-notifier/notifier.css');
+
+/**
+ * traceback-popup
+ */
+@import url('garage/popup.css');
