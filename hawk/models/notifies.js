@@ -6,7 +6,6 @@ let email = require('../modules/email');
 let config = require('../config/notifications');
 
 module.exports = function () {
-
   const templatesPath = 'views/notifies/';
   const templates = {
     messenger: 'messenger.twig',
@@ -31,11 +30,8 @@ module.exports = function () {
    * @times times
    */
   let send_ =function (user, domain, event, times) {
-
     if (!times) {
-
       return;
-
     }
 
     let renderParams = {
@@ -47,49 +43,33 @@ module.exports = function () {
 
 
     Twig.renderFile(templatesPath + templates.messenger, renderParams, function (err, html) {
-
       if (err) {
-
         logger.error('Can not render notify template because of ', err);
         return;
-
       }
 
       if (user.notifies.tg && user.tgHook) {
-
         request.post({url: user.tgHook, form: {message: html, parse_mode: 'HTML'}});
-
       }
 
       if (user.notifies.slack && user.slackHook) {
-
         request.post({url: user.slackHook, form: {message: html, parse_mode: 'HTML'}});
-
       }
-
     });
 
     if (user.notifies.email) {
-
       Twig.renderFile(templatesPath + templates.email, renderParams, function (err, html) {
-
         if (err) {
-
           logger.error('Can not render notify template because of ', err);
           return;
-
         }
 
         let emailSubject = ' on ' + domain + ': «' + event.message + '»';
 
         if (times > 1) {
-
           emailSubject = times + ' errors' + emailSubject;
-
         } else {
-
           emailSubject = 'Error' + emailSubject;
-
         }
 
         email.init();
@@ -99,11 +79,8 @@ module.exports = function () {
           '',
           html
         );
-
       });
-
     }
-
   };
 
   /**
@@ -116,17 +93,12 @@ module.exports = function () {
    * @param event
    */
   let send = function (user, domain, event) {
-
-
     let timer = timers[event.groupHash];
 
     /* Check if this event has come few time ago */
     if (timer) {
-
       clearTimeout(timer.timeout);
-
     } else {
-
       send_(user, domain, event, 1);
 
       timers[event.groupHash] = {
@@ -134,16 +106,13 @@ module.exports = function () {
       };
 
       timer = timers[event.groupHash];
-
     }
 
     timer.timeout = setTimeout(send_, GROUP_TIME, user, domain, event, timer.times);
     timer.times++;
-
   };
 
   return {
     send: send
   };
-
 }();
