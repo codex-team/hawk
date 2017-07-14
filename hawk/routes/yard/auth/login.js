@@ -19,18 +19,27 @@ let login = {
 
       };
 
-      let message = {};
+      let params = {
+        message: null,
+        email: ''
+      };
 
       if (req.query.success) {
 
-        message = {
+        params.message = {
           type: 'notify',
           text: 'We have send a password for account to your mailbox. Check it out.'
         };
 
       }
 
-      res.render('yard/auth/login', { message: message });
+      if (req.query.email) {
+
+        params.email = req.query.email;
+
+      }
+
+      res.render('yard/auth/login', params);
 
     });
 
@@ -42,11 +51,13 @@ let login = {
     user.current(req).then(function (found) {
 
       if (found) {
+
         res.redirect('/garage');
         return;
+
       }
 
-    let email = req.body.email,
+      let email = req.body.email,
         password = req.body.password;
 
       let newUser = {
@@ -55,18 +66,24 @@ let login = {
       };
 
       user.getByParams(newUser)
-        .then(function(result){
+        .then(function (result) {
+
           if (result) {
+
             auth.authUser(res, result);
             res.redirect('/garage');
+
           } else {
+
             res.render('error', { message: 'Try again later.' });
+
           }
-      }).catch(function (e) {
 
-        logger.log('error', 'Can\'t find user because of ', e);
+        }).catch(function (e) {
 
-      });
+          logger.log('error', 'Can\'t find user because of ', e);
+
+        });
 
     });
 

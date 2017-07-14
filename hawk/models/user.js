@@ -4,6 +4,7 @@ let email = require('../modules/email');
 let websites = require('./websites');
 let events = require('./events');
 let collections = require('../config/collections');
+let Twig = require('twig');
 
 module.exports = function () {
 
@@ -92,13 +93,28 @@ module.exports = function () {
 
         } else {
 
-          email.init();
-          email.send(
-            userEmail,
-            'Your password',
-            'Here it is: ' + password,
-            ''
-          );
+          let renderParams = {
+            password: password
+          };
+
+          Twig.renderFile('views/notifies/email/join.twig', renderParams, function (err, html) {
+
+            if (err) {
+
+              logger.error('Can not render notify template because of ', err);
+              return;
+
+            }
+
+            email.init();
+            email.send(
+              userEmail,
+              'Welcome to Hawk.so',
+              '',
+              html
+            );
+
+          });
 
         }
 

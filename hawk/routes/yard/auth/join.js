@@ -48,7 +48,9 @@ let join = {
 
               if (insertedUser) {
 
-                res.redirect('/login?success=1');
+                console.log(insertedUser);
+
+                res.redirect('/login?success=1&email=' + email); /** FILL EMAIL FIELD */
                 return;
 
               } else {
