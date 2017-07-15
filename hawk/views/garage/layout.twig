@@ -5,8 +5,18 @@
         <aside class="garage__aside">
             {% include 'garage/aside.twig' with { domains: userDomains, user: user } %}
         </aside>
+
         <div class="garage__content">
             {% block content %}{% endblock %}
+        </div>
+
+        <div class="traceback-popup">
+          <div class="traceback-popup__closing-button">
+            {{ svg('/public/svg/cross.svg') }}
+          </div>
+          <div class="traceback-popup__content">
+              <!-- traceback content -->
+          </div>
         </div>
     </div>
 {% endblock %}

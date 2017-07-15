@@ -96,28 +96,6 @@ let popup = (function ( self ) {
 
   };
 
-  let sendPopupRequest_ = function (event) {
-
-    // event.preventDefault();
-
-    console.log('her');
-    let that = this,
-      title = that.getElementsByClassName(elements_.eventItemTitle),
-      url = title.length ? title[0].href : null;
-
-    if (url) {
-
-      hawk.ajax.call({
-        url: url + '?popup=true',
-        method: 'GET',
-        success: handleSuccessResponse_,
-        error: handleErrorResponse_
-      });
-
-    }
-
-  };
-
   let handleSuccessResponse_ = function (response) {
 
     tracebackContent.innerHTML = response;
@@ -145,7 +123,30 @@ let popup = (function ( self ) {
 
     }
 
+  };
 
+  /**
+   * @private
+   *
+   * send ajax request and delegate to handleSuccessResponse_ on success response
+   */
+  let sendPopupRequest_ = function (event) {
+
+    event.preventDefault();
+    let that = this,
+      title = that.getElementsByClassName(elements_.eventItemTitle),
+      url = title.length ? title[0].href : null;
+
+    if (url) {
+
+      hawk.ajax.call({
+        url: url + '?popup=true',
+        method: 'GET',
+        success: handleSuccessResponse_,
+        error: handleErrorResponse_
+      });
+
+    }
 
   };
 

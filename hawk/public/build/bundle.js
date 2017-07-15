@@ -660,26 +660,6 @@ var popup = function (self) {
     }, false);
   };
 
-  var sendPopupRequest_ = function sendPopupRequest_(event) {
-
-    // event.preventDefault();
-
-    console.log('her');
-    var that = this,
-        title = that.getElementsByClassName(elements_.eventItemTitle),
-        url = title.length ? title[0].href : null;
-
-    if (url) {
-
-      hawk.ajax.call({
-        url: url + '?popup=true',
-        method: 'GET',
-        success: handleSuccessResponse_,
-        error: handleErrorResponse_
-      });
-    }
-  };
-
   var handleSuccessResponse_ = function handleSuccessResponse_(response) {
 
     tracebackContent.innerHTML = response;
@@ -701,6 +681,29 @@ var popup = function (self) {
     for (var i = 0; i < items.length; i++) {
 
       items[i].addEventListener('click', sendPopupRequest_, false);
+    }
+  };
+
+  /**
+   * @private
+   *
+   * send ajax request and delegate to handleSuccessResponse_ on success response
+   */
+  var sendPopupRequest_ = function sendPopupRequest_(event) {
+
+    event.preventDefault();
+    var that = this,
+        title = that.getElementsByClassName(elements_.eventItemTitle),
+        url = title.length ? title[0].href : null;
+
+    if (url) {
+
+      hawk.ajax.call({
+        url: url + '?popup=true',
+        method: 'GET',
+        success: handleSuccessResponse_,
+        error: handleErrorResponse_
+      });
     }
   };
 
