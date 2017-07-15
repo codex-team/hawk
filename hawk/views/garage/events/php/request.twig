@@ -1,9 +1,9 @@
 <div class="request">
 
     {{ event.request.method|upper }} request
-    from <a href="{{ event.request.ip }}">{{ event.request.ip }}</a>
+    from <a href="http://{{ event.request.ip }}" target="_blank">{{ event.request.ip }}</a>
     {% if event.request.referrer %}
-        referred by <a href="{{ event.request.referrer }}">{{ event.request.referrer }}</a>
+        referred by <a href="{{ event.request.referrer }}" target="_blank">{{ event.request.referrer }}</a>
     {% endif %}
 
     {% if event.params.get|length not 0 %}

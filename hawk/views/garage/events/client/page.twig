@@ -33,7 +33,7 @@
 {% endblock %}
 
 {% block repeations %}
-    <h3>Repeations</h3>
+    {% if events %}<h3>Repeations</h3>{% endif %}
     <div class="repeations">
         {% for item in events %}
             <div class="repeations__row">

@@ -17,22 +17,15 @@
         </div>
         <div>
             <span class="event-badge">
-                PHP
+                Python
             </span>
-            {% if event.request.method %}
-                <span class="event-badge">
-                    {{ event.request.method|upper }}
-                </span>
-            {% endif %}
         </div>
     </div>
 {% endblock %}
 
 {% block eventInfo %}
-    <h3>Request</h3>
-    {% include 'garage/events/php/request.twig' with {event: event} %}
-    <h3>Backtrace</h3>
-    {% include 'garage/events/php/stack.twig' with {event: event} %}
+    <h3>Traceback</h3>
+    {% include  'garage/events/python/stack.twig' with {event: event} %}
 {% endblock %}
 
 {% block repeations %}
@@ -43,17 +36,10 @@
                 <div class="repeations__date">
                     {{ item.time|date('d M, H:i') }}
                 </div>
-                <span class="event-badge">
-                  {{ item.request.method }}
-                </span>
-                <a href="{{ item.location.url }}" target="_blank" class="repeations__path">{{ item.location.path }}</a>
                 <div class="repeations__stack" onclick="hawk.event.toggleStack(this, '{{ item._id }}')">{{ svg('/public/svg/stack.svg') }} stack</div>
             </div>
             <div class="event-info hide" data-event="{{ item._id }}">
-                <h4>Request</h4>
-                {% include 'garage/events/php/request.twig' with {event: item} %}
-                <h4>Stack</h4>
-                {% include 'garage/events/php/stack.twig' with {event: item} %}
+                {% include 'garage/events/python/stack.twig' with {event: item} %}
             </div>
         {% endfor %}
     </div>
