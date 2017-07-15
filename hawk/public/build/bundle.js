@@ -404,7 +404,7 @@ module.exports = function () {
 /**
  *
  * @module hawk/traceback-popup
- * draws and initialzes popup with errors traceback.
+ * draws and initializes popup with traceback errors.
  *
  * Sends AJAX request and gets rendered html as response to fill in traceback__content element
  */
