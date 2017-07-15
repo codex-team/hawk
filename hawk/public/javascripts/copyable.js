@@ -10,7 +10,6 @@
  * @type {{init}}
  */
 module.exports = function () {
-
   const NAMES = {
     copyable: 'js-copyable'
   };
@@ -21,24 +20,18 @@ module.exports = function () {
    * @param {Function} copiedCallback - fires when something has copied
    */
   let init = function (copiedCallback) {
-
     let elems = document.getElementsByName(NAMES.copyable);
 
     if (!elems) {
-
       console.log('There are no copyable elements');
       return;
-
     }
 
     for (let i = 0; i < elems.length; i++) {
-
       prepareElement(elems[i], copiedCallback);
-
     }
 
     console.log('Copyable module initialized');
-
   };
 
   /**
@@ -48,11 +41,8 @@ module.exports = function () {
    * @param copiedCallback
    */
   let prepareElement = function (element, copiedCallback) {
-
     element.addEventListener('click', elementClicked);
     element.addEventListener('copied', copiedCallback);
-
-
   };
 
   /**
@@ -60,7 +50,6 @@ module.exports = function () {
    * Create new range, select copyable element and add range to selection. Then exec 'copy' command
    */
   let elementClicked = function () {
-
     let selection = window.getSelection(),
       range     = document.createRange();
 
@@ -82,11 +71,9 @@ module.exports = function () {
     });
 
     this.dispatchEvent(CopiedEvent);
-
   };
 
   return {
     init: init
   };
-
 }();

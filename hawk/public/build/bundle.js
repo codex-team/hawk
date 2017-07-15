@@ -64,7 +64,7 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -78,12 +78,10 @@ var hawk =
  * AJAX module
  */
 module.exports = function () {
-
   /**
    * @usage codex.ajax.call();
    */
   var call = function call(data) {
-
     if (!data || !data.url) return;
 
     var XMLHTTP = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject('Microsoft.XMLHTTP'),
@@ -98,19 +96,15 @@ module.exports = function () {
     errorFunction = data.error || errorFunction;
 
     if (data.type === 'GET' && data.data) {
-
       data.url = /\?/.test(data.url) ? data.url + '&' + data.data : data.url + '?' + data.data;
     }
 
     if (data.withCredentials) {
-
       XMLHTTP.withCredentials = true;
     }
 
     if (data.beforeSend && typeof data.beforeSend === 'function') {
-
       if (!data.beforeSend.call()) {
-
         return;
       }
     }
@@ -121,20 +115,15 @@ module.exports = function () {
      * If we send FormData, we need no content-type header
      */
     if (!isFormData_(data.data)) {
-
       XMLHTTP.setRequestHeader('Content-type', data['content-type']);
     }
 
     XMLHTTP.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     XMLHTTP.onreadystatechange = function () {
-
       if (XMLHTTP.readyState === 4) {
-
         if (XMLHTTP.status === 200) {
-
           successFunction(XMLHTTP.responseText);
         } else {
-
           errorFunction(XMLHTTP.statusText);
         }
       }
@@ -149,7 +138,6 @@ module.exports = function () {
    * @return boolean
    */
   var isFormData_ = function isFormData_(object) {
-
     return object instanceof FormData;
   };
 
@@ -190,7 +178,6 @@ module.exports = function () {
  * @type {{init}}
  */
 module.exports = function () {
-
   var CLASSES = {
     customCheckbox: 'form__checkbox',
     checkedCheckbox: 'form__checkbox--checked',
@@ -205,17 +192,14 @@ module.exports = function () {
    * Prepare elements with 'custom-checkbox' name
    */
   var init = function init() {
-
     var checkboxes = document.getElementsByName(NAMES.customChecbox);
 
     if (!checkboxes) {
-
       console.log('There are no checkboxes on page');
       return;
     }
 
     for (var i = 0; i < checkboxes.length; i++) {
-
       prepareElement(checkboxes[i]);
     }
 
@@ -228,7 +212,6 @@ module.exports = function () {
    * @param checkbox
    */
   var prepareElement = function prepareElement(checkbox) {
-
     var input = document.createElement('input');
 
     input.type = 'checkbox';
@@ -237,12 +220,10 @@ module.exports = function () {
     input.name = checkbox.dataset.name;
 
     if (checkbox.dataset.value) {
-
       input.value = checkbox.dataset.value;
     }
 
     if (checkbox.dataset.checked) {
-
       checkbox.classList.add(CLASSES.checkedCheckbox);
       input.checked = true;
     }
@@ -257,7 +238,6 @@ module.exports = function () {
    * @param e
    */
   var checkboxClicked = function checkboxClicked(e) {
-
     var label = this,
         input = this.querySelector('.' + CLASSES.defaultCheckbox);
 
@@ -291,7 +271,6 @@ module.exports = function () {
  * @type {{init}}
  */
 module.exports = function () {
-
   var NAMES = {
     copyable: 'js-copyable'
   };
@@ -302,17 +281,14 @@ module.exports = function () {
    * @param {Function} copiedCallback - fires when something has copied
    */
   var init = function init(copiedCallback) {
-
     var elems = document.getElementsByName(NAMES.copyable);
 
     if (!elems) {
-
       console.log('There are no copyable elements');
       return;
     }
 
     for (var i = 0; i < elems.length; i++) {
-
       prepareElement(elems[i], copiedCallback);
     }
 
@@ -326,7 +302,6 @@ module.exports = function () {
    * @param copiedCallback
    */
   var prepareElement = function prepareElement(element, copiedCallback) {
-
     element.addEventListener('click', elementClicked);
     element.addEventListener('copied', copiedCallback);
   };
@@ -336,7 +311,6 @@ module.exports = function () {
    * Create new range, select copyable element and add range to selection. Then exec 'copy' command
    */
   var elementClicked = function elementClicked() {
-
     var selection = window.getSelection(),
         range = document.createRange();
 
@@ -373,7 +347,6 @@ module.exports = function () {
 
 
 module.exports = function () {
-
   /**
    * Unlink domain handler
    *
@@ -381,9 +354,7 @@ module.exports = function () {
    * @param token - domain token
    */
   var unlink = function unlink(button, token) {
-
     var success = function success() {
-
       hawk.notifier.show({
         message: 'Domain was successfully unlinked',
         style: 'success'
@@ -392,7 +363,6 @@ module.exports = function () {
     };
 
     var error = function error() {
-
       hawk.notifier.show({
         message: 'Sorry, there is a server error',
         style: 'error'
@@ -400,7 +370,6 @@ module.exports = function () {
     };
 
     var sendAjax = function sendAjax() {
-
       hawk.ajax.call({
         data: 'token=' + token,
         type: 'GET',
@@ -427,6 +396,182 @@ module.exports = function () {
 
 /***/ }),
 /* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ *
+ * @module hawk/traceback-popup
+ * draws and initialzes popup with errors traceback.
+ *
+ * Sends AJAX request and gets rendered html as response to fill in traceback__content element
+ */
+
+var tracebackPopup = function (self) {
+  /**
+   * @inner
+   * List of element classes that needs to find
+   */
+  var elements_ = {
+    eventItems: 'garage-list-item',
+    eventItemTitle: 'garage-list-item__title',
+    tracebackPopup: 'traceback-popup',
+    tracebackContent: 'traceback-popup__content',
+    tracebackClosingButton: 'traceback-popup__closing-button'
+  };
+
+  /**
+   * @inner
+   * List of CSS styles
+   */
+  var styles_ = {
+    showTracebackPopup: 'traceback-popup--show'
+  };
+
+  /**
+   * event items
+   * @inner
+   * @type {Array} - list of found event items
+   */
+  var eventItems = null;
+
+  /**
+   * traceback popup wrapper
+   * @inner
+   * @type {Element} - popups holder
+   */
+  var tracebackPopup = null;
+
+  /**
+   * popup's content
+   * @inner
+   * @type {Element} - popups content
+   */
+  var tracebackContent = null;
+
+  /**
+   * popup's closing button
+   * @inner
+   * @type {Element} - cross button that closes whole popup
+   */
+  var tracebackClosingButton = null;
+
+  /**
+   * @static
+   *
+   * Initialize traceback popup module
+   * find all necessary elements and add listeners
+   *
+   * If non of this elements found, do not Initialize module
+   * In case when something gone wrong, check that all elements has been found before delegation
+   */
+  self.init = function () {
+    eventItems = document.getElementsByClassName(elements_.eventItems);
+
+    tracebackPopup = document.getElementsByClassName(elements_.tracebackPopup);
+    tracebackPopup = tracebackPopup.length ? tracebackPopup[0] : null;
+
+    tracebackContent = document.getElementsByClassName(elements_.tracebackContent);
+    tracebackContent = tracebackContent.length ? tracebackContent[0] : null;
+
+    tracebackClosingButton = document.getElementsByClassName(elements_.tracebackClosingButton);
+    tracebackClosingButton = tracebackClosingButton.length ? tracebackClosingButton[0] : null;
+
+    if (tracebackContent && tracebackClosingButton && eventItems) {
+      addClosingButtonHandler_();
+      addItemHandlerOnClick_(eventItems);
+    }
+  };
+
+  /**
+   * @static
+   *
+   * Removes class that display's popup
+   */
+  self.close = function () {
+    tracebackPopup.classList.remove(styles_.showTracebackPopup);
+  };
+
+  /**
+   * @static
+   *
+   * Adds class that display's popup
+   */
+  self.open = function () {
+    tracebackPopup.classList.add(styles_.showTracebackPopup);
+  };
+
+  /**
+   * @inner
+   *
+   * close popup when cross icon clicked
+   */
+  var addClosingButtonHandler_ = function addClosingButtonHandler_() {
+    tracebackClosingButton.addEventListener('click', self.close, false);
+  };
+
+  /**
+   * @inner
+   *
+   * insert as inner html requested traceback. Response must be rendered template
+   */
+  var handleSuccessResponse_ = function handleSuccessResponse_(response) {
+    tracebackContent.innerHTML = response;
+    self.open();
+  };
+
+  /**
+   * @inner
+   *
+   * Handle cases when something gone wrong
+   */
+  var handleErrorResponse_ = function handleErrorResponse_(response) {};
+
+  /**
+   * @inner
+   *
+   * delegate and add event listeners to the items
+   * prevent clicks on items and show popup via traceback content
+   *
+   * @param {Array} items - found elemens. Delegates elements that found in Initialization proccess
+   */
+  var addItemHandlerOnClick_ = function addItemHandlerOnClick_(items) {
+    for (var i = 0; i < items.length; i++) {
+      items[i].addEventListener('click', sendPopupRequest_, false);
+    }
+  };
+
+  /**
+   * @inner
+   *
+   * send ajax request and delegate to handleSuccessResponse_ on success response
+   */
+  var sendPopupRequest_ = function sendPopupRequest_(event) {
+    event.preventDefault();
+
+    var that = this,
+        title = that.getElementsByClassName(elements_.eventItemTitle),
+        url = title.length ? title[0].href : null;
+
+    if (url) {
+      hawk.ajax.call({
+        url: url + '?popup=true',
+        method: 'GET',
+        success: handleSuccessResponse_,
+        error: handleErrorResponse_
+      });
+    }
+  };
+
+  return self;
+}({});
+
+module.exports = tracebackPopup;
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -512,13 +657,13 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -527,15 +672,14 @@ module.exports = notifier;
 /**
 * Require CSS build
 */
-__webpack_require__(5);
+__webpack_require__(6);
 
 var hawk = function (self) {
-
   'use strict';
 
   self.init = function () {
+    self.tracebackPopup.init();
 
-    self.popup.init();
     console.log('Initialized');
   };
 
@@ -543,14 +687,13 @@ var hawk = function (self) {
   self.copyable = __webpack_require__(2);
   self.ajax = __webpack_require__(0);
   self.domain = __webpack_require__(3);
-  self.notifier = __webpack_require__(4);
-  self.popup = __webpack_require__(9);
+  self.notifier = __webpack_require__(5);
+  self.tracebackPopup = __webpack_require__(4);
 
   return self;
 }({});
 
 hawk.docReady = function (f) {
-
   'use strict';
 
   return (/in/.test(document.readyState) ? window.setTimeout(hawk.docReady, 9, f) : f()
@@ -558,159 +701,6 @@ hawk.docReady = function (f) {
 };
 
 module.exports = hawk;
-
-/***/ }),
-/* 7 */,
-/* 8 */,
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var popup = function (self) {
-
-  /**
-   * List of element classes that needs to find
-   */
-  var elements_ = {
-    eventItems: 'garage-list-item',
-    eventItemTitle: 'garage-list-item__title',
-    tracebackPopup: 'traceback-popup',
-    tracebackContent: 'traceback-popup__content',
-    tracebackClosingButton: 'traceback-popup__closing-button'
-  };
-
-  var styles_ = {
-    showTracebackPopup: 'traceback-popup--show'
-  };
-
-  /**
-   * event items
-   */
-  var errorItems = null;
-
-  /**
-   * traceback popup wrapper
-   */
-  var tracebackPopup = null;
-
-  /**
-   * popup's content
-   */
-  var tracebackContent = null;
-
-  /**
-   * popup's closing button
-   */
-  var tracebackClosingButton = null;
-
-  /**
-   * @protected
-   * Initialize popup module.
-   * find all necessary elements and add listeners
-   */
-  self.init = function () {
-
-    errorItems = document.getElementsByClassName(elements_.eventItems);
-
-    tracebackPopup = document.getElementsByClassName(elements_.tracebackPopup);
-    tracebackPopup = tracebackPopup.length ? tracebackPopup[0] : null;
-
-    tracebackContent = document.getElementsByClassName(elements_.tracebackContent);
-    tracebackContent = tracebackContent.length ? tracebackContent[0] : null;
-
-    tracebackClosingButton = document.getElementsByClassName(elements_.tracebackClosingButton);
-    tracebackClosingButton = tracebackClosingButton.length ? tracebackClosingButton[0] : null;
-
-    if (tracebackContent && tracebackClosingButton && errorItems) {
-
-      addClosingButtonHandler_();
-      addItemHandlerOnClick_(errorItems);
-    }
-  };
-
-  /**
-   * @protected
-   * Removes class that display's popup
-   */
-  self.close = function () {
-
-    tracebackPopup.classList.remove(styles_.showTracebackPopup);
-  };
-
-  /**
-   * @protected
-   * Adds class that display's popup
-   */
-  self.open = function () {
-
-    tracebackPopup.classList.add(styles_.showTracebackPopup);
-  };
-
-  /**
-   * @private
-   * close popup when cross icon clicked
-   */
-  var addClosingButtonHandler_ = function addClosingButtonHandler_() {
-
-    tracebackClosingButton.addEventListener('click', function () {
-
-      self.close();
-    }, false);
-  };
-
-  var handleSuccessResponse_ = function handleSuccessResponse_(response) {
-
-    tracebackContent.innerHTML = response;
-    self.open();
-  };
-
-  var handleErrorResponse_ = function handleErrorResponse_(response) {};
-
-  /**
-   * @private
-   *
-   * delegate and add event listeners to the items
-   * prevent clicks on items and show popup via traceback content
-   *
-   * @param {Object} items - found elemens
-   */
-  var addItemHandlerOnClick_ = function addItemHandlerOnClick_(items) {
-
-    for (var i = 0; i < items.length; i++) {
-
-      items[i].addEventListener('click', sendPopupRequest_, false);
-    }
-  };
-
-  /**
-   * @private
-   *
-   * send ajax request and delegate to handleSuccessResponse_ on success response
-   */
-  var sendPopupRequest_ = function sendPopupRequest_(event) {
-
-    event.preventDefault();
-    var that = this,
-        title = that.getElementsByClassName(elements_.eventItemTitle),
-        url = title.length ? title[0].href : null;
-
-    if (url) {
-
-      hawk.ajax.call({
-        url: url + '?popup=true',
-        method: 'GET',
-        success: handleSuccessResponse_,
-        error: handleErrorResponse_
-      });
-    }
-  };
-
-  return self;
-}({});
-
-module.exports = popup;
 
 /***/ })
 /******/ ]);
