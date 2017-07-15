@@ -85,10 +85,23 @@ let tracebackPopup = (function ( self ) {
   /**
    * @static
    *
-   * Removes class that display's popup
+   * Removes class that display's popup when clicked outsite of popup's content
    */
-  self.close = function () {
-    tracebackPopup.classList.remove(styles_.showTracebackPopup);
+  self.close = function (event) {
+    let target = event.target,
+      clickedOnPopup = true;
+
+    while (!target.classList.contains(elements_.tracebackContent)) {
+      target = target.parentNode;
+      if (target == document.body) {
+        clickedOnPopup = false;
+        break;
+      }
+    }
+
+    if (!clickedOnPopup) {
+      tracebackPopup.classList.remove(styles_.showTracebackPopup);
+    }
   };
 
   /**
@@ -98,6 +111,9 @@ let tracebackPopup = (function ( self ) {
    */
   self.open = function () {
     tracebackPopup.classList.add(styles_.showTracebackPopup);
+
+    /** close by click outside of popup */
+    document.addEventListener('click', self.close, false);
   };
 
   /**
