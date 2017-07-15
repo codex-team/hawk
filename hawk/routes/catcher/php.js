@@ -7,17 +7,20 @@ let notifies = require('../../models/notifies');
 let Crypto = require('crypto');
 
 let md5 = function (input) {
-
   return Crypto.createHash('md5').update(input, 'utf8').digest('hex');
-
 };
 
+/**
+ *  Lead php debug_backtrace to custom stack format
+ *
+ * @param debugBacktrace
+ * @returns {Array}
+ */
 let formatDebugBacktrace = function (debugBacktrace) {
 
   let result = [];
 
   for (let i = 0; i < debugBacktrace.length; i++) {
-
     result[i] = {
       'file': debugBacktrace[i].file,
       'line': debugBacktrace[i].line
@@ -28,7 +31,6 @@ let formatDebugBacktrace = function (debugBacktrace) {
     debugBacktrace[i].function += '(' + args.slice(0, -1).join(', ') + args[args.length - 1] + ')';
 
     switch(debugBacktrace[i]['type']) {
-
       case '::':
         result[i].func = debugBacktrace[i].class + '::' + debugBacktrace[i].function;
         break;
@@ -37,17 +39,13 @@ let formatDebugBacktrace = function (debugBacktrace) {
         break;
       default:
         result[i].func = debugBacktrace[i].function;
-
-    };
-
+    }
   }
 
   return result;
-
 };
 
 let getServerErrors = function (req, res) {
-
   const tags = {
     1    : 'fatal',    // Error
     2    : 'warnings', // Warning
@@ -102,41 +100,27 @@ let getServerErrors = function (req, res) {
 
   websites.get(event.token, event.location.host)
     .then( function (site) {
-
       if (!site) {
-
         res.sendStatus(403);
         return;
-
       }
       return user.get(site.user)
         .then(function (foundUser) {
-
           notifies.send(foundUser, event.location.host, event);
 
           events.add(event.location.host, event)
             .then(function () {
-
               res.sendStatus(200);
-
             })
             .catch(function (e) {
-
               logger.log('error', 'Can not add event because of ', e);
               res.sendStatus(500);
-
             });
-
         });
-
-
     })
     .catch( function () {
-
       res.sendStatus(500);
-
     });
-
 };
 
 /* GET server errors. */

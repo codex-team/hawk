@@ -30,21 +30,15 @@ var logsDir = './logs',
   errorsDir = logsDir + '/errors';
 
 if (!fs.existsSync(logsDir)) {
-
   fs.mkdirSync(logsDir);
   fs.mkdirSync(accessDir);
   fs.mkdirSync(errorsDir);
-
 }
 if (!fs.existsSync(accessDir)) {
-
   fs.mkdirSync(accessDir);
-
 }
 if (!fs.existsSync(errorsDir)) {
-
   fs.mkdirSync(errorsDir);
-
 }
 
 /* HTTP requests logger */
@@ -89,9 +83,7 @@ let accessLogger = winston.loggers.get('access');
 accessLogger.stream = {
 
   write: function (message) {
-
     accessLogger.info(message);
-
   }
 
 };
@@ -129,23 +121,17 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 * @fires user.getInfo
 */
 app.use(function (req, res, next) {
-
   res.locals.user = {};
   res.locals.userDomains = {};
 
   user.getInfo(req).then(function (userData) {
-
     res.locals.user = userData.user;
     res.locals.userDomains = userData.domains;
     next();
-
   }).catch(function (e) {
-
     logger.error(e);
     next();
-
   });
-
 });
 
 /**
@@ -170,8 +156,6 @@ app.use('/login', login);
 app.use('/logout', logout);
 app.use('/join', join);
 
-
-
 /**
  * Catcher
  */
@@ -179,21 +163,16 @@ var catcher = require('./routes/catcher/catcher');
 
 app.use('/catcher', catcher);
 
-
-
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-
   var err = new Error('Not Found');
 
   err.status = 404;
   next(err);
-
 });
 
 // error handler
 app.use(function (err, req, res, next) {
-
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = process.env.ENVIRONMENT === 'DEVELOPMENT' ? err : {};
@@ -206,23 +185,18 @@ app.use(function (err, req, res, next) {
   let errorPageData;
 
   if (err.status === 404) {
-
     errorPageData = {
       title: '404',
       message : 'Page not found'
     };
-
   } else {
-
     errorPageData = {
       title: ':(',
       message : 'Sorry, dude. Looks like some of our services is busy.'
     };
-
   }
 
   res.render('yard/errors/error', errorPageData);
-
 });
 
 

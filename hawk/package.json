@@ -5,7 +5,7 @@
   "description": "Hawk is open source platform allows you to catch errors",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --recursive tests/",
     "start": "node ./bin/www",
     "build": "webpack"
   },
@@ -23,11 +23,14 @@
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.0",
     "babel-preset-env": "^1.5.2",
+    "chai": "^4.0.2",
+    "chai-http": "^3.0.0",
     "css-loader": "^0.28.4",
     "eslint": "^4.1.1",
     "eslint-loader": "^1.8.0",
     "extract-text-webpack-plugin": "^2.1.2",
     "file-loader": "^0.11.2",
+    "mocha": "^3.4.2",
     "postcss-cssnext": "^2.11.0",
     "postcss-loader": "^2.0.6",
     "postcss-nested": "^2.0.2",

@@ -4,13 +4,10 @@
 require('../stylesheets/hawk.css');
 
 let hawk = (function ( self ) {
-
   'use strict';
 
   self.init = function ( ) {
-
     console.log('Initialized');
-
   };
 
   self.checkbox = require('./checkbox');
@@ -21,15 +18,12 @@ let hawk = (function ( self ) {
   self.event    = require('./event');
 
   return self;
-
 })({});
 
 hawk.docReady = function (f) {
-
   'use strict';
 
   return /in/.test(document.readyState) ? window.setTimeout(hawk.docReady, 9, f) : f();
-
 };
 
 module.exports = hawk;

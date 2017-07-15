@@ -39,7 +39,7 @@
         "no-nested-ternary": 1,
         "no-trailing-spaces": 2,
         "no-mixed-spaces-and-tabs": 2,
-        "padded-blocks": [2, "always"],
+        "padded-blocks": [2, "never"],
         "space-before-blocks": 1,
         "space-before-function-paren": [1, {
             "anonymous": "always",
@@ -76,6 +76,7 @@
         "FileReader": true,
         "logger": true,
         "global": true,
-        "hawk": true
+        "hawk": true,
+        "process": true
     }
 }

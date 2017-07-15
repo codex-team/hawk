@@ -1,8 +1,6 @@
 module.exports = function () {
 
   let mongo = require('../modules/database');
-  let email = require('../modules/email');
-  let user = require('../models/user');
   let collections = require('../config/collections');
 
   /**
@@ -20,7 +18,7 @@ module.exports = function () {
    * @param token
    * @param name
    */
-  let get = function(token, name) {
+  let get = function (token, name) {
 
     return mongo.findOne(collection, {
       token: token,
@@ -38,7 +36,7 @@ module.exports = function () {
   /**
    * Return true if application with name specified is not exists
    */
-  let checkName = function(domain) {
+  let checkName = function (domain) {
 
     return mongo.findOne(collection, {
       'name': domain
@@ -66,53 +64,24 @@ module.exports = function () {
         let parsedURL = url.parse(domain);
 
         /**
-         * If hostname and protocol aren't valid
+         * If hostname isn't valid
          * refresh page with error message
          */
-        if (!parsedURL.host && !parsedURL.protocol) {
+        if (!parsedURL.host && !parsedURL.pathname) {
+
           throw new Error('Invalid domain name, please try again');
+
         }
 
         return mongo.insertOne(collection, {
           'protocol' : parsedURL.protocol || 'http',
-          'name': parsedURL.host,
+          'name': parsedURL.host || parsedURL.pathname,
           'token': token,
           'user': user._id.toString()
         });
 
-      })
-      .then(function (result) {
-
-        if (result) {
-
-          logger.info('Register new domain: ' + domain);
-
-          if (process.env.ENVIRONMENT == 'DEVELOPMENT') {
-
-            console.log('Domain: ', domain);
-            console.log('Token: ', token);
-
-          } else {
-
-            email.init();
-            email.send(
-              user.email,
-              domain + ' token',
-              'Here is an access token for domain ' + domain + ':\n' + token,
-              ''
-            );
-
-          }
-
-          return true;
-
-        } else {
-
-          return false;
-
-        }
-
       });
+
   };
 
   /**
@@ -150,7 +119,7 @@ module.exports = function () {
       });
 
   };
-  
+
   return {
     get: get,
     checkName: checkName,

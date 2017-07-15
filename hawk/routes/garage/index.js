@@ -1,3 +1,5 @@
+'use strict';
+
 let express = require('express');
 let router = express.Router();
 let events = require('../../models/events');
@@ -9,8 +11,6 @@ let events = require('../../models/events');
  * @param res
  */
 let index = function (req, res) {
-
-  'use strict';
 
   let currentDomain,
     currentTag;

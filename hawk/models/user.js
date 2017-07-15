@@ -1,6 +1,5 @@
 let auth = require('../modules/auth');
 let mongo = require('../modules/database');
-let email = require('../modules/email');
 let websites = require('./websites');
 let events = require('./events');
 let collections = require('../config/collections');
@@ -66,11 +65,12 @@ module.exports = function () {
 
   let add = function (userEmail) {
 
-    let password = auth.generatePassword();
+    let password = auth.generatePassword(),
+      passwordHashed = auth.generateHash(password);
 
     let user = {
       'email': userEmail,
-      'password': auth.generateHash(password),
+      'password': passwordHashed,
       'domains': [],
       'notifies': {
         'email': true,
@@ -84,29 +84,16 @@ module.exports = function () {
 
         logger.info('Register new user ' + userEmail);
 
-        /** Debug mode */
-        if (process.env.ENVIRONMENT == 'DEVELOPMENT') {
+        let insertedUser = result.ops[0];
 
-          console.log('Your email: ', userEmail);
-          console.log('Your password: ', password);
-
-        } else {
-
-          email.init();
-          email.send(
-            userEmail,
-            'Your password',
-            'Here it is: ' + password,
-            ''
-          );
-
-        }
-
-        return result.ops[0];
+        return {
+          insertedUser,
+          password
+        };
 
       }).catch(function (err) {
 
-        logger.log('error', 'Cannot insert user because of %o', err);
+        logger.log('error', 'Cannot insert user because of ', err);
 
       });
 
@@ -178,6 +165,7 @@ module.exports = function () {
       .catch(function (e) {
 
         logger.error('Can\'t get user because of ', e);
+        return {};
 
       });
 
@@ -188,9 +176,9 @@ module.exports = function () {
    *  - email
    *  - password
    *  - notifies: {
+   *      email: {bool}
    *      tg: {bool}
    *      slack: {bool}
-   *      email: {bool}
    *    }
    *  - tgHook
    *  - slackHook

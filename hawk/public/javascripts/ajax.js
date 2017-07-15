@@ -2,12 +2,10 @@
  * AJAX module
  */
 module.exports = (function () {
-
   /**
    * @usage codex.ajax.call();
    */
   let call = function (data) {
-
     if (!data || !data.url) return;
 
     let XMLHTTP        = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject('Microsoft.XMLHTTP'),
@@ -22,25 +20,17 @@ module.exports = (function () {
     errorFunction        = data.error|| errorFunction;
 
     if (data.type === 'GET' && data.data) {
-
       data.url = /\?/.test(data.url) ? data.url + '&' + data.data : data.url + '?' + data.data;
-
     }
 
     if (data.withCredentials) {
-
       XMLHTTP.withCredentials = true;
-
     }
 
     if (data.beforeSend && typeof data.beforeSend === 'function') {
-
       if(!data.beforeSend.call()) {
-
         return;
-
       }
-
     }
 
     XMLHTTP.open(data.type, data.url, data.async);
@@ -49,32 +39,21 @@ module.exports = (function () {
      * If we send FormData, we need no content-type header
      */
     if (!isFormData_(data.data)) {
-
       XMLHTTP.setRequestHeader('Content-type', data['content-type']);
-
     }
 
     XMLHTTP.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     XMLHTTP.onreadystatechange = function () {
-
       if (XMLHTTP.readyState === 4) {
-
         if (XMLHTTP.status === 200) {
-
           successFunction(XMLHTTP.responseText);
-
         } else {
-
           errorFunction(XMLHTTP.statusText);
-
         }
-
       }
-
     };
 
     XMLHTTP.send(data.data);
-
   };
 
   /**
@@ -83,9 +62,7 @@ module.exports = (function () {
    * @return boolean
    */
   let isFormData_ = function (object) {
-
     return object instanceof FormData;
-
   };
 
   return {
@@ -93,5 +70,4 @@ module.exports = (function () {
     call : call
 
   };
-
 }());

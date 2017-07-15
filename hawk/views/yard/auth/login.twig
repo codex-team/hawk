@@ -4,12 +4,12 @@
   <div class="yard">
     {% include 'yard/form.twig' with {
       action: '/login',
-      title: 'Login',
+      title: 'Log in',
       fields: [
         {
-          label: 'Enter your email',
+          label: 'Your email',
           name: 'email',
-          value: '',
+          value: email,
           placeholder: 'name@best-team.com',
           type: 'email'
         },
@@ -17,7 +17,7 @@
           label: 'Password',
           name: 'password',
           value: '',
-          placeholder: '*******',
+          placeholder: '********',
           type: 'password'
         }
       ],

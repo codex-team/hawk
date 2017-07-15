@@ -20,7 +20,17 @@ module.exports = (function () {
 
   };
 
-  /* Return user id or 0 */
+  /**
+  * Checks auth cookies for substitution
+  *
+  * @param {object} cookies
+  * @param {string} cookies.user_id     - id
+  * @param {string} cookies.user_hash   - generated token with id + salt
+  *
+  * @fires @generateHash()
+  *
+  * @return {number} - user id or 0
+  */
   let check = function (cookies) {
 
     // load cookies
