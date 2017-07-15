@@ -427,7 +427,8 @@ var tracebackPopup = function (self) {
    * List of CSS styles
    */
   var styles_ = {
-    showTracebackPopup: 'traceback-popup--show'
+    showTracebackPopup: 'traceback-popup--show',
+    popupContentHovered: 'traceback-popup--hovered'
   };
 
   /**
@@ -488,12 +489,39 @@ var tracebackPopup = function (self) {
   /**
    * @static
    *
+   * remove all listeners and variables
+   */
+  self.destroy = function () {
+    for (var i = 0; i < eventItems.length; i++) {
+      eventItems[i].removeEventListener('click', sendPopupRequest_, false);
+    }
+
+    eventItems = null;
+
+    tracebackContent.removeEventListener('mouseover', tracebackContentHovered_, false);
+    tracebackContent.removeEventListener('mouseout', tracebackContentHovered_, false);
+    tracebackContent = null;
+
+    document.removeEventListener('click', self.close, false);
+
+    tracebackClosingButton.removeEventListener('click', self.close, false);
+    tracebackClosingButton = null;
+  };
+
+  /**
+   * @static
+   *
    * Removes class that display's popup when clicked outsite of popup's content
    */
   self.close = function (event) {
     var target = event.target,
         clickedOnPopup = true;
 
+    /**
+     * if target is popups content, it means that clicked on popup
+     * otherwise if clicked somewhere else, rise until we stop on document's body
+     * that will indicate us that click was outside the popup
+     */
     while (!target.classList.contains(elements_.tracebackContent)) {
       target = target.parentNode;
       if (target == document.body) {
@@ -515,8 +543,28 @@ var tracebackPopup = function (self) {
   self.open = function () {
     tracebackPopup.classList.add(styles_.showTracebackPopup);
 
+    /** handle traceback content hover */
+    tracebackContent.addEventListener('mouseover', tracebackContentHovered_, false);
+    tracebackContent.addEventListener('mouseout', tracebackContentHovered_, false);
+
     /** close by click outside of popup */
     document.addEventListener('click', self.close, false);
+  };
+
+  /**
+   * @inner
+   *
+   * If content hovered, chande background opacity
+   */
+  var tracebackContentHovered_ = function tracebackContentHovered_(event) {
+    switch (event.type) {
+      case 'mouseout':
+        tracebackPopup.classList.remove(styles_.popupContentHovered);
+        break;
+      case 'mouseover':
+        tracebackPopup.classList.add(styles_.popupContentHovered);
+        break;
+    }
   };
 
   /**

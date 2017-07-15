@@ -1,5 +1,4 @@
 .traceback-popup {
-  display: none;
   position: fixed;
   transition: left .5s linear;
   left: 100%;
@@ -9,14 +8,18 @@
   background: color(var(--darkGrayBg) alpha(80%));
   overflow: auto;
   z-index: 9999;
+  transition: left .2s ease-out;
 
   & .garage_page {
     background: #fff;
   }
 
   &--show {
-    display: block !important;
     left: var(--garage-aside-width) !important;
+  }
+
+  &--hovered {
+    background: color(var(--darkGrayBg) alpha(95%)) !important;
   }
 
   &__closing-button {
