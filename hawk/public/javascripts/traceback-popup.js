@@ -6,6 +6,12 @@
  * Sends AJAX request and gets rendered html as response to fill in traceback__content element
  */
 
+/**
+ * sprintf-js
+ * @see https://www.npmjs.com/package/sprintf-js
+ */
+let vsprintf = require('sprintf-js').vsprintf;
+
 let tracebackPopup = (function ( self ) {
   let keyCodes_ = {
     ESC : 27
@@ -104,6 +110,7 @@ let tracebackPopup = (function ( self ) {
     tracebackContent = null;
 
     document.removeEventListener('click', self.close, false);
+    document.removeEventListener('keydown', self.close, false);
 
     tracebackClosingButton.removeEventListener('click', self.close, false);
     tracebackClosingButton = null;
@@ -208,7 +215,7 @@ let tracebackPopup = (function ( self ) {
    * insert as inner html requested traceback. Response must be rendered template
    */
   let handleSuccessResponse_ = function (response) {
-    tracebackContent.innerHTML = response;
+    tracebackContent.insertAdjacentHTML('beforeEnd', response);
     self.open();
   };
 
@@ -243,6 +250,10 @@ let tracebackPopup = (function ( self ) {
   let sendPopupRequest_ = function (event) {
     event.preventDefault();
 
+    let tracebackHeader = makeTracebackEventHeader_.call(this);
+
+    tracebackContent.innerHTML = tracebackHeader;
+
     let that = this,
       title = that.getElementsByClassName(elements_.eventItemTitle),
       url = title.length ? title[0].href : null;
@@ -255,6 +266,62 @@ let tracebackPopup = (function ( self ) {
         error: handleErrorResponse_
       });
     }
+  };
+
+  /**
+   * get all necessary information from DOM
+   * make templated traceback header
+   */
+  let makeTracebackEventHeader_ = function () {
+    let domain = document.querySelector('.garage-header__page-title'),
+      errorTag = this.querySelector('.garage-list-item__tag'),
+      errorTitle = this.querySelector('.garage-list-item__title'),
+      errorCaption = this.querySelector('.garage-list-item__caption'),
+      errorCounter = this.querySelector('.garage-list-item__counter');
+
+    errorTag = errorTag.textContent.trim();
+    errorTitle = errorTitle.textContent.trim();
+    errorCounter = errorCounter.textContent.trim();
+    errorCaption = errorCaption.textContent.trim();
+
+    /** get domain name */
+    domain = domain.getElementsByTagName('a');
+    domain = domain.length ? domain[0] : null;
+
+    if (domain) {
+      domain = domain.textContent.trim();
+    }
+
+    /** render html */
+    let fragment = document.createDocumentFragment();
+    let el = `<div class="event">
+      <div class="event__header">
+        <span class="event__domain">%s</span>
+        <span class="event__type event__type--javascript">
+          %s
+        </span>
+      </div>
+      <div class="event__content clearfix">
+        <div class="event__counter">
+          <div class="event__counter-number">
+            <div class="event__counter-number--digit">%s</div>
+            times
+          </div>
+          <div class="event__counter-date">since<br>23-06-2017</div>
+        </div>
+        <div class="event__title">
+          %s
+        </div>
+        <div class="event__path">
+          %s
+        </div>
+      </div>
+    </div>`;
+
+    el = vsprintf(el, [domain, errorTag, errorCounter, errorTitle, errorCaption]);
+    fragment.innerHTML = el;
+
+    return fragment.innerHTML;
   };
 
   return self;
