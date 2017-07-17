@@ -410,6 +410,10 @@ module.exports = function () {
  */
 
 var tracebackPopup = function (self) {
+  var keyCodes_ = {
+    ESC: 27
+  };
+
   /**
    * @inner
    * List of element classes that needs to find
@@ -511,9 +515,33 @@ var tracebackPopup = function (self) {
   /**
    * @static
    *
-   * Removes class that display's popup when clicked outsite of popup's content
+   * delegate closing popup to handlers
    */
   self.close = function (event) {
+    switch (event.type) {
+      case 'keydown':
+        closePopupByEscape_(event);
+        break;
+      default:
+        closePopupByOutsideClick_(event);
+    }
+  };
+
+  /**
+   * Removes class when clicked ESC
+   */
+  var closePopupByEscape_ = function closePopupByEscape_(event) {
+    switch (event.keyCode) {
+      case keyCodes_.ESC:
+        tracebackPopup.classList.remove(styles_.showTracebackPopup);
+        break;
+    }
+  };
+
+  /**
+   * Removes class that display's popup when clicked outsite of popup's content
+   */
+  var closePopupByOutsideClick_ = function closePopupByOutsideClick_(event) {
     var target = event.target,
         clickedOnPopup = true;
 
@@ -549,6 +577,7 @@ var tracebackPopup = function (self) {
 
     /** close by click outside of popup */
     document.addEventListener('click', self.close, false);
+    document.addEventListener('keydown', self.close, false);
   };
 
   /**
