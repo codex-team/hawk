@@ -6,12 +6,6 @@
  * Sends AJAX request and gets rendered html as response to fill in traceback__content element
  */
 
-/**
- * sprintf-js
- * @see https://www.npmjs.com/package/sprintf-js
- */
-let vsprintf = require('sprintf-js').vsprintf;
-
 let tracebackPopup = (function ( self ) {
   let keyCodes_ = {
     ESC : 27
@@ -250,17 +244,17 @@ let tracebackPopup = (function ( self ) {
   let sendPopupRequest_ = function (event) {
     event.preventDefault();
 
-    let tracebackHeader = makeTracebackEventHeader_.call(this);
+    let traceBackInfo = this.dataset.tracebackHeader,
+      domainInfo = this.dataset.domain,
+      parsedTraceback = JSON.parse(traceBackInfo),
+      parsedDomain = JSON.parse(domainInfo),
+      tracebackHeader = makeTracebackEventHeader_(parsedDomain, parsedTraceback);
 
     tracebackContent.innerHTML = tracebackHeader;
 
-    let that = this,
-      title = that.getElementsByClassName(elements_.eventItemTitle),
-      url = title.length ? title[0].href : null;
-
-    if (url) {
+    if (parsedDomain.name) {
       hawk.ajax.call({
-        url: url + '?popup=true',
+        url: '/garage/' + parsedDomain.name + '/event/' + parsedTraceback._id + '?popup=true',
         method: 'GET',
         success: handleSuccessResponse_,
         error: handleErrorResponse_
@@ -271,54 +265,46 @@ let tracebackPopup = (function ( self ) {
   /**
    * get all necessary information from DOM
    * make templated traceback header
+   * @param {Object} domain - domain info
+   * @param {Object} event - traceback header
+   * @type {Integer} event.count - aggregated event's count
+   * @type {Object} event.errorLocation - event's location
+   * @type {String} event.message - event's message
+   * @type {String} event.tag - event's type
+   * @type {Integer} event.time - time
    */
-  let makeTracebackEventHeader_ = function () {
-    let domain = document.querySelector('.garage-header__page-title'),
-      errorTag = this.querySelector('.garage-list-item__tag'),
-      errorTitle = this.querySelector('.garage-list-item__title'),
-      errorCaption = this.querySelector('.garage-list-item__caption'),
-      errorCounter = this.querySelector('.garage-list-item__counter');
-
-    errorTag = errorTag.textContent.trim();
-    errorTitle = errorTitle.textContent.trim();
-    errorCounter = errorCounter.textContent.trim();
-    errorCaption = errorCaption.textContent.trim();
-
-    /** get domain name */
-    domain = domain.getElementsByTagName('a');
-    domain = domain.length ? domain[0] : null;
-
-    if (domain) {
-      domain = domain.textContent.trim();
-    }
+  let makeTracebackEventHeader_ = function (domain, event) {
+    let time = new Date(event.time),
+      day = ('0' + time.getDate()).slice(-2),
+      month = ('0' + (time.getMonth() + 1)).slice(-2),
+      year = time.getFullYear();
 
     /** render html */
     let fragment = document.createDocumentFragment();
     let el = `<div class="event">
       <div class="event__header">
-        <span class="event__domain">%s</span>
-        <span class="event__type event__type--javascript">
-          %s
+        <span class="event__domain">${domain.name}</span>
+        <span class="event__type event__type--${event.tag}">
+          ` + (event.tag === 'javascript' ? 'Javascript Error' : event.tag) + `
         </span>
       </div>
       <div class="event__content clearfix">
         <div class="event__counter">
           <div class="event__counter-number">
-            <div class="event__counter-number--digit">%s</div>
+            <div class="event__counter-number--digit">${event.count}</div>
             times
           </div>
-          <div class="event__counter-date">since<br>23-06-2017</div>
+          <div class="event__counter-date">since<br>${day}-${month}-${year}</div>
         </div>
         <div class="event__title">
-          %s
+          ${event.message}
         </div>
         <div class="event__path">
-          %s
+          ${event.errorLocation.full}
         </div>
       </div>
     </div>`;
 
-    el = vsprintf(el, [domain, errorTag, errorCounter, errorTitle, errorCaption]);
     fragment.innerHTML = el;
 
     return fragment.innerHTML;
