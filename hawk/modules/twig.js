@@ -4,14 +4,14 @@
  */
 
 let twig = require('twig'),
-  fs = require('fs');
+    fs = require('fs');
 
 
 module.exports = function () {
   /**
    * Function for include svg on page
    *
-   * @usage svg('path/from/root/dir)
+   * @usage svg('path/from/root/dir')
    *
    * @param path - path from project root dir
    *

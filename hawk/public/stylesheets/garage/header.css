@@ -9,6 +9,7 @@
     line-height: 50px;
     padding: 0 25px;
     background-color: #fff;
+    z-index: 1000;
     border-bottom: 1px solid var(--lightGrayLine);
 
     &__page-title {
