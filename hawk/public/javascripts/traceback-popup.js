@@ -31,7 +31,6 @@ let tracebackPopup = (function ( self ) {
    */
   let styles_ = {
     showTracebackPopup  : 'traceback-popup--showed',
-    popupContentHovered : 'traceback-popup--hovered'
   };
 
   /**
@@ -101,8 +100,6 @@ let tracebackPopup = (function ( self ) {
 
     eventItems = null;
 
-    tracebackContent.removeEventListener('mouseover', tracebackContentHovered_, false);
-    tracebackContent.removeEventListener('mouseout', tracebackContentHovered_, false);
     tracebackContent = null;
 
     document.removeEventListener('click', self.close, false);
@@ -171,29 +168,9 @@ let tracebackPopup = (function ( self ) {
   self.open = function () {
     tracebackPopup.classList.add(styles_.showTracebackPopup);
 
-    /** handle traceback content hover */
-    // tracebackContent.addEventListener('mouseover', tracebackContentHovered_, false);
-    // tracebackContent.addEventListener('mouseout', tracebackContentHovered_, false);
-
     /** close by click outside of popup */
     document.addEventListener('click', self.close, false);
     document.addEventListener('keydown', self.close, false);
-  };
-
-  /**
-   * @inner
-   *
-   * If content hovered, chande background opacity
-   */
-  let tracebackContentHovered_ = function (event) {
-    switch (event.type) {
-      case 'mouseout':
-        tracebackPopup.classList.remove(styles_.popupContentHovered);
-        break;
-      case 'mouseover':
-        tracebackPopup.classList.add(styles_.popupContentHovered);
-        break;
-    }
   };
 
   /**
