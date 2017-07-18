@@ -7,6 +7,8 @@
  */
 
 let tracebackPopup = (function ( self ) {
+  'use strict';
+
   let keyCodes_ = {
     ESC : 27
   };
@@ -28,7 +30,7 @@ let tracebackPopup = (function ( self ) {
    * List of CSS styles
    */
   let styles_ = {
-    showTracebackPopup  : 'traceback-popup--show',
+    showTracebackPopup  : 'traceback-popup--showed',
     popupContentHovered : 'traceback-popup--hovered'
   };
 
@@ -170,8 +172,8 @@ let tracebackPopup = (function ( self ) {
     tracebackPopup.classList.add(styles_.showTracebackPopup);
 
     /** handle traceback content hover */
-    tracebackContent.addEventListener('mouseover', tracebackContentHovered_, false);
-    tracebackContent.addEventListener('mouseout', tracebackContentHovered_, false);
+    // tracebackContent.addEventListener('mouseover', tracebackContentHovered_, false);
+    // tracebackContent.addEventListener('mouseout', tracebackContentHovered_, false);
 
     /** close by click outside of popup */
     document.addEventListener('click', self.close, false);
@@ -223,16 +225,66 @@ let tracebackPopup = (function ( self ) {
   };
 
   /**
+   * Fills event popup header
+   * @param  {Object} event   - event data
+   * @return {[type]}       [description]
+   */
+  function fillHeader(event, domain) {
+    let tracebackHeader = makeTracebackEventHeader_(domain, event);
+
+    tracebackContent.innerHTML = tracebackHeader;
+  }
+
+  /**
+   * Event row click handler
+   * @param  {event} clickEvent - onclick event
+   */
+  function eventRowClicked(clickEvent) {
+    let row = this;
+
+    /**
+    * Allow opening page in new tab
+    */
+    let isMouseWheelClicked = clickEvent.which && ( clickEvent.which === 2 || clickEvent.button === 4 );
+
+    if (clickEvent.ctrlKey || clickEvent.metaKey || isMouseWheelClicked) {
+      return;
+    }
+
+
+    let event = row.dataset.event,
+      domain = row.dataset.domain;
+
+    event = JSON.parse(event);
+    domain = JSON.parse(domain);
+
+    /**
+     * Fill popup header with data we are already have
+     */
+    fillHeader(event, domain);
+
+    /**
+     * Require other information
+     */
+    sendPopupRequest_(event, domain);
+
+    /**
+     * Disable link segue
+     */
+    clickEvent.preventDefault();
+  }
+
+  /**
    * @inner
    *
    * delegate and add event listeners to the items
    * prevent clicks on items and show popup via traceback content
    *
-   * @param {Array} items - found elemens. Delegates elements that found in Initialization proccess
+   * @param {Array} items - list of Event rows. Delegates elements that found in Initialization proccess
    */
   let addItemHandlerOnClick_ = function (items) {
-    for (let i = 0; i < items.length; i++) {
-      items[i].addEventListener('click', sendPopupRequest_, false);
+    for (var i = items.length - 1; i >= 0; i--) {
+      items[i].addEventListener('click', eventRowClicked, false);
     }
   };
 
@@ -240,21 +292,24 @@ let tracebackPopup = (function ( self ) {
    * @inner
    *
    * send ajax request and delegate to handleSuccessResponse_ on success response
+   *
+   * @param {Object} domain
+   * @param {Object} domain._id
+   * @param {string} domain.token
+   * @param {string} domain.user
+   *
+   * @param {string} event._id
+   * @param {string} event.type
+   * @param {string} event.tag
+   * @param {Object} event.errorLocation
+   * @param {string} event.message
+   * @param {number} event.time
+   * @param {number} event.count
    */
-  let sendPopupRequest_ = function (event) {
-    event.preventDefault();
-
-    let traceBackInfo = this.dataset.tracebackHeader,
-      domainInfo = this.dataset.domain,
-      parsedTraceback = JSON.parse(traceBackInfo),
-      parsedDomain = JSON.parse(domainInfo),
-      tracebackHeader = makeTracebackEventHeader_(parsedDomain, parsedTraceback);
-
-    tracebackContent.innerHTML = tracebackHeader;
-
-    if (parsedDomain.name) {
+  let sendPopupRequest_ = function (event, domain) {
+    if (domain.name) {
       hawk.ajax.call({
-        url: '/garage/' + parsedDomain.name + '/event/' + parsedTraceback._id + '?popup=true',
+        url: '/garage/' + domain.name + '/event/' + event._id + '?popup=true',
         method: 'GET',
         success: handleSuccessResponse_,
         error: handleErrorResponse_
@@ -285,7 +340,7 @@ let tracebackPopup = (function ( self ) {
       <div class="event__header">
         <span class="event__domain">${domain.name}</span>
         <span class="event__type event__type--${event.tag}">
-          ` + (event.tag === 'javascript' ? 'Javascript Error' : event.tag) + `
+          ${event.tag === 'javascript' ? 'Javascript Error' : event.tag}
         </span>
       </div>
       <div class="event__content clearfix">
