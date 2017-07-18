@@ -13,11 +13,20 @@ let md5 = function (input) {
 /**
  *  Lead php debug_backtrace to custom stack format
  *
- * @param debugBacktrace
- * @returns {Array}
+ * @param {Object[]} debugBacktrace
+ * @param {String} debugBacktrace[].function — current function name
+ * @param {Number} debugBacktrace[].line — current line number
+ * @param {String} debugBacktrace[].file — current file name
+ * @param {String} debugBacktrace[].class — current class name, if current function is a class method
+ * @param {String} debugBacktrace[].object — current object of a class, if current function is a method
+ * @param {String} debugBacktrace[].type — current call type.
+ *                                         '->' for class method, '::' for static class method, nothing for a function call
+ * @param {*[]} debugBacktrace[].args — list of function arguments
+ *
+ * @returns {{file: String, func: String, line: Number}[]} formatted stack
+ *
  */
 let formatDebugBacktrace = function (debugBacktrace) {
-
   let result = [];
 
   for (let i = 0; i < debugBacktrace.length; i++) {
