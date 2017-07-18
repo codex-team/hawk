@@ -1,0 +1,46 @@
+{% extends 'garage/events/page.twig' %}
+
+{% block eventContent %}
+    <div class="event__content clearfix">
+        <div class="event__counter">
+            <div class="event__counter-number">
+                <div class="event__counter-number--digit">{{ events|length + 1 }}</div>
+                times
+            </div>
+            <div class="event__counter-date">since<br>{{ event.time|date('d M Y') }}</div>
+        </div>
+        <div class="event__title">
+            {{ event.message }}
+        </div>
+        <div class="event__path">
+            {{ event.errorLocation.full }}
+        </div>
+        <div>
+            <span class="event-badge">
+                Python
+            </span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block eventInfo %}
+    <h3>Traceback</h3>
+    {% include  'garage/events/python/stack.twig' with {event: event} %}
+{% endblock %}
+
+{% block repeations %}
+    {% if events %}<h3>Repeations</h3>{% endif %}
+    <div class="repeations">
+        {% for item in events %}
+            <div class="repeations__row">
+                <div class="repeations__date">
+                    {{ item.time|date('d M, H:i') }}
+                </div>
+                <div class="repeations__stack" onclick="hawk.event.toggleStack(this, '{{ item._id }}')">{{ svg('/public/svg/stack.svg') }} stack</div>
+            </div>
+            <div class="event-info hide" data-event="{{ item._id }}">
+                {% include 'garage/events/python/stack.twig' with {event: item} %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,8 @@
+<div class="stack-table">
+    {% for item in event.stack %}
+        <div class="stack-table__row">
+            <div class="stack-table__file">{{ item.func }} at {{ item.file }}</div>
+            <div class="stack-table__location">line {{ item.line }}</div>
+        </div>
+    {% endfor %}
+</div>

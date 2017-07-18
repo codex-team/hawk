@@ -7,13 +7,54 @@ let notifies = require('../../models/notifies');
 let Crypto = require('crypto');
 
 let md5 = function (input) {
-
   return Crypto.createHash('md5').update(input, 'utf8').digest('hex');
+};
 
+/**
+ *  Lead php debug_backtrace to custom stack format
+ *
+ * @param {Object[]} debugBacktrace
+ * @param {String} debugBacktrace[].function — current function name
+ * @param {Number} debugBacktrace[].line — current line number
+ * @param {String} debugBacktrace[].file — current file name
+ * @param {String} debugBacktrace[].class — current class name, if current function is a class method
+ * @param {String} debugBacktrace[].object — current object of a class, if current function is a method
+ * @param {String} debugBacktrace[].type — current call type.
+ *                                         '->' for class method, '::' for static class method, nothing for a function call
+ * @param {*[]} debugBacktrace[].args — list of function arguments
+ *
+ * @returns {{file: String, func: String, line: Number}[]} formatted stack
+ *
+ */
+let formatDebugBacktrace = function (debugBacktrace) {
+  let result = [];
+
+  for (let i = 0; i < debugBacktrace.length; i++) {
+    result[i] = {
+      'file': debugBacktrace[i].file,
+      'line': debugBacktrace[i].line
+    };
+
+    let args = debugBacktrace[i].args;
+
+    debugBacktrace[i].function += '(' + args.slice(0, -1).join(', ') + args[args.length - 1] + ')';
+
+    switch(debugBacktrace[i]['type']) {
+      case '::':
+        result[i].func = debugBacktrace[i].class + '::' + debugBacktrace[i].function;
+        break;
+      case '->':
+        result[i].func = debugBacktrace[i].object + '->' + debugBacktrace[i].function;
+        break;
+      default:
+        result[i].func = debugBacktrace[i].function;
+    }
+  }
+
+  return result;
 };
 
 let getServerErrors = function (req, res) {
-
   const tags = {
     1    : 'fatal',    // Error
     2    : 'warnings', // Warning
@@ -32,35 +73,35 @@ let getServerErrors = function (req, res) {
     16384: 'notice',   // User Deprecated
   };
 
-  let response = req.body,
-    location = response.error_file + response.error_line;
+  let request = req.body,
+    location = request.error_file + request.error_line;
 
   let event = {
     type: 'php',
-    tag: tags[response.error_type],
-    token: response.access_token,
+    tag: tags[request.error_type],
+    token: request.access_token,
     groupHash: md5(location),
-    message: response.error_description,
-    stack: response.debug_backtrace,
-    time: response.error_context._SERVER.REQUEST_TIME,
+    message: request.error_description,
+    stack: formatDebugBacktrace(request.debug_backtrace),
+    time: request.error_context._SERVER.REQUEST_TIME,
     errorLocation: {
-      file: response.error_file,
-      line: response.error_line,
-      full: response.error_file + ' -> ' + response.error_line
+      file: request.error_file,
+      line: request.error_line,
+      full: request.error_file + ' -> ' + request.error_line
     },
     params: {
-      post: response.error_context._POST,
-      get : response.error_context._GET
+      post: request.error_context._POST,
+      get : request.error_context._GET
     },
     location: {
-      url: response.error_context._SERVER.SERVER_NAME + response.error_context._SERVER.QUERY_STRING,
-      host: response.error_context._SERVER.SERVER_NAME,
-      path: response.error_context._SERVER.QUERY_STRING,
+      url: request.error_context._SERVER.SERVER_NAME + request.error_context._SERVER.QUERY_STRING,
+      host: request.error_context._SERVER.SERVER_NAME,
+      path: request.error_context._SERVER.QUERY_STRING,
     },
     request: {
-      ip: response.error_context._SERVER.REMOTE_ADDR,
-      method: response.error_context._SERVER.REQUEST_METHOD,
-      referer: response.error_context._SERVER.HTTP_REFERER,
+      ip: request.error_context._SERVER.REMOTE_ADDR,
+      method: request.error_context._SERVER.REQUEST_METHOD,
+      referrer: request.error_context._SERVER.HTTP_REFERRER,
     }
   };
 
@@ -68,41 +109,27 @@ let getServerErrors = function (req, res) {
 
   websites.get(event.token, event.location.host)
     .then( function (site) {
-
       if (!site) {
-
         res.sendStatus(403);
         return;
-
       }
       return user.get(site.user)
         .then(function (foundUser) {
-
           notifies.send(foundUser, event.location.host, event);
 
           events.add(event.location.host, event)
             .then(function () {
-
               res.sendStatus(200);
-
             })
             .catch(function (e) {
-
               logger.log('error', 'Can not add event because of ', e);
               res.sendStatus(500);
-
             });
-
         });
-
-
     })
     .catch( function () {
-
       res.sendStatus(500);
-
     });
-
 };
 
 /* GET server errors. */

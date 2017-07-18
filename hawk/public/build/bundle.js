@@ -64,7 +64,7 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -78,12 +78,10 @@ var hawk =
  * AJAX module
  */
 module.exports = function () {
-
   /**
    * @usage codex.ajax.call();
    */
   var call = function call(data) {
-
     if (!data || !data.url) return;
 
     var XMLHTTP = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject('Microsoft.XMLHTTP'),
@@ -98,19 +96,15 @@ module.exports = function () {
     errorFunction = data.error || errorFunction;
 
     if (data.type === 'GET' && data.data) {
-
       data.url = /\?/.test(data.url) ? data.url + '&' + data.data : data.url + '?' + data.data;
     }
 
     if (data.withCredentials) {
-
       XMLHTTP.withCredentials = true;
     }
 
     if (data.beforeSend && typeof data.beforeSend === 'function') {
-
       if (!data.beforeSend.call()) {
-
         return;
       }
     }
@@ -121,20 +115,15 @@ module.exports = function () {
      * If we send FormData, we need no content-type header
      */
     if (!isFormData_(data.data)) {
-
       XMLHTTP.setRequestHeader('Content-type', data['content-type']);
     }
 
     XMLHTTP.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     XMLHTTP.onreadystatechange = function () {
-
       if (XMLHTTP.readyState === 4) {
-
         if (XMLHTTP.status === 200) {
-
           successFunction(XMLHTTP.responseText);
         } else {
-
           errorFunction(XMLHTTP.statusText);
         }
       }
@@ -149,7 +138,6 @@ module.exports = function () {
    * @return boolean
    */
   var isFormData_ = function isFormData_(object) {
-
     return object instanceof FormData;
   };
 
@@ -190,7 +178,6 @@ module.exports = function () {
  * @type {{init}}
  */
 module.exports = function () {
-
   var CLASSES = {
     customCheckbox: 'form__checkbox',
     checkedCheckbox: 'form__checkbox--checked',
@@ -205,17 +192,14 @@ module.exports = function () {
    * Prepare elements with 'custom-checkbox' name
    */
   var init = function init() {
-
     var checkboxes = document.getElementsByName(NAMES.customChecbox);
 
     if (!checkboxes) {
-
       console.log('There are no checkboxes on page');
       return;
     }
 
     for (var i = 0; i < checkboxes.length; i++) {
-
       prepareElement(checkboxes[i]);
     }
 
@@ -228,7 +212,6 @@ module.exports = function () {
    * @param checkbox
    */
   var prepareElement = function prepareElement(checkbox) {
-
     var input = document.createElement('input');
 
     input.type = 'checkbox';
@@ -237,12 +220,10 @@ module.exports = function () {
     input.name = checkbox.dataset.name;
 
     if (checkbox.dataset.value) {
-
       input.value = checkbox.dataset.value;
     }
 
     if (checkbox.dataset.checked) {
-
       checkbox.classList.add(CLASSES.checkedCheckbox);
       input.checked = true;
     }
@@ -257,7 +238,6 @@ module.exports = function () {
    * @param e
    */
   var checkboxClicked = function checkboxClicked(e) {
-
     var label = this,
         input = this.querySelector('.' + CLASSES.defaultCheckbox);
 
@@ -291,7 +271,6 @@ module.exports = function () {
  * @type {{init}}
  */
 module.exports = function () {
-
   var NAMES = {
     copyable: 'js-copyable'
   };
@@ -302,17 +281,14 @@ module.exports = function () {
    * @param {Function} copiedCallback - fires when something has copied
    */
   var init = function init(copiedCallback) {
-
     var elems = document.getElementsByName(NAMES.copyable);
 
     if (!elems) {
-
       console.log('There are no copyable elements');
       return;
     }
 
     for (var i = 0; i < elems.length; i++) {
-
       prepareElement(elems[i], copiedCallback);
     }
 
@@ -326,7 +302,6 @@ module.exports = function () {
    * @param copiedCallback
    */
   var prepareElement = function prepareElement(element, copiedCallback) {
-
     element.addEventListener('click', elementClicked);
     element.addEventListener('copied', copiedCallback);
   };
@@ -336,7 +311,6 @@ module.exports = function () {
    * Create new range, select copyable element and add range to selection. Then exec 'copy' command
    */
   var elementClicked = function elementClicked() {
-
     var selection = window.getSelection(),
         range = document.createRange();
 
@@ -373,7 +347,6 @@ module.exports = function () {
 
 
 module.exports = function () {
-
   /**
    * Unlink domain handler
    *
@@ -381,9 +354,7 @@ module.exports = function () {
    * @param token - domain token
    */
   var unlink = function unlink(button, token) {
-
     var success = function success() {
-
       hawk.notifier.show({
         message: 'Domain was successfully unlinked',
         style: 'success'
@@ -392,7 +363,6 @@ module.exports = function () {
     };
 
     var error = function error() {
-
       hawk.notifier.show({
         message: 'Sorry, there is a server error',
         style: 'error'
@@ -400,7 +370,6 @@ module.exports = function () {
     };
 
     var sendAjax = function sendAjax() {
-
       hawk.ajax.call({
         data: 'token=' + token,
         type: 'GET',
@@ -427,6 +396,32 @@ module.exports = function () {
 
 /***/ }),
 /* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function () {
+  /**
+   * Hide and show error repeations stack on event page
+   *
+   * @param stackButton
+   * @param eventId
+   */
+  var toggleStack = function toggleStack(stackButton, eventId) {
+    var eventInfo = document.querySelector('.event-info[data-event="' + eventId + '"]');
+
+    eventInfo.classList.toggle('hide');
+    stackButton.classList.toggle('event-info--opened');
+  };
+
+  return {
+    toggleStack: toggleStack
+  };
+}();
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -512,13 +507,13 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -527,14 +522,12 @@ module.exports = notifier;
 /**
 * Require CSS build
 */
-__webpack_require__(5);
+__webpack_require__(6);
 
 var hawk = function (self) {
-
   'use strict';
 
   self.init = function () {
-
     console.log('Initialized');
   };
 
@@ -542,13 +535,13 @@ var hawk = function (self) {
   self.copyable = __webpack_require__(2);
   self.ajax = __webpack_require__(0);
   self.domain = __webpack_require__(3);
-  self.notifier = __webpack_require__(4);
+  self.notifier = __webpack_require__(5);
+  self.event = __webpack_require__(4);
 
   return self;
 }({});
 
 hawk.docReady = function (f) {
-
   'use strict';
 
   return (/in/.test(document.readyState) ? window.setTimeout(hawk.docReady, 9, f) : f()

@@ -59,9 +59,11 @@ let event = function (req, res) {
         events.get(currentDomain.name, {groupHash: params.eventId}, false)
           .then(function (events) {
 
-            res.render('garage/events/page', {
-              currentDomain,
-              event: events[0],
+            let event = events.shift();
+
+            res.render('garage/events/' + event.type + '/page', {
+              currentDomain: currentDomain,
+              event: event,
               events: events
             });
 
