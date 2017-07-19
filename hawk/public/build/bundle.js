@@ -506,8 +506,7 @@ var tracebackPopup = function (self) {
   var addClosingButtonHandler = function addClosingButtonHandler(button) {
     button.addEventListener('click', self.close, false);
 
-    /** close by click outside of popup */
-    document.addEventListener('click', self.close, false);
+    /** close by ESC key */
     document.addEventListener('keydown', self.close, false);
   };
 
@@ -527,7 +526,12 @@ var tracebackPopup = function (self) {
    */
   var closePopupByOutsideClick_ = function closePopupByOutsideClick_(event) {
     var target = event.target,
-        clickedOnPopup = true;
+        clickedOnPopup = true,
+        isOpened = popup.holder.classList.contains(CSS.popupShowed);
+
+    if (!isOpened) {
+      return;
+    }
 
     /**
      * if target is popups content, it means that clicked on popup
@@ -551,15 +555,23 @@ var tracebackPopup = function (self) {
    * @static
    *
    * delegate closing popup to handlers
+   *
    */
   self.close = function (event) {
+    console.log('close: %o', event);
     switch (event.type) {
       case 'keydown':
         closePopupByEscape_(event);
         break;
-      default:
+      case 'click':
         closePopupByOutsideClick_(event);
+        break;
+      case 'popstate':
+        popup.holder.classList.remove(CSS.popupShowed);
+        break;
     }
+
+    document.removeEventListener('click', self.close, false);
   };
 
   /**
@@ -569,6 +581,11 @@ var tracebackPopup = function (self) {
    */
   self.open = function () {
     popup.holder.classList.add(CSS.popupShowed);
+
+    /** close by click outside of popup */
+    setTimeout(function () {
+      document.addEventListener('click', self.close, false);
+    }, 0);
   };
 
   /**
@@ -615,15 +632,13 @@ var tracebackPopup = function (self) {
     response = JSON.parse(response);
 
     popup.content.insertAdjacentHTML('beforeEnd', response.traceback);
-    self.open();
-
     updateHeaderTime(response.event ? response.event.time : 0);
   };
 
   /**
    * get all necessary information from DOM
    * make templated traceback header
-   * @param {Object} domain - domain info
+   * @param {Object} domainName - domain name
    * @param {Object} event - traceback header
    * @type {Integer} event.count - aggregated event's count
    * @type {Object} event.errorLocation - event's location
@@ -631,8 +646,8 @@ var tracebackPopup = function (self) {
    * @type {String} event.tag - event's type
    * @type {Integer} event.time - time
    */
-  function fillHeader(event, domain) {
-    popup.content.insertAdjacentHTML('afterbegin', '<div class="event">\n      <div class="event__header">\n        <span class="event__domain">' + domain.name + '</span>\n        <span class="event__type event__type--' + event.tag + '">\n          ' + (event.tag === 'javascript' ? 'Javascript Error' : event.tag) + '\n        </span>\n      </div>\n      <div class="event__content clearfix">\n        <div class="event__counter">\n          <div class="event__counter-number">\n            <div class="event__counter-number--digit">' + event.count + '</div>\n            times\n          </div>\n          <div class="event__counter-date">\n            <div class="event__placeholder"></div>\n            <div class="event__placeholder"></div>\n          </div>\n        </div>\n        <div class="event__title">\n          ' + event.message + '\n        </div>\n        <div class="event__path">\n          ' + event.errorLocation.full + '\n        </div>\n      </div>\n    </div>');
+  function fillHeader(event, domainName) {
+    popup.content.insertAdjacentHTML('afterbegin', '<div class="event">\n      <div class="event__header">\n        <span class="event__domain">' + domainName + '</span>\n        <span class="event__type event__type--' + event.tag + '">\n          ' + (event.tag === 'javascript' ? 'Javascript Error' : event.tag) + '\n        </span>\n      </div>\n      <div class="event__content clearfix">\n        <div class="event__counter">\n          <div class="event__counter-number">\n            <div class="event__counter-number--digit">' + event.count + '</div>\n            times\n          </div>\n          <div class="event__counter-date">\n            <div class="event__placeholder"></div>\n            <div class="event__placeholder"></div>\n          </div>\n        </div>\n        <div class="event__title">\n          ' + event.message + '\n        </div>\n        <div class="event__path">\n          ' + event.errorLocation.full + '\n        </div>\n      </div>\n    </div>');
   }
 
   /**
@@ -640,10 +655,7 @@ var tracebackPopup = function (self) {
    *
    * send ajax request and delegate to handleSuccessResponse_ on success response
    *
-   * @param {Object} domain
-   * @param {Object} domain._id
-   * @param {string} domain.token
-   * @param {string} domain.user
+   * @param {string} domainName
    *
    * @param {string} event._id
    * @param {string} event.type
@@ -653,18 +665,28 @@ var tracebackPopup = function (self) {
    * @param {number} event.time
    * @param {number} event.count
    */
-  var sendPopupRequest_ = function sendPopupRequest_(event, domain) {
-    if (domain.name) {
-      hawk.ajax.call({
-        url: '/garage/' + domain.name + '/event/' + event._id + '?popup=true',
-        method: 'GET',
-        success: handleSuccessResponse_,
-        error: function error(err) {
-          hawk.notifier.show({ style: 'error', message: 'Cannot load event data' });
-          console.log('Event loading error: %o', err);
-        }
-      });
+  var sendPopupRequest_ = function sendPopupRequest_(event, domainName) {
+    if (!domainName) {
+      return;
     }
+
+    var eventPageURL = '/garage/' + domainName + '/event/' + event._id;
+
+    /** Open popup with known data */
+    self.open();
+
+    /** Replace current URL state */
+    window.history.pushState({ 'popupOpened': true }, event.message, eventPageURL);
+
+    hawk.ajax.call({
+      url: eventPageURL + '?popup=true',
+      method: 'GET',
+      success: handleSuccessResponse_,
+      error: function error(err) {
+        hawk.notifier.show({ style: 'error', message: 'Cannot load event data' });
+        console.log('Event loading error: %o', err);
+      }
+    });
   };
 
   /**
@@ -684,10 +706,9 @@ var tracebackPopup = function (self) {
     }
 
     var event = row.dataset.event,
-        domain = row.dataset.domain;
+        domainName = row.dataset.domain;
 
     event = JSON.parse(event);
-    domain = JSON.parse(domain);
 
     /**
      * Clear popup
@@ -697,12 +718,12 @@ var tracebackPopup = function (self) {
     /**
      * Fill popup header with data we are already have
      */
-    fillHeader(event, domain);
+    fillHeader(event, domainName);
 
     /**
      * Require other information
      */
-    sendPopupRequest_(event, domain);
+    sendPopupRequest_(event, domainName);
 
     /**
      * Disable link segue
@@ -775,8 +796,14 @@ var tracebackPopup = function (self) {
      * Handle clicks on rows
      */
     eventRows = document.querySelectorAll('.' + CSS.eventRow);
-
     bindRowsClickHandler(eventRows);
+
+    /** Close popup by Back/Forward navigation */
+    window.onpopstate = function (e) {
+      if (!e.state || !e.state.popupOpened) {
+        self.close(e);
+      }
+    };
   };
 
   return self;
