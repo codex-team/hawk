@@ -43,15 +43,29 @@
     }
 
     &__content {
+        position: relative;
         margin-left: 100px;
         transform: translateX(30px);
         opacity: 0;
         transition: transform 200ms ease-in, opacity 100ms ease;
         will-change: transform, opacity;
-        background-color: #fff;
+        background: #fff;
         min-height: 100%;
         cursor: auto;
         box-shadow: 0 0 40px rgba(19, 21, 35, 0.55);
+    }
+
+    &--loading &__content::before {
+        content: '';
+        width: 75px;
+        height: 75px;
+        background: url('/static/svg/stack.svg') no-repeat center center;
+        background-size: 75px auto;
+        opacity: 0.15;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 50vh;
     }
 
     &--showed &__content {

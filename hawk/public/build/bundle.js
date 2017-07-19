@@ -434,6 +434,7 @@ var eventPopup = function (self) {
     popupContent: 'traceback-popup__content',
     closeButton: 'traceback-popup__closing-button',
     popupShowed: 'traceback-popup--showed',
+    popupLoading: 'traceback-popup--loading',
 
     // events list
     eventRow: 'garage-list-item'
@@ -611,6 +612,9 @@ var eventPopup = function (self) {
   var handleSuccessResponse_ = function handleSuccessResponse_(response) {
     response = JSON.parse(response);
 
+    /** Remove loader */
+    popup.holder.classList.remove(CSS.popupLoading);
+
     popup.content.insertAdjacentHTML('beforeEnd', response.traceback);
     updateHeaderTime(response.event ? response.event.time : 0);
   };
@@ -660,6 +664,9 @@ var eventPopup = function (self) {
     /** Replace current URL and add new history record */
     window.history.pushState({ 'popupOpened': true }, event.message, eventPageURL);
 
+    /** Add loader */
+    popup.holder.classList.add(CSS.popupLoading);
+
     hawk.ajax.call({
       url: eventPageURL + '?popup=true',
       method: 'GET',
@@ -667,6 +674,9 @@ var eventPopup = function (self) {
       error: function error(err) {
         hawk.notifier.show({ style: 'error', message: 'Cannot load event data' });
         console.log('Event loading error: %o', err);
+
+        /** Remove loader */
+        popup.holder.classList.remove(CSS.popupLoading);
       }
     });
   };
