@@ -1,12 +1,28 @@
 'use strict';
 
 module.exports = function () {
-  let init = function () {
-    let domain = document.querySelector('[data-counters-page-tag]').dataset;
+  let generateKey = function (domain, tag) {
+    let key = domain + ':' + tag;
 
-    if (!domain) {
+    return key;
+  };
+
+  let updateState = function (domain, tag, value) {
+    let key = generateKey(domain, tag);
+
+    window.localStorage.setItem(key, value);
+  };
+
+  let init = function () {
+    let errorList = document.querySelector('[data-counters-page-tag]');
+
+    if (!errorList) {
       return;
     }
+
+    let domain = errorList.dataset;
+
+    console.log(domain);
 
     window.alert(domain.countersPageTag);
   };

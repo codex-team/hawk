@@ -348,11 +348,15 @@ module.exports = function () {
 
 module.exports = function () {
   var init = function init() {
-    var domain = document.querySelector('[data-counters-page-tag]').dataset;
+    var errorList = document.querySelector('[data-counters-page-tag]');
 
-    if (!domain) {
+    if (!errorList) {
       return;
     }
+
+    var domain = errorList.dataset;
+
+    console.log(domain);
 
     window.alert(domain.countersPageTag);
   };
