@@ -58,7 +58,8 @@ module.exports = {
           {
             loader: 'eslint-loader',
             options: {
-              fix: DevelopmendMode
+              fix: DevelopmendMode,
+              sourceType: 'module'
             }
           }
         ]

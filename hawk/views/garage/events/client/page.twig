@@ -20,7 +20,6 @@
                 {{ event.userAgent.device.type }}
             </span>
             <span class="event-badge event-badge--device-size">
-                {{ svg('/public/svg/scale-arrows.svg') }}
                 {{ event.userAgent.device.width }} x {{ event.userAgent.device.height }}
             </span>
         </div>
@@ -49,7 +48,6 @@
                   {{ item.userAgent.device.type}}
                 </span>
                 <span class="event-badge event-badge--device-size">
-                    {{ svg('/public/svg/scale-arrows.svg') }}
                     {{ item.userAgent.device.width }}x{{ item.userAgent.device.height }}
                 </span>
                 <a href="{{ item.location.url }}" target="_blank" class="repeations__path">{{ item.location.path }}</a>
