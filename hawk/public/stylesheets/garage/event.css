@@ -43,7 +43,11 @@
         }
 
         &-date {
-            font-size: 12px;
+            min-width: 75px;
+            min-height: 30px;
+            font-size: 13px;
+            color: var(--grayOnDark);
+            line-height: 1.5em;
         }
     }
 
@@ -53,6 +57,7 @@
 
     &__counter {
         float: right;
+        min-width: 60px;
     }
 
     &__title {
@@ -60,6 +65,22 @@
         font-size: 20px;
         margin-bottom: 20px;
         overflow: hidden;
+    }
+
+    &__placeholder {
+        height: 0.6em;
+        background-color: #3b394c;
+        border-radius: 30px;
+    }
+
+    &__counter &__placeholder {
+        margin: 0 auto;
+
+        &:first-of-type {
+            margin-top: 1.4em;
+            margin-bottom: 8px;
+            width: 50%;
+        }
     }
 }
 

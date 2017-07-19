@@ -1,6 +1,5 @@
 .traceback-popup {
   position: fixed;
-  /*transition: opacity 250ms linear;*/
   left: var(--garage-aside-width);
   top: 0;
   right: 0;
@@ -8,10 +7,8 @@
   background: color(#2a2836 alpha(85%));
   overflow: auto;
   z-index: 9999;
-  /*opacity: 0;*/
   visibility: hidden;
   cursor: pointer;
-  will-change: opacity;
 
   &--showed {
     visibility: visible;
@@ -29,7 +26,12 @@
     width: 100px;
     text-align: center;
 
-    svg {
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 19px;
+      height: 19px;
+      background: url('/static/svg/cross.svg') no-repeat;
       transform: rotate(65deg);
       transition: transform 300ms ease;
       will-change: transform;
@@ -49,6 +51,7 @@
     background-color: #fff;
     min-height: 100%;
     cursor: auto;
+    box-shadow: 0 0 40px rgba(19, 21, 35, 0.55);
   }
 
   &--showed &__content {
@@ -57,7 +60,7 @@
   }
 
   &--showed &__closing-button {
-    svg {
+    &::before {
       transform: none
     }
   }

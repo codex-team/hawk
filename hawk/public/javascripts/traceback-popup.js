@@ -5,109 +5,118 @@
  *
  * Sends AJAX request and gets rendered html as response to fill in traceback__content element
  */
-
 let tracebackPopup = (function ( self ) {
   'use strict';
+
+  /**
+   * DOM manipulations lib
+   * @type {Class}
+   */
+  var dom = require('./dom').default;
+
 
   let keyCodes_ = {
     ESC : 27
   };
 
   /**
-   * @inner
-   * List of element classes that needs to find
+   * Elements classnames
+   * @type {Object}
    */
-  let elements_ = {
-    eventItems              : 'garage-list-item',
-    eventItemTitle          : 'garage-list-item__title',
-    tracebackPopup          : 'traceback-popup',
-    tracebackContent        : 'traceback-popup__content',
-    tracebackClosingButton  : 'traceback-popup__closing-button',
+  let CSS = {
+    // popup
+    popup : 'traceback-popup',
+    popupContent: 'traceback-popup__content',
+    closeButton: 'traceback-popup__closing-button',
+    popupShowed: 'traceback-popup--showed',
+
+    // events list
+    eventRow: 'garage-list-item'
   };
 
   /**
-   * @inner
-   * List of CSS styles
+   * Popup elements
+   * @type {object}
    */
-  let styles_ = {
-    showTracebackPopup  : 'traceback-popup--showed',
+  let popup = {
+    holder: null,
+    content: null,
+    closeButton: null
   };
 
   /**
-   * event items
+   * event rows items
    * @inner
    * @type {Array} - list of found event items
    */
-  let eventItems = null;
+  let eventRows = null;
 
   /**
-   * traceback popup wrapper
-   * @inner
-   * @type {Element} - popups holder
+   * Makes popup elements
+   * @return {Object} {holder, closeButton, content}
    */
-  let tracebackPopup = null;
+  function makePopup() {
+    let holder = dom.make('div', CSS.popup),
+      closeButton = dom.make('div', CSS.closeButton),
+      content = dom.make('div', CSS.popupContent);
+
+    holder.appendChild(closeButton);
+    holder.appendChild(content);
+
+    return { holder, closeButton, content };
+  }
 
   /**
-   * popup's content
-   * @inner
-   * @type {Element} - popups content
-   */
-  let tracebackContent = null;
+  * @inner
+  *
+  * close popup when cross icon clicked
+  * @param {Element} button - close button
+  */
+  let addClosingButtonHandler = function (button) {
+    button.addEventListener('click', self.close, false);
 
-  /**
-   * popup's closing button
-   * @inner
-   * @type {Element} - cross button that closes whole popup
-   */
-  let tracebackClosingButton = null;
-
-  /**
-   * @static
-   *
-   * Initialize traceback popup module
-   * find all necessary elements and add listeners
-   *
-   * If non of this elements found, do not Initialize module
-   * In case when something gone wrong, check that all elements has been found before delegation
-   */
-  self.init = function () {
-    eventItems = document.getElementsByClassName(elements_.eventItems);
-
-    tracebackPopup = document.getElementsByClassName(elements_.tracebackPopup);
-    tracebackPopup = tracebackPopup.length ? tracebackPopup[0] : null;
-
-    tracebackContent = document.getElementsByClassName(elements_.tracebackContent);
-    tracebackContent = tracebackContent.length ? tracebackContent[0] : null;
-
-    tracebackClosingButton = document.getElementsByClassName(elements_.tracebackClosingButton);
-    tracebackClosingButton = tracebackClosingButton.length ? tracebackClosingButton[0] : null;
-
-    if (tracebackContent && tracebackClosingButton && eventItems) {
-      addClosingButtonHandler_();
-      addItemHandlerOnClick_(eventItems);
-    }
+    /** close by click outside of popup */
+    document.addEventListener('click', self.close, false);
+    document.addEventListener('keydown', self.close, false);
   };
 
   /**
-   * @static
-   *
-   * remove all listeners and variables
+   * Removes class when clicked ESC
    */
-  self.destroy = function () {
-    for (let i = 0; i < eventItems.length; i++) {
-      eventItems[i].removeEventListener('click', sendPopupRequest_, false);
+  let closePopupByEscape_ = function (event) {
+    switch (event.keyCode) {
+      case keyCodes_.ESC:
+        popup.holder.classList.remove(CSS.popupShowed);
+        break;
+    }
+  };
+
+
+  /**
+   * Removes class that display's popup when clicked outsite of popup's content
+   */
+  let closePopupByOutsideClick_ = function (event) {
+    let target = event.target,
+      clickedOnPopup = true;
+
+    /**
+     * if target is popups content, it means that clicked on popup
+     * otherwise if clicked somewhere else, rise until we stop on document's body
+     * that will indicate us that click was outside the popup
+     */
+    while (!target.classList.contains(CSS.popupContent)) {
+      target = target.parentNode;
+      if (target === document.body) {
+        clickedOnPopup = false;
+        break;
+      }
     }
 
-    eventItems = null;
-
-    tracebackContent = null;
-
-    document.removeEventListener('click', self.close, false);
-    document.removeEventListener('keydown', self.close, false);
-
-    tracebackClosingButton.removeEventListener('click', self.close, false);
-    tracebackClosingButton = null;
+    if (!clickedOnPopup) {
+      popup.holder.classList.remove(CSS.popupShowed);
+    }
   };
+
 
   /**
    * @static
@@ -125,145 +134,97 @@ let tracebackPopup = (function ( self ) {
   };
 
   /**
-   * Removes class when clicked ESC
-   */
-  let closePopupByEscape_ = function (event) {
-    switch (event.keyCode) {
-      case keyCodes_.ESC:
-        tracebackPopup.classList.remove(styles_.showTracebackPopup);
-        break;
-    }
-  };
-
-  /**
-   * Removes class that display's popup when clicked outsite of popup's content
-   */
-  let closePopupByOutsideClick_ = function (event) {
-    let target = event.target,
-      clickedOnPopup = true;
-
-    /**
-     * if target is popups content, it means that clicked on popup
-     * otherwise if clicked somewhere else, rise until we stop on document's body
-     * that will indicate us that click was outside the popup
-     */
-    while (!target.classList.contains(elements_.tracebackContent)) {
-      target = target.parentNode;
-      if (target == document.body) {
-        clickedOnPopup = false;
-        break;
-      }
-    }
-
-    if (!clickedOnPopup) {
-      tracebackPopup.classList.remove(styles_.showTracebackPopup);
-    }
-  };
-
-  /**
    * @static
    *
    * Adds class that display's popup
    */
   self.open = function () {
-    tracebackPopup.classList.add(styles_.showTracebackPopup);
-
-    /** close by click outside of popup */
-    document.addEventListener('click', self.close, false);
-    document.addEventListener('keydown', self.close, false);
+    popup.holder.classList.add(CSS.popupShowed);
   };
 
   /**
-   * @inner
-   *
-   * close popup when cross icon clicked
+   * Replace time placeholder with actual text
+   * @param  {Number} time  - 1498239391
    */
-  let addClosingButtonHandler_ = function () {
-    tracebackClosingButton.addEventListener('click', self.close, false);
-  };
+  function updateHeaderTime(time) {
+    if (!time) {
+      return;
+    }
+
+    let [firstLine, secondLine] = popup.content.querySelectorAll('.event__counter-date .event__placeholder');
+
+    /**
+     * Server stores time in milliseconds, client uses seconds
+     * @type {Number}
+     */
+    const milliseconds = 1000;
+
+    let date = new Date(time * milliseconds),
+      dateFormatted = date.toGMTString().slice(5, 16),
+      newLine = dom.make('span', null, {
+        innerHTML : `since <br> ${dateFormatted}`
+      });
+
+    dom.replace(firstLine, newLine);
+    secondLine.remove();
+  }
 
   /**
    * @inner
    *
    * insert as inner html requested traceback. Response must be rendered template
+   * @param {string} response    - server response with JSON:
+   *                                  traceback : ''
+   *                                  event: {}
    */
   let handleSuccessResponse_ = function (response) {
-    tracebackContent.insertAdjacentHTML('beforeEnd', response);
+    response = JSON.parse(response);
+
+    popup.content.insertAdjacentHTML('beforeEnd', response.traceback);
     self.open();
+
+    updateHeaderTime(response.event ? response.event.time : 0);
   };
 
   /**
-   * @inner
-   *
-   * Handle cases when something gone wrong
-   */
-  let handleErrorResponse_ = function (response) {
-
-  };
-
-  /**
-   * Fills event popup header
-   * @param  {Object} event   - event data
-   * @return {[type]}       [description]
+   * get all necessary information from DOM
+   * make templated traceback header
+   * @param {Object} domain - domain info
+   * @param {Object} event - traceback header
+   * @type {Integer} event.count - aggregated event's count
+   * @type {Object} event.errorLocation - event's location
+   * @type {String} event.message - event's message
+   * @type {String} event.tag - event's type
+   * @type {Integer} event.time - time
    */
   function fillHeader(event, domain) {
-    let tracebackHeader = makeTracebackEventHeader_(domain, event);
-
-    tracebackContent.innerHTML = tracebackHeader;
+    popup.content.insertAdjacentHTML('afterbegin', `<div class="event">
+      <div class="event__header">
+        <span class="event__domain">${domain.name}</span>
+        <span class="event__type event__type--${event.tag}">
+          ${event.tag === 'javascript' ? 'Javascript Error' : event.tag}
+        </span>
+      </div>
+      <div class="event__content clearfix">
+        <div class="event__counter">
+          <div class="event__counter-number">
+            <div class="event__counter-number--digit">${event.count}</div>
+            times
+          </div>
+          <div class="event__counter-date">
+            <div class="event__placeholder"></div>
+            <div class="event__placeholder"></div>
+          </div>
+        </div>
+        <div class="event__title">
+          ${event.message}
+        </div>
+        <div class="event__path">
+          ${event.errorLocation.full}
+        </div>
+      </div>
+    </div>`);
   }
-
-  /**
-   * Event row click handler
-   * @param  {event} clickEvent - onclick event
-   */
-  function eventRowClicked(clickEvent) {
-    let row = this;
-
-    /**
-    * Allow opening page in new tab
-    */
-    let isMouseWheelClicked = clickEvent.which && ( clickEvent.which === 2 || clickEvent.button === 4 );
-
-    if (clickEvent.ctrlKey || clickEvent.metaKey || isMouseWheelClicked) {
-      return;
-    }
-
-
-    let event = row.dataset.event,
-      domain = row.dataset.domain;
-
-    event = JSON.parse(event);
-    domain = JSON.parse(domain);
-
-    /**
-     * Fill popup header with data we are already have
-     */
-    fillHeader(event, domain);
-
-    /**
-     * Require other information
-     */
-    sendPopupRequest_(event, domain);
-
-    /**
-     * Disable link segue
-     */
-    clickEvent.preventDefault();
-  }
-
-  /**
-   * @inner
-   *
-   * delegate and add event listeners to the items
-   * prevent clicks on items and show popup via traceback content
-   *
-   * @param {Array} items - list of Event rows. Delegates elements that found in Initialization proccess
-   */
-  let addItemHandlerOnClick_ = function (items) {
-    for (var i = items.length - 1; i >= 0; i--) {
-      items[i].addEventListener('click', eventRowClicked, false);
-    }
-  };
 
   /**
    * @inner
@@ -289,58 +250,127 @@ let tracebackPopup = (function ( self ) {
         url: '/garage/' + domain.name + '/event/' + event._id + '?popup=true',
         method: 'GET',
         success: handleSuccessResponse_,
-        error: handleErrorResponse_
+        error: err => {
+          hawk.notifier.show({style: 'error', message: 'Cannot load event data'});
+        }
       });
     }
   };
 
   /**
-   * get all necessary information from DOM
-   * make templated traceback header
-   * @param {Object} domain - domain info
-   * @param {Object} event - traceback header
-   * @type {Integer} event.count - aggregated event's count
-   * @type {Object} event.errorLocation - event's location
-   * @type {String} event.message - event's message
-   * @type {String} event.tag - event's type
-   * @type {Integer} event.time - time
+   * Event row click handler
+   * @param  {event} clickEvent - onclick event
    */
-  let makeTracebackEventHeader_ = function (domain, event) {
-    let time = new Date(event.time),
-      day = ('0' + time.getDate()).slice(-2),
-      month = ('0' + (time.getMonth() + 1)).slice(-2),
-      year = time.getFullYear();
+  function eventRowClicked(clickEvent) {
+    let row = this;
 
-    /** render html */
-    let fragment = document.createDocumentFragment();
-    let el = `<div class="event">
-      <div class="event__header">
-        <span class="event__domain">${domain.name}</span>
-        <span class="event__type event__type--${event.tag}">
-          ${event.tag === 'javascript' ? 'Javascript Error' : event.tag}
-        </span>
-      </div>
-      <div class="event__content clearfix">
-        <div class="event__counter">
-          <div class="event__counter-number">
-            <div class="event__counter-number--digit">${event.count}</div>
-            times
-          </div>
-          <div class="event__counter-date">since<br>${day}-${month}-${year}</div>
-        </div>
-        <div class="event__title">
-          ${event.message}
-        </div>
-        <div class="event__path">
-          ${event.errorLocation.full}
-        </div>
-      </div>
-    </div>`;
+    /**
+    * Allow opening page in new tab
+    */
+    let isMouseWheelClicked = clickEvent.which && ( clickEvent.which === 2 || clickEvent.button === 4 );
 
-    fragment.innerHTML = el;
+    if (clickEvent.ctrlKey || clickEvent.metaKey || isMouseWheelClicked) {
+      return;
+    }
 
-    return fragment.innerHTML;
+
+    let event = row.dataset.event,
+      domain = row.dataset.domain;
+
+    event = JSON.parse(event);
+    domain = JSON.parse(domain);
+
+    /**
+     * Clear popup
+     */
+    popup.content.innerHTML = '';
+
+    /**
+     * Fill popup header with data we are already have
+     */
+    fillHeader(event, domain);
+
+    /**
+     * Require other information
+     */
+    sendPopupRequest_(event, domain);
+
+    /**
+     * Disable link segue
+     */
+    clickEvent.preventDefault();
+  }
+
+  /**
+   * @inner
+   *
+   * delegate and add event listeners to the items
+   * prevent clicks on items and show popup via traceback content
+   *
+   * @param {Array} items - list of Event rows. Delegates elements that found in Initialization proccess
+   */
+  let bindRowsClickHandler = function (items) {
+    if (!items || !items.length) {
+      return;
+    }
+
+    for (var i = items.length - 1; i >= 0; i--) {
+      items[i].addEventListener('click', eventRowClicked, false);
+    }
   };
+
+
+  /**
+   * @static
+   *
+   * remove all listeners and variables
+   */
+  self.destroy = function () {
+    for (let i = 0; i < eventRows.length; i++) {
+      eventRows[i].removeEventListener('click', sendPopupRequest_, false);
+    }
+
+    eventRows = null;
+
+    document.removeEventListener('click', self.close, false);
+    document.removeEventListener('keydown', self.close, false);
+
+    popup.closeButton.removeEventListener('click', self.close, false);
+  };
+
+  /**
+   * @static
+   *
+   * Initialize traceback popup module
+   * find all necessary elements and add listeners
+   *
+   * If non of this elements found, do not Initialize module
+   * In case when something gone wrong, check that all elements has been found before delegation
+   */
+  self.init = function () {
+    let isNeed = document.querySelector('[data-module-required="tracebackPopup"]');
+
+    if (!isNeed) {
+      return;
+    }
+
+    popup = makePopup();
+
+    document.body.appendChild(popup.holder);
+
+    /**
+     * Handle popup close-button clicks
+     */
+    addClosingButtonHandler(popup.closeButton);
+
+    /**
+     * Handle clicks on rows
+     */
+    eventRows = document.querySelectorAll(`.${CSS.eventRow}`);
+
+    bindRowsClickHandler(eventRows);
+  };
+
 
   return self;
 })({});
