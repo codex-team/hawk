@@ -348,11 +348,13 @@ module.exports = function () {
 
 module.exports = function () {
   var init = function init() {
-    // let isNeed = document.querySelector('[data-module-required="counters"]');
-    //
-    // if (!isNeed) {
-    //   return;
-    // }
+    var domain = document.querySelector('[data-counters-page-tag]').dataset;
+
+    if (!domain) {
+      return;
+    }
+
+    window.alert(domain.countersPageTag);
   };
 
   return {

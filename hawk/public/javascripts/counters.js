@@ -2,11 +2,13 @@
 
 module.exports = function () {
   let init = function () {
-    // let isNeed = document.querySelector('[data-module-required="counters"]');
-    //
-    // if (!isNeed) {
-    //   return;
-    // }
+    let domain = document.querySelector('[data-counters-page-tag]').dataset;
+
+    if (!domain) {
+      return;
+    }
+
+    window.alert(domain.countersPageTag);
   };
 
   return {

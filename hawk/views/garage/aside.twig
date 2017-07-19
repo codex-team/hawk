@@ -21,7 +21,8 @@
                 {{ errorType }}
 
                 {% if countErrors + 1 %}
-                <span class="garage-aside__counter garage-aside__counter--{{ errorType }} garage-aside__counter--unread">
+                <span class="garage-aside__counter garage-aside__counter--{{ errorType }} garage-aside__counter--unread"
+                  data-counters-domain="{{ domain.name }}" data-counters-tag="{{ errorType }}" data-counters-value="{{ countErrors }}">
                   {{ countErrors + 1 }}
                 </span>
                 {% endif %}
