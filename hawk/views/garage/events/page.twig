@@ -1,15 +1,19 @@
-{% extends 'garage/layout.twig' %}
+{% if hideHeader is not defined  %}
+  {% extends 'garage/layout.twig' %}
+{% endif %}
 
 {% block content %}
-  <div class="event">
-    <div class="event__header">
-      <span class="event__domain">{{ currentDomain.name }}</span>
-      <span class="event__type event__type--{{ event.tag }}">
-        {{ event.tag == 'javascript' ? 'JavaScript Error' : event.tag|capitalize }}
-      </span>
+  {% if hideHeader is not defined %}
+    <div class="event">
+      <div class="event__header">
+        <a class="event__domain" href="/garage/{{ currentDomain.name }}">{{ currentDomain.name }}</a>
+        <a class="event__type event__type--{{ event.tag }}" href="/garage/{{ currentDomain.name }}/event/{{ event.tag }}">
+          {{ event.tag|event-type }}
+        </a>
+      </div>
+      {% block eventContent %}{% endblock %}
     </div>
-    {% block eventContent %}{% endblock %}
-  </div>
+  {% endif %}
   <div class="garage_page">
     {% block eventInfo %}{%  endblock %}
     {% block repeations %}{% endblock %}

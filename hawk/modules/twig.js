@@ -8,10 +8,13 @@ let twig = require('twig'),
 
 
 module.exports = function () {
+
+  'use strict';
+
   /**
    * Function for include svg on page
    *
-   * @usage svg('path/from/root/dir')
+   * @example svg('path/from/root/dir')
    *
    * @param path - path from project root dir
    *
@@ -38,16 +41,12 @@ module.exports = function () {
     switch (eventTag) {
       case 'fatal':
         return 'Fatal Error';
-        break;
       case 'warnings':
         return 'Warning';
-        break;
       case 'notice':
         return 'Notice';
-        break;
       case 'javascript':
         return 'JavaScript Error';
-        break;
     }
   });
 }();

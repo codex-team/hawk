@@ -5,6 +5,10 @@
 
     &__domain {
         margin-right: 20px;
+
+        &:hover {
+            color: #fff;
+        }
     }
 
     &__type {
@@ -25,6 +29,10 @@
         &--javascript {
             color: var(--javascriptColor);
         }
+
+        &:hover {
+            color: #fff;
+        }
     }
 
     &__counter {
@@ -43,7 +51,11 @@
         }
 
         &-date {
-            font-size: 12px;
+            min-width: 75px;
+            min-height: 30px;
+            font-size: 13px;
+            color: var(--grayOnDark);
+            line-height: 1.5em;
         }
     }
 
@@ -52,7 +64,9 @@
     }
 
     &__counter {
+        margin-top: -30px;
         float: right;
+        min-width: 60px;
     }
 
     &__title {
@@ -61,16 +75,30 @@
         overflow: hidden;
     }
 
+    &__placeholder {
+        height: 0.6em;
+        background-color: #3b394c;
+        border-radius: 30px;
+    }
+
+    &__counter &__placeholder {
+        margin: 0 auto;
+
+        &:first-of-type {
+            margin-top: 1.4em;
+            margin-bottom: 8px;
+            width: 50%;
+        }
+    }
+
     &__path {
         margin: 20px 0;
     }
 
     &-badge {
-
         &:not(:first-of-type) {
-             margin-left: 20px;
-         }
-
+            margin-left: 20px;
+        }
     }
 }
 

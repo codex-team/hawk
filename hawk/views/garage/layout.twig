@@ -1,10 +1,11 @@
 {% extends 'layout.twig' %}
 
 {% block body %}
-    <div class="garage">
+    <div class="garage" data-module-required="eventPopup">
         <aside class="garage__aside">
             {% include 'garage/aside.twig' with { domains: userDomains, user: user } %}
         </aside>
+
         <div class="garage__content">
             {% block content %}{% endblock %}
         </div>

@@ -59,14 +59,47 @@ let event = function (req, res) {
         events.get(currentDomain.name, {groupHash: params.eventId}, false)
           .then(function (events) {
 
-            let event = events.shift();
+            let currentEvent = events.shift();
 
-            res.render('garage/events/' + event.type + '/page', {
-              currentDomain: currentDomain,
-              event: event,
-              events: events
-            });
+            /**
+             * If we have ?popup=1 parameter, send JSON answer
+             */
+            if (req.query.popup) {
 
+              app.render('garage/events/' + currentEvent.type + '/page', {
+                hideHeader: true,
+                currentDomain,
+                event: currentEvent,
+                events: events
+              }, function (err, html) {
+
+                let response = {};
+
+                if (err) {
+                  logger.error('Can not render event traceback template because of ', err);
+                  response.error = 1;
+                } else {
+                  response.event = currentEvent;
+                  response.traceback = html;
+                }
+
+                res.json(response);
+
+              });
+
+            } else {
+
+              res.render('garage/events/' + currentEvent.type + '/page', {
+                currentDomain,
+                event: currentEvent,
+                events: events
+              });
+
+            }
+
+          })
+          .catch(function(err) {
+            logger.error('Error while handling event-page request: ', err);
           });
 
       })

@@ -12,7 +12,7 @@
     --fatalColor: #ff5252;
     --warningsColor: #ffdd5d;
     --noticeColor: #717171;
-    --javascriptColor: #87607e;
+    --javascriptColor: #9786da;
 
     /** Links */
     --linkColor: #4e37b5;
@@ -31,6 +31,9 @@
 
     /** Bounce timing function for transition */
     --bounceTiming: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+
+    /** Left sidebar width */
+    --garage-aside-width: 250px;
 }
 
 /**
