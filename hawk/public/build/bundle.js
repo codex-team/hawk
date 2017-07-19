@@ -64,7 +64,7 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -401,6 +401,416 @@ module.exports = function () {
 "use strict";
 
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+/**
+ *
+ * @module hawk/traceback-popup
+ * draws and initializes popup with traceback errors.
+ *
+ * Sends AJAX request and gets rendered html as response to fill in traceback__content element
+ */
+var eventPopup = function (self) {
+  'use strict';
+
+  /**
+   * DOM manipulations lib
+   * @type {Class}
+   */
+
+  var dom = __webpack_require__(8).default;
+
+  var keyCodes_ = {
+    ESC: 27
+  };
+
+  /**
+   * Elements classnames
+   * @type {Object}
+   */
+  var CSS = {
+    // popup
+    popup: 'traceback-popup',
+    popupContent: 'traceback-popup__content',
+    closeButton: 'traceback-popup__closing-button',
+    popupShowed: 'traceback-popup--showed',
+    popupLoading: 'traceback-popup--loading',
+
+    // events list
+    eventRow: 'garage-list-item'
+  };
+
+  /**
+   * Popup elements
+   * @type {object}
+   */
+  var popup = {
+    holder: null,
+    content: null,
+    closeButton: null
+  };
+
+  /**
+   * event rows items
+   * @inner
+   * @type {Array} - list of found event items
+   */
+  var eventRows = null;
+
+  /**
+   * Current list URL
+   * @type {String}
+   */
+  var eventsListURL = '';
+
+  /**
+   * Makes popup elements
+   * @return {Object} {holder, closeButton, content}
+   */
+  function makePopup() {
+    var holder = dom.make('div', CSS.popup),
+        closeButton = dom.make('div', CSS.closeButton),
+        content = dom.make('div', CSS.popupContent);
+
+    holder.appendChild(closeButton);
+    holder.appendChild(content);
+
+    return { holder: holder, closeButton: closeButton, content: content };
+  }
+
+  /**
+  * @inner
+  *
+  * close popup when cross icon clicked
+  * @param {Element} button - close button
+  */
+  var addClosingButtonHandler = function addClosingButtonHandler(button) {
+    button.addEventListener('click', self.close, false);
+
+    /** close by ESC key */
+    document.addEventListener('keydown', self.close, false);
+  };
+
+  /**
+   * Removes class when clicked ESC
+   */
+  var closePopupByEscape_ = function closePopupByEscape_(event) {
+    switch (event.keyCode) {
+      case keyCodes_.ESC:
+        popup.holder.classList.remove(CSS.popupShowed);
+        break;
+    }
+  };
+
+  /**
+   * Removes class that display's popup when clicked outsite of popup's content
+   */
+  var closePopupByOutsideClick_ = function closePopupByOutsideClick_(event) {
+    var target = event.target,
+        clickedOnPopup = true,
+        isOpened = popup.holder.classList.contains(CSS.popupShowed);
+
+    if (!isOpened) {
+      return;
+    }
+
+    /**
+     * if target is popups content, it means that clicked on popup
+     * otherwise if clicked somewhere else, rise until we stop on document's body
+     * that will indicate us that click was outside the popup
+     */
+    while (!target.classList.contains(CSS.popupContent)) {
+      target = target.parentNode;
+      if (target === document.body) {
+        clickedOnPopup = false;
+        break;
+      }
+    }
+
+    if (!clickedOnPopup) {
+      popup.holder.classList.remove(CSS.popupShowed);
+    }
+  };
+
+  /**
+   * @static
+   *
+   * delegate closing popup to handlers
+   *
+   */
+  self.close = function (event) {
+    switch (event.type) {
+      case 'keydown':
+        closePopupByEscape_(event);
+        break;
+      case 'click':
+        closePopupByOutsideClick_(event);
+        break;
+      case 'popstate':
+        popup.holder.classList.remove(CSS.popupShowed);
+        break;
+    }
+
+    document.removeEventListener('click', self.close, false);
+    window.history.replaceState(null, '', eventsListURL);
+  };
+
+  /**
+   * @static
+   *
+   * Adds class that display's popup
+   */
+  self.open = function () {
+    popup.holder.classList.add(CSS.popupShowed);
+
+    /** close by click outside of popup */
+    window.setTimeout(function () {
+      document.addEventListener('click', self.close, false);
+    }, 0);
+  };
+
+  /**
+   * Replace time placeholder with actual text
+   * @param  {Number} time  - 1498239391
+   */
+  function updateHeaderTime(time) {
+    if (!time) {
+      return;
+    }
+
+    var _popup$content$queryS = popup.content.querySelectorAll('.event__counter-date .event__placeholder'),
+        _popup$content$queryS2 = _slicedToArray(_popup$content$queryS, 2),
+        firstLine = _popup$content$queryS2[0],
+        secondLine = _popup$content$queryS2[1];
+
+    /**
+     * Server stores time in milliseconds, client uses seconds
+     * @type {Number}
+     */
+
+
+    var milliseconds = 1000;
+
+    var date = new Date(time * milliseconds),
+        dateFormatted = date.toGMTString().slice(5, 16),
+        newLine = dom.make('span', null, {
+      innerHTML: 'since <br> ' + dateFormatted
+    });
+
+    dom.replace(firstLine, newLine);
+    secondLine.remove();
+  }
+
+  /**
+   * @inner
+   *
+   * insert as inner html requested traceback. Response must be rendered template
+   * @param {string} response    - server response with JSON:
+   *                                  traceback : ''
+   *                                  event: {}
+   */
+  var handleSuccessResponse_ = function handleSuccessResponse_(response) {
+    response = JSON.parse(response);
+
+    /** Remove loader */
+    popup.holder.classList.remove(CSS.popupLoading);
+
+    popup.content.insertAdjacentHTML('beforeEnd', response.traceback);
+    updateHeaderTime(response.event ? response.event.time : 0);
+  };
+
+  /**
+   * get all necessary information from DOM
+   * make templated traceback header
+   * @param {Object} domainName - domain name
+   * @param {Object} event - traceback header
+   * @type {Integer} event.count - aggregated event's count
+   * @type {Object} event.errorLocation - event's location
+   * @type {String} event.message - event's message
+   * @type {String} event.tag - event's type
+   * @type {Integer} event.time - time
+   */
+  function fillHeader(event, domainName) {
+    popup.content.insertAdjacentHTML('afterbegin', '<div class="event">\n      <div class="event__header">\n        <span class="event__domain">' + domainName + '</span>\n        <span class="event__type event__type--' + event.tag + '">\n          ' + (event.tag === 'javascript' ? 'JavaScript Error' : event.tag) + '\n        </span>\n      </div>\n      <div class="event__content clearfix">\n        <div class="event__counter">\n          <div class="event__counter-number">\n            <div class="event__counter-number--digit">' + event.count + '</div>\n            times\n          </div>\n          <div class="event__counter-date">\n            <div class="event__placeholder"></div>\n            <div class="event__placeholder"></div>\n          </div>\n        </div>\n        <div class="event__title">\n          ' + event.message + '\n        </div>\n        <div class="event__path">\n          ' + event.errorLocation.full + '\n        </div>\n      </div>\n    </div>');
+  }
+
+  /**
+   * @inner
+   *
+   * send ajax request and delegate to handleSuccessResponse_ on success response
+   *
+   * @param {string} domainName
+   *
+   * @param {string} event._id
+   * @param {string} event.type
+   * @param {string} event.tag
+   * @param {Object} event.errorLocation
+   * @param {string} event.message
+   * @param {number} event.time
+   * @param {number} event.count
+   */
+  var sendPopupRequest_ = function sendPopupRequest_(event, domainName) {
+    if (!domainName) {
+      return;
+    }
+
+    var eventPageURL = '/garage/' + domainName + '/event/' + event._id;
+
+    /** Open popup with known data */
+    self.open();
+
+    eventsListURL = document.location.pathname;
+
+    /** Replace current URL and add new history record */
+    window.history.pushState({ 'popupOpened': true }, event.message, eventPageURL);
+
+    /** Add loader */
+    popup.holder.classList.add(CSS.popupLoading);
+
+    hawk.ajax.call({
+      url: eventPageURL + '?popup=true',
+      method: 'GET',
+      success: handleSuccessResponse_,
+      error: function error(err) {
+        hawk.notifier.show({ style: 'error', message: 'Cannot load event data' });
+        console.log('Event loading error: %o', err);
+
+        /** Remove loader */
+        popup.holder.classList.remove(CSS.popupLoading);
+      }
+    });
+  };
+
+  /**
+   * Event row click handler
+   * @param  {event} clickEvent - onclick event
+   */
+  function eventRowClicked(clickEvent) {
+    var row = this;
+
+    /**
+    * Allow opening page in new tab
+    */
+    var isMouseWheelClicked = clickEvent.which && (clickEvent.which === 2 || clickEvent.button === 4);
+
+    if (clickEvent.ctrlKey || clickEvent.metaKey || isMouseWheelClicked) {
+      return;
+    }
+
+    var event = row.dataset.event,
+        domainName = row.dataset.domain;
+
+    event = JSON.parse(event);
+
+    /**
+     * Clear popup
+     */
+    popup.content.innerHTML = '';
+
+    /**
+     * Fill popup header with data we are already have
+     */
+    fillHeader(event, domainName);
+
+    /**
+     * Require other information
+     */
+    sendPopupRequest_(event, domainName);
+
+    /**
+     * Disable link segue
+     */
+    clickEvent.preventDefault();
+  }
+
+  /**
+   * @inner
+   *
+   * delegate and add event listeners to the items
+   * prevent clicks on items and show popup via traceback content
+   *
+   * @param {Array} items - list of Event rows. Delegates elements that found in Initialization proccess
+   */
+  var bindRowsClickHandler = function bindRowsClickHandler(items) {
+    if (!items || !items.length) {
+      return;
+    }
+
+    for (var i = items.length - 1; i >= 0; i--) {
+      items[i].addEventListener('click', eventRowClicked, false);
+    }
+  };
+
+  /**
+   * @static
+   *
+   * remove all listeners and variables
+   */
+  self.destroy = function () {
+    for (var i = 0; i < eventRows.length; i++) {
+      eventRows[i].removeEventListener('click', sendPopupRequest_, false);
+    }
+
+    eventRows = null;
+    eventsListURL = null;
+
+    document.removeEventListener('click', self.close, false);
+    document.removeEventListener('keydown', self.close, false);
+
+    popup.closeButton.removeEventListener('click', self.close, false);
+  };
+
+  /**
+   * @static
+   *
+   * Initialize traceback popup module
+   * find all necessary elements and add listeners
+   *
+   * If non of this elements found, do not Initialize module
+   * In case when something gone wrong, check that all elements has been found before delegation
+   */
+  self.init = function () {
+    var isNeed = document.querySelector('[data-module-required="eventPopup"]');
+
+    if (!isNeed) {
+      return;
+    }
+
+    popup = makePopup();
+
+    document.body.appendChild(popup.holder);
+
+    /**
+     * Handle popup close-button clicks
+     */
+    addClosingButtonHandler(popup.closeButton);
+
+    /**
+     * Handle clicks on rows
+     */
+    eventRows = document.querySelectorAll('.' + CSS.eventRow);
+    bindRowsClickHandler(eventRows);
+
+    /** Close popup by Back/Forward navigation */
+    window.onpopstate = function (e) {
+      if (!e.state || !e.state.popupOpened) {
+        self.close(e);
+      }
+    };
+  };
+
+  return self;
+}({});
+
+module.exports = eventPopup;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 module.exports = function () {
   /**
    * Hide and show error repeations stack on event page
@@ -421,7 +831,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -507,13 +917,84 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 7 */
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * DOM manipulations methods
+ */
+var DOM = function () {
+  function DOM() {
+    _classCallCheck(this, DOM);
+  }
+
+  _createClass(DOM, null, [{
+    key: "make",
+
+    /**
+     * Helper for making Elements with classname and attributes
+     * @param  {string} tagName           - new Element tag name
+     * @param  {array|string} classNames  - list or name of CSS classname(s)
+     * @param  {Object} attributes        - any attributes
+     * @return {Element}
+     */
+    value: function make(tagName, classNames, attributes) {
+      var el = document.createElement(tagName);
+
+      if (Array.isArray(classNames)) {
+        var _el$classList;
+
+        (_el$classList = el.classList).add.apply(_el$classList, _toConsumableArray(classNames));
+      } else if (classNames) {
+        el.classList.add(classNames);
+      }
+
+      for (var attrName in attributes) {
+        el[attrName] = attributes[attrName];
+      }
+
+      return el;
+    }
+
+    /**
+    * Replaces node with
+    * @param {Element} nodeToReplace
+    * @param {Element} replaceWith
+    */
+
+  }, {
+    key: "replace",
+    value: function replace(nodeToReplace, replaceWith) {
+      return nodeToReplace.parentNode.replaceChild(replaceWith, nodeToReplace);
+    }
+  }]);
+
+  return DOM;
+}();
+
+exports.default = DOM;
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -522,21 +1003,27 @@ module.exports = notifier;
 /**
 * Require CSS build
 */
-__webpack_require__(6);
+__webpack_require__(7);
 
 var hawk = function (self) {
   'use strict';
 
   self.init = function () {
-    console.log('Initialized');
+    /**
+     * Event popup
+     */
+    self.eventPopup.init();
+
+    console.log('Hawk app initialized');
   };
 
   self.checkbox = __webpack_require__(1);
   self.copyable = __webpack_require__(2);
   self.ajax = __webpack_require__(0);
   self.domain = __webpack_require__(3);
-  self.notifier = __webpack_require__(5);
-  self.event = __webpack_require__(4);
+  self.notifier = __webpack_require__(6);
+  self.event = __webpack_require__(5);
+  self.eventPopup = __webpack_require__(4);
 
   return self;
 }({});

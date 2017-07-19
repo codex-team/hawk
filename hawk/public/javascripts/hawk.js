@@ -7,7 +7,12 @@ let hawk = (function ( self ) {
   'use strict';
 
   self.init = function ( ) {
-    console.log('Initialized');
+    /**
+     * Event popup
+     */
+    self.eventPopup.init();
+
+    console.log('Hawk app initialized');
   };
 
   self.checkbox = require('./checkbox');
@@ -16,6 +21,7 @@ let hawk = (function ( self ) {
   self.domain   = require('./domain');
   self.notifier = require('exports-loader?notifier!codex-notifier');
   self.event    = require('./event');
+  self.eventPopup    = require('./event-popup');
 
   return self;
 })({});
