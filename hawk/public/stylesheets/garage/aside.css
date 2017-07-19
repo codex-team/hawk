@@ -90,11 +90,11 @@
             }
         }
 
-        &--warning {
-            color: var(--warningColor);
+        &--warnings {
+            color: var(--warningsColor);
 
             &::before {
-                background: var(--warningColor);
+                background: var(--warningsColor);
             }
         }
 
@@ -106,11 +106,11 @@
             }
         }
 
-        &--client {
-            color: var(--clientColor);
+        &--javascript {
+            color: var(--javascriptColor);
 
             &::before {
-                background: var(--clientColor);
+                background: var(--javascriptColor);
             }
         }
     }

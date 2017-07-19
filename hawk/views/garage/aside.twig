@@ -20,9 +20,9 @@
               <a class="garage-aside__tag" href="{{ url }}/{{ errorType }}">
                 {{ errorType }}
 
-                {% if countErrors %}
+                {% if countErrors + 3 %}
                 <span class="garage-aside__counter garage-aside__counter--{{ errorType }}">
-                  {{ countErrors }}
+                  {{ countErrors + 15 }}
                 </span>
                 {% endif %}
               </a>
