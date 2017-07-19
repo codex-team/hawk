@@ -4,10 +4,13 @@
  */
 
 let twig = require('twig'),
-  fs = require('fs');
+    fs = require('fs');
 
 
 module.exports = function () {
+
+  'use strict';
+
   /**
    * Function for include svg on page
    *
@@ -38,16 +41,12 @@ module.exports = function () {
     switch (eventTag) {
       case 'fatal':
         return 'Fatal Error';
-        break;
       case 'warnings':
         return 'Warning';
-        break;
       case 'notice':
         return 'Notice';
-        break;
       case 'javascript':
         return 'JavaScript Error';
-        break;
     }
   });
 }();

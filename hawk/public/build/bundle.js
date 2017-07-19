@@ -64,7 +64,7 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 8);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -401,6 +401,32 @@ module.exports = function () {
 "use strict";
 
 
+module.exports = function () {
+  /**
+   * Hide and show error repeations stack on event page
+   *
+   * @param stackButton
+   * @param eventId
+   */
+  var toggleStack = function toggleStack(stackButton, eventId) {
+    var eventInfo = document.querySelector('.event-info[data-event="' + eventId + '"]');
+
+    eventInfo.classList.toggle('hide');
+    stackButton.classList.toggle('event-info--opened');
+  };
+
+  return {
+    toggleStack: toggleStack
+  };
+}();
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 /**
@@ -418,7 +444,7 @@ var tracebackPopup = function (self) {
    * @type {Class}
    */
 
-  var dom = __webpack_require__(7).default;
+  var dom = __webpack_require__(8).default;
 
   var keyCodes_ = {
     ESC: 27
@@ -635,6 +661,7 @@ var tracebackPopup = function (self) {
         success: handleSuccessResponse_,
         error: function error(err) {
           hawk.notifier.show({ style: 'error', message: 'Cannot load event data' });
+          console.log('Event loading error: %o', err);
         }
       });
     }
@@ -758,7 +785,7 @@ var tracebackPopup = function (self) {
 module.exports = tracebackPopup;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -844,13 +871,13 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -921,7 +948,7 @@ var DOM = function () {
 exports.default = DOM;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -930,23 +957,27 @@ exports.default = DOM;
 /**
 * Require CSS build
 */
-__webpack_require__(6);
+__webpack_require__(7);
 
 var hawk = function (self) {
   'use strict';
 
   self.init = function () {
+    /**
+     * Event popup
+     */
     self.tracebackPopup.init();
 
-    console.log('Initialized');
+    console.log('Hawk app initialized');
   };
 
   self.checkbox = __webpack_require__(1);
   self.copyable = __webpack_require__(2);
   self.ajax = __webpack_require__(0);
   self.domain = __webpack_require__(3);
-  self.notifier = __webpack_require__(5);
-  self.tracebackPopup = __webpack_require__(4);
+  self.notifier = __webpack_require__(6);
+  self.event = __webpack_require__(4);
+  self.tracebackPopup = __webpack_require__(5);
 
   return self;
 }({});

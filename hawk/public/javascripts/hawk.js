@@ -7,16 +7,20 @@ let hawk = (function ( self ) {
   'use strict';
 
   self.init = function ( ) {
+    /**
+     * Event popup
+     */
     self.tracebackPopup.init();
 
-    console.log('Initialized');
+    console.log('Hawk app initialized');
   };
 
-  self.checkbox          = require('./checkbox');
-  self.copyable          = require('./copyable');
-  self.ajax              = require('./ajax');
-  self.domain            = require('./domain');
-  self.notifier          = require('exports-loader?notifier!codex-notifier');
+  self.checkbox = require('./checkbox');
+  self.copyable = require('./copyable');
+  self.ajax     = require('./ajax');
+  self.domain   = require('./domain');
+  self.notifier = require('exports-loader?notifier!codex-notifier');
+  self.event    = require('./event');
   self.tracebackPopup    = require('./traceback-popup');
 
   return self;

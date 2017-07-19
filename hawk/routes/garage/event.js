@@ -59,14 +59,15 @@ let event = function (req, res) {
         events.get(currentDomain.name, {groupHash: params.eventId}, false)
           .then(function (events) {
 
-            let currentEvent = events[0];
+            let currentEvent = events.shift();
 
             /**
              * If we have ?popup=1 parameter, send JSON answer
              */
             if (req.query.popup) {
 
-              app.render('garage/events/traceback.twig', {
+              app.render('garage/events/' + currentEvent.type + '/page', {
+                hideHeader: true,
                 currentDomain,
                 event: currentEvent,
                 events: events
@@ -88,7 +89,7 @@ let event = function (req, res) {
 
             } else {
 
-              res.render('garage/events/page', {
+              res.render('garage/events/' + currentEvent.type + '/page', {
                 currentDomain,
                 event: currentEvent,
                 events: events

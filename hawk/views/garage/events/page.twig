@@ -1,59 +1,21 @@
-{% extends 'garage/layout.twig' %}
+{% if hideHeader is not defined  %}
+  {% extends 'garage/layout.twig' %}
+{% endif %}
 
 {% block content %}
-  <div class="event">
-    <div class="event__header">
-      <span class="event__domain">{{ currentDomain.name }}</span>
-      <span class="event__type event__type--{{ event.tag }}">
-        {{ event.tag == 'javascript' ? 'JavaScript Error' : event.tag|capitalize }}
-      </span>
+  {% if hideHeader is not defined %}
+    <div class="event">
+      <div class="event__header">
+        <a class="event__domain" href="/garage/{{ currentDomain.name }}">{{ currentDomain.name }}</a>
+        <a class="event__type event__type--{{ event.tag }}" href="/garage/{{ currentDomain.name }}/event/{{ event.tag }}">
+          {{ event.tag == 'javascript' ? 'JavaScript Error' : event.tag|capitalize }}
+        </a>
+      </div>
+      {% block eventContent %}{% endblock %}
     </div>
-    <div class="event__content clearfix">
-      <div class="event__counter">
-        <div class="event__counter-number">
-          <div class="event__counter-number--digit">{{ events|length }}</div>
-          times
-        </div>
-        <div class="event__counter-date">since<br>{{ event.time|date('d M Y') }}</div>
-      </div>
-      <div class="event__title">
-        {{ event.message }}
-      </div>
-      <div class="event__path">
-        {{ event.errorLocation.full }}
-      </div>
-    </div>
-  </div>
+  {% endif %}
   <div class="garage_page">
-    <h3>Traceback</h3>
-    <div class="stack-table">
-      {{ event.stack|nl2br }}
-    </div>
-    <h3>Repeations</h3>
-    <table class="repeations">
-      {% for item in events %}
-        <tr>
-          {# <td>{{ item.type }}</td> #}
-          {# <td>{{ item.tag }}</td> #}
-          {# <td>{{ item.message }}</td> #}
-          <td class="repeations__date">
-            {{ item.time|date('d M, H:i') }}
-          </td>
-          <td>
-            {{ item.userAgent.device.os }},
-            {{ item.userAgent.browser.name }}
-            {{ item.userAgent.browser.version }}
-          </td>
-          {# <td>{{ item.errorLocation.full }}</td> #}
-          <td>{{ item.location.url }}</td>
-          {# <td>{{ item.stack }}</td> #}
-          <td>
-            <span class="event-badge">
-              {{ item.userAgent.device.width }}x{{ item.userAgent.device.height }}
-            </span>
-          </td>
-        </tr>
-      {% endfor %}
-    </table>
+    {% block eventInfo %}{%  endblock %}
+    {% block repeations %}{% endblock %}
   </div>
 {% endblock %}

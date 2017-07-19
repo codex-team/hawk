@@ -252,6 +252,7 @@ let tracebackPopup = (function ( self ) {
         success: handleSuccessResponse_,
         error: err => {
           hawk.notifier.show({style: 'error', message: 'Cannot load event data'});
+          console.log('Event loading error: %o', err);
         }
       });
     }

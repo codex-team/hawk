@@ -1,6 +1,7 @@
 :root {
     /** Texts */
     --grayText: #555968;
+    --lightGrayText: #8a92a5;
     --grayOnDark: #a1a6b3;
     --redText: #df2f2f;
     --greenText: #00b693;
@@ -11,7 +12,7 @@
     --fatalColor: #ff5252;
     --warningColor: #ffdd5d;
     --noticeColor: #717171;
-    --clientColor: #87607e;
+    --clientColor: #9786da;
 
     /** Links */
     --linkColor: #4e37b5;
@@ -31,6 +32,7 @@
     /** Bounce timing function for transition */
     --bounceTiming: cubic-bezier(0.6, -0.28, 0.735, 0.045);
 
+    /** Left sidebar width */
     --garage-aside-width: 250px;
 }
 
