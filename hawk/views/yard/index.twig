@@ -4,12 +4,22 @@
 
   <div class="landing-page yard">
     <h1 class="landing-page__title">Hawk.so</h1>
-    <p class="landing-page__caption">Fast and lightweight<br/>errors tracking service </p>
+    <p class="landing-page__caption">Fast and lightweight<br/>errors tracking service</p>
     <ul class="landing-page__links">
-      <li><a class="primary" href="/garage">View demo</a></li>
-      <li><a href="/join">Sign up</a></li>
-      <li><a href="/login">Login</a></li>
-      <li><a href="/docs">Documentation</a></li>
+      {% if user is defined  %}
+        <li>
+          <a class="primary" href="/garage">
+            {{ user.email }}
+            {{ svg('/public/svg/arrow-right.svg') }}
+          </a>
+        </li>
+        <li><a href="/docs">Documentation</a></li>
+      {% else %}
+        <li><a class="primary" href="/garage">View demo</a></li>
+        <li><a href="/join">Sign up</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/docs">Documentation</a></li>
+      {% endif %}
     </ul>
     <figure class="landing-page__figure">
       <figcaption>Backend and Frontend errors monitoring</figcaption>
