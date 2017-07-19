@@ -10,7 +10,7 @@ let hawk = (function ( self ) {
     /**
      * Event popup
      */
-    self.tracebackPopup.init();
+    self.eventPopup.init();
 
     console.log('Hawk app initialized');
   };
@@ -21,7 +21,7 @@ let hawk = (function ( self ) {
   self.domain   = require('./domain');
   self.notifier = require('exports-loader?notifier!codex-notifier');
   self.event    = require('./event');
-  self.tracebackPopup    = require('./traceback-popup');
+  self.eventPopup    = require('./event-popup');
 
   return self;
 })({});

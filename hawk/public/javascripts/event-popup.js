@@ -5,7 +5,7 @@
  *
  * Sends AJAX request and gets rendered html as response to fill in traceback__content element
  */
-let tracebackPopup = (function ( self ) {
+let eventPopup = (function ( self ) {
   'use strict';
 
   /**
@@ -379,7 +379,7 @@ let tracebackPopup = (function ( self ) {
    * In case when something gone wrong, check that all elements has been found before delegation
    */
   self.init = function () {
-    let isNeed = document.querySelector('[data-module-required="tracebackPopup"]');
+    let isNeed = document.querySelector('[data-module-required="eventPopup"]');
 
     if (!isNeed) {
       return;
@@ -412,4 +412,4 @@ let tracebackPopup = (function ( self ) {
   return self;
 })({});
 
-module.exports = tracebackPopup;
+module.exports = eventPopup;
