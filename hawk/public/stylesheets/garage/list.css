@@ -4,6 +4,23 @@
     &__header {
         margin-bottom: 25px;
     }
+
+    &__installation-guide-text {
+      max-width: 500px;
+      line-height: 1.5em;
+      margin: 30px 0 20px;
+    }
+
+    &__links {
+
+      li {
+        margin-top: .7em;
+      }
+
+      a {
+        color: #7026bd;
+      }
+    }
 }
 
 /**

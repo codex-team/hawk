@@ -8,7 +8,9 @@ var router = express.Router();
  */
 router.get('/', function (req, res, next) {
 
-  res.render('yard/index');
+  res.render('yard/index', {
+    user : res.locals.user
+  });
 
 });
 
