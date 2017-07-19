@@ -1,4 +1,6 @@
-<div class="garage-list-item" data-event='{{ event|json_encode }}' data-domain='{{ domain.name }}'>
+<div class="garage-list-item" data-event='{{ event|json_encode }}' data-domain='{{ domain.name }}'
+  {% if event.status == 0 %}style="background-color: red"{% endif %}
+>
     <div class="garage-list-item__left">
         <div class="garage-list-item__tag">
             {{ event.tag == 'javascript' ? 'JavaScript Error' : event.tag|capitalize }}

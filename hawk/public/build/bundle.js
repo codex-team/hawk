@@ -370,7 +370,7 @@ module.exports = function () {
 
     console.log(domain);
 
-    window.alert(domain.countersPageTag);
+    // window.alert(domain.countersPageTag);
   };
 
   return {

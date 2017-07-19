@@ -1,5 +1,4 @@
-module.exports = (function() {
-
+module.exports = (function () {
   'use strict';
 
   let mongo = require('../modules/database');
@@ -10,10 +9,8 @@ module.exports = (function() {
    * @param domain
    * @param event
    */
-  let add = function(domain, event) {
-
+  let add = function (domain, event) {
     return mongo.insertOne(domain, event);
-
   };
 
   /**
@@ -25,9 +22,9 @@ module.exports = (function() {
    * @param {object} sort - sort params, by default sorting by time
    * @param {number} skip - number of events to skip
    * @param {number} limit - number of events to return
+   * @param {number} status - 0 - new, 1 - read
    */
   let get = function (domain, query, group, sort, limit, skip) {
-
     let pipeline = [
       {$match: query}
     ];
@@ -40,7 +37,8 @@ module.exports = (function() {
         errorLocation: {$first: '$errorLocation'},
         message: {$first: '$message'},
         time: {$last: '$time'},
-        count: {$sum: 1}
+        count: {$sum: 1},
+        status: {$min: '$status'}
       }});
     }
 
@@ -66,9 +64,20 @@ module.exports = (function() {
       });
     }
 
-
     return mongo.aggregation(domain, pipeline);
+  };
 
+  let markRead = function (collection, eventsIds) {
+    console.log('eventsIds: ', eventsIds);
+    for (var i = 0; i < eventsIds.length; i++) {
+      console.log(eventsIds[i], typeof eventsIds[i]);
+    }
+    return mongo.updateMany(
+      collection,
+      { _id: { $in: eventsIds } },
+      { $set: { 'status': '1' } },
+      { upsert: true }
+    );
   };
 
   /**
@@ -83,7 +92,7 @@ module.exports = (function() {
           _id: '$tag',
           count: {$sum: 1}
         }
-      }]);
+      } ]);
   };
 
   /**
@@ -94,9 +103,8 @@ module.exports = (function() {
    * @returns {Promise.<TResult>}
    */
   let getAll = function (user, query) {
-
     let result = [],
-        queries = [];
+      queries = [];
 
     if (!user.domains) {
       return Promise.resolve([]);
@@ -112,16 +120,16 @@ module.exports = (function() {
     });
 
     return Promise.all(queries)
-    .then(function () {
-      return result;
-    });
+      .then(function () {
+        return result;
+      });
   };
 
   return {
     add: add,
     get: get,
     countTags: countTags,
-    getAll: getAll
+    getAll: getAll,
+    markRead: markRead
   };
-
 })();
