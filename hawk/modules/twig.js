@@ -4,7 +4,8 @@
  */
 
 let twig = require('twig'),
-    fs = require('fs');
+    fs = require('fs'),
+    Crypto = require('crypto');
 
 
 module.exports = function () {
@@ -50,4 +51,25 @@ module.exports = function () {
         break;
     }
   });
+
+  /**
+   * sha256 filter. Encode input string using sha256 algorithm
+   *
+   * @param {String} string — string to encode
+   * @param {Boolean} useSalt — if true, append salt to string
+   *
+   * @returns {String} — encoded string
+   **/
+  twig.extendFilter('sha256', function (string, useSalt=true) {
+
+    if (useSalt) {
+      string = string + process.env.SALT;
+    }
+
+    let hash = Crypto.createHash('sha256').update(string, 'utf8').digest('hex');
+
+    return hash;
+
+  })
+
 }();

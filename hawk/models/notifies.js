@@ -1,6 +1,8 @@
 let request = require('request');
 let Twig = require('twig');
 let email = require('../modules/email');
+let mongo = require('../modules/database');
+let collections = require('../config/collections');
 
 /** Notifications config **/
 let config = require('../config/notifications');
@@ -38,7 +40,8 @@ module.exports = function () {
       event: event,
       domain: domain,
       serverUrl: process.env.SERVER_URL,
-      times: times
+      times: times,
+      user: user
     };
 
 
@@ -112,7 +115,21 @@ module.exports = function () {
     timer.times++;
   };
 
+  /**
+   * Set notifies.email flag in user profile to false
+   * 
+   * @param userId
+   */
+  let unsubscribe = function (userId) {
+    return mongo.updateOne(
+      collections.USERS,
+      {_id: mongo.ObjectId(userId)},
+      {$set: {'notifies.email': false}}
+    );
+  }
+
   return {
-    send: send
+    send: send,
+    unsubscribe: unsubscribe
   };
 }();
