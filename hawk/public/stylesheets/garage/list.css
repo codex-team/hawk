@@ -4,6 +4,17 @@
     &__header {
         margin-bottom: 25px;
     }
+
+    &__links {
+
+      li {
+        margin-top: .5em;
+      }
+
+      a {
+        color: #7026bd;
+      }
+    }
 }
 
 /**
