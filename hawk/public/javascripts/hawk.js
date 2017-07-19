@@ -8,6 +8,7 @@ let hawk = (function ( self ) {
 
   self.init = function ( ) {
     console.log('Initialized');
+    self.counters.init();
   };
 
   self.checkbox = require('./checkbox');
@@ -16,6 +17,7 @@ let hawk = (function ( self ) {
   self.domain   = require('./domain');
   self.notifier = require('exports-loader?notifier!codex-notifier');
   self.event    = require('./event');
+  self.counters = require('./counters');
 
   return self;
 })({});

@@ -64,7 +64,7 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -347,6 +347,27 @@ module.exports = function () {
 
 
 module.exports = function () {
+  var init = function init() {
+    // let isNeed = document.querySelector('[data-module-required="counters"]');
+    //
+    // if (!isNeed) {
+    //   return;
+    // }
+  };
+
+  return {
+    init: init
+  };
+}();
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function () {
   /**
    * Unlink domain handler
    *
@@ -395,7 +416,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -421,7 +442,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -507,13 +528,13 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -522,21 +543,23 @@ module.exports = notifier;
 /**
 * Require CSS build
 */
-__webpack_require__(6);
+__webpack_require__(7);
 
 var hawk = function (self) {
   'use strict';
 
   self.init = function () {
     console.log('Initialized');
+    self.counters.init();
   };
 
   self.checkbox = __webpack_require__(1);
   self.copyable = __webpack_require__(2);
   self.ajax = __webpack_require__(0);
-  self.domain = __webpack_require__(3);
-  self.notifier = __webpack_require__(5);
-  self.event = __webpack_require__(4);
+  self.domain = __webpack_require__(4);
+  self.notifier = __webpack_require__(6);
+  self.event = __webpack_require__(5);
+  self.counters = __webpack_require__(3);
 
   return self;
 }({});
