@@ -564,7 +564,6 @@ var tracebackPopup = function (self) {
    *
    */
   self.close = function (event) {
-    console.log('close: %o', event);
     switch (event.type) {
       case 'keydown':
         closePopupByEscape_(event);
@@ -590,7 +589,7 @@ var tracebackPopup = function (self) {
     popup.holder.classList.add(CSS.popupShowed);
 
     /** close by click outside of popup */
-    setTimeout(function () {
+    window.setTimeout(function () {
       document.addEventListener('click', self.close, false);
     }, 0);
   };
@@ -654,7 +653,7 @@ var tracebackPopup = function (self) {
    * @type {Integer} event.time - time
    */
   function fillHeader(event, domainName) {
-    popup.content.insertAdjacentHTML('afterbegin', '<div class="event">\n      <div class="event__header">\n        <span class="event__domain">' + domainName + '</span>\n        <span class="event__type event__type--' + event.tag + '">\n          ' + (event.tag === 'javascript' ? 'Javascript Error' : event.tag) + '\n        </span>\n      </div>\n      <div class="event__content clearfix">\n        <div class="event__counter">\n          <div class="event__counter-number">\n            <div class="event__counter-number--digit">' + event.count + '</div>\n            times\n          </div>\n          <div class="event__counter-date">\n            <div class="event__placeholder"></div>\n            <div class="event__placeholder"></div>\n          </div>\n        </div>\n        <div class="event__title">\n          ' + event.message + '\n        </div>\n        <div class="event__path">\n          ' + event.errorLocation.full + '\n        </div>\n      </div>\n    </div>');
+    popup.content.insertAdjacentHTML('afterbegin', '<div class="event">\n      <div class="event__header">\n        <span class="event__domain">' + domainName + '</span>\n        <span class="event__type event__type--' + event.tag + '">\n          ' + (event.tag === 'javascript' ? 'JavaScript Error' : event.tag) + '\n        </span>\n      </div>\n      <div class="event__content clearfix">\n        <div class="event__counter">\n          <div class="event__counter-number">\n            <div class="event__counter-number--digit">' + event.count + '</div>\n            times\n          </div>\n          <div class="event__counter-date">\n            <div class="event__placeholder"></div>\n            <div class="event__placeholder"></div>\n          </div>\n        </div>\n        <div class="event__title">\n          ' + event.message + '\n        </div>\n        <div class="event__path">\n          ' + event.errorLocation.full + '\n        </div>\n      </div>\n    </div>');
   }
 
   /**
@@ -682,7 +681,7 @@ var tracebackPopup = function (self) {
     /** Open popup with known data */
     self.open();
 
-    eventsListURL = location.pathname;
+    eventsListURL = document.location.pathname;
 
     /** Replace current URL and add new history record */
     window.history.pushState({ 'popupOpened': true }, event.message, eventPageURL);

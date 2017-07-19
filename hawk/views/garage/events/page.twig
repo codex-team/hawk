@@ -8,7 +8,7 @@
       <div class="event__header">
         <a class="event__domain" href="/garage/{{ currentDomain.name }}">{{ currentDomain.name }}</a>
         <a class="event__type event__type--{{ event.tag }}" href="/garage/{{ currentDomain.name }}/event/{{ event.tag }}">
-          {{ event.tag == 'javascript' ? 'JavaScript Error' : event.tag|capitalize }}
+          {{ event.tag|event-type }}
         </a>
       </div>
       {% block eventContent %}{% endblock %}

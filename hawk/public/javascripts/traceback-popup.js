@@ -135,7 +135,6 @@ let tracebackPopup = (function ( self ) {
    *
    */
   self.close = function (event) {
-    console.log('close: %o', event);
     switch (event.type) {
       case 'keydown':
         closePopupByEscape_(event);
@@ -161,7 +160,7 @@ let tracebackPopup = (function ( self ) {
     popup.holder.classList.add(CSS.popupShowed);
 
     /** close by click outside of popup */
-    setTimeout(function () {
+    window.setTimeout(function () {
       document.addEventListener('click', self.close, false);
     }, 0);
   };
@@ -224,7 +223,7 @@ let tracebackPopup = (function ( self ) {
       <div class="event__header">
         <span class="event__domain">${domainName}</span>
         <span class="event__type event__type--${event.tag}">
-          ${event.tag === 'javascript' ? 'Javascript Error' : event.tag}
+          ${event.tag === 'javascript' ? 'JavaScript Error' : event.tag}
         </span>
       </div>
       <div class="event__content clearfix">
@@ -273,7 +272,7 @@ let tracebackPopup = (function ( self ) {
     /** Open popup with known data */
     self.open();
 
-    eventsListURL = location.pathname;
+    eventsListURL = document.location.pathname;
 
     /** Replace current URL and add new history record */
     window.history.pushState({ 'popupOpened': true }, event.message, eventPageURL);
