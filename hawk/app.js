@@ -177,7 +177,13 @@ app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = process.env.ENVIRONMENT === 'DEVELOPMENT' ? err : {};
 
-  console.log("Error thrown: ", err);
+  /**
+   * Log to the console to local development
+   */
+  if (process.env.ENVIRONMENT === 'DEVELOPMENT') {
+    console.log("Error thrown: ", err);
+  }
+
   logger.error('Error thrown: ', err);
 
   // render the error page
