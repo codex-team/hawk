@@ -483,6 +483,12 @@ var tracebackPopup = function (self) {
   var eventRows = null;
 
   /**
+   * Current list URL
+   * @type {String}
+   */
+  var eventsListURL = '';
+
+  /**
    * Makes popup elements
    * @return {Object} {holder, closeButton, content}
    */
@@ -572,6 +578,7 @@ var tracebackPopup = function (self) {
     }
 
     document.removeEventListener('click', self.close, false);
+    window.history.replaceState(null, '', eventsListURL);
   };
 
   /**
@@ -675,7 +682,9 @@ var tracebackPopup = function (self) {
     /** Open popup with known data */
     self.open();
 
-    /** Replace current URL state */
+    eventsListURL = location.pathname;
+
+    /** Replace current URL and add new history record */
     window.history.pushState({ 'popupOpened': true }, event.message, eventPageURL);
 
     hawk.ajax.call({
@@ -760,6 +769,7 @@ var tracebackPopup = function (self) {
     }
 
     eventRows = null;
+    eventsListURL = null;
 
     document.removeEventListener('click', self.close, false);
     document.removeEventListener('keydown', self.close, false);
