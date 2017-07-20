@@ -10,7 +10,8 @@ module.exports = (function () {
    * @param event
    */
   let add = function (domain, event) {
-    event.status = '0';
+    /* Status equals 1 if event is read otherwise it equals 0  */
+    event.status = 0;
     return mongo.insertOne(domain, event);
   };
 
@@ -71,7 +72,7 @@ module.exports = (function () {
     return mongo.updateMany(
       collection,
       { _id: { $in: eventsIds } },
-      { $set: { 'status': '1' } },
+      { $set: { 'status': 1 } },
       { upsert: true }
     );
   };
@@ -86,7 +87,9 @@ module.exports = (function () {
       {
         $group: {
           _id: '$tag',
-          count: {$sum: 1}
+          count: {$sum: 1},
+          /* Unread is a sum of results for each event's compared statused with 1 */
+          unread: {$sum: { $cmp: [1, '$status']}}
         }
       } ]);
   };

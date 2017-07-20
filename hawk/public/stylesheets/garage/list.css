@@ -42,6 +42,10 @@
         left: 100px;
     }
 
+    &--unread {
+      background-color: blue;
+    }
+
     &__left {
         font-size: 12px;
         padding-right: 25px;

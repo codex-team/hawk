@@ -6,19 +6,27 @@
     </h1>
     <a class="garage-header__tab" href="{{ url }}/fatal">
         Fatal
-        <span class="counter">{{ domain.fatal or 0 }}</span>
+        {% if domain.fatal.unread %}
+          <span class="counter">{{ domain.fatal.unread }} new</span>
+        {% endif %}
     </a>
     <a class="garage-header__tab" href="{{ url }}/warnings">
         Warnings
-        <span class="counter">{{ domain.warnings or 0 }}</span>
+        {% if domain.warnings.unread %}
+          <span class="counter">{{ domain.warnings.unread }} new</span>
+        {% endif %}
     </a>
     <a class="garage-header__tab" href="{{ url }}/notice">
         Notice
-        <span class="counter">{{ domain.notice or 0 }}</span>
+        {% if domain.notice.unread %}
+          <span class="counter">{{ domain.notice.unread }} new</span>
+        {% endif %}
     </a>
     <a class="garage-header__tab" href="{{ url }}/javascript">
         JavaScript Errors
-        <span class="counter">{{ domain.javascript or 0 }}</span>
+        {% if domain.javascript.unread %}
+          <span class="counter">{{ domain.javascript.unread }} new</span>
+        {% endif %}
     </a>
 
 </div>

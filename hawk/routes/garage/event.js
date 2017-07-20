@@ -67,9 +67,9 @@ let event = function (req, res) {
     getDomainInfo(userDomains, params.domainName)
       .then(function (currentDomain) {
         modelEvents.get(currentDomain.name, {groupHash: params.eventId}, false)
-          // .then(function (events) {
-          //   return markReadEvents(currentDomain, events);
-          // })
+          .then(function (events) {
+            return markReadEvents(currentDomain, events);
+          })
           .then(function (events) {
             let currentEvent = events.shift();
 
@@ -93,8 +93,6 @@ let event = function (req, res) {
                   response.event = currentEvent;
                   response.traceback = html;
                 }
-
-                console.log(response);
 
                 res.json(response);
               });

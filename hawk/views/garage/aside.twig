@@ -16,14 +16,14 @@
             </a>
 
             {% for errorType in ['fatal', 'warnings', 'notice', 'javascript'] %}
-              {% set countErrors = attribute(domain, errorType) or 0 %}
+              {% set events = attribute(domain, errorType) or null %}
               <a class="garage-aside__tag" href="{{ url }}/{{ errorType }}">
                 {{ errorType }}
 
-                {% if countErrors + 1 %}
-                <span class="garage-aside__counter garage-aside__counter--{{ errorType }} garage-aside__counter--unread"
+                {% if events %}
+                <span class="garage-aside__counter garage-aside__counter--{{ errorType }} {% if events.unread %}garage-aside__counter--unread{% endif %}"
                   data-counters-domain="{{ domain.name }}" data-counters-tag="{{ errorType }}" data-counters-value="{{ countErrors }}">
-                  {{ countErrors + 1 }}
+                  {{ events.count }}
                 </span>
                 {% endif %}
               </a>
