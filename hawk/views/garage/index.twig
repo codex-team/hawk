@@ -2,5 +2,6 @@
 
 {% block content %}
     {% include 'garage/header.twig' with { domain: currentDomain, tab: currentTag } %}
+    {% include 'garage/sites-added.twig' with { domains: userDomains } %}
     {% include 'garage/list.twig' with { domain: currentDomain, events: events, tag: currentTag } %}
 {% endblock %}
