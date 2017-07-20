@@ -3,6 +3,7 @@ let Twig = require('twig');
 let email = require('../modules/email');
 let mongo = require('../modules/database');
 let collections = require('../config/collections');
+let Crypto = require('crypto');
 
 /** Notifications config **/
 let config = require('../config/notifications');
@@ -29,19 +30,22 @@ module.exports = function () {
    * @param user
    * @param domain
    * @param event
-   * @times times
+   * @param times
    */
   let send_ =function (user, domain, event, times) {
     if (!times) {
       return;
     }
 
+    let userId = user._id.toString();
+
     let renderParams = {
       event: event,
       domain: domain,
       serverUrl: process.env.SERVER_URL,
       times: times,
-      user: user
+      userId: userId,
+      userIdHash: generateUnsubscribeHash(userId)
     };
 
 
@@ -116,8 +120,22 @@ module.exports = function () {
   };
 
   /**
+   * Generate unsubscribe hash from user id
+   *
+   * @param userId
+   * @returns {String} generated hash
+   */
+  let generateUnsubscribeHash = function (userId) {
+    userId = userId + process.env.SALT;
+
+    let hash = Crypto.createHash('sha256').update(userId, 'utf8').digest('hex');
+
+    return hash;
+  };
+
+  /**
    * Set notifies.email flag in user profile to false
-   * 
+   *
    * @param userId
    */
   let unsubscribe = function (userId) {
@@ -126,10 +144,11 @@ module.exports = function () {
       {_id: mongo.ObjectId(userId)},
       {$set: {'notifies.email': false}}
     );
-  }
+  };
 
   return {
     send: send,
-    unsubscribe: unsubscribe
+    unsubscribe: unsubscribe,
+    generateUnsubscribeHash: generateUnsubscribeHash
   };
 }();

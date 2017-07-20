@@ -3,7 +3,6 @@
 let express = require('express');
 let router = express.Router();
 let notifies = require('../../models/notifies');
-let Crypto = require('crypto');
 
 let unsbscribe = function (req, res) {
 
@@ -15,17 +14,17 @@ let unsbscribe = function (req, res) {
     return;
   }
 
-  let generatedHash = Crypto.createHash('sha256').update(id + process.env.SALT, 'utf8').digest('hex');
+  let generatedHash = notifies.generateUnsubscribeHash(id);
 
   if (hash != generatedHash) {
     res.sendStatus(400);
     return;
-  };
+  }
 
   notifies.unsubscribe(id);
   res.sendStatus(200);
 
-}
+};
 
 router.use('/', unsbscribe);
 
