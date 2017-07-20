@@ -43,7 +43,7 @@
     }
 
     &--unread {
-      background-color: blue;
+      background-color: color(var(--grayText) alpha(10%));
     }
 
     &__left {
