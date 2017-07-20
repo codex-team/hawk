@@ -33,8 +33,7 @@ let connection = function (ws) {
       stack         : stack.parse(message),
       groupHash     : md5(location),
       userAgent     : message.navigator,
-      time          : Math.floor(message.time / 1000),
-      status        : '0'
+      time          : Math.floor(message.time / 1000)
     };
 
     logger.info('Got javascript error from ' + event.location.host);

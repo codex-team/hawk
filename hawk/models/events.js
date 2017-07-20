@@ -10,6 +10,7 @@ module.exports = (function () {
    * @param event
    */
   let add = function (domain, event) {
+    event.status = '0';
     return mongo.insertOne(domain, event);
   };
 
@@ -68,10 +69,6 @@ module.exports = (function () {
   };
 
   let markRead = function (collection, eventsIds) {
-    console.log('eventsIds: ', eventsIds);
-    for (var i = 0; i < eventsIds.length; i++) {
-      console.log(eventsIds[i], typeof eventsIds[i]);
-    }
     return mongo.updateMany(
       collection,
       { _id: { $in: eventsIds } },
