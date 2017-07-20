@@ -7,22 +7,26 @@ let notifies = require('../../models/notifies');
 let unsbscribe = function (req, res) {
 
   let id = req.query.id,
-      hash = req.query.hash;
+      hash = req.query.hash,
+      success = true;
 
-  if (!id || !hash) {
-    res.sendStatus(400);
-    return;
+  if (success && (!id || !hash)) {
+    success = false;
   }
 
   let generatedHash = notifies.generateUnsubscribeHash(id);
 
-  if (hash != generatedHash) {
-    res.sendStatus(400);
-    return;
+  if (success && (hash != generatedHash)) {
+    success = false;
   }
 
-  notifies.unsubscribe(id);
-  res.sendStatus(200);
+  if (success) {
+    notifies.unsubscribe(id);
+  }
+
+  res.render('yard/unsubscribe/unsubscribe.twig', {
+    success: success
+  });
 
 };
 
