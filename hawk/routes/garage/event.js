@@ -38,12 +38,7 @@ let markReadEvents = function (currentDomain, events) {
   });
 
   modelEvents.markRead(currentDomain.name, eventsIds).then(function (docs, err) {
-    console.log({
-      modifiedCount: docs.modifiedCount,
-      upsertedId: docs.upsertedId,
-      upsertedCount: docs.upsertedCount,
-      matchedCount: docs.matchedCount
-    }, err);
+
   }).catch(function (err) {
     console.log(err);
   });
@@ -72,15 +67,16 @@ let event = function (req, res) {
     getDomainInfo(userDomains, params.domainName)
       .then(function (currentDomain) {
         modelEvents.get(currentDomain.name, {groupHash: params.eventId}, false)
-          .then(function (events) {
-            return markReadEvents(currentDomain, events);
-          })
+          // .then(function (events) {
+          //   return markReadEvents(currentDomain, events);
+          // })
           .then(function (events) {
             let currentEvent = events.shift();
 
             /**
              * If we have ?popup=1 parameter, send JSON answer
              */
+
             if (req.query.popup) {
               app.render('garage/events/' + currentEvent.type + '/page', {
                 hideHeader: true,
@@ -97,6 +93,8 @@ let event = function (req, res) {
                   response.event = currentEvent;
                   response.traceback = html;
                 }
+
+                console.log(response);
 
                 res.json(response);
               });
