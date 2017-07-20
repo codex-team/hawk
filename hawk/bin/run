@@ -1,0 +1,16 @@
+#!/bin/bash
+
+
+# Terminate the running Hawk screen
+screen -X -S Hawk quit
+
+# Go to the project directory and pull changes
+cd /var/www/hawk.so
+git pull
+
+# Go to the code dir and install nodejs dependences
+cd ./hawk
+npm i --silent
+
+# Run Hawk in the screen
+screen -dmS Hawk nodejs bin/www
