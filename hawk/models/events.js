@@ -23,7 +23,6 @@ module.exports = (function () {
    * @param {object} sort - sort params, by default sorting by time
    * @param {number} skip - number of events to skip
    * @param {number} limit - number of events to return
-   * @param {number} status - 0 - new, 1 - read
    */
   let get = function (domain, query, group, sort, limit, skip) {
     let pipeline = [
