@@ -49,7 +49,6 @@ let mongo = (function () {
   let updateMany = function (c, query, update, options) {
     return getCollection(c)
       .then(function (collection) {
-        console.log(options);
         return collection.updateMany(query, update, options);
       });
   };
