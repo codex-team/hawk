@@ -1,48 +1,48 @@
 .garage-sites-added {
-	padding: 25px;
+    padding: 25px;
 
-	&__title {
-		font-size: 15px;
-		line-height: 28px;
-	}
+    &__title {
+        font-size: 15px;
+        line-height: 28px;
+    }
 
     &__item {
         padding: 10px;
-        border: 1px solid #EDEAEA;
+           border: 1px solid #EDEAEA;
         border-radius: 3px;
         margin: 8px 0;
     }
 
     &__img {
         height: 30px;
-		vertical-align: middle;
-		border-radius: 3px;
-		margin-right: 10px;
+        vertical-align: middle;
+        border-radius: 3px;
+        margin-right: 10px;
     }
 
     &__name {
-    	line-height: 30px;
-		vertical-align: middle;
-		font-size: 17px;
-		font-weight: bold;
+        line-height: 30px;
+        vertical-align: middle;
+        font-size: 17px;
+        font-weight: bold;
     }
 
-	&__events {
-		color: #717171;
-		font-size: 13px;
-		line-height: 30px;
-		vertical-align: middle;
-		float: right;
-		margin-right: 10px;
-	}
+    &__events {
+        color: #717171;
+        font-size: 13px;
+        line-height: 30px;
+        vertical-align: middle;
+        float: right;
+        margin-right: 10px;
+    }
 
-	&__new-events {
-		color: #DE2F2F;
-		font-size: 13px;
-		font-weight: bold;
-		border: 1px solid #F6C6C6;
-		border-radius: 3px;
-		padding: 6px 8px;
-		float: right;
-	}
+    &__new-events {
+        color: #DE2F2F;
+        font-size: 13px;
+        font-weight: bold;
+        border: 1px solid #F6C6C6;
+        border-radius: 3px;
+        padding: 6px 8px;
+        float: right;
+    }
 }
