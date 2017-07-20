@@ -12,7 +12,6 @@ let csrf = require('../../modules/csrf');
  * @param res
  */
 let index = function (req, res) {
-
   res.render('garage/settings', {
     user: res.locals.user,
     domains: res.locals.userDomains,
@@ -21,7 +20,6 @@ let index = function (req, res) {
       title : 'User settings'
     }
   });
-
 };
 
 /**
@@ -31,12 +29,10 @@ let index = function (req, res) {
  * @param res
  */
 let update = function (req, res) {
-
   let post = req.body;
 
   user.current(req)
     .then(function (currentUser) {
-
       let params = {
         email: post.email,
         notifies: {
@@ -55,25 +51,17 @@ let update = function (req, res) {
       if (post['slack-webhook']) params.slackHook = post['slack-webhook'];
 
       if (!params.email) {
-
         throw Error('Email should be passed');
-
       }
 
       return user.update(currentUser, params);
-
     })
     .then(function () {
-
       res.redirect('/garage/settings?success=1');
-
     })
     .catch(function (e) {
-
       res.redirect('/garage/settings?success=0&message='+e.message);
-
     });
-
 };
 
 /**
@@ -84,26 +72,18 @@ let update = function (req, res) {
  * @param res
  */
 let unlinkDomain = function (req, res) {
-
   user.current(req)
     .then(function (currentUser) {
-
       let token = req.query.token;
 
       websites.remove(currentUser, token)
         .then(function () {
-
           res.sendStatus(200);
-
         })
         .catch(function () {
-
           res.sendStatus(500);
-
         });
-
     });
-
 };
 
 router.get('/settings', csrf, index);

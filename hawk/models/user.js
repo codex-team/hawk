@@ -121,7 +121,6 @@ module.exports = function () {
         return {
           user: currentUser,
           domains: domains
-
         };
       })
       .catch(function (e) {

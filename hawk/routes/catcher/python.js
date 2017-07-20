@@ -7,9 +7,7 @@ let notifies = require('../../models/notifies');
 let Crypto = require('crypto');
 
 let md5 = function (input) {
-
   return Crypto.createHash('md5').update(input, 'utf8').digest('hex');
-
 };
 
 /**
@@ -26,7 +24,6 @@ let md5 = function (input) {
  * @param req.body.time
  */
 let getPythonErrors = function (req, res) {
-
   let request = req.body,
     location = request.errorLocation.file + ':' + request.errorLocation.line,
     host = request.domain;
@@ -44,41 +41,27 @@ let getPythonErrors = function (req, res) {
 
   websites.get(event.token, host)
     .then( function (site) {
-
       if (!site) {
-
         res.sendStatus(403);
         return;
-
       }
       return user.get(site.user)
         .then(function (foundUser) {
-
           notifies.send(foundUser, host, event);
 
           events.add(host, event)
             .then(function () {
-
               res.sendStatus(200);
-
             })
             .catch(function (e) {
-
               logger.error('Can not add event because of ', e);
               res.sendStatus(500);
-
             });
-
         });
-
-
     })
     .catch( function () {
-
       res.sendStatus(500);
-
     });
-
 };
 
 /* GET python errors. */

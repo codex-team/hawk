@@ -4,11 +4,10 @@
  */
 
 let twig = require('twig'),
-    fs = require('fs');
+  fs = require('fs');
 
 
 module.exports = function () {
-
   'use strict';
 
   /**

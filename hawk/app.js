@@ -181,7 +181,7 @@ app.use(function (err, req, res, next) {
    * Log to the console to local development
    */
   if (process.env.ENVIRONMENT === 'DEVELOPMENT') {
-    console.log("Error thrown: ", err);
+    console.log('Error thrown: ', err);
   }
 
   logger.error('Error thrown: ', err);
