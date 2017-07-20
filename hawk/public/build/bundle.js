@@ -64,7 +64,7 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -347,45 +347,6 @@ module.exports = function () {
 
 
 module.exports = function () {
-  var generateKey = function generateKey(domain, tag) {
-    var key = domain + ':' + tag;
-
-    return key;
-  };
-
-  var updateState = function updateState(domain, tag, value) {
-    var key = generateKey(domain, tag);
-
-    window.localStorage.setItem(key, value);
-  };
-
-  var init = function init() {
-    var errorList = document.querySelector('[data-counters-page-tag]');
-
-    if (!errorList) {
-      return;
-    }
-
-    var domain = errorList.dataset;
-
-    console.log(domain);
-
-    // window.alert(domain.countersPageTag);
-  };
-
-  return {
-    init: init
-  };
-}();
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = function () {
   /**
    * Unlink domain handler
    *
@@ -434,7 +395,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -457,7 +418,7 @@ var eventPopup = function (self) {
    * @type {Class}
    */
 
-  var dom = __webpack_require__(9).default;
+  var dom = __webpack_require__(8).default;
 
   var keyCodes_ = {
     ESC: 27
@@ -844,7 +805,7 @@ var eventPopup = function (self) {
 module.exports = eventPopup;
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -870,7 +831,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -956,13 +917,13 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1033,7 +994,7 @@ var DOM = function () {
 exports.default = DOM;
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1042,7 +1003,7 @@ exports.default = DOM;
 /**
 * Require CSS build
 */
-__webpack_require__(8);
+__webpack_require__(7);
 
 var hawk = function (self) {
   'use strict';
@@ -1056,7 +1017,7 @@ var hawk = function (self) {
     /**
      * Event counters
      */
-    self.counters.init();
+    // self.counters.init();
 
     console.log('Hawk app initialized');
   };
@@ -1064,11 +1025,11 @@ var hawk = function (self) {
   self.checkbox = __webpack_require__(1);
   self.copyable = __webpack_require__(2);
   self.ajax = __webpack_require__(0);
-  self.domain = __webpack_require__(4);
-  self.notifier = __webpack_require__(7);
-  self.event = __webpack_require__(6);
-  self.eventPopup = __webpack_require__(5);
-  self.counters = __webpack_require__(3);
+  self.domain = __webpack_require__(3);
+  self.notifier = __webpack_require__(6);
+  self.event = __webpack_require__(5);
+  self.eventPopup = __webpack_require__(4);
+  // self.counters = require('./counters');
 
   return self;
 }({});
