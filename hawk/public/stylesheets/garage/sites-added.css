@@ -8,7 +8,7 @@
 
     &__item {
         padding: 10px;
-           border: 1px solid #EDEAEA;
+        border: 1px solid #edeaea;
         border-radius: 3px;
         margin: 8px 0;
     }
@@ -40,9 +40,30 @@
         color: #DE2F2F;
         font-size: 13px;
         font-weight: bold;
-        border: 1px solid #F6C6C6;
+        border: 1px solid #f6c6c6;
         border-radius: 3px;
         padding: 6px 8px;
         float: right;
+    }
+}
+
+.no-domains {
+    text-align: center;
+
+    &__text {
+        font-size: 20px;
+        color: #000;
+        margin: 20px 0;
+    }
+
+    &__add-project {
+        display: inline-block;
+        padding: 12px;
+        margin: 20px 0;
+        color: #00b693;
+        font-size: 20px;
+        font-weight: 700;
+        border: 1px solid #cde6e0;
+        border-radius: 3px;
     }
 }

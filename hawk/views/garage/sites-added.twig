@@ -1,9 +1,10 @@
 <div class="garage-sites-added">
-  <h1 class="garage-sites-added__title">Select project to view events list</h1>
-  <div class="garage-sites-added__item">
-      <img class="garage-sites-added__img" src="">
-      <span class="garage-sites-added__name">school332.ru</span>
-      <span class="garage-sites-added__new-events">+12 new</span>
-      <span class="garage-sites-added__events">245 events</span>
-  </div>
+    {% if domains.length != 0 %}
+        <h1 class="garage-sites-added__title">Select project to view events list</h1>
+        {% for domain in domains %}
+            {% include 'garage/events/site-item.twig' with { domain: domain } %}
+        {% endfor %}
+    {% else %}
+        {% include 'garage/no-domains.twig' %}
+    {% endif %}
 </div>
