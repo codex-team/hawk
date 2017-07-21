@@ -49,21 +49,47 @@ let event = function (req, res) {
     /**
      * Current user's domains list stored in res.locals.userDomains
      * @see  app.js
-     * @type {Array}
+     * @type {Object} userDomains
      */
     let userDomains = res.locals.userDomains;
+    let isAjaxRequest = req.xhr;
+
+    /**
+     * pagination settings
+     */
+    let page    = req.query.page || 1,
+        limit   = 10,
+        skip    = (parseInt(page) - 1) * limit;
 
     getDomainInfo(userDomains, params.domainName)
       .then(function (currentDomain) {
 
-        events.get(currentDomain.name, {groupHash: params.eventId}, false)
+        events.get(currentDomain.name, {groupHash: params.eventId}, false, false, limit, skip)
           .then(function (events) {
 
             let currentEvent = events.shift();
 
-            /**
-             * If we have ?popup=1 parameter, send JSON answer
-             */
+            if (isAjaxRequest && req.query.page) {
+
+              app.render('garage/events/' + currentEvent.type + '/events-list', {
+                  /** ES6 objects */
+                  currentDomain,
+                  events
+
+              }, function(error, response) {
+
+                  if (error) {
+                    logger.error(`Something bad wrong. I can't load more ${currentEvent.type} events from ${currentDomain} because of `, error);
+                  }
+
+                  res.json(response);
+                  res.sendStatus(200);
+
+              });
+
+            }
+
+            /** If we have ?popup=1 parameter, send JSON answer */
             if (req.query.popup) {
 
               app.render('garage/events/' + currentEvent.type + '/page', {
@@ -84,6 +110,7 @@ let event = function (req, res) {
                 }
 
                 res.json(response);
+                res.sendStatus(200);
 
               });
 
@@ -94,6 +121,8 @@ let event = function (req, res) {
                 event: currentEvent,
                 events: events
               });
+
+              res.sendStatus(200);
 
             }
 

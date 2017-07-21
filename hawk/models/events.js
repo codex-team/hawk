@@ -19,12 +19,14 @@ module.exports = (function() {
   /**
    * Get domain events
    *
+   * https://docs.mongodb.com/manual/meta/aggregation-quick-reference/
+   *
    * @param {string} domain - domain name
    * @param {object} query  - find params (tag, for example)
    * @param {bool} group  - if true, group same events
    * @param {object} sort - sort params, by default sorting by time
-   * @param {number} skip - number of events to skip
    * @param {number} limit - number of events to return
+   * @param {number} skip - number of events to skip
    */
   let get = function (domain, query, group, sort, limit, skip) {
 

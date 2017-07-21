@@ -64,7 +64,7 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -401,6 +401,69 @@ module.exports = function () {
 "use strict";
 
 
+var eventAppender = function (self) {
+  'use strict';
+
+  var settings = null;
+
+  var autoload = null;
+
+  var preloader = null;
+
+  /**
+   * DOM manipulations lib
+   * @type {Class}
+   */
+  var dom = __webpack_require__(9).default;
+
+  /**
+   * initialize module
+   */
+  self.init = function () {
+    var moduleRequiredElement = document.querySelector('[data-module-required="eventAppender"]');
+
+    if (!moduleRequiredElement) {
+      return;
+    }
+
+    preloader = makePreLoader_();
+
+    console.log('moduleRequiredElements', moduleRequiredElement);
+    moduleRequiredElement.appendChild(preloader);
+
+    var eventPageURL = '/garage/' + '9bb93ff9.ngrok.io' + '/event/cac375abe6c1cc9613246eff37cd6722';
+
+    // hawk.ajax.call({
+    //   url : `${eventPageURL}?page=2`,
+    //   success: function (response) {
+    //     console.log(response);
+    //   },
+    //   error: function (error) {
+    //
+    //   }
+    // });
+  };
+
+  var makePreLoader_ = function makePreLoader_() {
+    var block = dom.make('DIV');
+
+    block.textContent = 'Load more';
+
+    return block;
+  };
+
+  return self;
+}({});
+
+module.exports = eventAppender;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 /**
@@ -418,7 +481,7 @@ var eventPopup = function (self) {
    * @type {Class}
    */
 
-  var dom = __webpack_require__(8).default;
+  var dom = __webpack_require__(9).default;
 
   var keyCodes_ = {
     ESC: 27
@@ -471,6 +534,8 @@ var eventPopup = function (self) {
     var holder = dom.make('div', CSS.popup),
         closeButton = dom.make('div', CSS.closeButton),
         content = dom.make('div', CSS.popupContent);
+
+    content.dataset.moduleRequired = 'eventAppender';
 
     holder.appendChild(closeButton);
     holder.appendChild(content);
@@ -805,7 +870,7 @@ var eventPopup = function (self) {
 module.exports = eventPopup;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -831,7 +896,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -917,13 +982,13 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -994,7 +1059,7 @@ var DOM = function () {
 exports.default = DOM;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1003,7 +1068,7 @@ exports.default = DOM;
 /**
 * Require CSS build
 */
-__webpack_require__(7);
+__webpack_require__(8);
 
 var hawk = function (self) {
   'use strict';
@@ -1014,6 +1079,8 @@ var hawk = function (self) {
      */
     self.eventPopup.init();
 
+    self.eventAppender.init();
+
     console.log('Hawk app initialized');
   };
 
@@ -1021,9 +1088,10 @@ var hawk = function (self) {
   self.copyable = __webpack_require__(2);
   self.ajax = __webpack_require__(0);
   self.domain = __webpack_require__(3);
-  self.notifier = __webpack_require__(6);
-  self.event = __webpack_require__(5);
-  self.eventPopup = __webpack_require__(4);
+  self.notifier = __webpack_require__(7);
+  self.event = __webpack_require__(6);
+  self.eventPopup = __webpack_require__(5);
+  self.eventAppender = __webpack_require__(4);
 
   return self;
 }({});

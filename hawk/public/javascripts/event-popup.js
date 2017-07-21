@@ -67,6 +67,8 @@ let eventPopup = (function ( self ) {
       closeButton = dom.make('div', CSS.closeButton),
       content = dom.make('div', CSS.popupContent);
 
+    content.dataset.moduleRequired = 'eventAppender';
+
     holder.appendChild(closeButton);
     holder.appendChild(content);
 

@@ -12,6 +12,8 @@ let hawk = (function ( self ) {
      */
     self.eventPopup.init();
 
+    self.eventAppender.init();
+
     console.log('Hawk app initialized');
   };
 
@@ -22,6 +24,7 @@ let hawk = (function ( self ) {
   self.notifier = require('exports-loader?notifier!codex-notifier');
   self.event    = require('./event');
   self.eventPopup    = require('./event-popup');
+  self.eventAppender = require('./event-appender');
 
   return self;
 })({});
