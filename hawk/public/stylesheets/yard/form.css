@@ -97,4 +97,11 @@
     &__submit {
         font-size: 18px;
     }
+
+    &__alt-button {
+         display: inline-block;
+         padding: 10px 24px;
+         color: #555968;
+         font-size: 16px;
+    }
 }

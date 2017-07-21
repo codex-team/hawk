@@ -25,6 +25,9 @@
     {% if submitText is not empty %}
       <input class="yard-form__submit button--submit" type="submit" value="{{ submitText }}">
     {% endif %}
+    {% if altText and altLink not empty %}
+      <a class="yard-form__alt-button" href="{{ altLink }}">{{ altText }}</a>
+    {% endif %}
   </form>
   <div class="yard-form__disclaimer">{{ disclaimer }}</div>
 </div>
