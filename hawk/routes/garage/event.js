@@ -34,9 +34,9 @@ function getDomainInfo(userDomains, domainName) {
 }
 
 /**
- * Global requste handler
+ * Global request handler
  * Calls in current Request and Response context via necessary data
- * Delegates required to separate functions that has their own response
+ * Delegates request into separate functions that has their own response
  *
  * @typedef {Object} GarageResponseContext
  * @type {Object} req - Request
@@ -94,8 +94,6 @@ let loadPageData_ = function(templatePath, domain, events) {
     events : events
   });
 
-  response.status(200);
-
 }
 
 /**
@@ -129,7 +127,7 @@ let loadDataForPopup_ = function(templatePath, domain, events) {
       }
 
       response.json(renderResponse);
-      response.status(200);
+      response.sendStatus(200);
 
     });
 }
@@ -150,12 +148,12 @@ let loadMoreDataForPagination_ = function(templatePath, domain, events) {
     events
   }, function(err, res) {
 
-      if (error) {
-        logger.error(`Something bad wrong. I can't load more ${currentEvent.type} events from ${domain} because of `, error);
+      if (err) {
+        logger.error(`Something bad wrong. I can't load more ${currentEvent.type} events from ${domain} because of `, err);
       }
 
-      response.json(res);
-      response.status(200);
+      response.json({ traceback : res });
+      response.sendStatus(200);
 
   });
 };
@@ -193,6 +191,7 @@ let event = function (req, res) {
           .then(handleResponse_.bind({ req, res }, currentDomain))
           .catch(function(err) {
             logger.error('Error while handling event-page request: ', err);
+            res.sendStatus(404);
           });
 
       })

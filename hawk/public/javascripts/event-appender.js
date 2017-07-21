@@ -7,6 +7,10 @@ let eventAppender = (function (self) {
 
   let preloader = null;
 
+  let currentPage = 1;
+
+  let moduleRequiredElement = null;
+
   /**
    * DOM manipulations lib
    * @type {Class}
@@ -17,7 +21,7 @@ let eventAppender = (function (self) {
    * initialize module
    */
   self.init = function () {
-    let moduleRequiredElement = document.querySelector('[data-module-required="eventAppender"]');
+    moduleRequiredElement = document.querySelector('[data-module-required="eventAppender"]');
 
     if (!moduleRequiredElement) {
       return;
@@ -26,27 +30,32 @@ let eventAppender = (function (self) {
     preloader = makePreLoader_();
 
     console.log('moduleRequiredElements', moduleRequiredElement);
-    moduleRequiredElement.appendChild(preloader);
-
-    let eventPageURL = '/garage/' + '9bb93ff9.ngrok.io' + '/event/cac375abe6c1cc9613246eff37cd6722';
-
-    // hawk.ajax.call({
-    //   url : `${eventPageURL}?page=2`,
-    //   success: function (response) {
-    //     console.log(response);
-    //   },
-    //   error: function (error) {
-    //
-    //   }
-    // });
+    moduleRequiredElement.after(preloader);
   };
 
   let makePreLoader_ = function () {
     let block = dom.make('DIV');
 
     block.textContent = 'Load more';
+    block.addEventListener('click', loadMore_, false);
 
     return block;
+  };
+
+  let loadMore_ = function () {
+    let requestPage = '/garage/guryn.me/event/cac375abe6c1cc9613246eff37cd6722/?page=' + (parseInt(currentPage) + 1);
+
+    hawk.ajax.call({
+      url : requestPage,
+      success: function (response) {
+        response = JSON.parse(response);
+        moduleRequiredElement.insertAdjacentHTML('beforeEnd', response.traceback);
+        currentPage ++;
+      },
+      error: function (error) {
+
+      }
+    });
   };
 
   return self;

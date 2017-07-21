@@ -74,6 +74,77 @@ var hawk =
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * DOM manipulations methods
+ */
+var DOM = function () {
+  function DOM() {
+    _classCallCheck(this, DOM);
+  }
+
+  _createClass(DOM, null, [{
+    key: "make",
+
+    /**
+     * Helper for making Elements with classname and attributes
+     * @param  {string} tagName           - new Element tag name
+     * @param  {array|string} classNames  - list or name of CSS classname(s)
+     * @param  {Object} attributes        - any attributes
+     * @return {Element}
+     */
+    value: function make(tagName, classNames, attributes) {
+      var el = document.createElement(tagName);
+
+      if (Array.isArray(classNames)) {
+        var _el$classList;
+
+        (_el$classList = el.classList).add.apply(_el$classList, _toConsumableArray(classNames));
+      } else if (classNames) {
+        el.classList.add(classNames);
+      }
+
+      for (var attrName in attributes) {
+        el[attrName] = attributes[attrName];
+      }
+
+      return el;
+    }
+
+    /**
+    * Replaces node with
+    * @param {Element} nodeToReplace
+    * @param {Element} replaceWith
+    */
+
+  }, {
+    key: "replace",
+    value: function replace(nodeToReplace, replaceWith) {
+      return nodeToReplace.parentNode.replaceChild(replaceWith, nodeToReplace);
+    }
+  }]);
+
+  return DOM;
+}();
+
+exports.default = DOM;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 /**
  * AJAX module
  */
@@ -149,7 +220,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -253,7 +324,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -340,7 +411,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -395,7 +466,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -410,17 +481,21 @@ var eventAppender = function (self) {
 
   var preloader = null;
 
+  var currentPage = 1;
+
+  var moduleRequiredElement = null;
+
   /**
    * DOM manipulations lib
    * @type {Class}
    */
-  var dom = __webpack_require__(9).default;
+  var dom = __webpack_require__(0).default;
 
   /**
    * initialize module
    */
   self.init = function () {
-    var moduleRequiredElement = document.querySelector('[data-module-required="eventAppender"]');
+    moduleRequiredElement = document.querySelector('[data-module-required="eventAppender"]');
 
     if (!moduleRequiredElement) {
       return;
@@ -429,27 +504,30 @@ var eventAppender = function (self) {
     preloader = makePreLoader_();
 
     console.log('moduleRequiredElements', moduleRequiredElement);
-    moduleRequiredElement.appendChild(preloader);
-
-    var eventPageURL = '/garage/' + '9bb93ff9.ngrok.io' + '/event/cac375abe6c1cc9613246eff37cd6722';
-
-    // hawk.ajax.call({
-    //   url : `${eventPageURL}?page=2`,
-    //   success: function (response) {
-    //     console.log(response);
-    //   },
-    //   error: function (error) {
-    //
-    //   }
-    // });
+    moduleRequiredElement.after(preloader);
   };
 
   var makePreLoader_ = function makePreLoader_() {
     var block = dom.make('DIV');
 
     block.textContent = 'Load more';
+    block.addEventListener('click', loadMore_, false);
 
     return block;
+  };
+
+  var loadMore_ = function loadMore_() {
+    var requestPage = '/garage/guryn.me/event/cac375abe6c1cc9613246eff37cd6722/?page=' + (parseInt(currentPage) + 1);
+
+    hawk.ajax.call({
+      url: requestPage,
+      success: function success(response) {
+        response = JSON.parse(response);
+        moduleRequiredElement.insertAdjacentHTML('beforeEnd', response.traceback);
+        currentPage++;
+      },
+      error: function error(_error) {}
+    });
   };
 
   return self;
@@ -458,7 +536,7 @@ var eventAppender = function (self) {
 module.exports = eventAppender;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -481,7 +559,7 @@ var eventPopup = function (self) {
    * @type {Class}
    */
 
-  var dom = __webpack_require__(9).default;
+  var dom = __webpack_require__(0).default;
 
   var keyCodes_ = {
     ESC: 27
@@ -534,8 +612,6 @@ var eventPopup = function (self) {
     var holder = dom.make('div', CSS.popup),
         closeButton = dom.make('div', CSS.closeButton),
         content = dom.make('div', CSS.popupContent);
-
-    content.dataset.moduleRequired = 'eventAppender';
 
     holder.appendChild(closeButton);
     holder.appendChild(content);
@@ -870,7 +946,7 @@ var eventPopup = function (self) {
 module.exports = eventPopup;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -896,7 +972,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -982,81 +1058,10 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/**
- * DOM manipulations methods
- */
-var DOM = function () {
-  function DOM() {
-    _classCallCheck(this, DOM);
-  }
-
-  _createClass(DOM, null, [{
-    key: "make",
-
-    /**
-     * Helper for making Elements with classname and attributes
-     * @param  {string} tagName           - new Element tag name
-     * @param  {array|string} classNames  - list or name of CSS classname(s)
-     * @param  {Object} attributes        - any attributes
-     * @return {Element}
-     */
-    value: function make(tagName, classNames, attributes) {
-      var el = document.createElement(tagName);
-
-      if (Array.isArray(classNames)) {
-        var _el$classList;
-
-        (_el$classList = el.classList).add.apply(_el$classList, _toConsumableArray(classNames));
-      } else if (classNames) {
-        el.classList.add(classNames);
-      }
-
-      for (var attrName in attributes) {
-        el[attrName] = attributes[attrName];
-      }
-
-      return el;
-    }
-
-    /**
-    * Replaces node with
-    * @param {Element} nodeToReplace
-    * @param {Element} replaceWith
-    */
-
-  }, {
-    key: "replace",
-    value: function replace(nodeToReplace, replaceWith) {
-      return nodeToReplace.parentNode.replaceChild(replaceWith, nodeToReplace);
-    }
-  }]);
-
-  return DOM;
-}();
-
-exports.default = DOM;
 
 /***/ }),
 /* 10 */
@@ -1068,7 +1073,7 @@ exports.default = DOM;
 /**
 * Require CSS build
 */
-__webpack_require__(8);
+__webpack_require__(9);
 
 var hawk = function (self) {
   'use strict';
@@ -1084,14 +1089,14 @@ var hawk = function (self) {
     console.log('Hawk app initialized');
   };
 
-  self.checkbox = __webpack_require__(1);
-  self.copyable = __webpack_require__(2);
-  self.ajax = __webpack_require__(0);
-  self.domain = __webpack_require__(3);
-  self.notifier = __webpack_require__(7);
-  self.event = __webpack_require__(6);
-  self.eventPopup = __webpack_require__(5);
-  self.eventAppender = __webpack_require__(4);
+  self.checkbox = __webpack_require__(2);
+  self.copyable = __webpack_require__(3);
+  self.ajax = __webpack_require__(1);
+  self.domain = __webpack_require__(4);
+  self.notifier = __webpack_require__(8);
+  self.event = __webpack_require__(7);
+  self.eventPopup = __webpack_require__(6);
+  self.eventAppender = __webpack_require__(5);
 
   return self;
 }({});
