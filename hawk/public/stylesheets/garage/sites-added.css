@@ -1,0 +1,81 @@
+.garage-sites-added {
+    padding: 25px;
+
+    &__title {
+        font-size: 15px;
+        line-height: 28px;
+    }
+
+    &__item {
+        margin: 8px 0;
+        padding: 10px;
+        border: 1px solid #edeaea;
+        border-radius: 3px;
+    }
+
+    &__img {
+        margin-right: 10px;
+        height: 30px;
+        vertical-align: middle;
+        border-radius: 3px;
+    }
+
+    &__name {
+        line-height: 30px;
+        vertical-align: middle;
+        font-size: 17px;
+        font-weight: bold;
+    }
+
+    &__events {
+        float: right;
+        margin-right: 10px;
+        color: #717171;
+        font-size: 13px;
+        line-height: 30px;
+        vertical-align: middle;
+    }
+
+    &__new-events {
+        float: right;
+        padding: 6px 8px;
+        color: #de2f2f;
+        font-size: 13px;
+        font-weight: bold;
+        border: 1px solid #f6c6c6;
+        border-radius: 3px;
+    }
+
+    &__add-project {
+        padding: 12px;
+        margin: 20px 0;
+        display: inline-block;
+        color: #00b693;
+        font-size: 15px;
+        font-weight: 700;
+        border: 1px solid #cde6e0;
+        border-radius: 3px;
+    }
+}
+
+.no-domains {
+    margin: 150px auto;
+    text-align: center;
+
+    &__text {
+        margin: 20px 0;
+        font-size: 20px;
+        color: #000;
+    }
+
+    &__add-project {
+        padding: 12px;
+        margin: 20px 0;
+        display: inline-block;
+        color: #00b693;
+        font-size: 20px;
+        font-weight: 700;
+        border: 1px solid #cde6e0;
+        border-radius: 3px;
+    }
+}
