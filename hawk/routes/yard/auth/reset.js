@@ -12,12 +12,10 @@ let Twig = require('twig');
  */
 let reset = {
   get: function (req, res) {
-
     res.render('yard/auth/reset');
   },
 
   post: function (req, res) {
-
     let email = req.body.email;
 
     user.getByParams({email: email})
@@ -26,14 +24,14 @@ let reset = {
           let params = {
             message: {
               type: 'error',
-              text: 'Sorry, we don\'t recognize this email'
+              text: 'No user with this email'
             },
             email: email};
           res.render('yard/auth/reset', params);
           return;
         }
 
-        return user.resetPassword(foundUser._id);
+        return user.saveRecoverHash(foundUser._id);
       })
       .then(function (recoverHash) {
         Twig.renderFile('views/notifies/email/recover.twig', {
@@ -46,14 +44,15 @@ let reset = {
           });
         });
       })
-      .catch(function () {
-        res.render('yard/errors/error', {title: 500, message: 'Something went wrong..'});
+      .catch(function (e) {
+        logger.log('Error while resetting user password ', e);
+        res.render('yard/errors/error', {title: 500, message: 'Something went wrong'});
       });
 
   }
 };
 
-router.get('/', reset.get);
-router.post('/', reset.post);
+router.get('/reset', reset.get);
+router.post('/reset', reset.post);
 
 module.exports = router;

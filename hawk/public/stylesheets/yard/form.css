@@ -101,7 +101,7 @@
     &__alt-button {
          display: inline-block;
          padding: 10px 24px;
-         color: #555968;
+         color: var(--grayText);
          font-size: 16px;
     }
 }

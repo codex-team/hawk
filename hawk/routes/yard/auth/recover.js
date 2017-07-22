@@ -18,14 +18,22 @@ let recover = {
     user.getByParams({recoverHash: recoverHash})
       .then(function (foundUser) {
         if (!foundUser) {
-          res.render('yard/errors/error', {title: 'Your account not found'});
+          res.render('yard/errors/error', {
+            title: 'This recover link doesn\'t works.',
+            message: 'Try reset your password again.'
+          });
           return;
         }
         res.render('yard/auth/recover', {action: action});
       });
-
   },
 
+  /**
+   * Get new password from user's input and save it if password and repeated password equal
+   * 
+   * @param req
+   * @param res
+   */
   post: function (req, res) {
     let recoverHash = req.params.hash,
         action = '/recover/' + recoverHash,
@@ -36,7 +44,10 @@ let recover = {
     user.getByParams({recoverHash: recoverHash})
       .then(function (foundUser) {
         if (!foundUser) {
-          res.render('yard/errors/error', {title: 'Your account not found'});
+          res.render('yard/errors/error', {
+            title: 'This recover link doesn\'t works.',
+            message: 'Try reset your password again.'
+          });
           return;
         }
 
@@ -45,15 +56,18 @@ let recover = {
           return;
         }
 
-        return user.update(foundUser, {password: password, recoverHash: null});
+        return user.update(foundUser, {password: password, recoverHash: null})
+          .then(function () {
+            return foundUser.email;
+          });
       })
-      .then(function () {
-        res.redirect('/login');
+      .then(function (email) {
+        res.redirect('/login?email=' + email);
       });
   }
 };
 
-router.get('/:hash', recover.get);
-router.post('/:hash', recover.post);
+router.get('/recover/:hash', recover.get);
+router.post('/recover/:hash', recover.post);
 
 module.exports = router;

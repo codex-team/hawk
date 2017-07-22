@@ -91,7 +91,7 @@ let login = {
 
 };
 
-router.get('/', login.get);
-router.post('/', login.post);
+router.get('/login', login.get);
+router.post('/login', login.post);
 
 module.exports = router;

@@ -222,9 +222,9 @@ module.exports = function () {
    * Generate new reset hash an save it to db
    *
    * @param userId
-   * @returns {Promise.<TResult>} pass recovукРфыр
+   * @returns {Promise.<TResult>}
    */
-  let resetPassword = function (userId) {
+  let saveRecoverHash = function (userId) {
     let recoverHash = generateRecoverHash();
 
     return mongo.updateOne(collection,
@@ -252,7 +252,7 @@ module.exports = function () {
     getInfo: getInfo,
     update: update,
     checkParamUniqueness: checkParamUniqueness,
-    resetPassword: resetPassword
+    saveRecoverHash: saveRecoverHash
   };
 
 }();
