@@ -3,6 +3,7 @@
 let express = require('express');
 let router = express.Router();
 let events = require('../../models/events');
+let twig  = require('twig');
 
 /**
  * Check if user can manage passed domain
@@ -45,9 +46,11 @@ function getDomainInfo(userDomains, domainName) {
  * @this {Object} GarageResponseContext
  *
  * @param {String} domain - requsted domain
- * @param {Array}  events - obtained from Database events
+ * @param {Object} data
+ * @param {Array} data.eventList - obtained from Database events
+ * @param {Boolean} data.canLoadMore - is next page exist ?
  */
-let handleResponse_ = function(domain, events) {
+let makeResponse_ = function(domain, data) {
 
     /**
      * work with current request context
@@ -60,20 +63,23 @@ let handleResponse_ = function(domain, events) {
     let request       = context.req,
         response      = context.res,
         isAjaxRequest = request.xhr,
+        events        = data.eventList,
+        canLoadMore   = data.canLoadMore,
         currentEvent  = events.shift(),
         templatePath  = 'garage/events/' + currentEvent.type;
 
     /** requiring page via AJAX */
     if (isAjaxRequest && request.query.page) {
-        loadMoreDataForPagination_.call(response, templatePath + '/events-list', domain, events);
+        loadMoreDataForPagination_.call(response, templatePath + '/events-list', domain, events, canLoadMore);
     }
 
     /** If we have ?popup=1 parameter, send JSON answer */
     if (request.query.popup) {
         loadDataForPopup_.call(response, templatePath + '/page', domain, events);
+    } else {
+        loadPageData_.call(response, templatePath + '/page', domain, events);
     }
 
-    loadPageData_.call(response, templatePath + '/page', domain, events);
 };
 
 /**
@@ -88,7 +94,7 @@ let loadPageData_ = function(templatePath, domain, events) {
 
   let response = this;
 
-  response.render(templatePath, {
+  return response.render(templatePath, {
     domain : domain,
     event  : events.shift(),
     events : events
@@ -126,8 +132,7 @@ let loadDataForPopup_ = function(templatePath, domain, events) {
         renderResponse.traceback = html;
       }
 
-      response.json(renderResponse);
-      response.sendStatus(200);
+      return response.json(renderResponse);
 
     });
 }
@@ -138,24 +143,32 @@ let loadDataForPopup_ = function(templatePath, domain, events) {
  * @param {Object} event
  * @return {String} - JSON formatted response
  */
-let loadMoreDataForPagination_ = function(templatePath, domain, events) {
+let loadMoreDataForPagination_ = function(templatePath, domain, events, canLoadMore) {
 
   let response = this,
       currentEvent = events.shift();
 
-  app.render(templatePath, {
-    domain,
-    events
-  }, function(err, res) {
+  if (canLoadMore) {
 
-      if (err) {
-        logger.error(`Something bad wrong. I can't load more ${currentEvent.type} events from ${domain} because of `, err);
-      }
+    app.render(templatePath, {
+      domain,
+      events
+    }, function(err, res) {
 
-      response.json({ traceback : res });
-      response.sendStatus(200);
+        if (err) {
+          logger.error(`Something bad wrong. I can't load more ${currentEvent.type} events from ${domain} because of `, err);
+        }
 
-  });
+        return response.json({ traceback : res, hideButton : false });
+
+    });
+
+  } else {
+
+      return response.json ({ traceback : '', hideButton : true });
+      
+  }
+
 };
 
 /**
@@ -187,8 +200,15 @@ let event = function (req, res) {
     getDomainInfo(userDomains, params.domainName)
       .then(function (currentDomain) {
 
-        events.get(currentDomain.name, {groupHash: params.eventId}, false, false, limit, skip)
-          .then(handleResponse_.bind({ req, res }, currentDomain))
+        events.get(currentDomain.name, {groupHash: params.eventId}, false, false, limit + 1, skip)
+          .then((eventList) => {
+              let canLoadMore = eventList.length > limit;
+              return {
+                eventList,
+                canLoadMore
+              };
+          })
+          .then(makeResponse_.bind({ req, res }, currentDomain))
           .catch(function(err) {
             logger.error('Error while handling event-page request: ', err);
             res.sendStatus(404);

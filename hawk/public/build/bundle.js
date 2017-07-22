@@ -475,7 +475,10 @@ module.exports = function () {
 var eventAppender = function (self) {
   'use strict';
 
-  var settings = null;
+  var settings = {
+    domain: null,
+    event: null
+  };
 
   var autoload = null;
 
@@ -501,9 +504,12 @@ var eventAppender = function (self) {
       return;
     }
 
+    settings.domain = moduleRequiredElement.dataset.domain;
+    settings.event = moduleRequiredElement.dataset.event;
+
     preloader = makePreLoader_();
 
-    console.log('moduleRequiredElements', moduleRequiredElement);
+    preloader.addEventListener('click', loadMoreEvents_, false);
     moduleRequiredElement.after(preloader);
   };
 
@@ -511,18 +517,19 @@ var eventAppender = function (self) {
     var block = dom.make('DIV');
 
     block.textContent = 'Load more';
-    block.addEventListener('click', loadMore_, false);
 
     return block;
   };
 
-  var loadMore_ = function loadMore_() {
-    var requestPage = '/garage/guryn.me/event/cac375abe6c1cc9613246eff37cd6722/?page=' + (parseInt(currentPage) + 1);
+  var loadMoreEvents_ = function loadMoreEvents_() {
+    var nextPage = parseInt(currentPage) + 1;
+    var requestPage = '/garage/' + settings.domain + '/event/' + settings.event + '/?page=' + nextPage;
 
     hawk.ajax.call({
       url: requestPage,
       success: function success(response) {
         response = JSON.parse(response);
+        console.log('response', response);
         moduleRequiredElement.insertAdjacentHTML('beforeEnd', response.traceback);
         currentPage++;
       },

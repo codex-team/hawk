@@ -1,7 +1,10 @@
 let eventAppender = (function (self) {
   'use strict';
 
-  let settings = null;
+  let settings = {
+    domain : null,
+    event : null
+  };
 
   let autoload = null;
 
@@ -27,9 +30,12 @@ let eventAppender = (function (self) {
       return;
     }
 
+    settings.domain = moduleRequiredElement.dataset.domain;
+    settings.event  = moduleRequiredElement.dataset.event;
+
     preloader = makePreLoader_();
 
-    console.log('moduleRequiredElements', moduleRequiredElement);
+    preloader.addEventListener('click', loadMoreEvents_, false);
     moduleRequiredElement.after(preloader);
   };
 
@@ -37,18 +43,19 @@ let eventAppender = (function (self) {
     let block = dom.make('DIV');
 
     block.textContent = 'Load more';
-    block.addEventListener('click', loadMore_, false);
 
     return block;
   };
 
-  let loadMore_ = function () {
-    let requestPage = '/garage/guryn.me/event/cac375abe6c1cc9613246eff37cd6722/?page=' + (parseInt(currentPage) + 1);
+  let loadMoreEvents_ = function () {
+    let nextPage = parseInt(currentPage) + 1;
+    let requestPage = `/garage/${settings.domain}/event/${settings.event}/?page=${nextPage}`;
 
     hawk.ajax.call({
       url : requestPage,
       success: function (response) {
         response = JSON.parse(response);
+        console.log('response', response);
         moduleRequiredElement.insertAdjacentHTML('beforeEnd', response.traceback);
         currentPage ++;
       },
