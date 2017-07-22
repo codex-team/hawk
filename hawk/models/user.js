@@ -102,11 +102,17 @@ module.exports = function () {
         domains.forEach(function (domain) {
           let query = events.countTags(domain.name)
             .then(function (tags) {
+              domain['events'] = {
+                'count': 0,
+                'unread': 0
+              };
               tags.forEach(function (tag) {
                 domain[tag._id] = {
                   'count': tag.count,
                   'unread': tag.unread
                 };
+                domain['events']['count'] += tag.count;
+                domain['events']['unread'] += tag.unread;
               });
             }).catch(function (e) {
               logger.error('Events Query composing error: ', e);
