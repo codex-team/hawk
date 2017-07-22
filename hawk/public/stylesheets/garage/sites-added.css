@@ -37,7 +37,7 @@
     }
 
     &__new-events {
-        color: #DE2F2F;
+        color: #de2f2f;
         font-size: 13px;
         font-weight: bold;
         border: 1px solid #f6c6c6;
@@ -49,6 +49,7 @@
 
 .no-domains {
     text-align: center;
+    margin: 150px auto;
 
     &__text {
         font-size: 20px;
