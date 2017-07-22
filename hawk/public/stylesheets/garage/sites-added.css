@@ -45,6 +45,17 @@
         padding: 6px 8px;
         float: right;
     }
+
+    &__add-project {
+        display: inline-block;
+        padding: 12px;
+        margin: 20px 0;
+        color: #00b693;
+        font-size: 15px;
+        font-weight: 700;
+        border: 1px solid #cde6e0;
+        border-radius: 3px;
+    }
 }
 
 .no-domains {
