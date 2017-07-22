@@ -137,12 +137,15 @@ module.exports = function () {
    * Set notifies.email flag in user profile to false
    *
    * @param userId
+   * @param type
    */
-  let unsubscribe = function (userId) {
+  let unsubscribe = function (userId, type='email') {
+    let field = 'notifies.' + type;
+
     return mongo.updateOne(
       collections.USERS,
       {_id: mongo.ObjectId(userId)},
-      {$set: {'notifies.email': false}}
+      {$set: {[field]: false}}
     );
   };
 

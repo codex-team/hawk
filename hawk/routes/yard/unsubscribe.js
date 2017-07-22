@@ -8,20 +8,23 @@ let unsbscribe = function (req, res) {
 
   let id = req.query.id,
       hash = req.query.hash,
+      type = req.query.type || 'email',
       success = true;
 
-  if (success && (!id || !hash)) {
+  const AVAILABLE_TYPES = ['email', 'tg', 'slack'];
+
+  if (success && (!id || !hash || !AVAILABLE_TYPES.includes(type))) {
     success = false;
   }
 
   let generatedHash = notifies.generateUnsubscribeHash(id);
 
-  if (success && (hash != generatedHash)) {
+  if (success && (hash !== generatedHash)) {
     success = false;
   }
 
   if (success) {
-    notifies.unsubscribe(id);
+    notifies.unsubscribe(id, type);
   }
 
   res.render('yard/unsubscribe/unsubscribe.twig', {

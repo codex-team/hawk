@@ -50,5 +50,4 @@ module.exports = function () {
         return 'JavaScript Error';
     }
   });
-
 }();
