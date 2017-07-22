@@ -1,26 +1,31 @@
-{% if domains.length != 0 %}
+{% if domains.length != 0  %}
 
-    <div class="garage-sites-added">
-        <h1 class="garage-sites-added__title">Select project to view events list</h1>
+    {% if domain == null %}
+            <div class="garage-sites-added">
+                <h1 class="garage-sites-added__title">Select project to view events list</h1>
 
-        {% for domain in domains %}
-            {% set url = "/garage/" ~ domain.name %}
-            <a href="{{ url }}">
-                <div class="garage-sites-added__item">
-                    <img class="garage-sites-added__img" src="">
-                    <span class="garage-sites-added__name">{{ domain.name }}</span>
-                    <span class="garage-sites-added__new-events">+12 new</span>
-                    <span class="garage-sites-added__events">245 events</span>
-                </div>
-            </a>
-        {% endfor %}
+                {% for domain in domains %}
+                    {% set url = "/garage/" ~ domain.name %}
+                    <a href="{{ url }}">
+                        <div class="garage-sites-added__item">
+                            <img class="garage-sites-added__img" src="">
+                            <span class="garage-sites-added__name">{{ domain.name }}</span>
+                            <span class="garage-sites-added__new-events">+12 new</span>
+                            <span class="garage-sites-added__events">{{ domain.fatal|number_format + domain.warnings|number_format + domain.notice|number_format + domain.javascript|number_format }} events</span>
+                        </div>
+                    </a>
+                {% endfor %}
 
-        <a class="garage-sites-added__add-project" href="/websites/create">+ Add another project</a>
-    </div>
+                <a class="garage-sites-added__add-project" href="/websites/create">+ Add another project</a>
+            </div>
+    {% endif %}
+
 {% else %}
+
     <div class="no-domains">
         {{ svg('/public/svg/stack-gray.svg') }}
         <div class="no-domains__text">To start improving your projects, <br> add the first one and set up an integration</div>
         <a class="no-domains__add-project" href="/websites/create">+ Add project</a>
     </div>
+
 {% endif %}
