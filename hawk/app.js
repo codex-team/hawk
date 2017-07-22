@@ -147,10 +147,12 @@ app.use('/garage', garage);
 var index = require('./routes/yard/index');
 var websites = require('./routes/yard/websites');
 var auth = require('./routes/yard/auth/auth');
+var unsubscribe = require('./routes/yard/unsubscribe');
 
 app.use('/', index);
 app.use('/', auth);
 app.use('/websites', websites);
+app.use('/unsubscribe', unsubscribe);
 
 /**
  * Catcher

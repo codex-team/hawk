@@ -4,9 +4,9 @@ plugins:
     postcss-custom-media: {}
     postcss-media-minmax: {}
     postcss-custom-selectors: {}
+    postcss-nested-ancestors: {}
     postcss-nesting: {}
     postcss-nested: {}
-    postcss-nested-ancestors: {}
     postcss-color-function: {}
     postcss-color-hex-alpha: {}
     postcss-font-variant: {}

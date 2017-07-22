@@ -10,6 +10,7 @@
 @import url('yard/index-page.css');
 @import url('yard/error-page.css');
 @import url('yard/article.css');
+@import url('yard/unsubscribe.css');
 
 /**
  * Garage
@@ -20,6 +21,7 @@
 @import url('garage/list.css');
 @import url('garage/settings.css');
 @import url('garage/event.css');
+@import url('garage/sites-added.css');
 
 /**
  * Notifier

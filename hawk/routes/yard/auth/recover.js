@@ -30,7 +30,7 @@ let recover = {
 
   /**
    * Get new password from user's input and save it if password and repeated password equal
-   * 
+   *
    * @param req
    * @param res
    */
