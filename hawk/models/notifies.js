@@ -100,26 +100,23 @@ module.exports = function () {
    * @param event
    */
   let send = function (user, domain, event) {
-    // TODO uncomment
-    send_(user, domain, event, 1);
+    let timer = timers[event.groupHash];
 
-    // let timer = timers[event.groupHash];
-    //
-    // /* Check if this event has come few time ago */
-    // if (timer) {
-    //   clearTimeout(timer.timeout);
-    // } else {
-    //   send_(user, domain, event, 1);
-    //
-    //   timers[event.groupHash] = {
-    //     times: 0
-    //   };
-    //
-    //   timer = timers[event.groupHash];
-    // }
-    //
-    // timer.timeout = setTimeout(send_, GROUP_TIME, user, domain, event, timer.times);
-    // timer.times++;
+    /* Check if this event has come few time ago */
+    if (timer) {
+      clearTimeout(timer.timeout);
+    } else {
+      send_(user, domain, event, 1);
+
+      timers[event.groupHash] = {
+        times: 0
+      };
+
+      timer = timers[event.groupHash];
+    }
+
+    timer.timeout = setTimeout(send_, GROUP_TIME, user, domain, event, timer.times);
+    timer.times++;
   };
 
   /**
