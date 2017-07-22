@@ -46,7 +46,7 @@ module.exports = function () {
 
   let add = function (userEmail) {
     let password = auth.generatePassword(),
-      passwordHashed = auth.generateHash(password);
+        passwordHashed = auth.generateHash(password);
 
     let user = {
       'email': userEmail,
@@ -82,7 +82,7 @@ module.exports = function () {
    */
   let getInfo = function (req) {
     let currentUser = null,
-      domains = null;
+        domains = null;
 
     return current(req)
       .then(function (currentUser_) {

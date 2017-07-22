@@ -29,7 +29,7 @@ module.exports = (function () {
   let check = function (cookies) {
     // load cookies
     let uid = cookies.user_id,
-      uhash = cookies.user_hash;
+        uhash = cookies.user_hash;
 
     // check if these cookies exist
     if ( !uid || !uhash ) return 0;
@@ -50,7 +50,7 @@ module.exports = (function () {
     logout(res);
 
     let uid = user._id.toString(),
-      uhash = generateHash(uid);
+        uhash = generateHash(uid);
 
     res.cookie('user_id', uid);
     res.cookie('user_hash', uhash);

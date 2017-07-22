@@ -4,8 +4,8 @@
  */
 
 let twig = require('twig'),
-  fs = require('fs'),
-  Crypto = require('crypto');
+    fs = require('fs'),
+    Crypto = require('crypto');
 
 
 module.exports = function () {

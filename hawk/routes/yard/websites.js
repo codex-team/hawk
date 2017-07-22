@@ -29,7 +29,7 @@ router.post('/create', function (req, res, next) {
      * @type {String}
      */
   let resultTemplate = 'yard/websites/result',
-    domain = req.body.domain;
+      domain = req.body.domain;
 
   if (!domain) {
     res.render('yard/websites/result', {error: 'Website domain is empty'});

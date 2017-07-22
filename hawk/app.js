@@ -26,8 +26,8 @@ var fs = require('fs');
 /** Setup loggers **/
 
 var logsDir = './logs',
-  accessDir = logsDir + '/access',
-  errorsDir = logsDir + '/errors';
+    accessDir = logsDir + '/access',
+    errorsDir = logsDir + '/errors';
 
 if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir);

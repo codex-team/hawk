@@ -1,6 +1,6 @@
 module.exports = function () {
   let event = null,
-    stack = null;
+      stack = null;
 
   const REGEXPS = {
     /* FF example: throwError@http://localhost:63342/hawk.client/index.html:10:28 */

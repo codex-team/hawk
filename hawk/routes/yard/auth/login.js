@@ -41,7 +41,7 @@ let login = {
     }
 
     let email = req.body.email,
-      password = req.body.password;
+        password = req.body.password;
 
     let newUser = {
       'email': email,

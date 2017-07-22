@@ -12,10 +12,10 @@ let events = require('../../models/events');
  */
 let index = function (req, res) {
   let currentDomain,
-    currentTag;
+      currentTag;
 
   let params = req.params,
-    allowedTags = ['fatal', 'warnings', 'notice', 'javascript'];
+      allowedTags = ['fatal', 'warnings', 'notice', 'javascript'];
 
   currentDomain = params.domain;
   currentTag = params.tag;

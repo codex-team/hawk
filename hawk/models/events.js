@@ -88,7 +88,7 @@ module.exports = (function () {
         $group: {
           _id: '$tag',
           count: {$sum: 1},
-          /* Unread is a sum of results for each event's compared statused with 1 */
+          /* To count unread events, we compare status with 1 for each one */
           unread: {$sum: { $cmp: [1, '$status']}}
         }
       } ]);
@@ -103,7 +103,7 @@ module.exports = (function () {
    */
   let getAll = function (user, query) {
     let result = [],
-      queries = [];
+        queries = [];
 
     if (!user.domains) {
       return Promise.resolve([]);

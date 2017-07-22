@@ -3,10 +3,10 @@ require('dotenv').config();
 let app = process.env.PROTOCOL + '://' + process.env.HOST_NAME + ':' + process.env.PORT;
 
 let chai = require('chai'),
-  chaiHttp = require('chai-http'),
-  expect = chai.expect,
-  assert = chai.assert,
-  should = chai.should();
+    chaiHttp = require('chai-http'),
+    expect = chai.expect,
+    assert = chai.assert,
+    should = chai.should();
 
 chai.use(chaiHttp);
 
@@ -66,7 +66,7 @@ describe('Testing Routes: /login page', function () {
    */
   it ('Case 3 #POST: Send correct `email` and `password` to sign in. Expect redirect to /garage page', function (done) {
     let email    = 'morgan-_-95@mail.ru',
-      password = '22mrhpvi';
+        password = '22mrhpvi';
 
     chai.request(app)
       .post('/login')
@@ -87,7 +87,7 @@ describe('Testing Routes: /login page', function () {
    */
   it ('Case 4 #POST: Send incorrect `email` and `password`. Expect to see current /login page without HTTP errors', function (done) {
     let email    = 'morgan-_-95@mail.ru',
-      password = 'somepassword';
+        password = 'somepassword';
 
     chai.request(app)
       .post('/login')
