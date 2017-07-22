@@ -30,7 +30,7 @@ function getDomainInfo(userDomains, domainName) {
 * Marks all events in list as read
 * @param {Array} events - events list
 */
-let markReadEvents = function (currentDomain, events) {
+let markEventsAsRead = function (currentDomain, events) {
   let eventsIds = [];
 
   events.forEach(function (event) {
@@ -68,7 +68,7 @@ let event = function (req, res) {
       .then(function (currentDomain) {
         modelEvents.get(currentDomain.name, {groupHash: params.eventId}, false)
           .then(function (events) {
-            return markReadEvents(currentDomain, events);
+            return markEventsAsRead(currentDomain, events);
           })
           .then(function (events) {
             let currentEvent = events.shift();
