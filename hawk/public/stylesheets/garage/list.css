@@ -69,6 +69,7 @@
 
     &__title {
         line-height: 1.5em;
+        word-break: break-all;
 
         &:hover {
             color: var(--hoverColor);

@@ -58,4 +58,9 @@
         color: var(--redText);
     }
 
+    &__docs {
+        margin-left: auto;
+        color: #4e37b5;
+        font-size: 18px;
+    }
 }

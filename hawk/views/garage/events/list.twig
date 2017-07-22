@@ -1,5 +1,7 @@
 <div class="garage-list">
 
+  {% if domain != null %}
+
     {% if events.length != 0 %}
 
         <div class="garage-list__header">
@@ -24,4 +26,6 @@
             {% endif %}
         </ul>
     {% endif %}
+
+  {% endif %}
 </div>
