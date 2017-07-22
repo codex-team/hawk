@@ -472,6 +472,9 @@ module.exports = function () {
 "use strict";
 
 
+/**
+ * @todo rewrite module. Use instance or self scoped approach
+ */
 var eventAppender = function (self) {
   'use strict';
 

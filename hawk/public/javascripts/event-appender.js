@@ -1,3 +1,6 @@
+/**
+ * @todo rewrite module. Use instance or self scoped approach
+ */
 let eventAppender = (function (self) {
   'use strict';
 
