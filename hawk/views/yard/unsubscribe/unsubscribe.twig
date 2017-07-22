@@ -1,0 +1,22 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+
+    <div class="unsubscribe-page yard">
+        <h1 class="unsubscribe-page__title">Hawk.so</h1>
+        <p class="unsubscribe-page__caption">Fast and lightweight errors tracking service</p>
+        <div class="unsubscribe-page__body">
+            {{ svg('/public/svg/mailbox.svg') }}
+            {% if success %}<h3 class="unsubscribe-page__header">No more letters.</h3>{% endif %}
+            <p class="unsubscribe-page__description {{ not success ? 'unsubscribe-page__description--margined' : '' }}">
+                You can change notifications preferences in the Garage{{ success ? ' later' : '' }}.
+                We also support Slack and Telegram alerts, it's very useful.
+            </p>
+        </div>
+        <a class="unsubscribe-page__garage-link" href="/garage">
+            To the Garage
+            {{ svg('/public/svg/arrow-right.svg') }}
+        </a>
+    </div>
+
+{% endblock %}
