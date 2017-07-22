@@ -41,5 +41,8 @@
 {% endblock %}
 
 {% block footer %}
-  <a href="https://{{ hostName }}/garage/settings" style="color:#7f87a2;">Notifications preferences</a>
+  <a href="{{ serverUrl }}/garage/settings" style="color:#7f87a2;">Notifications preferences</a>
+  <a href="{{ serverUrl }}/unsubscribe?id={{ userId }}&hash={{ userIdHash }}" style="color:#7f87a2;margin-left:15px">
+    Disable email notifications
+  </a>
 {% endblock %}
