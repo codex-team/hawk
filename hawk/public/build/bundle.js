@@ -1014,11 +1014,6 @@ var hawk = function (self) {
      */
     self.eventPopup.init();
 
-    /**
-     * Event counters
-     */
-    // self.counters.init();
-
     console.log('Hawk app initialized');
   };
 
@@ -1029,7 +1024,6 @@ var hawk = function (self) {
   self.notifier = __webpack_require__(6);
   self.event = __webpack_require__(5);
   self.eventPopup = __webpack_require__(4);
-  // self.counters = require('./counters');
 
   return self;
 }({});
