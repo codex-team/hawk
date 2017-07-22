@@ -14,10 +14,10 @@
     }
 
     &__img {
+        margin-right: 10px;
         height: 30px;
         vertical-align: middle;
         border-radius: 3px;
-        margin-right: 10px;
     }
 
     &__name {
