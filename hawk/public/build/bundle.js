@@ -480,6 +480,10 @@ var eventAppender = function (self) {
     event: null
   };
 
+  var CSS_ = {
+    loadMoreButton: 'eventAppender__loadMoreButton'
+  };
+
   var autoload = null;
 
   var preloader = null;
@@ -514,14 +518,19 @@ var eventAppender = function (self) {
   };
 
   var makePreLoader_ = function makePreLoader_() {
-    var block = dom.make('DIV');
+    var block = dom.make('DIV', CSS_.loadMoreButton);
 
     block.textContent = 'Load more';
-
     return block;
   };
 
-  var loadMoreEvents_ = function loadMoreEvents_() {
+  var loadMoreEvents_ = function loadMoreEvents_(event) {
+    event.preventDefault();
+
+    var me = new Autoloading();
+
+    console.log(me);
+
     var nextPage = parseInt(currentPage) + 1;
     var requestPage = '/garage/' + settings.domain + '/event/' + settings.event + '/?page=' + nextPage;
 
@@ -529,8 +538,14 @@ var eventAppender = function (self) {
       url: requestPage,
       success: function success(response) {
         response = JSON.parse(response);
-        console.log('response', response);
-        moduleRequiredElement.insertAdjacentHTML('beforeEnd', response.traceback);
+
+        if (response.traceback) {
+          moduleRequiredElement.insertAdjacentHTML('beforeEnd', response.traceback);
+        }
+
+        if (response.hideButton) {
+          preloader.remove();
+        }
         currentPage++;
       },
       error: function error(_error) {}

@@ -32,3 +32,8 @@
  * traceback-popup
  */
 @import url('garage/event-popup.css');
+
+/**
+ * Appender styles
+ */
+@@import url('garage/event-appender.css');

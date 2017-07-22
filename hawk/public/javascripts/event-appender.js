@@ -6,6 +6,10 @@ let eventAppender = (function (self) {
     event : null
   };
 
+  let CSS_ = {
+    loadMoreButton : 'eventAppender__loadMoreButton'
+  };
+
   let autoload = null;
 
   let preloader = null;
@@ -40,14 +44,19 @@ let eventAppender = (function (self) {
   };
 
   let makePreLoader_ = function () {
-    let block = dom.make('DIV');
+    let block = dom.make('DIV', CSS_.loadMoreButton);
 
     block.textContent = 'Load more';
-
     return block;
   };
 
-  let loadMoreEvents_ = function () {
+  let loadMoreEvents_ = function (event) {
+    event.preventDefault();
+
+    let me = new Autoloading();
+
+    console.log(me);
+
     let nextPage = parseInt(currentPage) + 1;
     let requestPage = `/garage/${settings.domain}/event/${settings.event}/?page=${nextPage}`;
 
@@ -55,8 +64,14 @@ let eventAppender = (function (self) {
       url : requestPage,
       success: function (response) {
         response = JSON.parse(response);
-        console.log('response', response);
-        moduleRequiredElement.insertAdjacentHTML('beforeEnd', response.traceback);
+
+        if (response.traceback) {
+          moduleRequiredElement.insertAdjacentHTML('beforeEnd', response.traceback);
+        }
+
+        if (response.hideButton) {
+          preloader.remove();
+        }
         currentPage ++;
       },
       error: function (error) {

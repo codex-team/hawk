@@ -150,7 +150,7 @@ let loadMoreDataForPagination_ = function(templatePath, domain, events, canLoadM
 
   if (canLoadMore) {
 
-    app.render(templatePath, {
+    response.render(templatePath, {
       domain,
       events
     }, function(err, res) {
@@ -166,7 +166,7 @@ let loadMoreDataForPagination_ = function(templatePath, domain, events, canLoadM
   } else {
 
       return response.json ({ traceback : '', hideButton : true });
-      
+
   }
 
 };
