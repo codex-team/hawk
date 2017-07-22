@@ -1,24 +1,35 @@
 <div class="garage-header">
 
-    {% set url = "/garage/" ~ domain.name %}
-    <h1 class="garage-header__page-title">
-        <a href="{{ url }}">{{ domain.name }}</a>
-    </h1>
-    <a class="garage-header__tab" href="{{ url }}/fatal">
-        Fatal
-        <span class="counter">{{ domain.fatal or 0 }}</span>
-    </a>
-    <a class="garage-header__tab" href="{{ url }}/warnings">
-        Warnings
-        <span class="counter">{{ domain.warnings or 0 }}</span>
-    </a>
-    <a class="garage-header__tab" href="{{ url }}/notice">
-        Notice
-        <span class="counter">{{ domain.notice or 0 }}</span>
-    </a>
-    <a class="garage-header__tab" href="{{ url }}/javascript">
-        JavaScript Errors
-        <span class="counter">{{ domain.javascript or 0 }}</span>
-    </a>
+    {% if domain != null %}
+
+        {% set url = "/garage/" ~ domain.name %}
+        <h1 class="garage-header__page-title">
+            <a href="{{ url }}">{{ domain.name }}</a>
+        </h1>
+        <a class="garage-header__tab" href="{{ url }}/fatal">
+            Fatal
+            <span class="counter">{{ domain.fatal or 0 }}</span>
+        </a>
+        <a class="garage-header__tab" href="{{ url }}/warnings">
+            Warnings
+            <span class="counter">{{ domain.warnings or 0 }}</span>
+        </a>
+        <a class="garage-header__tab" href="{{ url }}/notice">
+            Notice
+            <span class="counter">{{ domain.notice or 0 }}</span>
+        </a>
+        <a class="garage-header__tab" href="{{ url }}/javascript">
+            JavaScript Errors
+            <span class="counter">{{ domain.javascript or 0 }}</span>
+        </a>
+
+    {% else %}
+        <h1 class="garage-header__page-title">
+            Dashboard
+        </h1>
+        <a href="/docs" class="garage-header__docs">
+            Platform Documentation
+        </a>
+    {% endif %}
 
 </div>
