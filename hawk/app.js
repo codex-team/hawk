@@ -149,12 +149,14 @@ var login = require('./routes/yard/auth/login');
 var logout = require('./routes/yard/auth/logout');
 var join = require('./routes/yard/auth/join');
 var websites = require('./routes/yard/websites');
+var unsubscribe = require('./routes/yard/unsubscribe');
 
 app.use('/', index);
 app.use('/websites', websites);
 app.use('/login', login);
 app.use('/logout', logout);
 app.use('/join', join);
+app.use('/unsubscribe', unsubscribe);
 
 /**
  * Catcher

@@ -1,0 +1,50 @@
+.unsubscribe-page {
+
+    padding: 60px 70px;
+    color: #fff;
+
+    &__title {
+        margin: 0;
+        font-size: 47px;
+    }
+
+    &__caption {
+        margin: 6px 0;
+        color: color(#fff alpha(50%));
+        font-size: 20px;
+    }
+
+    &__body {
+        margin: 85px 0 20px;
+        color: #fff;
+    }
+
+    &__header {
+        margin: 25px 0 15px;
+        font-size: 27px;
+        font-weight: 400;
+    }
+
+    &__description {
+        max-width: 380px;
+        font-size: 19px;
+        line-height: 1.5em;
+
+        &--margined {
+            margin-top: 30px;
+        }
+
+    }
+
+    &__garage-link {
+
+        font-size: 20px;
+        color: var(--linkOnDark);
+
+        svg {
+            margin-left: 0.6em;
+        }
+
+    }
+
+}
