@@ -1,5 +1,4 @@
 module.exports = function () {
-
   let mongo = require('../modules/database');
   let collections = require('../config/collections');
 
@@ -19,44 +18,34 @@ module.exports = function () {
    * @param name
    */
   let get = function (token, name) {
-
     return mongo.findOne(collection, {
       token: token,
       name: name
     });
-
   };
 
   let getByUser = function (user) {
-
     return mongo.find(collection, {user: user._id.toString()});
-
   };
 
   /**
    * Return true if application with name specified is not exists
    */
   let checkName = function (domain) {
-
     return mongo.findOne(collection, {
       'name': domain
     })
       .then(function (result) {
-
         return !result;
-
       });
-
   };
 
   /**
    * Add new domain name and client and server tokens to DB
    */
   let add = function (domain, token, user) {
-
     return mongo.updateOne('users', {_id: mongo.ObjectId(user._id)}, {$push: {domains: domain}})
       .then(function () {
-
         /**
          * Using Node URL module to get domain name and protocol
          * to see all features you can in documentation page
@@ -68,9 +57,7 @@ module.exports = function () {
          * refresh page with error message
          */
         if (!parsedURL.host && !parsedURL.pathname) {
-
           throw new Error('Invalid domain name, please try again');
-
         }
 
         return mongo.insertOne(collection, {
@@ -79,9 +66,7 @@ module.exports = function () {
           'token': token,
           'user': user._id.toString()
         });
-
       });
-
   };
 
   /**
@@ -92,32 +77,24 @@ module.exports = function () {
    * @returns {Promise.<TResult>}
    */
   let remove = function (owner, token) {
-
     return mongo.findOne(collections.WEBSITES, {
       token: token,
       user: owner._id.toString()
     })
       .then(function (domain) {
-
         /* Remove domain from list of user`s domains */
-        return mongo.updateOne(collections.USERS, {_id: owner._id}, {$pull: {domains: domain}});
-
+        return mongo.updateOne(collections.USERS, {_id: owner._id}, {$pull: {domains: domain.name}});
       })
       .then(function () {
-
         /* Remove domain from database */
         return mongo.remove(collections.WEBSITES, {
           user: owner._id.toString(),
           token: token
         });
-
       })
       .catch(function (e) {
-
         logger.log('error', 'Can\' remove domain ', e);
-
       });
-
   };
 
   return {
@@ -127,5 +104,4 @@ module.exports = function () {
     getByUser: getByUser,
     remove: remove
   };
-
 }();
