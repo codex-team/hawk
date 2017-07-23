@@ -64,8 +64,8 @@ let eventPopup = (function ( self ) {
    */
   function makePopup() {
     let holder = dom.make('div', CSS.popup),
-      closeButton = dom.make('div', CSS.closeButton),
-      content = dom.make('div', CSS.popupContent);
+        closeButton = dom.make('div', CSS.closeButton),
+        content = dom.make('div', CSS.popupContent);
 
     holder.appendChild(closeButton);
     holder.appendChild(content);
@@ -103,8 +103,8 @@ let eventPopup = (function ( self ) {
    */
   let closePopupByOutsideClick_ = function (event) {
     let target = event.target,
-      clickedOnPopup = true,
-      isOpened = popup.holder.classList.contains(CSS.popupShowed);
+        clickedOnPopup = true,
+        isOpened = popup.holder.classList.contains(CSS.popupShowed);
 
     if (!isOpened) {
       return;
@@ -184,10 +184,10 @@ let eventPopup = (function ( self ) {
     const milliseconds = 1000;
 
     let date = new Date(time * milliseconds),
-      dateFormatted = date.toGMTString().slice(5, 16),
-      newLine = dom.make('span', null, {
-        innerHTML : `since <br> ${dateFormatted}`
-      });
+        dateFormatted = date.toGMTString().slice(5, 16),
+        newLine = dom.make('span', null, {
+          innerHTML : `since <br> ${dateFormatted}`
+        });
 
     dom.replace(firstLine, newLine);
     secondLine.remove();
@@ -316,7 +316,7 @@ let eventPopup = (function ( self ) {
 
 
     let event = row.dataset.event,
-      domainName = row.dataset.domain;
+        domainName = row.dataset.domain;
 
     event = JSON.parse(event);
 

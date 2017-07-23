@@ -83,7 +83,7 @@ module.exports = function () {
     })
       .then(function (domain) {
         /* Remove domain from list of user`s domains */
-        return mongo.updateOne(collections.USERS, {_id: owner._id}, {$pull: {domains: domain}});
+        return mongo.updateOne(collections.USERS, {_id: owner._id}, {$pull: {domains: domain.name}});
       })
       .then(function () {
         /* Remove domain from database */

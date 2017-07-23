@@ -9,8 +9,8 @@ module.exports = (function () {
     if (!data || !data.url) return;
 
     let XMLHTTP        = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject('Microsoft.XMLHTTP'),
-      successFunction  = function () {},
-      errorFunction = function () {};
+        successFunction  = function () {},
+        errorFunction = function () {};
 
     data.async           = true;
     data.type            = data.type || 'GET';

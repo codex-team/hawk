@@ -51,7 +51,7 @@ module.exports = function () {
    */
   let elementClicked = function () {
     let selection = window.getSelection(),
-      range     = document.createRange();
+        range     = document.createRange();
 
     range.selectNodeContents(this);
     selection.removeAllRanges();
