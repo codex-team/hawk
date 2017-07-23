@@ -43,7 +43,19 @@
     }
 
     &--unread {
-      background-color: color(var(--grayText) alpha(10%));
+
+      &::before {
+        content: "";
+        position: absolute;
+        display: block;
+        top: 0;
+        left: -15px;
+        width: 3px;
+        height: calc(100% - 6px);
+        margin: 3px;
+        border-radius: 5px;
+        background: #87ceeb;
+      }
     }
 
     &__left {
