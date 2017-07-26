@@ -11,4 +11,4 @@ let chai = require('chai'),
 chai.use(chaiHttp);
 
 describe('Testing Routes: /garage page', function() {
-}
+});
