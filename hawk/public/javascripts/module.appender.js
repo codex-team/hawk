@@ -9,10 +9,6 @@
 import { Appender } from './class.appender';
 
 module.exports = (function (self) {
-  let settings_ = null;
-
-  let moduleInited = null;
-
   self.init = function (settings) {
     let el = this;
 

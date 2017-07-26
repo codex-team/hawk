@@ -20,15 +20,17 @@ let hawk = (function ( self ) {
   self.appender = require('./module.appender');
 
   self.delegate = function () {
-    let modulesRequired = document.querySelectorAll('[data-module-required]'),
-      moduleName,
-      moduleSettings;
+    let modulesRequired = document.querySelectorAll('[data-module-required]');
 
-    for (var i = 0; i < modulesRequired.length; i++) {
+    for (let i = 0; i < modulesRequired.length; i++) {
       initModule(modulesRequired[i]);
     }
   };
 
+  /**
+   * get's module name from data attributes
+   * Calls module with settings that are defined below on <module-settings> tag 
+   */
   function initModule(foundRequiredModule) {
     let moduleName = foundRequiredModule.dataset.moduleRequired,
       moduleSettings;

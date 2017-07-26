@@ -20,7 +20,6 @@ var dom = require('./dom').default;
  *
  */
 export class Appender {
-
   /**
    * Class internal properties:
    * @property {Object} settings - comes outsite
@@ -64,11 +63,15 @@ export class Appender {
 
     hawk.ajax.call({
       url : this.settings.url + this.nextPage,
-      success: successCallback.bind(this),
-      error: errorCallback.bind(this)
+      success: this.successCallback.bind(this),
+      error: this.errorCallback.bind(this)
     });
   };
 
+  /**
+   * remove "load more button" if server says "can't load more"
+   * call Customized callback with response
+   */
   successCallback(response) {
     response = JSON.parse(response);
 
@@ -80,6 +83,9 @@ export class Appender {
     this.settings.appendItemsOnLoad(response);
   };
 
-  function errorCallback(error) {
+  /**
+   * Handle error responses
+   */
+  errorCallback(error) {
   };
 };

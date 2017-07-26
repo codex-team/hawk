@@ -1023,15 +1023,17 @@ var hawk = function (self) {
   self.appender = __webpack_require__(15);
 
   self.delegate = function () {
-    var modulesRequired = document.querySelectorAll('[data-module-required]'),
-        moduleName = void 0,
-        moduleSettings = void 0;
+    var modulesRequired = document.querySelectorAll('[data-module-required]');
 
     for (var i = 0; i < modulesRequired.length; i++) {
       initModule(modulesRequired[i]);
     }
   };
 
+  /**
+   * get's module name from data attributes
+   * Calls module with settings that are defined below on <module-settings> tag 
+   */
   function initModule(foundRequiredModule) {
     var moduleName = foundRequiredModule.dataset.moduleRequired,
         moduleSettings = void 0;
@@ -1068,9 +1070,128 @@ module.exports = hawk;
 /* 12 */,
 /* 13 */,
 /* 14 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-throw new Error("Module build failed: SyntaxError: Unexpected token (83:11)\n\n\u001b[0m \u001b[90m 81 | \u001b[39m  }\u001b[33m;\u001b[39m\n \u001b[90m 82 | \u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 83 | \u001b[39m  \u001b[36mfunction\u001b[39m errorCallback(error) {\n \u001b[90m    | \u001b[39m           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 84 | \u001b[39m  }\u001b[33m;\u001b[39m\n \u001b[90m 85 | \u001b[39m}\u001b[33m;\u001b[39m\n \u001b[90m 86 | \u001b[39m\u001b[0m\n");
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var dom = __webpack_require__(9).default;
+
+/**
+ * Class Appender
+ * @constructor
+ * @type {Object} settings
+ * @type {String} settings.url - sends requests to this URL to get items
+ * @type {Function} settings.init - function will be called with "load more button"
+ * @type {Function} settings.appendItemsOnLoad - function will be called after servers response
+ *
+ *
+ * Usage:
+ *   new Appender({
+ *     url : YOUR URL,
+ *     init : YOUR CUSTOM CALLBACK,
+ *     appendItemsOnLoad : YOUR CUSTOM CALLBACK
+ *   })
+ *
+ */
+
+var Appender = exports.Appender = function () {
+  /**
+   * Class internal properties:
+   * @property {Object} settings - comes outsite
+   * @property {Boolean} autoload - load data by scroll
+   * @property {Integer} nextPage - page rotation
+   * @property {Object} CSS - styles
+   */
+  function Appender(settings) {
+    _classCallCheck(this, Appender);
+
+    this.settings = settings;
+    this.autoload = null;
+    this.nextPage = 1;
+
+    this.CSS = {
+      loadMoreButton: 'eventAppender__loadMoreButton'
+    };
+
+    this.loadMoreButton = this.drawLoadMoreButton();
+    this.loadMoreButton.addEventListener('click', this.loadMoreEvents.bind(this), false);
+
+    /** call init method with button */
+    this.settings.init(this.loadMoreButton);
+  }
+
+  _createClass(Appender, [{
+    key: 'drawLoadMoreButton',
+
+
+    /**
+     * Draws load more button
+     */
+    value: function drawLoadMoreButton() {
+      var block = dom.make('DIV', this.CSS.loadMoreButton, {
+        textContent: 'Load more'
+      });
+
+      return block;
+    }
+  }, {
+    key: 'loadMoreEvents',
+
+
+    /**
+     * Sends a request to the server
+     * After getting response calls {settings.appendItemsOnLoad} Function
+     */
+    value: function loadMoreEvents(event) {
+      event.preventDefault();
+
+      hawk.ajax.call({
+        url: this.settings.url + this.nextPage,
+        success: this.successCallback.bind(this),
+        error: this.errorCallback.bind(this)
+      });
+    }
+  }, {
+    key: 'successCallback',
+
+
+    /**
+     * remove "load more button" if server says "can't load more"
+     * call Customized callback with response
+     */
+    value: function successCallback(response) {
+      response = JSON.parse(response);
+
+      if (response.hideButton) {
+        this.loadMoreButton.remove();
+      }
+
+      this.nextPage++;
+      this.settings.appendItemsOnLoad(response);
+    }
+  }, {
+    key: 'errorCallback',
+
+
+    /**
+     * Handle error responses
+     */
+    value: function errorCallback(error) {}
+  }]);
+
+  return Appender;
+}();
+
+;
 
 /***/ }),
 /* 15 */
@@ -1082,10 +1203,6 @@ throw new Error("Module build failed: SyntaxError: Unexpected token (83:11)\n\n\
 var _class = __webpack_require__(14);
 
 module.exports = function (self) {
-  var settings_ = null;
-
-  var moduleInited = null;
-
   self.init = function (settings) {
     var el = this;
 
