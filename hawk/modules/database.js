@@ -53,7 +53,11 @@ let mongo = (function () {
    * @param {String} c - collection name
    * @param {Document} query - The selection criteria for the update
    * @param {Document} update - The modifications to apply
-   * @param {Object} options - upsert or/and writeConcern params 
+   * @param {Boolean} options.upsert - (optional) When true, updateMany() either:
+   *                                   * Creates a new document if no documents match the filter.
+   *                                   * Updates documents that match the filter.
+   * @param {document} options.writeConcern - (optional) A document expressing the write concern.
+                                              Omit to use the default write concern.
    * @returns {Promise.<TResult>}
    */
   let updateMany = function (c, query, update, options) {
