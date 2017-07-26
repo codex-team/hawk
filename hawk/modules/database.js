@@ -51,12 +51,12 @@ let mongo = (function () {
    * https://docs.mongodb.com/v3.2/reference/method/db.collection.updateMany/
    *
    * @param {String} c - collection name
-   * @param {Document} query - The selection criteria for the update
-   * @param {Document} update - The modifications to apply
+   * @param {Object} query - The selection criteria for the update
+   * @param {Object} update - The modifications to apply
    * @param {Boolean} options.upsert - (optional) When true, updateMany() either:
    *                                   * Creates a new document if no documents match the filter.
    *                                   * Updates documents that match the filter.
-   * @param {Document} options.writeConcern - (optional) A document expressing the write concern.
+   * @param {Object} options.writeConcern - (optional) A document expressing the write concern.
                                               Omit to use the default write concern.
    * @returns {Promise.<TResult>}
    */
