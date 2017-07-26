@@ -56,7 +56,7 @@ let mongo = (function () {
    * @param {Boolean} options.upsert - (optional) When true, updateMany() either:
    *                                   * Creates a new document if no documents match the filter.
    *                                   * Updates documents that match the filter.
-   * @param {document} options.writeConcern - (optional) A document expressing the write concern.
+   * @param {Document} options.writeConcern - (optional) A document expressing the write concern.
                                               Omit to use the default write concern.
    * @returns {Promise.<TResult>}
    */
