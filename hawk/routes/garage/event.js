@@ -31,11 +31,7 @@ function getDomainInfo(userDomains, domainName) {
 * @param {Array} events - events list
 */
 let markEventsAsRead = function (currentDomain, events) {
-  let eventsIds = [];
-
-  events.forEach(function (event) {
-    eventsIds.push(new mongo.ObjectId(event['_id']));
-  });
+  let eventsIds = events.map(event => new mongo.ObjectId(event['_id']));
 
   modelEvents.markRead(currentDomain.name, eventsIds).then(function (docs, err) {
 
