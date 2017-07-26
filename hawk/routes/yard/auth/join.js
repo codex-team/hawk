@@ -107,7 +107,7 @@ let join = {
 
 };
 
-router.get('/', join.get);
-router.post('/', join.post);
+router.get('/join', join.get);
+router.post('/join', join.post);
 
 module.exports = router;
