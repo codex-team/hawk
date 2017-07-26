@@ -33,7 +33,14 @@
 
 {% block repeations %}
     {% if events %}<h3>Repeations</h3>{% endif %}
-    <div class="repeations" data-module-required="eventAppender" data-event='{{ event.groupHash }}' data-domain='{{ domain.name }}'>
+    <div class="repeations" data-module-required="appender">
+      <module-settings>
+        {
+          "url" : "/garage/{{ domain.name }}/event/{{ event.groupHash }}/?page=",
+          "event" : "{{ event.groupHash }}",
+          "domain" : "{{ domain.name }}"
+        }
+      </module-settings>
       {% include 'garage/events/client/events-list.twig' with {events: events} %}
     </div>
 {% endblock %}

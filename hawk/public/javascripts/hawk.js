@@ -7,14 +7,7 @@ let hawk = (function ( self ) {
   'use strict';
 
   self.init = function ( ) {
-    /**
-     * Event popup
-     */
-    self.eventPopup.init();
-
-    self.eventAppender.init();
-
-    console.log('Hawk app initialized');
+    self.delegate();
   };
 
   self.checkbox = require('./checkbox');
@@ -23,8 +16,37 @@ let hawk = (function ( self ) {
   self.domain   = require('./domain');
   self.notifier = require('exports-loader?notifier!codex-notifier');
   self.event    = require('./event');
-  self.eventPopup    = require('./event-popup');
-  self.eventAppender = require('./event-appender');
+  self.eventPopup = require('./event-popup');
+  self.appender = require('./module.appender');
+
+  self.delegate = function () {
+    let modulesRequired = document.querySelectorAll('[data-module-required]'),
+      moduleName,
+      moduleSettings;
+
+    for (var i = 0; i < modulesRequired.length; i++) {
+      initModule(modulesRequired[i]);
+    }
+  };
+
+  function initModule(foundRequiredModule) {
+    let moduleName = foundRequiredModule.dataset.moduleRequired,
+      moduleSettings;
+
+    if (self[moduleName]) {
+      moduleSettings = foundRequiredModule.querySelector('module-settings');
+
+      if (moduleSettings) {
+        moduleSettings = moduleSettings.textContent.trim();
+      }
+
+      if (self[moduleName].init) {
+        let parsedSettings = JSON.parse(moduleSettings);
+
+        self[moduleName].init.call(foundRequiredModule, parsedSettings);
+      }
+    }
+  };
 
   return self;
 })({});
