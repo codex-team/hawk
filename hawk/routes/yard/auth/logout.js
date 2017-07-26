@@ -5,7 +5,7 @@ var router = express.Router();
 var auth = require('../../../modules/auth');
 
 
-router.get('/', function (req, res) {
+router.get('/logout', function (req, res) {
   auth.logout(res);
   res.redirect('/');
 });

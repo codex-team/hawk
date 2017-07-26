@@ -46,6 +46,16 @@ let mongo = (function () {
       });
   };
 
+  /**
+   * Updates multiple documents within the collection based on the query.
+   * https://docs.mongodb.com/v3.2/reference/method/db.collection.updateMany/
+   *
+   * @param {String} c - collection name
+   * @param {Document} query - The selection criteria for the update
+   * @param {Document} update - The modifications to apply
+   * @param {Object} options - upsert or/and writeConcern params 
+   * @returns {Promise.<TResult>}
+   */
   let updateMany = function (c, query, update, options) {
     return getCollection(c)
       .then(function (collection) {

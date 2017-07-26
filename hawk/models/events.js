@@ -3,6 +3,11 @@ module.exports = (function () {
 
   let mongo = require('../modules/database');
 
+  const EVENT_STATUS = {
+    unread: 0,
+    read: 1,
+  };
+
   /**
    * Add new event to domain collection
    *
@@ -11,7 +16,7 @@ module.exports = (function () {
    */
   let add = function (domain, event) {
     /* Status equals 1 if event is read otherwise it equals 0  */
-    event.status = 0;
+    event.status = EVENT_STATUS.unread;
     return mongo.insertOne(domain, event);
   };
 
@@ -68,11 +73,18 @@ module.exports = (function () {
     return mongo.aggregation(domain, pipeline);
   };
 
+  /**
+   * Marks as read events from collection by id.
+   *
+   * @param {String} collection - collection name
+   * @param {Array} eventsIds - array of id
+   * @returns {Promise.<TResult>}
+   */
   let markRead = function (collection, eventsIds) {
     return mongo.updateMany(
       collection,
       { _id: { $in: eventsIds } },
-      { $set: { 'status': 1 } },
+      { $set: { 'status': EVENT_STATUS.read } },
       { upsert: true }
     );
   };
@@ -89,7 +101,7 @@ module.exports = (function () {
           _id: '$tag',
           count: {$sum: 1},
           /* To count unread events, we compare status with 1 for each one */
-          unread: {$sum: { $cmp: [1, '$status']}}
+          unread: {$sum: { $cmp: [EVENT_STATUS.read, '$status']}}
         }
       } ]);
   };

@@ -1,0 +1,21 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+  <div class="yard">
+    {% include 'yard/form.twig' with {
+      action: '/reset',
+      title: 'Reset password',
+      fields: [
+        {
+          label: 'Your email',
+          name: 'email',
+          value: email,
+          placeholder: 'name@best-team.com',
+          type: 'email'
+        }
+      ],
+      submitText: 'Reset password',
+      message: message
+    } %}
+  </div>
+{% endblock %}

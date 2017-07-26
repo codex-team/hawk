@@ -99,6 +99,19 @@ module.exports = function () {
 
         let queries = [];
 
+        /**
+         * domain : {
+         *   'events': {
+         *     'count': 0,     total number of events for this domain
+         *     'unread': 0     total number of unread events for this domain
+         *   },
+         *   *event_tag*: {
+         *     'count': 0,     number of events fot this *event_tag*
+         *     'unread': 0     number of unread events fot this *event_tag* 
+         *   },
+         *   ...
+         * }
+         */
         domains.forEach(function (domain) {
           let query = events.countTags(domain.name)
             .then(function (tags) {
@@ -172,6 +185,32 @@ module.exports = function () {
       });
   };
 
+  /**
+   * Generate new reset hash an save it to db
+   *
+   * @param userId
+   * @returns {Promise.<TResult>}
+   */
+  let saveRecoverHash = function (userId) {
+    let recoverHash = generateRecoverHash();
+
+    return mongo.updateOne(collection,
+      {_id: userId},
+      {$set: {recoverHash: recoverHash}}
+    )
+      .then(function () {
+        return recoverHash;
+      });
+  };
+
+  /**
+   * Generate random hex string
+   * @returns {string} random hash
+   */
+  let generateRecoverHash = function () {
+    return Math.random().toString(16).slice(-12);
+  };
+
   return {
     current: current,
     getByParams: getByParams,
@@ -179,6 +218,7 @@ module.exports = function () {
     get: get,
     getInfo: getInfo,
     update: update,
-    checkParamUniqueness: checkParamUniqueness
+    checkParamUniqueness: checkParamUniqueness,
+    saveRecoverHash: saveRecoverHash
   };
 }();
