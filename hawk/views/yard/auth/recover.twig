@@ -1,0 +1,28 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+  <div class="yard">
+    {% include 'yard/form.twig' with {
+      action: action,
+      title: 'Recover password',
+      fields: [
+        {
+          label: 'Password',
+          name: 'password',
+          value: '',
+          placeholder: '********',
+          type: 'password'
+        },
+        {
+          label: 'Repeat password',
+          name: 'repeatPassword',
+          value: '',
+          placeholder: '********',
+          type: 'password'
+        }
+      ],
+      submitText: 'Set password',
+      message: message
+    } %}
+  </div>
+{% endblock %}
