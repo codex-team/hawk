@@ -1068,77 +1068,9 @@ module.exports = hawk;
 /* 12 */,
 /* 13 */,
 /* 14 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var dom = __webpack_require__(9).default;
-
-var Appender = exports.Appender = function () {
-  function Appender(settings) {
-    _classCallCheck(this, Appender);
-
-    this.settings = settings;
-    this.autoload = null;
-    this.nextPage = 1;
-    this.currentPage = 1;
-
-    this.CSS = {
-      loadMoreButton: 'eventAppender__loadMoreButton'
-    };
-
-    this.preloader = this.makePreLoader_();
-    this.preloader.addEventListener('click', this.loadMoreEvents_.bind(this), false);
-
-    this.settings.init(this.preloader);
-  }
-
-  _createClass(Appender, [{
-    key: 'makePreLoader_',
-    value: function makePreLoader_() {
-      var block = dom.make('DIV', this.CSS.loadMoreButton);
-
-      block.textContent = 'Load more';
-
-      return block;
-    }
-  }, {
-    key: 'loadMoreEvents_',
-    value: function loadMoreEvents_(event) {
-      event.preventDefault();
-
-      hawk.ajax.call({
-        url: this.settings.url + this.nextPage,
-        success: successCallback.bind(this),
-        error: function error(_error) {}
-      });
-
-      function successCallback(response) {
-        response = JSON.parse(response);
-
-        if (response.hideButton) {
-          this.preloader.remove();
-        }
-
-        this.nextPage++;
-        this.settings.appendItemsOnLoad(response.traceback);
-      }
-    }
-  }]);
-
-  return Appender;
-}();
-
-;
+throw new Error("Module build failed: SyntaxError: Unexpected token (83:11)\n\n\u001b[0m \u001b[90m 81 | \u001b[39m  }\u001b[33m;\u001b[39m\n \u001b[90m 82 | \u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 83 | \u001b[39m  \u001b[36mfunction\u001b[39m errorCallback(error) {\n \u001b[90m    | \u001b[39m           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 84 | \u001b[39m  }\u001b[33m;\u001b[39m\n \u001b[90m 85 | \u001b[39m}\u001b[33m;\u001b[39m\n \u001b[90m 86 | \u001b[39m\u001b[0m\n");
 
 /***/ }),
 /* 15 */
@@ -1159,8 +1091,8 @@ module.exports = function (self) {
 
     new _class.Appender({
       url: settings.url,
-      init: function init(preloader) {
-        el.after(preloader);
+      init: function init(loadMoreButton) {
+        el.after(loadMoreButton);
       },
       appendItemsOnLoad: function appendItemsOnLoad(items) {
         if (items.trim()) {
@@ -1171,7 +1103,14 @@ module.exports = function (self) {
   };
 
   return self;
-}({});
+}({}); /**
+        * @module Module Appender
+        *
+        * Creates instanses to required modules
+        * Can be customized
+        *
+        * Appends after element generates by class "load more button"
+        */
 
 /***/ })
 /******/ ]);

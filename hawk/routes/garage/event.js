@@ -159,13 +159,13 @@ let loadMoreDataForPagination_ = function(templatePath, domain, events, canLoadM
           logger.error(`Something bad wrong. I can't load more ${currentEvent.type} events from ${domain} because of `, err);
         }
 
-        return response.json({ traceback : res, hideButton : false });
+        return response.json({ traceback : res, canLoadMore : false });
 
     });
 
   } else {
 
-      return response.json ({ traceback : '', hideButton : true });
+      return response.json ({ traceback : '', canLoadMore : true });
 
   }
 

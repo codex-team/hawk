@@ -1,3 +1,11 @@
+/**
+ * @module Module Appender
+ *
+ * Creates instanses to required modules
+ * Can be customized
+ *
+ * Appends after element generates by class "load more button"
+ */
 import { Appender } from './class.appender';
 
 module.exports = (function (self) {
@@ -10,8 +18,8 @@ module.exports = (function (self) {
 
     new Appender({
       url : settings.url,
-      init : function (preloader) {
-        el.after(preloader);
+      init : function (loadMoreButton) {
+        el.after(loadMoreButton);
       },
       appendItemsOnLoad : function (items) {
         if (items.trim()) {

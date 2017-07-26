@@ -2,51 +2,84 @@
 
 var dom = require('./dom').default;
 
+/**
+ * Class Appender
+ * @constructor
+ * @type {Object} settings
+ * @type {String} settings.url - sends requests to this URL to get items
+ * @type {Function} settings.init - function will be called with "load more button"
+ * @type {Function} settings.appendItemsOnLoad - function will be called after servers response
+ *
+ *
+ * Usage:
+ *   new Appender({
+ *     url : YOUR URL,
+ *     init : YOUR CUSTOM CALLBACK,
+ *     appendItemsOnLoad : YOUR CUSTOM CALLBACK
+ *   })
+ *
+ */
 export class Appender {
+
+  /**
+   * Class internal properties:
+   * @property {Object} settings - comes outsite
+   * @property {Boolean} autoload - load data by scroll
+   * @property {Integer} nextPage - page rotation
+   * @property {Object} CSS - styles
+   */
   constructor(settings) {
     this.settings = settings;
     this.autoload = null;
     this.nextPage = 1;
-    this.currentPage = 1;
 
     this.CSS = {
       loadMoreButton : 'eventAppender__loadMoreButton'
     };
 
-    this.preloader = this.makePreLoader_();
-    this.preloader.addEventListener('click', this.loadMoreEvents_.bind(this), false);
+    this.loadMoreButton = this.drawLoadMoreButton();
+    this.loadMoreButton.addEventListener('click', this.loadMoreEvents.bind(this), false);
 
-    this.settings.init(this.preloader);
+    /** call init method with button */
+    this.settings.init(this.loadMoreButton);
   };
 
-  makePreLoader_() {
-    let block = dom.make('DIV', this.CSS.loadMoreButton);
-
-    block.textContent = 'Load more';
+  /**
+   * Draws load more button
+   */
+  drawLoadMoreButton() {
+    let block = dom.make('DIV', this.CSS.loadMoreButton, {
+      textContent: 'Load more'
+    });
 
     return block;
   };
 
-  loadMoreEvents_(event) {
+  /**
+   * Sends a request to the server
+   * After getting response calls {settings.appendItemsOnLoad} Function
+   */
+  loadMoreEvents(event) {
     event.preventDefault();
 
     hawk.ajax.call({
       url : this.settings.url + this.nextPage,
       success: successCallback.bind(this),
-      error: function (error) {
-
-      }
+      error: errorCallback.bind(this)
     });
+  };
 
-    function successCallback(response) {
-      response = JSON.parse(response);
+  successCallback(response) {
+    response = JSON.parse(response);
 
-      if (response.hideButton) {
-        this.preloader.remove();
-      }
-
-      this.nextPage++;
-      this.settings.appendItemsOnLoad(response.traceback);
+    if (response.hideButton) {
+      this.loadMoreButton.remove();
     }
-  }
+
+    this.nextPage++;
+    this.settings.appendItemsOnLoad(response);
+  };
+
+  function errorCallback(error) {
+  };
 };
