@@ -21,7 +21,7 @@ let hawk = (function ( self ) {
   self.domain   = require('./domain');
   self.notifier = require('exports-loader?notifier!codex-notifier');
   self.event    = require('./event');
-  self.eventPopup    = require('./event-popup');
+  self.eventPopup = require('./event-popup');
 
   return self;
 })({});

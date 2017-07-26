@@ -7,11 +7,9 @@ var router = express.Router();
  * Home page
  */
 router.get('/', function (req, res, next) {
-
   res.render('yard/index', {
     user : res.locals.user
   });
-
 });
 
 
@@ -19,7 +17,6 @@ router.get('/', function (req, res, next) {
  * Docs page
  */
 router.get('/docs', function (req, res, next) {
-
   res.render('yard/docs/index', {
 
     meta : {
@@ -30,7 +27,6 @@ router.get('/docs', function (req, res, next) {
     }
 
   });
-
 });
 
 module.exports = router;

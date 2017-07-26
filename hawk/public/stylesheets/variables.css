@@ -10,9 +10,9 @@
 
     /** Error types modifiers */
     --fatalColor: #ff5252;
-    --warningColor: #ffdd5d;
+    --warningsColor: #ffdd5d;
     --noticeColor: #717171;
-    --clientColor: #9786da;
+    --javascriptColor: #9786da;
 
     /** Links */
     --linkColor: #4e37b5;

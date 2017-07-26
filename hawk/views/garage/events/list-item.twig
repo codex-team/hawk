@@ -1,5 +1,5 @@
 {% set eventJson = event|json_encode %}
-<div class="garage-list-item" data-event='{{ eventJson|replace({"'": ""}) }}' data-domain='{{ domain.name }}'>
+<div class="garage-list-item {% if event.status == 0 %}garage-list-item--unread{% endif %}" data-event='{{ eventJson|replace({"'": ""}) }}' data-domain='{{ domain.name }}'>
     <div class="garage-list-item__left">
         <div class="garage-list-item__tag">
             {{ event.tag == 'javascript' ? 'JavaScript Error' : event.tag|capitalize }}

@@ -1,5 +1,5 @@
 var webpack           = require('webpack');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 require('dotenv').config();
 var DevelopmendMode = process.env.ENVIRONMENT === 'DEVELOPMENT';
@@ -28,16 +28,16 @@ module.exports = {
         test: /\.css$/,
         /** extract-text-webpack-plugin */
         use: ExtractTextPlugin.extract([
-            {
-              loader: 'css-loader',
-              options: {
-                minimize: 1,
-                importLoaders: 1
-              }
-            },
-            /** postcss-loader */
-            'postcss-loader'
-          ])
+          {
+            loader: 'css-loader',
+            options: {
+              minimize: 1,
+              importLoaders: 1
+            }
+          },
+          /** postcss-loader */
+          'postcss-loader'
+        ])
       },
       {
         /**
@@ -51,7 +51,7 @@ module.exports = {
           {
             loader: 'babel-loader',
             options: {
-              presets: ['env']
+              presets: [ 'env' ]
             },
           },
           /** ES lint For webpack build */
@@ -67,7 +67,7 @@ module.exports = {
     ]
   },
   plugins: [
-      new ExtractTextPlugin('public/build/bundle.css')
+    new ExtractTextPlugin('public/build/bundle.css')
   ],
 
   devtool: 'source-map',

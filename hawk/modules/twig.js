@@ -9,7 +9,6 @@ let twig = require('twig'),
 
 
 module.exports = function () {
-
   'use strict';
 
   /**

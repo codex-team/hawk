@@ -1,23 +1,18 @@
 let Crypto = require('crypto');
 
 module.exports = (function () {
-
   /* Create sha256 hash for inputString */
   let generateHash = function (inputString) {
-
     let string = inputString + process.env.SALT;
 
     let hash = Crypto.createHash('sha256').update(string, 'utf8').digest('hex');
 
     return hash;
-
   };
 
   /* Generate 8 symbols password */
   let generatePassword = function () {
-
     return Math.random().toString(36).slice(-8);
-
   };
 
   /**
@@ -32,7 +27,6 @@ module.exports = (function () {
   * @return {number} - user id or 0
   */
   let check = function (cookies) {
-
     // load cookies
     let uid = cookies.user_id,
         uhash = cookies.user_hash;
@@ -43,20 +37,16 @@ module.exports = (function () {
     if (uhash != generateHash(uid)) return 0;
 
     return uid;
-
   };
 
   /* Remove cookies */
   let logout = function (res) {
-
     res.clearCookie('user_id');
     res.clearCookie('user_hash');
-
   };
 
   /* Reset cookies */
   let authUser = function (res, user) {
-
     logout(res);
 
     let uid = user._id.toString(),
@@ -64,7 +54,6 @@ module.exports = (function () {
 
     res.cookie('user_id', uid);
     res.cookie('user_hash', uhash);
-
   };
 
   return {
@@ -73,6 +62,5 @@ module.exports = (function () {
     generatePassword: generatePassword,
     authUser: authUser,
     logout: logout
-  }
-
+  };
 })();

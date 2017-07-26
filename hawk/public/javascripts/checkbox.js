@@ -82,7 +82,7 @@ module.exports = function () {
    */
   let checkboxClicked = function (e) {
     let label = this,
-      input = this.querySelector('.'+CLASSES.defaultCheckbox);
+        input = this.querySelector('.'+CLASSES.defaultCheckbox);
 
     label.classList.toggle(CLASSES.checkedCheckbox);
     input.checked = !input.checked;
