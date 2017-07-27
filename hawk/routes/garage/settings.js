@@ -46,7 +46,13 @@ let update = function (req, res) {
       if (post['tg-notify']) params.notifies.tg = true;
       if (post['slack-notify']) params.notifies.slack = true;
 
-      if (post.password) params.password = post.password;
+      if (post.password) {
+        if (post.password != post.repeatedPassword) {
+          throw Error('Passwords don\'t match');
+        }
+        params.password = post.password;
+      }
+
       if (post['tg-webhook']) params.tgHook = post['tg-webhook'];
       if (post['slack-webhook']) params.slackHook = post['slack-webhook'];
 
