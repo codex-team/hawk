@@ -12,14 +12,18 @@ let csrf = require('../../modules/csrf');
  * @param res
  */
 let index = function (req, res) {
-  res.render('garage/settings', {
+  let params = {
     user: res.locals.user,
     domains: res.locals.userDomains,
     csrfToken: req.csrfToken(),
     meta : {
       title : 'User settings'
-    }
-  });
+    },
+    success: req.query.success,
+    message: req.query.message,
+  };
+
+  res.render('garage/settings', params);
 };
 
 /**
@@ -63,7 +67,9 @@ let update = function (req, res) {
       return user.update(currentUser, params);
     })
     .then(function () {
-      res.redirect('/garage/settings?success=1');
+      let message = 'Saved 😉';
+
+      res.redirect('/garage/settings?success=1&message='+message);
     })
     .catch(function (e) {
       res.redirect('/garage/settings?success=0&message='+e.message);
