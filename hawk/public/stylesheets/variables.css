@@ -13,6 +13,7 @@
     --warningsColor: #ffdd5d;
     --noticeColor: #717171;
     --javascriptColor: #9786da;
+    --javascriptColorOnWhite: #5D49AE;
 
     /** Links */
     --linkColor: #4e37b5;
@@ -24,6 +25,7 @@
     --buttonBg: #c5dff5;
     --submitButtonBg: #4592da;
     --lightGrayBg: #f3f3f3;
+    --unreadBg: #e6f9f6;
 
     /** Borders */
     --lightGrayLine: #edebeb;
