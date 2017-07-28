@@ -1,15 +1,15 @@
-<form method="POST" action="settings/save" onsubmit="hawk.settingsForm.checkForm(event);">
+{% if success is not null %}
+  <script>
+    hawk.docReady(function () {
+      hawk.notifier.show({
+        message: "{{ message ? message : '' }}",
+        style: "{{ success == '1' ? 'success' : 'error' }}"
+      })
+    });
+  </script>
+{% endif %}
 
-    {% if success is not null %}
-      <script>
-        hawk.docReady(function () {
-          hawk.notifier.show({
-            message: "{{ message ? message : '' }}",
-            style: "{{ success == '1' ? 'success' : 'error' }}"
-          })
-        });
-      </script>
-    {% endif %}
+<form method="POST" action="settings/save" onsubmit="hawk.settingsForm.checkForm(event);">
 
     {% include 'csrf.twig' with {csrfToken: csrfToken} %}
 
