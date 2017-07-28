@@ -1,4 +1,4 @@
-<form method="POST" action="settings/save">
+<form method="POST" action="settings/save" onsubmit="hawk.settingsForm.checkForm(event);">
 
     {% include 'csrf.twig' with {csrfToken: csrfToken} %}
 

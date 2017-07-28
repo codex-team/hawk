@@ -12,6 +12,9 @@ let hawk = (function ( self ) {
      */
     self.eventPopup.init();
 
+    /** Settings-form checker for validity */
+    self.settingsForm.init();
+
     console.log('Hawk app initialized');
   };
 
@@ -22,6 +25,7 @@ let hawk = (function ( self ) {
   self.notifier = require('exports-loader?notifier!codex-notifier');
   self.event    = require('./event');
   self.eventPopup = require('./event-popup');
+  self.settingsForm = require('./settings-form');
 
   return self;
 })({});

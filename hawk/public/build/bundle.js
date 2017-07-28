@@ -64,7 +64,7 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -418,7 +418,7 @@ var eventPopup = function (self) {
    * @type {Class}
    */
 
-  var dom = __webpack_require__(8).default;
+  var dom = __webpack_require__(9).default;
 
   var keyCodes_ = {
     ESC: 27
@@ -552,6 +552,7 @@ var eventPopup = function (self) {
     }
 
     document.removeEventListener('click', self.close, false);
+    document.removeEventListener('keydown', self.close, false);
     window.history.replaceState(null, '', eventsListURL);
   };
 
@@ -561,6 +562,11 @@ var eventPopup = function (self) {
    * Adds class that display's popup
    */
   self.open = function () {
+    /**
+     * Handle popup close-button clicks
+     */
+    addClosingButtonHandler(popup.closeButton);
+
     popup.holder.classList.add(CSS.popupShowed);
 
     /** close by click outside of popup */
@@ -781,11 +787,6 @@ var eventPopup = function (self) {
     document.body.appendChild(popup.holder);
 
     /**
-     * Handle popup close-button clicks
-     */
-    addClosingButtonHandler(popup.closeButton);
-
-    /**
      * Handle clicks on rows
      */
     eventRows = document.querySelectorAll('.' + CSS.eventRow);
@@ -832,6 +833,73 @@ module.exports = function () {
 
 /***/ }),
 /* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Module for checking settings form before sending
+ */
+
+module.exports = function () {
+  var IDS = {
+    password: 'password',
+    repeatedPassword: 'repeatedPassword'
+  };
+
+  /** Array for catched errors */
+  var errors = {};
+
+  var init = function init() {
+    console.log('SettingsForm module initialized');
+  };
+
+  /**
+   * Runs tests for validity
+   */
+  var checkForm = function checkForm(event) {
+    /** Reset errors array */
+    errors = {};
+
+    /** Tests */
+    checkPassword();
+    /** */
+
+    /** if tests were failed */
+    if (Object.keys(errors).length) {
+      for (var error in errors) {
+        hawk.notifier.show({
+          message: errors[error],
+          style: 'error'
+        });
+      };
+
+      /** Prevent form sending */
+      event.preventDefault();
+    }
+  };
+
+  /**
+   * Check passwords fields
+   */
+  var checkPassword = function checkPassword() {
+    var password = document.getElementById(IDS.password),
+        repeatedPassword = document.getElementById(IDS.repeatedPassword);
+
+    if (password.value != repeatedPassword.value) {
+      errors['repeatedPassword'] = 'Passwords don\'t match.';
+    }
+  };
+
+  return {
+    init: init,
+    checkForm: checkForm
+  };
+}();
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -917,13 +985,13 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -994,7 +1062,7 @@ var DOM = function () {
 exports.default = DOM;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1003,7 +1071,7 @@ exports.default = DOM;
 /**
 * Require CSS build
 */
-__webpack_require__(7);
+__webpack_require__(8);
 
 var hawk = function (self) {
   'use strict';
@@ -1014,6 +1082,9 @@ var hawk = function (self) {
      */
     self.eventPopup.init();
 
+    /** Settings-form checker for validity */
+    self.settingsForm.init();
+
     console.log('Hawk app initialized');
   };
 
@@ -1021,9 +1092,10 @@ var hawk = function (self) {
   self.copyable = __webpack_require__(2);
   self.ajax = __webpack_require__(0);
   self.domain = __webpack_require__(3);
-  self.notifier = __webpack_require__(6);
+  self.notifier = __webpack_require__(7);
   self.event = __webpack_require__(5);
   self.eventPopup = __webpack_require__(4);
+  self.settingsForm = __webpack_require__(6);
 
   return self;
 }({});
