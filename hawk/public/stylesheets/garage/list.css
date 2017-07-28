@@ -1,25 +1,27 @@
 .garage-list {
-    padding: 25px;
-
     &__header {
-        margin-bottom: 25px;
+        padding: 25px;
     }
 
     &__installation-guide-text {
-      max-width: 500px;
-      line-height: 1.5em;
-      margin: 30px 0 20px;
+        max-width: 500px;
+        line-height: 1.5em;
+        margin: 30px 0 20px;
     }
 
     &__links {
+        li {
+            margin-top: 0.7em;
+        }
 
-      li {
-        margin-top: .7em;
-      }
+        a {
+            color: #7026bd;
+        }
+    }
 
-      a {
-        color: #7026bd;
-      }
+    &__empty {
+        padding: 25px;
+        font-size: 17px;
     }
 }
 
@@ -29,37 +31,39 @@
 .garage-list-item {
     display: flex;
     width: 100%;
+    box-sizing: border-box;
+    padding: 0 25px;
     position: relative;
 
-    &::after {
-        content: '';
-        display: block;
-        position: absolute;
-        bottom: 0;
-        height: 1px;
-        width: calc(100% - 100px);
-        background: var(--lightGrayLine);
-        left: 100px;
+    &:hover {
+        background: color(var(--lightGrayBg) alpha(50%));
     }
 
     &--unread {
+        background: var(--unreadBg);
+        margin-top: -1px;
 
-      &::before {
-        content: "";
-        position: absolute;
-        display: block;
-        top: 0;
-        left: -15px;
-        width: 3px;
-        height: calc(100% - 6px);
-        margin: 3px;
-        border-radius: 5px;
-        background: #87ceeb;
-      }
+        &::after {
+            display: none;
+        }
+
+        &::before {
+            content: '';
+            width: 5px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background: #21ea8e;
+        }
+
+        &:hover {
+            background: color(var(--unreadBg) lightness(-3%) );
+        }
     }
 
     &__left {
-        font-size: 12px;
+        font-size: 13px;
         padding-right: 25px;
         margin: auto 0;
         width: 100px;
@@ -80,26 +84,57 @@
     }
 
     &__title {
+        margin: 0;
+        font-size: 17px;
         line-height: 1.5em;
         word-break: break-all;
-
-        &:hover {
-            color: var(--hoverColor);
-        }
+        font-weight: 700;
     }
 
     &__caption {
-        margin-top: 5px;
+        margin: 7px 0;
         color: var(--grayText);
+        font-size: 0.9em;
     }
 
     &__tag {
         font-weight: bold;
         margin-bottom: 3px;
+
+        &--javascript {
+            color: var(--javascriptColorOnWhite);
+        }
+
+        &--fatal {
+            color: var(--fatalColor);
+        }
+
+        &--warnings {
+            color: var(--warningsColor);
+        }
+
+        &--notice {
+            color: var(--noticeColor);
+        }
+    }
+
+    &__time {
+        display: block;
+        margin-top: 0.5em;
+        line-height: 1.4em;
+        font-size: 0.9em;
+        color: var(--grayText);
     }
 
     &__counter {
-        display: block;
-        font-size: 1.3em;
+        font-size: 2em;
+        text-align: center;
+        font-weight: 800;
+    }
+
+    &__counter-text {
+        margin-top: 0.1em;
+        text-align: center;
+        font-size: 14px;
     }
 }
