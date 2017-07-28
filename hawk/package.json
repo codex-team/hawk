@@ -6,7 +6,7 @@
   "main": "server.js",
   "scripts": {
     "test": "mocha --recursive tests/",
-    "start": "node ./bin/www",
+    "start": "nodemon ./bin/www",
     "build": "webpack"
   },
   "repository": {

@@ -149,6 +149,7 @@ let eventPopup = (function ( self ) {
     }
 
     document.removeEventListener('click', self.close, false);
+    document.removeEventListener('keydown', self.close, false);
     window.history.replaceState(null, '', eventsListURL);
   };
 
@@ -158,6 +159,11 @@ let eventPopup = (function ( self ) {
    * Adds class that display's popup
    */
   self.open = function () {
+    /**
+     * Handle popup close-button clicks
+     */
+    addClosingButtonHandler(popup.closeButton);
+
     popup.holder.classList.add(CSS.popupShowed);
 
     /** close by click outside of popup */
@@ -398,11 +404,6 @@ let eventPopup = (function ( self ) {
     popup = makePopup();
 
     document.body.appendChild(popup.holder);
-
-    /**
-     * Handle popup close-button clicks
-     */
-    addClosingButtonHandler(popup.closeButton);
 
     /**
      * Handle clicks on rows

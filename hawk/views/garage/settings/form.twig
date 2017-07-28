@@ -1,4 +1,15 @@
-<form method="POST" action="settings/save">
+{% if success is not null %}
+  <script>
+    hawk.docReady(function () {
+      hawk.notifier.show({
+        message: "{{ message ? message : '' }}",
+        style: "{{ success == '1' ? 'success' : 'error' }}"
+      })
+    });
+  </script>
+{% endif %}
+
+<form method="POST" action="settings/save" onsubmit="hawk.settingsForm.checkForm(event);">
 
     {% include 'csrf.twig' with {csrfToken: csrfToken} %}
 
@@ -10,6 +21,10 @@
     <fieldset class="form__section">
         <label class="form__label" for="password">Select password</label>
         <input class="form__width-fixed" type="password" id="password" name="password" placeholder="********">
+    </fieldset>
+    <fieldset class="form__section">
+        <label class="form__label" for="password">Repeat password</label>
+        <input class="form__width-fixed" type="password" id="repeatedPassword" name="repeatedPassword" placeholder="********">
     </fieldset>
 
     <h4 class="form__header">Notifications</h4>
