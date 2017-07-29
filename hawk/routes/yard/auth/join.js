@@ -48,7 +48,6 @@ let join = {
                     return;
                   }
 
-                  email.init();
                   email.send(
                     insertedUser.email,
                     'Welcome to Hawk.so',

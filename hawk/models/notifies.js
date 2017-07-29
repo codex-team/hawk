@@ -79,7 +79,6 @@ module.exports = function () {
           emailSubject = 'Error' + emailSubject;
         }
 
-        email.init();
         email.send(
           user.email,
           emailSubject,

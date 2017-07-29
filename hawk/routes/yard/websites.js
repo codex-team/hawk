@@ -68,7 +68,6 @@ router.post('/create', function (req, res, next) {
                   return;
                 }
 
-                email.init();
                 email.send(
                   res.locals.user.email,
                   'Integration token for ' + domain,
