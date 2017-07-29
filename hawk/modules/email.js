@@ -5,7 +5,7 @@ let nodemailer = require('nodemailer');
 module.exports = function () {
   let transporter;
 
-  /* Init transporter with date from config */
+  /** Init transporter with date from config */
   let init = function () {
     if (!config.email.auth.user) {
       logger.log('warn', 'Email config: user is missed');
@@ -56,12 +56,14 @@ module.exports = function () {
         return logger.log('error', 'Error while sending email ', error);
       }
 
-      logger.info('Message %s sent: %s', info.messageId, info.response);
+      return logger.info('Message %s sent: %s', info.messageId, info.response);
     });
   };
 
+  /** get config and set up transporter */
+  init();
+
   return {
-    init : init,
     send : send
   };
 }();
