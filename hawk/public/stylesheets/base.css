@@ -127,11 +127,29 @@ textarea:focus {
     color: color(var(--grayText) alpha(40%));
 }
 
-.button svg {
-    width: 1.2em;
-    height: 1.2em;
-    vertical-align: text-bottom;
-    margin-right: 0.3em;
+.button {
+    svg {
+        width: 1.2em;
+        height: 1.2em;
+        vertical-align: text-bottom;
+        margin-right: 0.3em;
+    }
+
+    &--bordered {
+        background: transparent;
+        padding: 12px;
+        margin: 20px 0;
+        display: inline-block;
+        color: var(--greenText);
+        font-size: 15px;
+        font-weight: 700;
+        border: 1px solid color(var(--greenText) alpha(50%));
+        border-radius: 3px;
+
+        &:hover {
+            background: transparent;
+        }
+    }
 }
 
 .form {

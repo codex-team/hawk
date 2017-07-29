@@ -11,8 +11,8 @@
     {% for domain in domains %}
         {% set url = "/garage/" ~ domain.name %}
         <section class="garage-aside__section">
-            <a href="{{ url }}">{{ domain.name }}</a>
             <a class="garage-aside__domain" href="{{ url }}">
+                {{ domain.name }}
             </a>
 
             {% for errorType in ['fatal', 'warnings', 'notice', 'javascript'] %}
@@ -31,6 +31,6 @@
         </section>
     {% endfor %}
 
-    <a class="garage-aside__add" href="/websites/create">+ Add site</a>
+    <a class="garage-aside__add button button--bordered" href="/websites/create">+ Add site</a>
 
 </div>
