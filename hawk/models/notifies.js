@@ -99,23 +99,53 @@ module.exports = function () {
    * @param event
    */
   let send = function (user, domain, event) {
+    /** getting a pack for this error with errors number */
     let timer = timers[event.groupHash];
 
-    /* Check if this event has come few time ago */
+    /** flag */
+    let notFirstError = true;
+
+    /** check if pack of same errors exists */
     if (timer) {
+      /** increase number of errors */
+      timer.times++;
+      /** clear timeout for sending this pack */
       clearTimeout(timer.timeout);
     } else {
+      /** notify about first event */
       send_(user, domain, event, 1);
+      notFirstError = false;
 
-      timers[event.groupHash] = {
+      /** create a new error pack with 0 errors */
+      timer = timers[event.groupHash] = {
         times: 0
       };
-
-      timer = timers[event.groupHash];
     }
 
-    timer.timeout = setTimeout(send_, GROUP_TIME, user, domain, event, timer.times);
-    timer.times++;
+    /** ready to send. if this error is not first need to set timeout */
+    if (notFirstError) {
+      timer.timeout = setTimeout(function () {
+        /** notify about pack of errors */
+        send_(user, domain, event, timer.times);
+
+        /**
+         * If you don't want to notify about
+         * first error this type never ever
+         * then just RESET counter.
+         */
+        // timer = timers[event.groupHash] = {
+        //   times: 0
+        // };
+
+        /**
+         * If you want to notify user when this
+         * error happens again firstly in a big
+         * avalanche then REMOVE this error's pack.
+         * It would be better for your server's RAM.
+         */
+        delete timers[event.groupHash];
+      }, GROUP_TIME);
+    };
   };
 
   /**
