@@ -6,25 +6,25 @@
         <h1 class="garage-header__page-title">
             <a href="{{ url }}">{{ domain.name }}</a>
         </h1>
-        <a class="garage-header__tab" href="{{ url }}/fatal">
+        <a class="garage-header__tab garage-header__tab--fatal {% if tab == 'fatal' %}garage-header__tab--current{% endif %}" href="{{ url }}/fatal">
             Fatal
             {% if domain.fatal.unread %}
               <span class="counter">{{ domain.fatal.unread }} new</span>
             {% endif %}
         </a>
-        <a class="garage-header__tab" href="{{ url }}/warnings">
+        <a class="garage-header__tab garage-header__tab--warnings {% if tab == 'warnings' %}garage-header__tab--current{% endif %}" href="{{ url }}/warnings">
             Warnings
             {% if domain.warnings.unread %}
               <span class="counter">{{ domain.warnings.unread }} new</span>
             {% endif %}
         </a>
-        <a class="garage-header__tab" href="{{ url }}/notice">
+        <a class="garage-header__tab garage-header__tab--notice {% if tab == 'notice' %}garage-header__tab--current{% endif %}" href="{{ url }}/notice">
             Notice
             {% if domain.notice.unread %}
               <span class="counter">{{ domain.notice.unread }} new</span>
             {% endif %}
         </a>
-        <a class="garage-header__tab" href="{{ url }}/javascript">
+        <a class="garage-header__tab garage-header__tab--javascript {% if tab == 'javascript' %}garage-header__tab--current{% endif %}" href="{{ url }}/javascript">
             JavaScript Errors
             {% if domain.javascript.unread %}
               <span class="counter">{{ domain.javascript.unread }} new</span>

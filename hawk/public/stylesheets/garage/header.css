@@ -50,6 +50,22 @@
                 background: color(var(--hoverColor) alpha(10%));
             }
         }
+
+        &--javascript&--current {
+            color: var(--javascriptColorOnWhite);
+        }
+
+        &--fatal&--current {
+            color: var(--fatalColor);
+        }
+
+        &--warnings&--current {
+            color: var(--warningsColor);
+        }
+
+        &--notice&--current {
+            color: var(--noticeColor);
+        }
     }
 
 
