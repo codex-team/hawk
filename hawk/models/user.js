@@ -89,7 +89,7 @@ module.exports = function () {
         currentUser = currentUser_;
 
         if (!currentUser) {
-          throw Error(403);
+          throw null;
         }
 
         return websites.getByUser(currentUser);
@@ -107,7 +107,7 @@ module.exports = function () {
          *   },
          *   *event_tag*: {
          *     'count': 0,     number of events fot this *event_tag*
-         *     'unread': 0     number of unread events fot this *event_tag* 
+         *     'unread': 0     number of unread events fot this *event_tag*
          *   },
          *   ...
          * }
@@ -143,7 +143,9 @@ module.exports = function () {
         };
       })
       .catch(function (e) {
-        logger.error('Can\'t get user because of ', e);
+        if (e) {
+          logger.error('Can\'t get user because of ' + e);
+        };
         return {};
       });
   };

@@ -125,8 +125,10 @@ app.use(function (req, res, next) {
   res.locals.userDomains = {};
 
   user.getInfo(req).then(function (userData) {
-    res.locals.user = userData.user;
-    res.locals.userDomains = userData.domains;
+    if (userData) {
+      res.locals.user = userData.user;
+      res.locals.userDomains = userData.domains;
+    };
     next();
   }).catch(function (e) {
     logger.error(e);
