@@ -14,7 +14,6 @@ let eventPopup = (function ( self ) {
    */
   var dom = require('./dom').default;
 
-
   let keyCodes_ = {
     ESC : 27
   };
@@ -90,6 +89,7 @@ let eventPopup = (function ( self ) {
    * Removes class when clicked ESC
    */
   let closePopupByEscape_ = function (event) {
+    console.log('evve', event);
     switch (event.keyCode) {
       case keyCodes_.ESC:
         popup.holder.classList.remove(CSS.popupShowed);
@@ -215,6 +215,9 @@ let eventPopup = (function ( self ) {
 
     popup.content.insertAdjacentHTML('beforeEnd', response.traceback);
     updateHeaderTime(response.event ? response.event.time : 0);
+
+    /** initialize modules inside html response */
+    hawk.initInternalModules(popup.holder);
   };
 
   /**
@@ -394,12 +397,8 @@ let eventPopup = (function ( self ) {
    * If non of this elements found, do not Initialize module
    * In case when something gone wrong, check that all elements has been found before delegation
    */
-  self.init = function () {
-    let isNeed = document.querySelector('[data-module-required="eventPopup"]');
-
-    if (!isNeed) {
-      return;
-    }
+  self.init = function (settings) {
+    let element = this;
 
     popup = makePopup();
 
@@ -408,7 +407,7 @@ let eventPopup = (function ( self ) {
     /**
      * Handle clicks on rows
      */
-    eventRows = document.querySelectorAll(`.${CSS.eventRow}`);
+    eventRows = element.querySelectorAll(`.${CSS.eventRow}`);
     bindRowsClickHandler(eventRows);
 
     /** Close popup by Back/Forward navigation */

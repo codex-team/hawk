@@ -7,11 +7,7 @@ let hawk = (function ( self ) {
   'use strict';
 
   self.init = function ( ) {
-    self.delegate();
-    /**
-     * Event popup
-     */
-    self.eventPopup.init();
+    delegate();
 
     /** Settings-form checker for validity */
     self.settingsForm.init();
@@ -29,12 +25,22 @@ let hawk = (function ( self ) {
   self.appender     = require('./module.appender');
   self.settingsForm = require('./settings-form');
 
-  self.delegate = function () {
-    let modulesRequired = document.querySelectorAll('[data-module-required]');
+  let delegate = function (element) {
+    let modulesRequired;
+
+    if (element) {
+      modulesRequired = element.querySelectorAll('[data-module-required]');
+    } else {
+      modulesRequired = document.querySelectorAll('[data-module-required]');
+    }
 
     for (let i = 0; i < modulesRequired.length; i++) {
       initModule(modulesRequired[i]);
     }
+  };
+
+  self.initInternalModules = function (element) {
+    delegate(element);
   };
 
   /**
