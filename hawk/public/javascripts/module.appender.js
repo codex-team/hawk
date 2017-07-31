@@ -21,6 +21,14 @@ module.exports = (function (self) {
         if (items.traceback.trim()) {
           el.insertAdjacentHTML('beforeEnd', items.traceback);
         }
+      },
+      onError : function(error) {
+
+        hawk.notifier.show({
+          message: 'Can\'t load data. Please try again later',
+          style: 'error'
+        });
+
       }
     });
   };

@@ -15,7 +15,8 @@ var dom = require('./dom').default;
  *   new Appender({
  *     url : YOUR URL,
  *     init : YOUR CUSTOM CALLBACK,
- *     appendItemsOnLoad : YOUR CUSTOM CALLBACK
+ *     appendItemsOnLoad : YOUR CUSTOM CALLBACK,
+ *     onError : YOUR CALLBACK
  *   })
  *
  */
@@ -106,5 +107,9 @@ export class Appender {
    * Handle error responses
    */
   errorCallback(error) {
+    if (error) {
+      error = JSON.parse(error);
+      this.settings.onError(error);
+    }
   };
 }

@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-let app = process.env.PROTOCOL + '://' + process.env.HOST_NAME + ':' + process.env.PORT;
+let app = process.env.SERVER_URL;
 
 let chai = require('chai'),
     chaiHttp = require('chai-http'),
