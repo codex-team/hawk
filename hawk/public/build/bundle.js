@@ -918,7 +918,7 @@ module.exports = function (self) {
     new _class.Appender({
       url: settings.url,
       init: function init(loadMoreButton) {
-        el.after(loadMoreButton);
+        el.insertAdjacentElement('afterEnd', loadMoreButton);
       },
       appendItemsOnLoad: function appendItemsOnLoad(items) {
         if (items.traceback.trim()) {
