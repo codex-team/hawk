@@ -15,7 +15,7 @@ module.exports = (function (self) {
     new Appender({
       url : settings.url,
       init : function (loadMoreButton) {
-        el.after(loadMoreButton);
+        el.insertAdjacentElement('afterEnd', loadMoreButton);
       },
       appendItemsOnLoad : function (items) {
         if (items.traceback.trim()) {
