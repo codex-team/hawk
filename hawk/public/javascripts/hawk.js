@@ -8,6 +8,15 @@ let hawk = (function ( self ) {
 
   self.init = function ( ) {
     self.delegate();
+    /**
+     * Event popup
+     */
+    self.eventPopup.init();
+
+    /** Settings-form checker for validity */
+    self.settingsForm.init();
+
+    console.log('Hawk app initialized');
   };
 
   self.checkbox = require('./checkbox');
@@ -16,8 +25,9 @@ let hawk = (function ( self ) {
   self.domain   = require('./domain');
   self.notifier = require('exports-loader?notifier!codex-notifier');
   self.event    = require('./event');
-  self.eventPopup = require('./event-popup');
-  self.appender = require('./module.appender');
+  self.eventPopup   = require('./event-popup');
+  self.appender     = require('./module.appender');
+  self.settingsForm = require('./settings-form');
 
   self.delegate = function () {
     let modulesRequired = document.querySelectorAll('[data-module-required]');
@@ -29,11 +39,11 @@ let hawk = (function ( self ) {
 
   /**
    * get's module name from data attributes
-   * Calls module with settings that are defined below on <module-settings> tag 
+   * Calls module with settings that are defined below on <module-settings> tag
    */
   function initModule(foundRequiredModule) {
     let moduleName = foundRequiredModule.dataset.moduleRequired,
-      moduleSettings;
+        moduleSettings;
 
     if (self[moduleName]) {
       moduleSettings = foundRequiredModule.querySelector('module-settings');

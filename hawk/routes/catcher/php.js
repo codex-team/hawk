@@ -74,7 +74,7 @@ let getServerErrors = function (req, res) {
   };
 
   let request = req.body,
-    location = request.error_file + request.error_line;
+      location = request.error_file + request.error_line;
 
   let event = {
     type: 'php',

@@ -38,6 +38,7 @@
 
     &__new-events {
         float: right;
+        margin-top: 1px;
         padding: 6px 8px;
         color: #de2f2f;
         font-size: 13px;

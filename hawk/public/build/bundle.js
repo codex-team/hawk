@@ -64,11 +64,82 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 12);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * DOM manipulations methods
+ */
+var DOM = function () {
+  function DOM() {
+    _classCallCheck(this, DOM);
+  }
+
+  _createClass(DOM, null, [{
+    key: "make",
+
+    /**
+     * Helper for making Elements with classname and attributes
+     * @param  {string} tagName           - new Element tag name
+     * @param  {array|string} classNames  - list or name of CSS classname(s)
+     * @param  {Object} attributes        - any attributes
+     * @return {Element}
+     */
+    value: function make(tagName, classNames, attributes) {
+      var el = document.createElement(tagName);
+
+      if (Array.isArray(classNames)) {
+        var _el$classList;
+
+        (_el$classList = el.classList).add.apply(_el$classList, _toConsumableArray(classNames));
+      } else if (classNames) {
+        el.classList.add(classNames);
+      }
+
+      for (var attrName in attributes) {
+        el[attrName] = attributes[attrName];
+      }
+
+      return el;
+    }
+
+    /**
+    * Replaces node with
+    * @param {Element} nodeToReplace
+    * @param {Element} replaceWith
+    */
+
+  }, {
+    key: "replace",
+    value: function replace(nodeToReplace, replaceWith) {
+      return nodeToReplace.parentNode.replaceChild(replaceWith, nodeToReplace);
+    }
+  }]);
+
+  return DOM;
+}();
+
+exports.default = DOM;
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -149,7 +220,6 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 1 */,
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -419,7 +489,7 @@ var eventPopup = function (self) {
    * @type {Class}
    */
 
-  var dom = __webpack_require__(9).default;
+  var dom = __webpack_require__(0).default;
 
   var keyCodes_ = {
     ESC: 27
@@ -553,6 +623,7 @@ var eventPopup = function (self) {
     }
 
     document.removeEventListener('click', self.close, false);
+    document.removeEventListener('keydown', self.close, false);
     window.history.replaceState(null, '', eventsListURL);
   };
 
@@ -562,6 +633,11 @@ var eventPopup = function (self) {
    * Adds class that display's popup
    */
   self.open = function () {
+    /**
+     * Handle popup close-button clicks
+     */
+    addClosingButtonHandler(popup.closeButton);
+
     popup.holder.classList.add(CSS.popupShowed);
 
     /** close by click outside of popup */
@@ -782,11 +858,6 @@ var eventPopup = function (self) {
     document.body.appendChild(popup.holder);
 
     /**
-     * Handle popup close-button clicks
-     */
-    addClosingButtonHandler(popup.closeButton);
-
-    /**
      * Handle clicks on rows
      */
     eventRows = document.querySelectorAll('.' + CSS.eventRow);
@@ -833,6 +904,109 @@ module.exports = function () {
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _class = __webpack_require__(11);
+
+module.exports = function (self) {
+  self.init = function (settings) {
+    var el = this;
+
+    new _class.Appender({
+      url: settings.url,
+      init: function init(loadMoreButton) {
+        el.after(loadMoreButton);
+      },
+      appendItemsOnLoad: function appendItemsOnLoad(items) {
+        if (items.trim()) {
+          el.insertAdjacentHTML('beforeEnd', items);
+        }
+      }
+    });
+  };
+
+  return self;
+}({}); /**
+        * @module Module Appender
+        *
+        * Creates instanses to required modules
+        * Can be customized
+        *
+        * Appends after element generates by class "load more button"
+        */
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Module for checking settings form before sending
+ */
+
+module.exports = function () {
+  var IDS = {
+    password: 'password',
+    repeatedPassword: 'repeatedPassword'
+  };
+
+  /** Array for catched errors */
+  var errors = {};
+
+  var init = function init() {
+    console.log('SettingsForm module initialized');
+  };
+
+  /**
+   * Runs tests for validity
+   */
+  var checkForm = function checkForm(event) {
+    /** Reset errors array */
+    errors = {};
+
+    /** Tests */
+    checkPassword();
+    /** */
+
+    /** if tests were failed */
+    if (Object.keys(errors).length) {
+      for (var error in errors) {
+        hawk.notifier.show({
+          message: errors[error],
+          style: 'error'
+        });
+      };
+
+      /** Prevent form sending */
+      event.preventDefault();
+    }
+  };
+
+  /**
+   * Check passwords fields
+   */
+  var checkPassword = function checkPassword() {
+    var password = document.getElementById(IDS.password),
+        repeatedPassword = document.getElementById(IDS.repeatedPassword);
+
+    if (password.value != repeatedPassword.value) {
+      errors['repeatedPassword'] = 'Passwords don\'t match.';
+    }
+  };
+
+  return {
+    init: init,
+    checkForm: checkForm
+  };
+}();
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -918,158 +1092,13 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/**
- * DOM manipulations methods
- */
-var DOM = function () {
-  function DOM() {
-    _classCallCheck(this, DOM);
-  }
-
-  _createClass(DOM, null, [{
-    key: "make",
-
-    /**
-     * Helper for making Elements with classname and attributes
-     * @param  {string} tagName           - new Element tag name
-     * @param  {array|string} classNames  - list or name of CSS classname(s)
-     * @param  {Object} attributes        - any attributes
-     * @return {Element}
-     */
-    value: function make(tagName, classNames, attributes) {
-      var el = document.createElement(tagName);
-
-      if (Array.isArray(classNames)) {
-        var _el$classList;
-
-        (_el$classList = el.classList).add.apply(_el$classList, _toConsumableArray(classNames));
-      } else if (classNames) {
-        el.classList.add(classNames);
-      }
-
-      for (var attrName in attributes) {
-        el[attrName] = attributes[attrName];
-      }
-
-      return el;
-    }
-
-    /**
-    * Replaces node with
-    * @param {Element} nodeToReplace
-    * @param {Element} replaceWith
-    */
-
-  }, {
-    key: "replace",
-    value: function replace(nodeToReplace, replaceWith) {
-      return nodeToReplace.parentNode.replaceChild(replaceWith, nodeToReplace);
-    }
-  }]);
-
-  return DOM;
-}();
-
-exports.default = DOM;
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
-* Require CSS build
-*/
-__webpack_require__(8);
-
-var hawk = function (self) {
-  'use strict';
-
-  self.init = function () {
-    self.delegate();
-  };
-
-  self.checkbox = __webpack_require__(2);
-  self.copyable = __webpack_require__(3);
-  self.ajax = __webpack_require__(0);
-  self.domain = __webpack_require__(4);
-  self.notifier = __webpack_require__(7);
-  self.event = __webpack_require__(6);
-  self.eventPopup = __webpack_require__(5);
-  self.appender = __webpack_require__(15);
-
-  self.delegate = function () {
-    var modulesRequired = document.querySelectorAll('[data-module-required]');
-
-    for (var i = 0; i < modulesRequired.length; i++) {
-      initModule(modulesRequired[i]);
-    }
-  };
-
-  /**
-   * get's module name from data attributes
-   * Calls module with settings that are defined below on <module-settings> tag 
-   */
-  function initModule(foundRequiredModule) {
-    var moduleName = foundRequiredModule.dataset.moduleRequired,
-        moduleSettings = void 0;
-
-    if (self[moduleName]) {
-      moduleSettings = foundRequiredModule.querySelector('module-settings');
-
-      if (moduleSettings) {
-        moduleSettings = moduleSettings.textContent.trim();
-      }
-
-      if (self[moduleName].init) {
-        var parsedSettings = JSON.parse(moduleSettings);
-
-        self[moduleName].init.call(foundRequiredModule, parsedSettings);
-      }
-    }
-  };
-
-  return self;
-}({});
-
-hawk.docReady = function (f) {
-  'use strict';
-
-  return (/in/.test(document.readyState) ? window.setTimeout(hawk.docReady, 9, f) : f()
-  );
-};
-
-module.exports = hawk;
-
-/***/ }),
-/* 11 */,
-/* 12 */,
-/* 13 */,
-/* 14 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1083,7 +1112,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var dom = __webpack_require__(9).default;
+var dom = __webpack_require__(0).default;
 
 /**
  * Class Appender
@@ -1108,7 +1137,7 @@ var Appender = exports.Appender = function () {
    * Class internal properties:
    * @property {Object} settings - comes outsite
    * @property {Boolean} autoload - load data by scroll
-   * @property {Integer} nextPage - page rotation
+   * @property {Number} nextPage - page rotation
    * @property {Object} CSS - styles
    */
   function Appender(settings) {
@@ -1153,6 +1182,11 @@ var Appender = exports.Appender = function () {
     }
   }, {
     key: 'loadByScroll',
+
+
+    /**
+     * load data by scroll
+     */
     value: function loadByScroll() {
       if (!this.allowedAutoloading) {
         return;
@@ -1208,43 +1242,86 @@ var Appender = exports.Appender = function () {
   return Appender;
 }();
 
-;
-
 /***/ }),
-/* 15 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _class = __webpack_require__(14);
+/**
+* Require CSS build
+*/
+__webpack_require__(10);
 
-module.exports = function (self) {
-  self.init = function (settings) {
-    var el = this;
+var hawk = function (self) {
+  'use strict';
 
-    new _class.Appender({
-      url: settings.url,
-      init: function init(loadMoreButton) {
-        el.after(loadMoreButton);
-      },
-      appendItemsOnLoad: function appendItemsOnLoad(items) {
-        if (items.trim()) {
-          el.insertAdjacentHTML('beforeEnd', items);
-        }
+  self.init = function () {
+    self.delegate();
+    /**
+     * Event popup
+     */
+    self.eventPopup.init();
+
+    /** Settings-form checker for validity */
+    self.settingsForm.init();
+
+    console.log('Hawk app initialized');
+  };
+
+  self.checkbox = __webpack_require__(2);
+  self.copyable = __webpack_require__(3);
+  self.ajax = __webpack_require__(1);
+  self.domain = __webpack_require__(4);
+  self.notifier = __webpack_require__(9);
+  self.event = __webpack_require__(6);
+  self.eventPopup = __webpack_require__(5);
+  self.appender = __webpack_require__(7);
+  self.settingsForm = __webpack_require__(8);
+
+  self.delegate = function () {
+    var modulesRequired = document.querySelectorAll('[data-module-required]');
+
+    for (var i = 0; i < modulesRequired.length; i++) {
+      initModule(modulesRequired[i]);
+    }
+  };
+
+  /**
+   * get's module name from data attributes
+   * Calls module with settings that are defined below on <module-settings> tag
+   */
+  function initModule(foundRequiredModule) {
+    var moduleName = foundRequiredModule.dataset.moduleRequired,
+        moduleSettings = void 0;
+
+    if (self[moduleName]) {
+      moduleSettings = foundRequiredModule.querySelector('module-settings');
+
+      if (moduleSettings) {
+        moduleSettings = moduleSettings.textContent.trim();
       }
-    });
+
+      if (self[moduleName].init) {
+        var parsedSettings = JSON.parse(moduleSettings);
+
+        self[moduleName].init.call(foundRequiredModule, parsedSettings);
+      }
+    }
   };
 
   return self;
-}({}); /**
-        * @module Module Appender
-        *
-        * Creates instanses to required modules
-        * Can be customized
-        *
-        * Appends after element generates by class "load more button"
-        */
+}({});
+
+hawk.docReady = function (f) {
+  'use strict';
+
+  return (/in/.test(document.readyState) ? window.setTimeout(hawk.docReady, 9, f) : f()
+  );
+};
+
+module.exports = hawk;
 
 /***/ })
 /******/ ]);

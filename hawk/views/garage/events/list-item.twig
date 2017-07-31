@@ -1,20 +1,27 @@
 {% set eventJson = event|json_encode %}
-<div class="garage-list-item" data-event='{{ eventJson|replace({"'": ""}) }}' data-domain='{{ domain.name }}'>
+<a class="garage-list-item {% if event.status == 0 %}garage-list-item--unread{% endif %}" data-event='{{ eventJson|replace({"'": ""}) }}' data-domain='{{ domain.name }}' href="/garage/{{ domain.name }}/event/{{ event._id }}">
     <div class="garage-list-item__left">
-        <div class="garage-list-item__tag">
-            {{ event.tag == 'javascript' ? 'JavaScript Error' : event.tag|capitalize }}
+        <div class="garage-list-item__tag garage-list-item__tag--{{ event.tag }}">
+            {{ event.tag == 'javascript' ? 'JavaScript' : event.tag|capitalize }}
         </div>
-        <time class="garage-list-item__time">{{ event.time|date('H:i:s') }}</time>
+        <time class="garage-list-item__time">
+            {{ event.time|date('F jS g:ia') }}
+        </time>
     </div>
     <div class="garage-list-item__content">
-        <a class="garage-list-item__title" href="/garage/{{ domain.name }}/event/{{ event._id }}">
+        <h3 class="garage-list-item__title" >
             {{ event.message }}
-        </a>
+        </h3>
         <div class="garage-list-item__caption">
             {{ event.errorLocation.full }}
         </div>
     </div>
     <div class="garage-list-item__right">
-        <span class="garage-list-item__counter">{{ event.count }}</span>
+        <div class="garage-list-item__counter">
+            {{ event.count }}
+        </div>
+        <div class="garage-list-item__counter-text">
+            times
+        </div>
     </div>
-</div>
+</a>

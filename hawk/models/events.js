@@ -1,8 +1,12 @@
-module.exports = (function() {
-
+module.exports = (function () {
   'use strict';
 
   let mongo = require('../modules/database');
+
+  const EVENT_STATUS = {
+    unread: 0,
+    read: 1,
+  };
 
   /**
    * Add new event to domain collection
@@ -10,10 +14,10 @@ module.exports = (function() {
    * @param domain
    * @param event
    */
-  let add = function(domain, event) {
-
+  let add = function (domain, event) {
+    /* Status equals 1 if event is read otherwise it equals 0  */
+    event.status = EVENT_STATUS.unread;
     return mongo.insertOne(domain, event);
-
   };
 
   /**
@@ -29,7 +33,6 @@ module.exports = (function() {
    * @param {number} skip - number of events to skip
    */
   let get = function (domain, query, group, sort, limit, skip) {
-
     let pipeline = [
       {$match: query}
     ];
@@ -42,7 +45,8 @@ module.exports = (function() {
         errorLocation: {$first: '$errorLocation'},
         message: {$first: '$message'},
         time: {$last: '$time'},
-        count: {$sum: 1}
+        count: {$sum: 1},
+        status: {$min: '$status'}
       }});
     }
 
@@ -68,9 +72,23 @@ module.exports = (function() {
       });
     }
 
-
     return mongo.aggregation(domain, pipeline);
+  };
 
+  /**
+   * Marks as read events from collection by id.
+   *
+   * @param {String} collection - collection name
+   * @param {Array} eventsIds - array of id
+   * @returns {Promise.<TResult>}
+   */
+  let markRead = function (collection, eventsIds) {
+    return mongo.updateMany(
+      collection,
+      { _id: { $in: eventsIds } },
+      { $set: { 'status': EVENT_STATUS.read } },
+      { upsert: true }
+    );
   };
 
   /**
@@ -83,9 +101,11 @@ module.exports = (function() {
       {
         $group: {
           _id: '$tag',
-          count: {$sum: 1}
+          count: {$sum: 1},
+          /* To count unread events, we compare status with 1 for each one */
+          unread: {$sum: { $cmp: [EVENT_STATUS.read, '$status']}}
         }
-      }]);
+      } ]);
   };
 
   /**
@@ -96,7 +116,6 @@ module.exports = (function() {
    * @returns {Promise.<TResult>}
    */
   let getAll = function (user, query) {
-
     let result = [],
         queries = [];
 
@@ -114,16 +133,16 @@ module.exports = (function() {
     });
 
     return Promise.all(queries)
-    .then(function () {
-      return result;
-    });
+      .then(function () {
+        return result;
+      });
   };
 
   return {
     add: add,
     get: get,
     countTags: countTags,
-    getAll: getAll
+    getAll: getAll,
+    markRead: markRead
   };
-
 })();

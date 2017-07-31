@@ -12,16 +12,18 @@ let csrf = require('../../modules/csrf');
  * @param res
  */
 let index = function (req, res) {
-
-  res.render('garage/settings', {
+  let params = {
     user: res.locals.user,
     domains: res.locals.userDomains,
     csrfToken: req.csrfToken(),
     meta : {
       title : 'User settings'
-    }
-  });
+    },
+    success: req.query.success,
+    message: req.query.message,
+  };
 
+  res.render('garage/settings', params);
 };
 
 /**
@@ -31,12 +33,10 @@ let index = function (req, res) {
  * @param res
  */
 let update = function (req, res) {
-
   let post = req.body;
 
   user.current(req)
     .then(function (currentUser) {
-
       let params = {
         email: post.email,
         notifies: {
@@ -50,30 +50,30 @@ let update = function (req, res) {
       if (post['tg-notify']) params.notifies.tg = true;
       if (post['slack-notify']) params.notifies.slack = true;
 
-      if (post.password) params.password = post.password;
+      if (post.password) {
+        if (post.password != post.repeatedPassword) {
+          throw Error('Passwords don\'t match');
+        }
+        params.password = post.password;
+      }
+
       if (post['tg-webhook']) params.tgHook = post['tg-webhook'];
       if (post['slack-webhook']) params.slackHook = post['slack-webhook'];
 
       if (!params.email) {
-
         throw Error('Email should be passed');
-
       }
 
       return user.update(currentUser, params);
-
     })
     .then(function () {
+      let message = 'Saved 😉';
 
-      res.redirect('/garage/settings?success=1');
-
+      res.redirect('/garage/settings?success=1&message='+message);
     })
     .catch(function (e) {
-
       res.redirect('/garage/settings?success=0&message='+e.message);
-
     });
-
 };
 
 /**
@@ -84,26 +84,18 @@ let update = function (req, res) {
  * @param res
  */
 let unlinkDomain = function (req, res) {
-
   user.current(req)
     .then(function (currentUser) {
-
       let token = req.query.token;
 
       websites.remove(currentUser, token)
         .then(function () {
-
           res.sendStatus(200);
-
         })
         .catch(function () {
-
           res.sendStatus(500);
-
         });
-
     });
-
 };
 
 router.get('/settings', csrf, index);

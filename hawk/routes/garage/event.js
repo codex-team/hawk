@@ -4,6 +4,9 @@ let express = require('express');
 let router = express.Router();
 let events = require('../../models/events');
 let twig  = require('twig');
+let modelEvents = require('../../models/events');
+let mongo = require('../../modules/database');
+
 
 /**
  * Check if user can manage passed domain
@@ -12,27 +15,35 @@ let twig  = require('twig');
  * @return {Promise}
  */
 function getDomainInfo(userDomains, domainName) {
-
   return new Promise(function (resolve, reject) {
-
     /** Get domain info by user domain */
     userDomains.forEach( domain => {
-
       if (domain.name === domainName) {
-
         resolve(domain);
         return;
-
       }
-
     });
 
     /** If passed domain name was not found in user domains list */
     reject();
+  });
+}
 
+/**
+* Marks all events in list as read
+* @param {Array} events - events list
+*/
+let markEventsAsRead = function (currentDomain, events) {
+  let eventsIds = events.map(event => new mongo.ObjectId(event['_id']));
+
+  modelEvents.markRead(currentDomain.name, eventsIds).then(function (docs, err) {
+
+  }).catch(function (err) {
+    console.log(err);
   });
 
-}
+  return events;
+};
 
 /**
  * Global request handler
@@ -60,13 +71,13 @@ let makeResponse_ = function(domain, data) {
      */
     let context = this;
 
-    let request       = context.req,
-        response      = context.res,
+    let request = context.req,
+        response = context.res,
         isAjaxRequest = request.xhr,
-        events        = data.eventList,
-        canLoadMore   = data.canLoadMore,
-        currentEvent  = events.shift(),
-        templatePath  = 'garage/events/' + currentEvent.type;
+        events = data.eventList,
+        canLoadMore = data.canLoadMore,
+        currentEvent = events.shift(),
+        templatePath = 'garage/events/' + currentEvent.type;
 
     /** requiring page via AJAX */
     if (isAjaxRequest && request.query.page) {
@@ -79,7 +90,6 @@ let makeResponse_ = function(domain, data) {
     } else {
         loadPageData_.call(response, templatePath + '/page', domain, events);
     }
-
 };
 
 /**
@@ -87,7 +97,7 @@ let makeResponse_ = function(domain, data) {
  *
  * @param {String} templatePath - path to template
  * @param {Object} domain
- * @param {Object} event
+ * @param {Object} events
  * @return {String} - HTML content
  */
 let loadPageData_ = function(templatePath, domain, events) {
@@ -100,14 +110,14 @@ let loadPageData_ = function(templatePath, domain, events) {
     events : events
   });
 
-}
+};
 
 /**
  * @this Response
  *
  * @param {String} templatePath - path to template
  * @param {Object} domain
- * @param {Object} event
+ * @param {Object} events
  * @return {String} - JSON formatted response
  */
 let loadDataForPopup_ = function(templatePath, domain, events) {
@@ -135,12 +145,13 @@ let loadDataForPopup_ = function(templatePath, domain, events) {
       return response.json(renderResponse);
 
     });
-}
+};
 
 /**
  * @param {String} templatePath - path to template
  * @param {Object} domain
- * @param {Object} event
+ * @param {Object} events
+ * @param {Boolean} canLoadMore
  * @return {String} - JSON formatted response
  */
 let loadMoreDataForPagination_ = function(templatePath, domain, events, canLoadMore) {
@@ -156,11 +167,10 @@ let loadMoreDataForPagination_ = function(templatePath, domain, events, canLoadM
     }, function(err, res) {
 
         if (err) {
-          logger.error(`Something bad wrong. I can't load more ${currentEvent.type} events from ${domain} because of `, err);
+            logger.error(`Something bad wrong. I can't load more ${currentEvent.type} events from ${domain} because of `, err);
         }
 
-        return response.json({ traceback : res, canLoadMore : false });
-
+        return response.json({traceback: res, canLoadMore: false});
     });
 
   } else {
@@ -185,44 +195,45 @@ let event = function (req, res) {
     })
     .then(function (params) {
 
-    /**
-     * Current user's domains list stored in res.locals.userDomains
-     * @see  app.js
-     * @type {Object} userDomains
-     */
-    let userDomains = res.locals.userDomains;
+        /**
+         * Current user's domains list stored in res.locals.userDomains
+         * @see  app.js
+         * @type {Object} userDomains
+         */
+        let userDomains = res.locals.userDomains;
 
-    /** pagination settings */
-    let page    = req.query.page || 1,
-        limit   = 10,
-        skip    = (parseInt(page) - 1) * limit;
+        /** pagination settings */
+        let page    = req.query.page || 1,
+            limit   = 10,
+            skip    = (parseInt(page) - 1) * limit;
 
-    getDomainInfo(userDomains, params.domainName)
-      .then(function (currentDomain) {
+        getDomainInfo(userDomains, params.domainName)
+            .then((currentDomain) => {
 
-        events.get(currentDomain.name, {groupHash: params.eventId}, false, false, limit + 1, skip)
-          .then((eventList) => {
-              let canLoadMore = eventList.length > limit;
-              return {
-                eventList,
-                canLoadMore
-              };
-          })
-          .then(makeResponse_.bind({ req, res }, currentDomain))
-          .catch(function(err) {
-            logger.error('Error while handling event-page request: ', err);
-            res.sendStatus(404);
-          });
+                modelEvents.get(currentDomain.name, {groupHash: params.eventId}, false, false, limit + 1, skip)
+                    .then((events) => {
+                        markEventsAsRead(currentDomain, events);
+                        return events;
+                    })
+                    .then((eventList) => {
+                        let canLoadMore = eventList.length > limit;
+                        return {
+                            eventList,
+                            canLoadMore
+                        };
+                    })
+                    .then(makeResponse_.bind({ req, res }, currentDomain))
+                    .catch(function (err) {
+                        logger.error('Error while handling event-page request: ', err);
+                        res.sendStatus(404);
+                    });
+            })
+            .catch(function () {
 
-      })
-      .catch(function () {
+                res.sendStatus(404);
 
-        res.sendStatus(404);
-
-      });
-
-  });
-
+            });
+    });
 };
 
 router.get('/:domain/event/:id?', event);

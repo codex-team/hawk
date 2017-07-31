@@ -64,8 +64,8 @@ let eventPopup = (function ( self ) {
    */
   function makePopup() {
     let holder = dom.make('div', CSS.popup),
-      closeButton = dom.make('div', CSS.closeButton),
-      content = dom.make('div', CSS.popupContent);
+        closeButton = dom.make('div', CSS.closeButton),
+        content = dom.make('div', CSS.popupContent);
 
     holder.appendChild(closeButton);
     holder.appendChild(content);
@@ -103,8 +103,8 @@ let eventPopup = (function ( self ) {
    */
   let closePopupByOutsideClick_ = function (event) {
     let target = event.target,
-      clickedOnPopup = true,
-      isOpened = popup.holder.classList.contains(CSS.popupShowed);
+        clickedOnPopup = true,
+        isOpened = popup.holder.classList.contains(CSS.popupShowed);
 
     if (!isOpened) {
       return;
@@ -149,6 +149,7 @@ let eventPopup = (function ( self ) {
     }
 
     document.removeEventListener('click', self.close, false);
+    document.removeEventListener('keydown', self.close, false);
     window.history.replaceState(null, '', eventsListURL);
   };
 
@@ -158,6 +159,11 @@ let eventPopup = (function ( self ) {
    * Adds class that display's popup
    */
   self.open = function () {
+    /**
+     * Handle popup close-button clicks
+     */
+    addClosingButtonHandler(popup.closeButton);
+
     popup.holder.classList.add(CSS.popupShowed);
 
     /** close by click outside of popup */
@@ -184,10 +190,10 @@ let eventPopup = (function ( self ) {
     const milliseconds = 1000;
 
     let date = new Date(time * milliseconds),
-      dateFormatted = date.toGMTString().slice(5, 16),
-      newLine = dom.make('span', null, {
-        innerHTML : `since <br> ${dateFormatted}`
-      });
+        dateFormatted = date.toGMTString().slice(5, 16),
+        newLine = dom.make('span', null, {
+          innerHTML : `since <br> ${dateFormatted}`
+        });
 
     dom.replace(firstLine, newLine);
     secondLine.remove();
@@ -316,7 +322,7 @@ let eventPopup = (function ( self ) {
 
 
     let event = row.dataset.event,
-      domainName = row.dataset.domain;
+        domainName = row.dataset.domain;
 
     event = JSON.parse(event);
 
@@ -398,11 +404,6 @@ let eventPopup = (function ( self ) {
     popup = makePopup();
 
     document.body.appendChild(popup.holder);
-
-    /**
-     * Handle popup close-button clicks
-     */
-    addClosingButtonHandler(popup.closeButton);
 
     /**
      * Handle clicks on rows

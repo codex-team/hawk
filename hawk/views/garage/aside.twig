@@ -1,7 +1,7 @@
 <div class="garage-aside">
     <div class="clearfix">
         <a class="garage-aside__settings fl_r" href="/garage/settings">Settings</a>
-        <div class="garage-aside__logo fl_l">Hawk</div>
+        <a href="/garage"><div class="garage-aside__logo fl_l">Hawk</div></a>
     </div>
 
     <a class="garage-aside__user" href="/garage">{{ user.email }}</a>
@@ -11,28 +11,26 @@
     {% for domain in domains %}
         {% set url = "/garage/" ~ domain.name %}
         <section class="garage-aside__section">
-            <a href="{{ url }}">{{ domain.name }}</a>
             <a class="garage-aside__domain" href="{{ url }}">
+                {{ domain.name }}
             </a>
-            <a class="garage-aside__tag" href="{{ url }}/fatal">
-                fatal
-                <span class="garage-aside__counter garage-aside__counter--fatal">{{ domain.fatal or 0 }}</span>
-            </a>
-            <a class="garage-aside__tag" href="{{ url }}/warnings">
-                warnings
-                <span class="garage-aside__counter garage-aside__counter--warning">{{ domain.warnings or 0 }}</span>
-            </a>
-            <a class="garage-aside__tag" href="{{ url }}/notice">
-                notice
-                <span class="garage-aside__counter garage-aside__counter--notice">{{ domain.notice or 0 }}</span>
-            </a>
-            <a class="garage-aside__tag" href="{{ url }}/javascript">
-                javascript
-                <span class="garage-aside__counter garage-aside__counter--client">{{ domain.javascript or 0 }}</span>
-            </a>
+
+            {% for errorType in ['fatal', 'warnings', 'notice', 'javascript'] %}
+              {% set events = attribute(domain, errorType) or null %}
+              <a class="garage-aside__tag" href="{{ url }}/{{ errorType }}">
+                {{ errorType }}
+
+                {% if events %}
+                <span class="garage-aside__counter garage-aside__counter--{{ errorType }} {% if events.unread %}garage-aside__counter--unread{% endif %}">
+                  {{ events.count }}
+                </span>
+                {% endif %}
+              </a>
+            {% endfor %}
+
         </section>
     {% endfor %}
 
-    <a class="garage-aside__add" href="/websites/create">+ Add site</a>
+    <a class="garage-aside__add button button--bordered" href="/websites/create">+ Add site</a>
 
 </div>

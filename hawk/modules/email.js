@@ -3,17 +3,13 @@ let config = require('../config/email');
 let nodemailer = require('nodemailer');
 
 module.exports = function () {
-
   let transporter;
 
-  /* Init transporter with date from config */
+  /** Init transporter with date from config */
   let init = function () {
-
     if (!config.email.auth.user) {
-
       logger.log('warn', 'Email config: user is missed');
       return;
-
     }
 
     transporter = nodemailer.createTransport({
@@ -25,7 +21,6 @@ module.exports = function () {
         pass: config.email.auth.pass
       }
     });
-
   };
 
   /**
@@ -38,19 +33,14 @@ module.exports = function () {
   * html
   */
   let send = function (to, subject, text, html) {
-
     if (!config.email.auth.user) {
-
       logger.log('warn', 'Email config: user is missed');
       return;
-
     }
 
     if (!config.email.hawk.name) {
-
       logger.log('warn', 'Email config: sender is missed');
       return;
-
     }
 
     let mailOptions = {
@@ -62,22 +52,18 @@ module.exports = function () {
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
-
       if (error) {
-
         return logger.log('error', 'Error while sending email ', error);
-
       }
 
-      logger.info('Message %s sent: %s', info.messageId, info.response);
-
+      return logger.info('Message %s sent: %s', info.messageId, info.response);
     });
-
   };
+
+  /** get config and set up transporter */
+  init();
 
   return {
-    init : init,
     send : send
   };
-
 }();

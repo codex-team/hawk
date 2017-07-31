@@ -24,7 +24,7 @@ export class Appender {
    * Class internal properties:
    * @property {Object} settings - comes outsite
    * @property {Boolean} autoload - load data by scroll
-   * @property {Integer} nextPage - page rotation
+   * @property {Number} nextPage - page rotation
    * @property {Object} CSS - styles
    */
   constructor(settings) {
@@ -62,6 +62,9 @@ export class Appender {
     return block;
   };
 
+  /**
+   * load data by scroll
+   */
   loadByScroll() {
     if (!this.allowedAutoloading) {
       return;
@@ -104,4 +107,4 @@ export class Appender {
    */
   errorCallback(error) {
   };
-};
+}

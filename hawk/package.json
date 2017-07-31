@@ -6,7 +6,7 @@
   "main": "server.js",
   "scripts": {
     "test": "mocha --recursive tests/",
-    "start": "node ./bin/www",
+    "start": "nodemon ./bin/www",
     "build": "webpack"
   },
   "repository": {
@@ -60,6 +60,7 @@
     "mongodb": "^2.2.29",
     "morgan": "~1.8.1",
     "nodemailer": "^4.0.1",
+    "nodemon": "^1.11.0",
     "request": "^2.81.0",
     "serve-favicon": "~2.4.2",
     "twig": "~0.10.3",

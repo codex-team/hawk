@@ -19,7 +19,7 @@
         }
 
         &--warnings {
-            color: var(--warningColor);
+            color: var(--warningsColor);
         }
 
         &--notice {
@@ -27,7 +27,7 @@
         }
 
         &--javascript {
-            color: var(--clientColor);
+            color: var(--javascriptColor);
         }
 
         &:hover {

@@ -26,7 +26,9 @@ let reset = {
               type: 'error',
               text: 'No user with this email'
             },
-            email: email};
+            email: email
+          };
+
           res.render('yard/auth/reset', params);
           return;
         }
@@ -40,7 +42,11 @@ let reset = {
           mailer.send(email, 'Password recover', '', template);
 
           res.render('yard/auth/reset', {
-            message: {type: 'notify', text: 'We have send instructions to your mailbox. Check it out.'}
+            message: {
+              type: 'notify',
+              text: 'We have send instructions to your mailbox. Check it out.'
+            },
+            email: email
           });
         });
       })
@@ -48,7 +54,6 @@ let reset = {
         logger.log('Error while resetting user password ', e);
         res.render('yard/errors/error', {title: 500, message: 'Something went wrong'});
       });
-
   }
 };
 

@@ -13,4 +13,4 @@ cd ./hawk
 npm i --silent
 
 # Run Hawk in the screen
-screen -dmS Hawk nodejs bin/www
+screen -dmS Hawk nodemon bin/www

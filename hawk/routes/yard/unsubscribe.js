@@ -5,7 +5,6 @@ let router = express.Router();
 let notifies = require('../../models/notifies');
 
 let unsbscribe = function (req, res) {
-
   let id = req.query.id,
       hash = req.query.hash,
       type = req.query.type || 'email',
@@ -30,10 +29,8 @@ let unsbscribe = function (req, res) {
   res.render('yard/unsubscribe/unsubscribe.twig', {
     success: success
   });
-
 };
 
 router.use('/', unsbscribe);
 
 module.exports = router;
-

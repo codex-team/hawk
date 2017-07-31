@@ -26,8 +26,8 @@ var fs = require('fs');
 /** Setup loggers **/
 
 var logsDir = './logs',
-  accessDir = logsDir + '/access',
-  errorsDir = logsDir + '/errors';
+    accessDir = logsDir + '/access',
+    errorsDir = logsDir + '/errors';
 
 if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir);
@@ -125,8 +125,10 @@ app.use(function (req, res, next) {
   res.locals.userDomains = {};
 
   user.getInfo(req).then(function (userData) {
-    res.locals.user = userData.user;
-    res.locals.userDomains = userData.domains;
+    if (userData) {
+      res.locals.user = userData.user;
+      res.locals.userDomains = userData.domains;
+    };
     next();
   }).catch(function (e) {
     logger.error(e);
@@ -161,48 +163,48 @@ var catcher = require('./routes/catcher/catcher');
 
 app.use('/catcher', catcher);
 
-// catch 404 and forward to error handler
-// app.use(function (req, res, next) {
-//   var err = new Error('Not Found');
-//
-//   err.status = 404;
-//   next(err);
-// });
+catch 404 and forward to error handler
+app.use(function (req, res, next) {
+  var err = new Error('Not Found');
+
+  err.status = 404;
+  next(err);
+});
 
 // error handler
-// app.use(function (err, req, res, next) {
-//   // set locals, only providing error in development
-//   res.locals.message = err.message;
-//   res.locals.error = process.env.ENVIRONMENT === 'DEVELOPMENT' ? err : {};
-//
-//   /**
-//    * Log to the console to local development
-//    */
-//   if (process.env.ENVIRONMENT === 'DEVELOPMENT') {
-//     console.log("Error thrown: ", err);
-//   }
-//
-//   logger.error('Error thrown: ', err);
-//
-//   // render the error page
-//   res.status(err.status || 500);
-//
-//   let errorPageData;
-//
-//   if (err.status === 404) {
-//     errorPageData = {
-//       title: '404',
-//       message : 'Page not found'
-//     };
-//   } else {
-//     errorPageData = {
-//       title: ':(',
-//       message : 'Sorry, dude. Looks like some of our services is busy.'
-//     };
-//   }
-//
-//   res.render('yard/errors/error', errorPageData);
-// });
+app.use(function (err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = process.env.ENVIRONMENT === 'DEVELOPMENT' ? err : {};
+
+  /**
+   * Log to the console to local development
+   */
+  if (process.env.ENVIRONMENT === 'DEVELOPMENT') {
+    console.log('Error thrown: ', err);
+  }
+
+  logger.error('Error thrown: ', err);
+
+  // render the error page
+  res.status(err.status || 500);
+
+  let errorPageData;
+
+  if (err.status === 404) {
+    errorPageData = {
+      title: '404',
+      message : 'Page not found'
+    };
+  } else {
+    errorPageData = {
+      title: ':(',
+      message : 'Sorry, dude. Looks like some of our services is busy.'
+    };
+  }
+
+  res.render('yard/errors/error', errorPageData);
+});
 
 global.app = app;
 
