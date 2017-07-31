@@ -164,49 +164,53 @@ var catcher = require('./routes/catcher/catcher');
 app.use('/catcher', catcher);
 
 // catch 404 and forward to error handler
-// app.use(function (req, res, next) {
-//   var err = new Error('Not Found');
-//
-//   err.status = 404;
-//   next(err);
-// });
+app.use(function (req, res, next) {
+  var err = new Error('Not Found');
+
+  err.status = 404;
+  next(err);
+});
 
 // error handler
-// app.use(function (err, req, res, next) {
-//
-//   console.log('dropping everything!!');
-//   // set locals, only providing error in development
-//   res.locals.message = err.message;
-//   res.locals.error = process.env.ENVIRONMENT === 'DEVELOPMENT' ? err : {};
-//
-//   /**
-//    * Log to the console to local development
-//    */
-//   if (process.env.ENVIRONMENT === 'DEVELOPMENT') {
-//     console.log('Error thrown: ', err);
-//   }
-//
-//   logger.error('Error thrown: ', err);
+app.use(function (err, req, res, next) {
+
+  /**
+   * @todo useless middleware or need refator
+   * Shows error thrown everytime
+   */
+
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = process.env.ENVIRONMENT === 'DEVELOPMENT' ? err : {};
+
+  /**
+   * Log to the console to local development
+   */
+  if (process.env.ENVIRONMENT === 'DEVELOPMENT') {
+    console.log('Error thrown: ', err);
+  }
+
+  logger.error('Error thrown: ', err);
 
   // render the error page
-  // res.status(err.status || 500);
-//
-//   let errorPageData;
-//
-//   if (err.status === 404) {
-//     errorPageData = {
-//       title: '404',
-//       message : 'Page not found'
-//     };
-//   } else {
-//     errorPageData = {
-//       title: ':(',
-//       message : 'Sorry, dude. Looks like some of our services is busy.'
-//     };
-//   }
-//
-//   // res.render('yard/errors/error', errorPageData);
-// });
+  res.status(err.status || 500);
+
+  let errorPageData;
+
+  if (err.status === 404) {
+    errorPageData = {
+      title: '404',
+      message : 'Page not found'
+    };
+  } else {
+    errorPageData = {
+      title: ':(',
+      message : 'Sorry, dude. Looks like some of our services is busy.'
+    };
+  }
+
+  res.render('yard/errors/error', errorPageData);
+});
 
 global.app = app;
 

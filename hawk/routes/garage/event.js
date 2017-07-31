@@ -8,9 +8,9 @@ let modelEvents = require('../../models/events');
 let mongo = require('../../modules/database');
 
 /**
- * limit events per page
+ * limit count of events per page
  */
-const EVENT_LIMIT = 5;
+const EVENT_LIMIT = 10;
 
 
 /**
