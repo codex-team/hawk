@@ -38,7 +38,9 @@
         {
           "url" : "/garage/{{ domain.name }}/event/{{ event.groupHash }}/?page=",
           "event" : "{{ event.groupHash }}",
-          "domain" : "{{ domain.name }}"
+          "domain" : "{{ domain.name }}",
+          "autoloading" : "true",
+          "dontWaitFirstClick" : "false"
         }
       </module-settings>
       {% include 'garage/events/client/events-list.twig' with {events: events} %}

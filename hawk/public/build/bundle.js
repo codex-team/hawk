@@ -1115,8 +1115,8 @@ var Appender = exports.Appender = function () {
     _classCallCheck(this, Appender);
 
     this.settings = settings;
-    this.autoload = null;
     this.nextPage = 1;
+    this.allowedAutoloading = false;
 
     this.CSS = {
       loadMoreButton: 'eventAppender__loadMoreButton'
@@ -1127,6 +1127,14 @@ var Appender = exports.Appender = function () {
 
     /** call init method with button */
     this.settings.init(this.loadMoreButton);
+
+    if (this.settings.autoload) {
+      this.allowedAutoloading = true;
+    }
+
+    if (this.settings.dontWaitFirstClick) {
+      this.loadByScroll();
+    }
   }
 
   _createClass(Appender, [{
@@ -1144,13 +1152,20 @@ var Appender = exports.Appender = function () {
       return block;
     }
   }, {
-    key: 'loadMoreEvents',
-
+    key: 'loadByScroll',
+    value: function loadByScroll() {
+      if (!this.allowedAutoloading) {
+        return;
+      }
+    }
 
     /**
      * Sends a request to the server
      * After getting response calls {settings.appendItemsOnLoad} Function
      */
+
+  }, {
+    key: 'loadMoreEvents',
     value: function loadMoreEvents(event) {
       event.preventDefault();
 
@@ -1159,6 +1174,8 @@ var Appender = exports.Appender = function () {
         success: this.successCallback.bind(this),
         error: this.errorCallback.bind(this)
       });
+
+      this.loadByScroll();
     }
   }, {
     key: 'successCallback',

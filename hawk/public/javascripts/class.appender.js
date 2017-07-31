@@ -29,8 +29,8 @@ export class Appender {
    */
   constructor(settings) {
     this.settings = settings;
-    this.autoload = null;
     this.nextPage = 1;
+    this.allowedAutoloading = false;
 
     this.CSS = {
       loadMoreButton : 'eventAppender__loadMoreButton'
@@ -41,6 +41,14 @@ export class Appender {
 
     /** call init method with button */
     this.settings.init(this.loadMoreButton);
+
+    if (this.settings.autoload) {
+      this.allowedAutoloading = true;
+    }
+
+    if (this.settings.dontWaitFirstClick) {
+      this.loadByScroll();
+    }
   };
 
   /**
@@ -54,6 +62,12 @@ export class Appender {
     return block;
   };
 
+  loadByScroll() {
+    if (!this.allowedAutoloading) {
+      return;
+    }
+  }
+
   /**
    * Sends a request to the server
    * After getting response calls {settings.appendItemsOnLoad} Function
@@ -66,6 +80,8 @@ export class Appender {
       success: this.successCallback.bind(this),
       error: this.errorCallback.bind(this)
     });
+
+    this.loadByScroll();
   };
 
   /**
