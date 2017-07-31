@@ -90,6 +90,7 @@
         "FileReader": true,
         "logger": true,
         "global": true,
+        "app": true,
         "hawk": true,
         "process": true
     }

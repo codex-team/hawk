@@ -80,157 +80,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var dom = __webpack_require__(1).default;
-
-/**
- * Class Appender
- * @constructor
- * @type {Object} settings
- * @type {String} settings.url - sends requests to this URL to get items
- * @type {Function} settings.init - function will be called with "load more button"
- * @type {Function} settings.appendItemsOnLoad - function will be called after servers response
- *
- *
- * Usage:
- *   new Appender({
- *     url : YOUR URL,
- *     init : YOUR CUSTOM CALLBACK,
- *     appendItemsOnLoad : YOUR CUSTOM CALLBACK,
- *     onError : YOUR CALLBACK
- *   })
- *
- */
-
-var Appender = exports.Appender = function () {
-  /**
-   * Class internal properties:
-   * @property {Object} settings - comes outsite
-   * @property {Boolean} autoload - load data by scroll
-   * @property {Number} nextPage - page rotation
-   * @property {Object} CSS - styles
-   */
-  function Appender(settings) {
-    _classCallCheck(this, Appender);
-
-    this.settings = settings;
-    this.nextPage = 1;
-    this.allowedAutoloading = false;
-
-    this.CSS = {
-      loadMoreButton: 'eventAppender__loadMoreButton'
-    };
-
-    this.loadMoreButton = this.drawLoadMoreButton();
-    this.loadMoreButton.addEventListener('click', this.loadMoreEvents.bind(this), false);
-
-    /** call init method with button */
-    this.settings.init(this.loadMoreButton);
-
-    if (this.settings.autoload) {
-      this.allowedAutoloading = true;
-    }
-
-    if (this.settings.dontWaitFirstClick) {
-      this.loadByScroll();
-    }
-  }
-
-  _createClass(Appender, [{
-    key: 'drawLoadMoreButton',
-
-
-    /**
-     * Draws load more button
-     */
-    value: function drawLoadMoreButton() {
-      var block = dom.make('DIV', this.CSS.loadMoreButton, {
-        textContent: 'Load more'
-      });
-
-      return block;
-    }
-  }, {
-    key: 'loadByScroll',
-
-
-    /**
-     * load data by scroll
-     */
-    value: function loadByScroll() {
-      if (!this.allowedAutoloading) {
-        return;
-      }
-    }
-
-    /**
-     * Sends a request to the server
-     * After getting response calls {settings.appendItemsOnLoad} Function
-     */
-
-  }, {
-    key: 'loadMoreEvents',
-    value: function loadMoreEvents(event) {
-      event.preventDefault();
-
-      hawk.ajax.call({
-        url: this.settings.url + this.nextPage,
-        success: this.successCallback.bind(this),
-        error: this.errorCallback.bind(this)
-      });
-
-      this.loadByScroll();
-    }
-  }, {
-    key: 'successCallback',
-
-
-    /**
-     * remove "load more button" if server says "can't load more"
-     * call Customized callback with response
-     */
-    value: function successCallback(response) {
-      response = JSON.parse(response);
-
-      if (!response.canLoadMore) {
-        this.loadMoreButton.remove();
-      }
-
-      this.nextPage++;
-      this.settings.appendItemsOnLoad(response);
-    }
-  }, {
-    key: 'errorCallback',
-
-
-    /**
-     * Handle error responses
-     */
-    value: function errorCallback(error) {
-      if (error) {
-        error = JSON.parse(error);
-        this.settings.onError(error);
-      }
-    }
-  }]);
-
-  return Appender;
-}();
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -290,7 +139,7 @@ var DOM = function () {
 exports.default = DOM;
 
 /***/ }),
-/* 2 */
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -371,7 +220,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -475,7 +324,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -562,7 +411,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -617,7 +466,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -640,7 +489,7 @@ var eventPopup = function (self) {
    * @type {Class}
    */
 
-  var dom = __webpack_require__(1).default;
+  var dom = __webpack_require__(0).default;
 
   var keyCodes_ = {
     ESC: 27
@@ -1028,7 +877,7 @@ var eventPopup = function (self) {
 module.exports = eventPopup;
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1054,13 +903,13 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _class = __webpack_require__(0);
+var _class = __webpack_require__(11);
 
 module.exports = function (self) {
   self.init = function (settings) {
@@ -1096,7 +945,7 @@ module.exports = function (self) {
         */
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1163,7 +1012,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1249,10 +1098,161 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var dom = __webpack_require__(0).default;
+
+/**
+ * Class Appender
+ * @constructor
+ * @type {Object} settings
+ * @type {String} settings.url - sends requests to this URL to get items
+ * @type {Function} settings.init - function will be called with "load more button"
+ * @type {Function} settings.appendItemsOnLoad - function will be called after servers response
+ *
+ *
+ * Usage:
+ *   new Appender({
+ *     url : YOUR URL,
+ *     init : YOUR CUSTOM CALLBACK,
+ *     appendItemsOnLoad : YOUR CUSTOM CALLBACK,
+ *     onError : YOUR CALLBACK
+ *   })
+ *
+ */
+
+var Appender = exports.Appender = function () {
+  /**
+   * Class internal properties:
+   * @property {Object} settings - comes outsite
+   * @property {Boolean} autoload - load data by scroll
+   * @property {Number} nextPage - page rotation
+   * @property {Object} CSS - styles
+   */
+  function Appender(settings) {
+    _classCallCheck(this, Appender);
+
+    this.settings = settings;
+    this.nextPage = 2;
+    this.allowedAutoloading = false;
+
+    this.CSS = {
+      loadMoreButton: 'eventAppender__loadMoreButton'
+    };
+
+    this.loadMoreButton = this.drawLoadMoreButton();
+    this.loadMoreButton.addEventListener('click', this.loadMoreEvents.bind(this), false);
+
+    /** call init method with button */
+    this.settings.init(this.loadMoreButton);
+
+    if (this.settings.autoload) {
+      this.allowedAutoloading = true;
+    }
+
+    if (this.settings.dontWaitFirstClick) {
+      this.loadByScroll();
+    }
+  }
+
+  _createClass(Appender, [{
+    key: 'drawLoadMoreButton',
+
+
+    /**
+     * Draws load more button
+     */
+    value: function drawLoadMoreButton() {
+      var block = dom.make('DIV', this.CSS.loadMoreButton, {
+        textContent: 'Load more'
+      });
+
+      return block;
+    }
+  }, {
+    key: 'loadByScroll',
+
+
+    /**
+     * load data by scroll
+     */
+    value: function loadByScroll() {
+      if (!this.allowedAutoloading) {
+        return;
+      }
+    }
+
+    /**
+     * Sends a request to the server
+     * After getting response calls {settings.appendItemsOnLoad} Function
+     */
+
+  }, {
+    key: 'loadMoreEvents',
+    value: function loadMoreEvents(event) {
+      event.preventDefault();
+
+      hawk.ajax.call({
+        url: this.settings.url + this.nextPage,
+        success: this.successCallback.bind(this),
+        error: this.errorCallback.bind(this)
+      });
+
+      this.loadByScroll();
+    }
+  }, {
+    key: 'successCallback',
+
+
+    /**
+     * remove "load more button" if server says "can't load more"
+     * call Customized callback with response
+     */
+    value: function successCallback(response) {
+      response = JSON.parse(response);
+
+      if (!response.canLoadMore) {
+        this.loadMoreButton.remove();
+      }
+
+      this.nextPage++;
+      this.settings.appendItemsOnLoad(response);
+    }
+  }, {
+    key: 'errorCallback',
+
+
+    /**
+     * Handle error responses
+     */
+    value: function errorCallback(error) {
+      if (error) {
+        error = JSON.parse(error);
+        this.settings.onError(error);
+      }
+    }
+  }]);
+
+  return Appender;
+}();
 
 /***/ }),
 /* 12 */
@@ -1264,7 +1264,7 @@ module.exports = notifier;
 /**
 * Require CSS build
 */
-__webpack_require__(11);
+__webpack_require__(10);
 
 var hawk = function (self) {
   'use strict';
@@ -1278,15 +1278,15 @@ var hawk = function (self) {
     console.log('Hawk app initialized');
   };
 
-  self.checkbox = __webpack_require__(3);
-  self.copyable = __webpack_require__(4);
-  self.ajax = __webpack_require__(2);
-  self.domain = __webpack_require__(5);
-  self.notifier = __webpack_require__(10);
-  self.event = __webpack_require__(7);
-  self.eventPopup = __webpack_require__(6);
-  self.appender = __webpack_require__(8);
-  self.settingsForm = __webpack_require__(9);
+  self.checkbox = __webpack_require__(2);
+  self.copyable = __webpack_require__(3);
+  self.ajax = __webpack_require__(1);
+  self.domain = __webpack_require__(4);
+  self.notifier = __webpack_require__(9);
+  self.event = __webpack_require__(6);
+  self.eventPopup = __webpack_require__(5);
+  self.appender = __webpack_require__(7);
+  self.settingsForm = __webpack_require__(8);
 
   var delegate = function delegate(element) {
     var modulesRequired = void 0;
