@@ -163,7 +163,7 @@ var catcher = require('./routes/catcher/catcher');
 
 app.use('/catcher', catcher);
 
-catch 404 and forward to error handler
+// catch 404 and forward to error handler
 app.use(function (req, res, next) {
   var err = new Error('Not Found');
 
