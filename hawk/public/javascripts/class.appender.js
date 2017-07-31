@@ -30,7 +30,7 @@ export class Appender {
    */
   constructor(settings) {
     this.settings = settings;
-    this.nextPage = 1;
+    this.nextPage = 2;
     this.allowedAutoloading = false;
 
     this.CSS = {
