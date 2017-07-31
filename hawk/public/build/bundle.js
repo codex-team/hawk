@@ -921,8 +921,8 @@ module.exports = function (self) {
         el.after(loadMoreButton);
       },
       appendItemsOnLoad: function appendItemsOnLoad(items) {
-        if (items.trim()) {
-          el.insertAdjacentHTML('beforeEnd', items);
+        if (items.traceback.trim()) {
+          el.insertAdjacentHTML('beforeEnd', items.traceback);
         }
       }
     });
@@ -1222,7 +1222,7 @@ var Appender = exports.Appender = function () {
     value: function successCallback(response) {
       response = JSON.parse(response);
 
-      if (response.hideButton) {
+      if (!response.canLoadMore) {
         this.loadMoreButton.remove();
       }
 

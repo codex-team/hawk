@@ -18,8 +18,8 @@ module.exports = (function (self) {
         el.after(loadMoreButton);
       },
       appendItemsOnLoad : function (items) {
-        if (items.trim()) {
-          el.insertAdjacentHTML('beforeEnd', items);
+        if (items.traceback.trim()) {
+          el.insertAdjacentHTML('beforeEnd', items.traceback);
         }
       }
     });

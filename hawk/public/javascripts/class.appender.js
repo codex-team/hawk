@@ -94,7 +94,7 @@ export class Appender {
   successCallback(response) {
     response = JSON.parse(response);
 
-    if (response.hideButton) {
+    if (!response.canLoadMore) {
       this.loadMoreButton.remove();
     }
 

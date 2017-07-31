@@ -7,6 +7,11 @@ let twig  = require('twig');
 let modelEvents = require('../../models/events');
 let mongo = require('../../modules/database');
 
+/**
+ * limit events per page
+ */
+const EVENT_LIMIT = 5;
+
 
 /**
  * Check if user can manage passed domain
@@ -81,14 +86,14 @@ let makeResponse_ = function(domain, data) {
 
     /** requiring page via AJAX */
     if (isAjaxRequest && request.query.page) {
-        loadMoreDataForPagination_.call(response, templatePath + '/events-list', domain, events, canLoadMore);
+        return loadMoreDataForPagination_.call(response, templatePath + '/events-list', domain, events, canLoadMore);
     }
 
     /** If we have ?popup=1 parameter, send JSON answer */
     if (request.query.popup) {
-        loadDataForPopup_.call(response, templatePath + '/page', domain, events);
+        return loadDataForPopup_.call(response, templatePath + '/page', domain, events);
     } else {
-        loadPageData_.call(response, templatePath + '/page', domain, events);
+        return loadPageData_.call(response, templatePath + '/page', domain, events);
     }
 };
 
@@ -161,7 +166,7 @@ let loadMoreDataForPagination_ = function(templatePath, domain, events, canLoadM
 
   if (canLoadMore) {
 
-    response.render(templatePath, {
+    app.render(templatePath, {
       domain,
       events
     }, function(err, res) {
@@ -170,12 +175,12 @@ let loadMoreDataForPagination_ = function(templatePath, domain, events, canLoadM
             logger.error(`Something bad wrong. I can't load more ${currentEvent.type} events from ${domain} because of `, err);
         }
 
-        return response.json({traceback: res, canLoadMore: false});
+        return response.json({traceback: res, canLoadMore: true});
     });
 
   } else {
 
-      return response.json ({ traceback : '', canLoadMore : true });
+      return response.json ({ traceback : '', canLoadMore : false });
 
   }
 
@@ -204,17 +209,14 @@ let event = function (req, res) {
 
         /** pagination settings */
         let page    = req.query.page || 1,
-            limit   = 10,
+            limit   = EVENT_LIMIT,
             skip    = (parseInt(page) - 1) * limit;
 
         getDomainInfo(userDomains, params.domainName)
             .then((currentDomain) => {
 
                 modelEvents.get(currentDomain.name, {groupHash: params.eventId}, false, false, limit + 1, skip)
-                    .then((events) => {
-                        markEventsAsRead(currentDomain, events);
-                        return events;
-                    })
+                    .then((events) => markEventsAsRead(currentDomain, events))
                     .then((eventList) => {
                         let canLoadMore = eventList.length > limit;
                         return {
