@@ -28,7 +28,7 @@ module.exports = (function () {
     }
 
     if (data.beforeSend && typeof data.beforeSend === 'function') {
-      if(!data.beforeSend.call()) {
+      if(data.beforeSend.call() === false) {
         return;
       }
     }

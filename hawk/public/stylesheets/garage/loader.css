@@ -1,12 +1,4 @@
-.eventAppender__loadMoreButton {
-  text-align: center;
-  padding: 20px;
-  cursor: pointer;
-  border: 1px solid rgba(0, 0, 0, .3);
-}
-
-.eventAppender__loadMoreButton::before {
-  content: '';
+.spinner {
   width: 5px;
   height: 5px;
   margin: auto;

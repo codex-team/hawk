@@ -175,7 +175,7 @@ module.exports = function () {
     }
 
     if (data.beforeSend && typeof data.beforeSend === 'function') {
-      if (!data.beforeSend.call()) {
+      if (data.beforeSend.call() === false) {
         return;
       }
     }
@@ -1212,6 +1212,7 @@ var Appender = exports.Appender = function () {
 
       hawk.ajax.call({
         url: this.settings.url + this.nextPage,
+        beforeSend: this.beforeSend.bind(this),
         success: this.successCallback.bind(this),
         error: this.errorCallback.bind(this)
       });
@@ -1219,16 +1220,27 @@ var Appender = exports.Appender = function () {
       this.loadByScroll();
     }
   }, {
-    key: 'successCallback',
+    key: 'beforeSend',
 
+
+    /**
+     * Append spinner
+     */
+    value: function beforeSend() {
+      this.loadMoreButton.classList.add('spinner');
+    }
 
     /**
      * remove "load more button" if server says "can't load more"
      * call Customized callback with response
      */
+
+  }, {
+    key: 'successCallback',
     value: function successCallback(response) {
       response = JSON.parse(response);
 
+      this.loadMoreButton.classList.remove('spinner');
       if (!response.canLoadMore) {
         this.loadMoreButton.remove();
       }

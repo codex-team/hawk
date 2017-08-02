@@ -22,6 +22,7 @@
 @import url('garage/settings.css');
 @import url('garage/event.css');
 @import url('garage/sites-added.css');
+@import url('garage/loader.css');
 
 /**
  * Notifier
