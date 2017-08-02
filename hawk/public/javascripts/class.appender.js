@@ -81,6 +81,7 @@ export class Appender {
 
     hawk.ajax.call({
       url : this.settings.url + this.nextPage,
+      beforeSend : this.beforeSend.bind(this),
       success: this.successCallback.bind(this),
       error: this.errorCallback.bind(this)
     });
@@ -89,12 +90,20 @@ export class Appender {
   };
 
   /**
+   * Append spinner
+   */
+  beforeSend() {
+    this.loadMoreButton.classList.add('spinner');
+  }
+
+  /**
    * remove "load more button" if server says "can't load more"
    * call Customized callback with response
    */
   successCallback(response) {
     response = JSON.parse(response);
 
+    this.loadMoreButton.classList.remove('spinner');
     if (!response.canLoadMore) {
       this.loadMoreButton.remove();
     }
