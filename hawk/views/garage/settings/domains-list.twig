@@ -1,7 +1,0 @@
-<div class="domains-list">
-    <h4 class="domains-list__header">Domains</h4>
-    {% for domain in domains %}
-        {% include 'garage/settings/domain.twig' with {domain: domain} %}
-    {% endfor %}
-    <a class="domains-list__add-domain" href="/websites/create">+ Add domain</a>
-</div>

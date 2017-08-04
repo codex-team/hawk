@@ -1,0 +1,188 @@
+.project {
+    padding: 30px;
+    margin: 30px 0;
+    border: 1px solid var(--grayBlueLine);
+    border-radius: 2px;
+    font-size: 19px;
+    line-height: 1.2em;
+
+    &__name {
+        margin: 0;
+        font-size: 26px;
+        line-height: 1.2em;
+    }
+
+    &__logo {
+        float: left;
+        display: inline-block;
+        width: 44px;
+        height: 44px;
+        margin: 0 25px 15px 0;
+    }
+
+    &__info {
+        display: flex;
+        flex-flow: row nowrap;
+        margin-top: 6px;
+    }
+
+    &__domain {
+        margin-left: auto;
+        color: var(--linkColor);
+    }
+
+    &__token-label {
+         margin: 0 15px 0 auto;
+         color: var(--grayOnDark);
+    }
+
+    &__token {
+         min-width: 280px;
+         padding: 3px 10px;
+         color: var(--greenText);
+         background: var(--lightGreenBg);
+         border-radius: 2px;
+         cursor: pointer;
+         text-align: center;
+         font-size: 14px;
+    }
+
+    &__copy-button {
+
+        color: #4f4e4e;
+        font-size: 15px;
+        cursor: pointer;
+
+        svg {
+            margin: 0 10px;
+            vertical-align: baseline;
+        }
+
+    }
+
+    &__member {
+        display: flex;
+        flex-flow: row nowrap;
+        position: relative;
+        padding: 15px 0;
+
+        font-size: 16px;
+        border-bottom: 1px solid var(--grayBlueLine);
+
+        &::before {
+            content: '';
+            display: block;
+            position: absolute;
+            left: 0;
+            bottom: -1px;
+            width: 37px;
+            height: 1px;
+            border-bottom: 1px solid #fff;
+        }
+
+    }
+
+    &__member-email {
+        margin-left: 16px;
+
+        &--pending {
+            color: var(--noticeColor);
+        }
+
+    }
+
+    &__member-role {
+        position: relative;
+        margin-left: auto;
+
+        &--admin {
+            color: var(--greenText);
+
+                &::before {
+                content: '';
+                background: url(/static/svg/check.svg) center no-repeat;
+                display: block;
+                width: 12px;
+                height: 8px;
+                position: absolute;
+                left: 0;
+                top: 50%;
+                transform: translate(-180%, -50%);
+            }
+
+        }
+
+        &--member {
+            color: var(--noticeColor);
+        }
+
+        &--pending {
+            color: #da8c05;
+        }
+    }
+
+    &__invitation {
+        margin-top: 15px;
+    }
+
+    &__add-button {
+        position: relative;
+        margin: 15px 5px;
+        padding-left: 25px;
+        color: var(--greenText);
+        font-size: 16px;
+        cursor: pointer;
+
+        &::before {
+            content: '';
+            background: url(/static/svg/plus.svg) center no-repeat;
+            display: block;
+            width: 14px;
+            height: 14px;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+    }
+
+    &__save-button {
+        margin-left: 25px;
+        color: var(--greenText);
+        font-size: 16px;
+        cursor: pointer;
+
+        svg {
+
+            margin-left: 5px;
+
+            path {
+                fill: var(--greenText);
+            }
+        }
+    }
+
+    &__notifies {
+        margin: 20px 0;
+    }
+
+    &__integrations-link {
+        font-size: 16px;
+    }
+
+    &__section {
+        margin: 25px 0;
+
+        &:last-of-type {
+            margin-bottom: 0;
+        }
+    }
+
+    &__section-header {
+        margin: 0;
+        margin-bottom: 15px;
+        color: var(--noticeColor);
+    }
+
+}

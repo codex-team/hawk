@@ -1,71 +1,35 @@
 .garage-settings {
     padding: 25px;
 
-    &__integrations-link {
-        margin-bottom: 25px;
-    }
-}
-
-.domains-list {
     &__header {
-        margin: 0 0 25px;
+        margin: 20px 0;
         font-size: 27px;
         font-weight: 800;
     }
 
-    &__add-domain {
-        display: block;
-        margin: 20px 0;
-        color: #00b693;
-        font-size: 25px;
-        font-weight: 700;
-
-        &:hover {
-            color: var(--hoverColor);
-        }
-    }
-}
-
-.domains-list-item {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    margin: 10px 0;
-    background: var(--lightGrayBg);
-    padding: 15px;
-    border-radius: 2px;
-
-    &__favicon {
-        width: 30px;
-        height: 30px;
-        background: #fff;
-    }
-
-    &__name {
-        margin: 0 15px;
-        font-size: 20px;
-        font-weight: 700;
-    }
-
-    &__token-label {
-        margin: 0 15px 0 auto;
-        color: var(--grayOnDark);
-    }
-
-    &__token {
-        min-width: 280px;
-        padding: 3px 10px;
+    &__add-project {
+        display: inline-block;
+        position: relative;
+        padding: 12px 12px 12px 40px;
         color: var(--greenText);
-        background: #fafafa;
-        border-radius: 2px;
+        font-size: 20px;
+        border: 1px solid #cde6e0;
+        border-radius: 3px;
         cursor: pointer;
-        text-align: center;
-        font-size: 0.9em;
+
+        &::before {
+            content: '';
+            background: url(/static/svg/plus.svg) center no-repeat;
+            display: block;
+            width: 18px;
+            height: 18px;
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+
     }
 
-    &__unlink {
-        margin-left: 30px;
-        color: var(--redText);
-        cursor: pointer;
-    }
 }

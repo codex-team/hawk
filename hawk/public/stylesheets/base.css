@@ -150,6 +150,18 @@ textarea:focus {
             background: transparent;
         }
     }
+
+    &--green {
+        color: #fff;
+        background: var(--greenBg);
+        padding: 12px 38px;
+
+        &:hover {
+            background-color: color(var(--greenBg) lightness(-5%));
+        }
+
+    }
+
 }
 
 .form {
@@ -157,6 +169,11 @@ textarea:focus {
         margin-bottom: 25px;
         font-size: 27px;
         font-weight: 800;
+
+        &:first-of-type {
+            margin-top: 0;
+        }
+
     }
 
     &__label {
@@ -165,10 +182,18 @@ textarea:focus {
         font-size: 19px;
         color: var(--grayText);
         font-weight: bold;
+
+        &--thin {
+            color: var(--noticeColor);
+            font-size: 15px;
+            font-weight: normal;
+        }
+
     }
 
     &__checkbox {
         margin-right: 25px;
+        font-size: 16px;
         cursor: pointer;
 
         &::before {
@@ -209,6 +234,14 @@ textarea:focus {
     &__submit {
         font-size: 18px;
     }
+
+    &__logo-upload {
+        width: 120px;
+        height: 120px;
+        border: 1px solid var(--grayBlueLine);
+        border-radius: 2px;
+    }
+
 }
 
 .default-checkbox {
