@@ -1,6 +1,21 @@
 module.exports = function () {
   let mongo = require('../modules/database');
   let collections = require('../config/collections');
+  let Crypto = require('crypto');
+
+  /**
+   * Generate sha256 hash from user id and project id
+   *
+   * @param {String} userId
+   * @param {String} projectId
+   * @returns {String} hash
+   */
+  let generateInviteHash = function (userId, projectId) {
+    let string = userId + process.env.SALT + projectId;
+
+    return Crypto.createHash('sha256').update(string, 'utf8').digest('hex');
+  };
+
 
   /**
    * Get user projects by userId
@@ -32,26 +47,8 @@ module.exports = function () {
         let queries = [];
 
         for (let i = 0; i < projects.length; i++) {
-          let projectCollection = collections.TEAM + ':' + projects[i].id;
-
           queries.push(
-            mongo.aggregation(projectCollection, [
-              {$lookup: {
-                from: collections.USERS,
-                localField: 'user_id',
-                foreignField: '_id',
-                as: 'user'
-              }},
-              {$project: {
-                id: '$user_id',
-                role: 1,
-                is_pending: 1,
-                notifies: 1,
-                tgHook: 1,
-                slackHook: 1,
-                email: '$user.email'
-              }}
-            ])
+            getTeam(projects[i].id)
               .then(function (team) {
                 projects[i].team = team;
               })
@@ -114,7 +111,8 @@ module.exports = function () {
             email: true,
             tg: false,
             slack: false
-          }
+          },
+          role: role
         });
       })
       .then(function () {
@@ -165,9 +163,8 @@ module.exports = function () {
     })
       .then(function (project_) {
         project = project_;
-        let projectCollection = collections.TEAM + ':' + id;
 
-        return mongo.find(projectCollection, {});
+        return getTeam(project._id);
       })
       .then(function (team) {
         project.team = team;
@@ -203,7 +200,6 @@ module.exports = function () {
    * @param {String} value - url for webhook
    */
   let saveWebhook = function (projectId, userId, type, value) {
-
     let userCollection = collections.MEMBERSHIP + ':' + userId,
         field = type+'Hook';
 
@@ -212,12 +208,73 @@ module.exports = function () {
       {$set: {[field]: value}});
   };
 
+  /**
+   * Get project team by project id
+   *
+   * @param projectId
+   * @returns {Promise.<TResult>}
+   */
+  let getTeam = function (projectId) {
+    let projectCollection = collections.TEAM + ':' + projectId;
+
+    return mongo.aggregation(projectCollection, [
+      {$lookup: {
+        from: collections.USERS,
+        localField: 'user_id',
+        foreignField: '_id',
+        as: 'user'
+      }},
+      {$project: {
+        id: '$user_id',
+        role: 1,
+        is_pending: 1,
+        notifies: 1,
+        tgHook: 1,
+        slackHook: 1,
+        email: '$user.email'
+      }}
+    ]);
+  };
+
+  /**
+   * Set is_pending field to false for user with userId in project team collection
+   *
+   * @param {String} projectId
+   * @param {String} userId
+   */
+  let confirmInvitation = function (projectId, userId) {
+    let projectCollection = collections.TEAM + ':' + projectId;
+
+    return mongo.updateOne(projectCollection, {user_id: mongo.ObjectId(userId)}, {$set: {is_pending: false}});
+  };
+
+  /**
+   * Set user's role to admin
+   *
+   * @param {String} projectId
+   * @param {String} userId
+   * @returns {Promise.<TResult>|Request}
+   */
+  let grantAdminAccess = function (projectId, userId) {
+    let projectCollection = collections.TEAM + ':' + projectId,
+        userCollection = collections.MEMBERSHIP + ':' + userId;
+
+    return mongo.updateOne(projectCollection, {user_id: mongo.ObjectId(userId)}, {$set: {role: 'admin'}})
+      .then(function () {
+        return mongo.updateOne(userCollection, {project_id: mongo.ObjectId(projectId)}, {$set: {role: 'admin'}});
+      });
+  };
+
   return {
     add: add,
     get: get,
     getByUser: getByUser,
     addMember: addMember,
     editNotifies: editNotifies,
-    saveWebhook: saveWebhook
+    saveWebhook: saveWebhook,
+    getTeam: getTeam,
+    generateInviteHash: generateInviteHash,
+    confirmInvitation: confirmInvitation,
+    grantAdminAccess: grantAdminAccess
   };
 }();

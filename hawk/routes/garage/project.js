@@ -69,9 +69,11 @@ let inviteMember = function (req, res) {
       projectId = req.body.projectId,
       foundUser;
 
-  if (!userEmail || !projectId) {
-    res.sendStatus(400);
-    return;
+  if (!userEmail) {
+    res.json({
+      success: 0,
+      message: 'Please, pass user email'
+    });
   }
 
   user.getByParams({email: userEmail})
@@ -85,14 +87,37 @@ let inviteMember = function (req, res) {
       return project.get(projectId);
     })
     .then(function (foundProject) {
-      return project.addMember(foundProject._id, foundProject.uri, foundUser._id);
+      return project.addMember(foundProject._id, foundProject.uri, foundUser._id)
+        .then(function () {
+          return foundProject;
+        });
+    })
+    .then(function (foundProject) {
+      let inviteHash = project.generateInviteHash(foundUser._id, foundProject._id),
+          inviteLink = process.env.SERVER_URL + '/garage/project/invite?user=' + foundUser._id
+                                                                    + '&project=' + foundProject._id
+                                                                    + '&hash=' + inviteHash,
+          renderParams = {
+            project: foundProject,
+            inviteLink: inviteLink
+          };
+
+      Twig.renderFile('views/notifications/email/projectInvite', renderParams, function (html) {
+        email.send(userEmail, 'Invitation to ' + foundProject.name, '', html);
+      });
     })
     .then(function () {
-      res.sendStatus(200);
+      res.json({
+        success: 1,
+        message: 'Invitation for ' + userEmail + ' was sent'
+      });
     })
     .catch(function (e) {
-      console.log(e);
-      res.sendStatus(400);
+      logger.error('Error while sending project invitation ', e);
+      res.json({
+        success: 0,
+        message: e.message
+      });
     });
 };
 
@@ -108,11 +133,17 @@ let editNotifies = function (req, res) {
 
   project.editNotifies(post.projectId, post.userId, post.type, post.value)
     .then(function () {
-      res.sendStatus(200);
+      res.json({
+        success: 1,
+        message: 'Preferences was saved'
+      });
     })
     .catch(function (e) {
-      console.log(e);
-      res.sendStatus(400);
+      logger.error('Error while saving notification preferences ', e);
+      res.json({
+        success: 0,
+        message: 'Can\'t save notification preferences because of server error'
+      });
     });
 };
 
@@ -128,18 +159,85 @@ let saveWebhook = function (req, res) {
 
   project.saveWebhook(post.projectId, post.userId, post.type, post.value)
     .then(function () {
-      res.sendStatus(200);
+      res.json({
+        success: 1,
+        message: 'Webhook was saved'
+      });
     })
     .catch(function (e) {
-      console.log(e);
-      res.sendStatus(400);
+      logger.error('Error while saving notifications webhook ', e);
+      res.json({
+        success: 0,
+        message: 'Can\'t save webhook because of server error'
+      });
     });
 };
 
+/**
+ * GET /project/invite handler
+ *
+ * Confirm user participation in project
+ *
+ * @param req
+ * @param res
+ */
+let confirmInvite = function (req, res) {
+  let get = req.query;
+
+  let generatedHash = project.generateInviteHash(get.user, get.project);
+
+  if (generatedHash !== get.hash) {
+    res.render('yard/errors/error.twig', {
+      title: 'Invalid link',
+      message: 'Sorry, this link doesn\'t work. Request new from team leader'
+    });
+    return;
+  }
+
+  project.confirmInvitation(get.project, get.user)
+    .then(function () {
+      let message = 'You was successfully added to the project';
+
+      res.redirect('/garage/settings?success=1&message=' + message);
+    })
+    .catch(function (e) {
+      logger.error('Error while confirm project invitation ', e);
+      res.redirect('/garage/settings?success=0&message=' + e.message);
+    });
+};
+
+/**
+ * POST /project/grantAdminAccess handler
+ *
+ * Gran admin access to user
+ *
+ * @param req
+ * @param res
+ */
+let granAdminAccess = function (req, res) {
+  let post = req.body;
+
+  project.grantAdminAccess(post.projectId, post.userId)
+    .then(function () {
+      res.json({
+        success: 1,
+        message: 'Access granted'
+      });
+    })
+    .catch(function (e) {
+      logger.error('Error while granting admin access ', e);
+      res.json({
+        success: 0,
+        message: 'Can\'t grant access because of server error'
+      });
+    });
+};
 
 router.post('/project/add', add);
 router.post('/project/inviteMember', inviteMember);
 router.post('/project/editNotifies', editNotifies);
 router.post('/project/saveWebhook', saveWebhook);
+router.post('/project/grantAdminAccess', granAdminAccess);
+router.get('/project/invite', confirmInvite);
 
 module.exports = router;
