@@ -122,7 +122,15 @@ module.exports = function () {
     XMLHTTP.onreadystatechange = function () {
       if (XMLHTTP.readyState === 4) {
         if (XMLHTTP.status === 200) {
-          successFunction(XMLHTTP.responseText);
+          var result = void 0;
+
+          try {
+            result = JSON.parse(XMLHTTP.responseText);
+          } catch (e) {
+            result = XMLHTTP.responseText;
+          }
+
+          successFunction(result);
         } else {
           errorFunction(XMLHTTP.statusText);
         }
@@ -900,7 +908,7 @@ module.exports = function () {
           message: errors[error],
           style: 'error'
         });
-      };
+      }
 
       /** Prevent form sending */
       event.preventDefault();
@@ -935,13 +943,15 @@ module.exports = function () {
     hawk.ajax.call({
       type: 'POST',
       url: '/garage/project/inviteMember',
-      success: function success() {
+      success: function success(result) {
         hawk.notifier.show({
-          style: 'success',
-          message: 'Invitation sent'
+          style: result.success ? 'success' : 'error',
+          message: result.message
         });
-        hawk.toggler.toggle(form);
-        input.value = '';
+        if (result.success) {
+          hawk.toggler.toggle(form);
+          input.value = '';
+        }
       },
       error: function error() {
         hawk.notifier.show({
@@ -976,12 +986,11 @@ module.exports = function () {
           style: 'error',
           message: 'Can\'t save notifications preferences. Try again later'
         });
-        checkbox.click();
       },
-      success: function success() {
+      success: function success(result) {
         hawk.notifier.show({
-          style: 'success',
-          message: 'Saved'
+          style: result.success ? 'success' : 'error',
+          message: result.message
         });
       },
       data: JSON.stringify({
@@ -1013,10 +1022,10 @@ module.exports = function () {
           message: 'Can\'t save webhook. Try again later'
         });
       },
-      success: function success() {
+      success: function success(result) {
         hawk.notifier.show({
-          style: 'success',
-          message: 'Saved'
+          style: result.success ? 'success' : 'error',
+          message: result.message
         });
       },
       data: JSON.stringify({
@@ -1028,12 +1037,48 @@ module.exports = function () {
     });
   };
 
+  /**
+   * Send request to grant admin access to user
+   *
+   * @param projectId
+   * @param userId
+   * @param button
+   */
+  var grantAdminAccess = function grantAdminAccess(projectId, userId, button) {
+    hawk.ajax.call({
+      type: 'POST',
+      url: '/garage/project/grantAdminAccess',
+      error: function error() {
+        hawk.notifier.show({
+          style: 'error',
+          message: 'Can\'t grant access. Try again later'
+        });
+      },
+      success: function success(result) {
+        hawk.notifier.show({
+          style: result.success ? 'success' : 'error',
+          message: result.message
+        });
+        if (result.success) {
+          button.classList.add('project__member-role--admin');
+          button.classList.remove('project__member-role--member');
+          button.textContent = 'Admin';
+        }
+      },
+      data: JSON.stringify({
+        projectId: projectId,
+        userId: userId
+      })
+    });
+  };
+
   return {
     init: init,
     checkForm: checkForm,
     inviteMember: inviteMember,
     saveNotifiesPreferences: saveNotifiesPreferences,
-    saveWebhook: saveWebhook
+    saveWebhook: saveWebhook,
+    grantAdminAccess: grantAdminAccess
   };
 }();
 

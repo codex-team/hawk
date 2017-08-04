@@ -19,9 +19,9 @@ router.use(function (req, res, next) {
   next();
 });
 
+router.use(project);
 router.use(event);
 router.use(settings);
 router.use(index);
-router.use(project);
 
 module.exports = router;

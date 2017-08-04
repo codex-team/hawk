@@ -6,6 +6,10 @@
     font-size: 19px;
     line-height: 1.2em;
 
+    &:last-of-type {
+        margin-bottom: 0;
+    }
+
     &__name {
         margin: 0;
         font-size: 26px;
@@ -118,6 +122,10 @@
 
         &--pending {
             color: #da8c05;
+        }
+
+        &--can-grant-access {
+            cursor: pointer;
         }
     }
 
