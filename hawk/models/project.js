@@ -55,7 +55,7 @@ module.exports = function () {
           );
 
           queries.push(
-            mongo.findOne(userCollection, {project_id: projects[i].id})
+            getUserData(projects[i].id, userId)
               .then(function (userData) {
                 projects[i].user = userData;
               })
@@ -112,7 +112,6 @@ module.exports = function () {
             tg: false,
             slack: false
           },
-          role: role
         });
       })
       .then(function () {
@@ -259,11 +258,30 @@ module.exports = function () {
     let projectCollection = collections.TEAM + ':' + projectId,
         userCollection = collections.MEMBERSHIP + ':' + userId;
 
-    return mongo.updateOne(projectCollection, {user_id: mongo.ObjectId(userId)}, {$set: {role: 'admin'}})
-      .then(function () {
-        return mongo.updateOne(userCollection, {project_id: mongo.ObjectId(projectId)}, {$set: {role: 'admin'}});
+    return mongo.updateOne(projectCollection, {user_id: mongo.ObjectId(userId)}, {$set: {role: 'admin'}});
+  };
+
+  /**
+   * Get user info in project with projectId
+   *
+   * @param {String} projectId
+   * @param {String} userId
+   */
+  let getUserData = function (projectId, userId) {
+    let userCollection = collections.MEMBERSHIP + ':' + userId,
+        projectCollection = collections.TEAM + ':' + projectId;
+
+    return mongo.findOne(projectCollection, {user_id: mongo.ObjectId(userId)})
+      .then(function (userData) {
+        return mongo.findOne(userCollection, {project_id: mongo.ObjectId(projectId)})
+          .then(function (projectData) {
+            userData.projectUri = projectData.uri;
+            return userData;
+          })
       });
   };
+
+
 
   return {
     add: add,
