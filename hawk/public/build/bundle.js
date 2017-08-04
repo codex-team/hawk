@@ -64,7 +64,7 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -445,7 +445,7 @@ var eventPopup = function (self) {
    * @type {Class}
    */
 
-  var dom = __webpack_require__(9).default;
+  var dom = __webpack_require__(10).default;
 
   var keyCodes_ = {
     ESC: 27
@@ -1044,6 +1044,80 @@ module.exports = function () {
 "use strict";
 
 
+module.exports = function () {
+  var NAME = 'js-toggle';
+  var HIDE_CLASS = 'hide';
+
+  var elements = {};
+
+  /**
+   * Get all elements with 'js-toggle' name and prepare them
+   */
+  var init = function init() {
+    var elems = document.getElementsByName(NAME);
+
+    for (var i = 0; i < elems.length; i++) {
+      prepareElem(elems[i]);
+    }
+  };
+
+  /**
+   * Get toggle buttons and save them and add click listeners
+   *
+   * @param elem
+   */
+  var prepareElem = function prepareElem(elem) {
+    var buttonId = elem.dataset.button,
+        button = document.getElementById(buttonId);
+
+    elem.classList.add(HIDE_CLASS);
+    elements[buttonId] = elem;
+
+    button.addEventListener('click', buttonClicked);
+  };
+
+  /**
+   * Toggle button click handler
+   */
+  var buttonClicked = function buttonClicked() {
+    var button = this,
+        buttonId = button.id;
+
+    button.classList.add(HIDE_CLASS);
+    elements[buttonId].classList.remove(HIDE_CLASS);
+  };
+
+  /**
+   * Toggle element display property
+   *
+   * @param elem
+   */
+  var toggle = function toggle(elem) {
+    var buttonId = elem.dataset.button,
+        button = document.getElementById(buttonId);
+
+    button.classList.toggle(HIDE_CLASS);
+
+    if (button.classList.contains(HIDE_CLASS)) {
+      elem.classList.remove(HIDE_CLASS);
+    } else {
+      elem.classList.add(HIDE_CLASS);
+    }
+  };
+
+  return {
+    init: init,
+    toggle: toggle
+  };
+}();
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var notifier = function (e) {
   function t(r) {
     if (n[r]) return n[r].exports;var c = n[r] = { i: r, l: !1, exports: {} };return e[r].call(c.exports, c, c.exports, t), c.l = !0, c.exports;
@@ -1124,13 +1198,13 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1201,7 +1275,7 @@ var DOM = function () {
 exports.default = DOM;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1210,7 +1284,7 @@ exports.default = DOM;
 /**
 * Require CSS build
 */
-__webpack_require__(8);
+__webpack_require__(9);
 
 var hawk = function (self) {
   'use strict';
@@ -1231,11 +1305,11 @@ var hawk = function (self) {
   self.copyable = __webpack_require__(2);
   self.ajax = __webpack_require__(0);
   self.domain = __webpack_require__(3);
-  self.notifier = __webpack_require__(7);
+  self.notifier = __webpack_require__(8);
   self.event = __webpack_require__(5);
   self.eventPopup = __webpack_require__(4);
   self.settingsForm = __webpack_require__(6);
-  self.toggler = __webpack_require__(13);
+  self.toggler = __webpack_require__(7);
 
   return self;
 }({});
@@ -1248,82 +1322,6 @@ hawk.docReady = function (f) {
 };
 
 module.exports = hawk;
-
-/***/ }),
-/* 11 */,
-/* 12 */,
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = function () {
-  var NAME = 'js-toggle';
-  var HIDE_CLASS = 'hide';
-
-  var elements = {};
-
-  /**
-   * Get all elements with 'js-toggle' name and prepare them
-   */
-  var init = function init() {
-    var elems = document.getElementsByName(NAME);
-
-    for (var i = 0; i < elems.length; i++) {
-      prepareElem(elems[i]);
-    }
-  };
-
-  /**
-   * Get toggle buttons and save them and add click listeners
-   *
-   * @param elem
-   */
-  var prepareElem = function prepareElem(elem) {
-    var buttonId = elem.dataset.button,
-        button = document.getElementById(buttonId);
-
-    elem.classList.add(HIDE_CLASS);
-    elements[buttonId] = elem;
-
-    button.addEventListener('click', buttonClicked);
-  };
-
-  /**
-   * Toggle button click handler
-   */
-  var buttonClicked = function buttonClicked() {
-    var button = this,
-        buttonId = button.id;
-
-    button.classList.add(HIDE_CLASS);
-    elements[buttonId].classList.remove(HIDE_CLASS);
-  };
-
-  /**
-   * Toggle element display property
-   *
-   * @param elem
-   */
-  var toggle = function toggle(elem) {
-    var buttonId = elem.dataset.button,
-        button = document.getElementById(buttonId);
-
-    button.classList.toggle(HIDE_CLASS);
-
-    if (button.classList.contains(HIDE_CLASS)) {
-      elem.classList.remove(HIDE_CLASS);
-    } else {
-      elem.classList.add(HIDE_CLASS);
-    }
-  };
-
-  return {
-    init: init,
-    toggle: toggle
-  };
-}();
 
 /***/ })
 /******/ ]);
