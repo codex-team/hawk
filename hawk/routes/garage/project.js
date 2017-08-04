@@ -102,7 +102,12 @@ let inviteMember = function (req, res) {
             inviteLink: inviteLink
           };
 
-      Twig.renderFile('views/notifications/email/projectInvite', renderParams, function (html) {
+      Twig.renderFile('views/notifications/email/projectInvite', renderParams, function (err, html) {
+        if (err) {
+          logger.error('Error while rendering email template %o' % err);
+          return;
+        }
+
         email.send(userEmail, 'Invitation to ' + foundProject.name, '', html);
       });
     })
