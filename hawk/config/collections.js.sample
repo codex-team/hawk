@@ -1,7 +1,6 @@
 module.exports = {
 
   USERS: 'users',
-  WEBSITES: 'websites'
   WEBSITES: 'websites',
   PROJECTS: 'projects',
   MEMBERSHIP: 'membership',
