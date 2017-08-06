@@ -16,10 +16,14 @@
         font-weight: bold;
         font-size: 1.3em;
         margin: 0 25px 0 0;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
 
     &__tab {
         margin-right: 10px;
+        white-space: nowrap;
         color: var(--grayText);
 
         &:not(:last-of-type)::after {
