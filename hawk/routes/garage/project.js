@@ -1,11 +1,11 @@
 let express = require('express');
 let router = express.Router();
 let uuid = require('uuid');
-let translit = require('translit-rus-eng');
 let Twig = require('twig');
 let email  = require('../../modules/email');
 let project = require('../../models/project');
 let user = require('../../models/user');
+let translit = require('../../modules/translit');
 
 /**
  * POST /project/add handler
@@ -25,7 +25,7 @@ let add = function (req, res) {
     dt_added: new Date(),
     uid_added: res.locals.user._id,
     token: token,
-    uri: translit(post.name, 'slug')
+    uri: translit(post.name, true)
   };
 
   project.add(data)
