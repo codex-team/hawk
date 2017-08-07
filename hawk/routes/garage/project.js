@@ -18,6 +18,13 @@ let add = function (req, res) {
   let post = req.body,
       token = uuid.v4();
 
+  if (!post.name) {
+    let message = 'Please, pass project name';
+
+    res.redirect('/garage/settings?success=0&message=' + message);
+    return;
+  }
+
   let data = {
     name: post.name,
     description: post.description,
@@ -66,8 +73,7 @@ let add = function (req, res) {
  */
 let inviteMember = function (req, res) {
   let userEmail = req.body.email,
-      projectId = req.body.projectId,
-      foundUser;
+      projectId = req.body.projectId;
 
   if (!userEmail) {
     res.json({
@@ -77,22 +83,24 @@ let inviteMember = function (req, res) {
   }
 
   user.getByParams({email: userEmail})
-    .then(function (foundUser_) {
-      foundUser = foundUser_;
+    .then(function (foundUser) {
 
       if (!foundUser) {
         throw Error('User not found');
       }
 
-      return project.get(projectId);
-    })
-    .then(function (foundProject) {
-      return project.addMember(foundProject._id, foundProject.uri, foundUser._id)
-        .then(function () {
-          return foundProject;
+      return project.get(projectId)
+        .then(function (foundProject) {
+          return {foundProject, foundUser};
         });
     })
-    .then(function (foundProject) {
+    .then(function ({foundProject, foundUser}) {
+      return project.addMember(foundProject._id, foundProject.uri, foundUser._id)
+        .then(function () {
+          return {foundProject, foundUser};
+        });
+    })
+    .then(function ({foundProject, foundUser}) {
       let inviteHash = project.generateInviteHash(foundUser._id, foundProject._id),
           inviteLink = process.env.SERVER_URL + '/garage/project/invite?user=' + foundUser._id
                                                                     + '&project=' + foundProject._id
