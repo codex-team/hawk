@@ -11,7 +11,8 @@
  */
 module.exports = function () {
   const NAMES = {
-    copyable: 'js-copyable'
+    copyable: 'js-copyable',
+    authorized: 'js-copyable-authorize'
   };
 
   /**
@@ -31,6 +32,12 @@ module.exports = function () {
       prepareElement(elems[i], copiedCallback);
     }
 
+    let authorizedElems = document.getElementsByName(NAMES.authorized);
+
+    for (let i = 0; i < elems.length; i++) {
+      authorize(authorizedElems[i]);
+    }
+
     console.log('Copyable module initialized');
   };
 
@@ -46,10 +53,29 @@ module.exports = function () {
   };
 
   /**
+   * Add click listner for authorized element
+   *
+   * @param element
+   */
+  let authorize = function (element) {
+    element.addEventListener('click', authorizedCopy);
+  };
+
+  /**
+   * Click handler for authorized elements
+   */
+  let authorizedCopy = function () {
+    let authorizedElem = this;
+    let copyable = authorizedElem.querySelector('[name='+NAMES.copyable+']');
+
+    copyable.click();
+  };
+
+  /**
    * Click handler
    * Create new range, select copyable element and add range to selection. Then exec 'copy' command
    */
-  let elementClicked = function () {
+  let elementClicked = function (event) {
     let selection = window.getSelection(),
         range     = document.createRange();
 
@@ -71,6 +97,7 @@ module.exports = function () {
     });
 
     this.dispatchEvent(CopiedEvent);
+    event.stopPropagation();
   };
 
   return {

@@ -5,7 +5,6 @@
     {% include 'garage/settings/header.twig' with {user: user} %}
 
     <div class="garage-settings">
-        {% include 'garage/settings/domains-list.twig' with {domains: domains} %}
 
         {% set formParams = {
           user: user,
@@ -14,6 +13,36 @@
           message: message,
         } %}
         {% include 'garage/settings/form.twig' with formParams %}
+
+        <h4 class="garage-settings__header">Projects</h4>
+        <a class="garage-settings__add-project" id="add-project">Add new Project</a>
+
+        <form class="project" action="/garage/project/add" method="post" name="js-toggle" data-button="add-project">
+            <div class="form__logo-upload fl_r">
+
+            </div>
+            <fieldset class="form__section">
+                <label class="form__label">Project Name</label>
+                <input type="text" class="form__width-fixed" placeholder="Google Main Page" name="name" required>
+            </fieldset>
+            <fieldset class="form__section">
+                <label class="form__label">Description</label>
+                <input type="text" class="form__width-fixed" placeholder="Product environment" name="description">
+            </fieldset>
+            <fieldset class="form__section">
+                <label class="form__label">Domain</label>
+                <input type="text" class="form__width-fixed" type="url" placeholder="https://google.com" name="domain">
+            </fieldset>
+            <input class="button--submit button--green" type="submit" value="Save">
+        </form>
+
+        {% for project in projects %}
+
+            {% if not project.user.is_pending %}
+               {% include 'garage/settings/project.twig' with {user: user, project: project} %}
+            {% endif %}
+        {% endfor %}
+
     </div>
 
     <script>
@@ -27,6 +56,7 @@
         }
 
         hawk.docReady(hawk.checkbox.init);
+        hawk.docReady(hawk.toggler.init);
         hawk.docReady(hawk.copyable.init.bind(null, tokenCopied));
     </script>
 

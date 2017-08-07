@@ -26,6 +26,7 @@ let hawk = (function ( self ) {
   self.event    = require('./event');
   self.eventPopup = require('./event-popup');
   self.settingsForm = require('./settings-form');
+  self.toggler = require('./toggler');
 
   return self;
 })({});

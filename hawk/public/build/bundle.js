@@ -64,7 +64,7 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -122,7 +122,15 @@ module.exports = function () {
     XMLHTTP.onreadystatechange = function () {
       if (XMLHTTP.readyState === 4) {
         if (XMLHTTP.status === 200) {
-          successFunction(XMLHTTP.responseText);
+          var result = void 0;
+
+          try {
+            result = JSON.parse(XMLHTTP.responseText);
+          } catch (e) {
+            result = XMLHTTP.responseText;
+          }
+
+          successFunction(result);
         } else {
           errorFunction(XMLHTTP.statusText);
         }
@@ -272,7 +280,8 @@ module.exports = function () {
  */
 module.exports = function () {
   var NAMES = {
-    copyable: 'js-copyable'
+    copyable: 'js-copyable',
+    authorized: 'js-copyable-authorize'
   };
 
   /**
@@ -292,6 +301,12 @@ module.exports = function () {
       prepareElement(elems[i], copiedCallback);
     }
 
+    var authorizedElems = document.getElementsByName(NAMES.authorized);
+
+    for (var _i = 0; _i < elems.length; _i++) {
+      authorize(authorizedElems[_i]);
+    }
+
     console.log('Copyable module initialized');
   };
 
@@ -307,10 +322,29 @@ module.exports = function () {
   };
 
   /**
+   * Add click listner for authorized element
+   *
+   * @param element
+   */
+  var authorize = function authorize(element) {
+    element.addEventListener('click', authorizedCopy);
+  };
+
+  /**
+   * Click handler for authorized elements
+   */
+  var authorizedCopy = function authorizedCopy() {
+    var authorizedElem = this;
+    var copyable = authorizedElem.querySelector('[name=' + NAMES.copyable + ']');
+
+    copyable.click();
+  };
+
+  /**
    * Click handler
    * Create new range, select copyable element and add range to selection. Then exec 'copy' command
    */
-  var elementClicked = function elementClicked() {
+  var elementClicked = function elementClicked(event) {
     var selection = window.getSelection(),
         range = document.createRange();
 
@@ -332,6 +366,7 @@ module.exports = function () {
     });
 
     this.dispatchEvent(CopiedEvent);
+    event.stopPropagation();
   };
 
   return {
@@ -418,7 +453,7 @@ var eventPopup = function (self) {
    * @type {Class}
    */
 
-  var dom = __webpack_require__(9).default;
+  var dom = __webpack_require__(10).default;
 
   var keyCodes_ = {
     ESC: 27
@@ -873,7 +908,7 @@ module.exports = function () {
           message: errors[error],
           style: 'error'
         });
-      };
+      }
 
       /** Prevent form sending */
       event.preventDefault();
@@ -892,14 +927,249 @@ module.exports = function () {
     }
   };
 
+  /**
+   * Send request to invite new member to the project
+   *
+   * @param projectId
+   * @param form
+   */
+  var inviteMember = function inviteMember(projectId, form) {
+    var input = document.getElementById(projectId);
+
+    if (!input) return;
+
+    var email = input.value;
+
+    hawk.ajax.call({
+      type: 'POST',
+      url: '/garage/project/inviteMember',
+      success: function success(result) {
+        hawk.notifier.show({
+          style: result.success ? 'success' : 'error',
+          message: result.message
+        });
+        if (result.success) {
+          hawk.toggler.toggle(form);
+          input.value = '';
+        }
+      },
+      error: function error() {
+        hawk.notifier.show({
+          style: 'error',
+          message: 'Something went wrong. Try again later.'
+        });
+      },
+      data: JSON.stringify({
+        email: email,
+        projectId: projectId
+      })
+    });
+  };
+
+  /**
+   * Send request to save notifications preferences for the project
+   *
+   * @param checkbox
+   * @param projectId
+   * @param userId
+   */
+  var saveNotifiesPreferences = function saveNotifiesPreferences(checkbox, projectId, userId) {
+    var input = checkbox.querySelector('input'),
+        value = !input.checked,
+        type = checkbox.dataset.name;
+
+    hawk.ajax.call({
+      type: 'POST',
+      url: '/garage/project/editNotifies',
+      error: function error() {
+        hawk.notifier.show({
+          style: 'error',
+          message: 'Can\'t save notifications preferences. Try again later'
+        });
+      },
+      success: function success(result) {
+        hawk.notifier.show({
+          style: result.success ? 'success' : 'error',
+          message: result.message
+        });
+      },
+      data: JSON.stringify({
+        projectId: projectId,
+        userId: userId,
+        type: type,
+        value: value
+      })
+    });
+  };
+
+  /**
+   * Send request to save notifications webhook
+   *
+   * @param projectId
+   * @param userId
+   * @param type
+   */
+  var saveWebhook = function saveWebhook(projectId, userId, type) {
+    var input = document.getElementById(type + '-' + projectId),
+        value = input.value;
+
+    hawk.ajax.call({
+      type: 'POST',
+      url: '/garage/project/saveWebhook',
+      error: function error() {
+        hawk.notifier.show({
+          style: 'error',
+          message: 'Can\'t save webhook. Try again later'
+        });
+      },
+      success: function success(result) {
+        hawk.notifier.show({
+          style: result.success ? 'success' : 'error',
+          message: result.message
+        });
+      },
+      data: JSON.stringify({
+        projectId: projectId,
+        userId: userId,
+        type: type,
+        value: value
+      })
+    });
+  };
+
+  /**
+   * Send request to grant admin access to user
+   *
+   * @param projectId
+   * @param userId
+   * @param button
+   */
+  var grantAdminAccess = function grantAdminAccess(projectId, userId, button) {
+    hawk.ajax.call({
+      type: 'POST',
+      url: '/garage/project/grantAdminAccess',
+      error: function error() {
+        hawk.notifier.show({
+          style: 'error',
+          message: 'Can\'t grant access. Try again later'
+        });
+      },
+      success: function success(result) {
+        hawk.notifier.show({
+          style: result.success ? 'success' : 'error',
+          message: result.message
+        });
+        if (result.success) {
+          button.classList.add('project__member-role--admin');
+          button.classList.remove('project__member-role--member');
+          button.textContent = 'Admin';
+        }
+      },
+      data: JSON.stringify({
+        projectId: projectId,
+        userId: userId
+      })
+    });
+  };
+
   return {
     init: init,
-    checkForm: checkForm
+    checkForm: checkForm,
+    inviteMember: inviteMember,
+    saveNotifiesPreferences: saveNotifiesPreferences,
+    saveWebhook: saveWebhook,
+    grantAdminAccess: grantAdminAccess
   };
 }();
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Toggler module allows you toggle element display property by trigger element
+ * Add name 'js-toggle' and data-button attribute that consist id of trigger element
+ * After click on trigger element it will hide
+ *
+ * @example
+ * <button id="myButton">Show label</button>
+ * <label name="js-toggle" data-button="myButton">This is label</button>
+ *
+ * @type {{init, toggle}}
+ */
+module.exports = function () {
+  var NAME = 'js-toggle';
+  var HIDE_CLASS = 'hide';
+
+  var elements = {};
+
+  /**
+   * Get all elements with 'js-toggle' name and prepare them
+   */
+  var init = function init() {
+    var elems = document.getElementsByName(NAME);
+
+    for (var i = 0; i < elems.length; i++) {
+      prepareElem(elems[i]);
+    }
+  };
+
+  /**
+   * Get toggle buttons and save them and add click listeners
+   *
+   * @param elem
+   */
+  var prepareElem = function prepareElem(elem) {
+    var buttonId = elem.dataset.button,
+        button = document.getElementById(buttonId);
+
+    elem.classList.add(HIDE_CLASS);
+    elements[buttonId] = elem;
+
+    button.addEventListener('click', buttonClicked);
+  };
+
+  /**
+   * Toggle button click handler
+   */
+  var buttonClicked = function buttonClicked() {
+    var button = this,
+        buttonId = button.id;
+
+    button.classList.add(HIDE_CLASS);
+    elements[buttonId].classList.remove(HIDE_CLASS);
+  };
+
+  /**
+   * Toggle element display property
+   *
+   * @param elem
+   * @param elem.dataset.button — id of trigger element
+   */
+  var toggle = function toggle(elem) {
+    var buttonId = elem.dataset.button,
+        button = document.getElementById(buttonId);
+
+    button.classList.toggle(HIDE_CLASS);
+
+    if (button.classList.contains(HIDE_CLASS)) {
+      elem.classList.remove(HIDE_CLASS);
+    } else {
+      elem.classList.add(HIDE_CLASS);
+    }
+  };
+
+  return {
+    init: init,
+    toggle: toggle
+  };
+}();
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -985,13 +1255,13 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1062,7 +1332,7 @@ var DOM = function () {
 exports.default = DOM;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1071,7 +1341,7 @@ exports.default = DOM;
 /**
 * Require CSS build
 */
-__webpack_require__(8);
+__webpack_require__(9);
 
 var hawk = function (self) {
   'use strict';
@@ -1092,10 +1362,11 @@ var hawk = function (self) {
   self.copyable = __webpack_require__(2);
   self.ajax = __webpack_require__(0);
   self.domain = __webpack_require__(3);
-  self.notifier = __webpack_require__(7);
+  self.notifier = __webpack_require__(8);
   self.event = __webpack_require__(5);
   self.eventPopup = __webpack_require__(4);
   self.settingsForm = __webpack_require__(6);
+  self.toggler = __webpack_require__(7);
 
   return self;
 }({});

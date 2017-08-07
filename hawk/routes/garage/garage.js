@@ -4,6 +4,7 @@ let router = express.Router();
 let event = require('./event');
 let settings = require('./settings');
 let index = require('./index');
+let project = require('./project');
 
 router.use(function (req, res, next) {
   /**
@@ -18,6 +19,7 @@ router.use(function (req, res, next) {
   next();
 });
 
+router.use(project);
 router.use(event);
 router.use(settings);
 router.use(index);
