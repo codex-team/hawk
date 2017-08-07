@@ -18,7 +18,7 @@ let add = function (req, res) {
   let post = req.body,
       token = uuid.v4();
 
-  if (!post.name) {
+  if (!post.name || !post.name.trim()) {
     let message = 'Please, pass project name';
 
     res.redirect('/garage/settings?success=0&message=' + message);
