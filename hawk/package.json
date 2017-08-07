@@ -63,7 +63,6 @@
     "nodemon": "^1.11.0",
     "request": "^2.81.0",
     "serve-favicon": "~2.4.2",
-    "translit-rus-eng": "^1.0.7",
     "twig": "~0.10.3",
     "uuid": "^3.1.0",
     "winston": "^2.3.1",

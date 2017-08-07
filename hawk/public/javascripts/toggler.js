@@ -1,3 +1,14 @@
+/**
+ * Toggler module allows you toggle element display property by trigger element
+ * Add name 'js-toggle' and data-button attribute that consist id of trigger element
+ * After click on trigger element it will hide
+ *
+ * @example
+ * <button id="myButton">Show label</button>
+ * <label name="js-toggle" data-button="myButton">This is label</button>
+ *
+ * @type {{init, toggle}}
+ */
 module.exports = function () {
   const NAME = 'js-toggle';
   const HIDE_CLASS = 'hide';
@@ -45,6 +56,7 @@ module.exports = function () {
    * Toggle element display property
    *
    * @param elem
+   * @param elem.dataset.button — id of trigger element
    */
   let toggle = function (elem) {
     let buttonId = elem.dataset.button,

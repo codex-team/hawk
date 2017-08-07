@@ -3,6 +3,9 @@ module.exports = function () {
   let collections = require('../config/collections');
   let Crypto = require('crypto');
 
+  const NOTIFICATION_PREFERENCES_FIELD = 'notifies';
+  const WEBHOOK_FIELDS ='Hook';
+
   /**
    * Generate sha256 hash from user id and project id
    *
@@ -81,8 +84,22 @@ module.exports = function () {
   let addMember = function (projectId, projectUri, userId, isOwner=false) {
     let role = isOwner ? 'admin' : 'member',
         userCollection = collections.MEMBERSHIP + ':' + userId,
-        projectCollection = collections.TEAM + ':' + projectId,
-        regexp = new RegExp('^' + projectUri + '(-[0-9])?', 'i');
+        projectCollection = collections.TEAM + ':' + projectId;
+
+    let membershipParams = {
+      project_id: mongo.ObjectId(projectId),
+      notifies: {
+        email: true,
+        tg: false,
+        slack: false
+      }
+    };
+
+    let teamParams = {
+      user_id: mongo.ObjectId(userId),
+      role: role,
+      is_pending: !isOwner
+    };
 
     return mongo.findOne(projectCollection, {user_id: mongo.ObjectId(userId)})
       .then(function (result) {
@@ -91,35 +108,15 @@ module.exports = function () {
         }
       })
       .then(function () {
-        return mongo.find(userCollection, {'project_uri': {$regex: regexp}}, {$natural: -1});
+        return getProjectUriByUser(userId, projectUri);
       })
-      .then(function (result) {
-        result = result[0];
+      .then(function (uri) {
+        membershipParams.project_uri = uri;
 
-        if (result) {
-          let matches = result.project_uri.match(regexp),
-              index = matches[1] ? parseInt(matches[1].slice(1)) + 1 : 1;
-
-          projectUri += '-' + index;
-        }
+        return mongo.insertOne(userCollection, membershipParams);
       })
       .then(function () {
-        return mongo.insertOne(userCollection, {
-          project_id: mongo.ObjectId(projectId),
-          project_uri: projectUri,
-          notifies: {
-            email: true,
-            tg: false,
-            slack: false
-          },
-        });
-      })
-      .then(function () {
-        return mongo.insertOne(projectCollection, {
-          user_id: mongo.ObjectId(userId),
-          role: role,
-          is_pending: !isOwner
-        });
+        return mongo.insertOne(projectCollection, teamParams);
       });
   };
 
@@ -181,7 +178,7 @@ module.exports = function () {
    */
   let editNotifies = function (projectId, userId, type, value) {
     let userCollection = collections.MEMBERSHIP + ':' + userId,
-        field = 'notifies.' + type;
+        field = NOTIFICATION_PREFERENCES_FIELD + '.' + type;
 
     return mongo.updateOne(userCollection,
       {project_id: mongo.ObjectId(projectId)},
@@ -200,7 +197,7 @@ module.exports = function () {
    */
   let saveWebhook = function (projectId, userId, type, value) {
     let userCollection = collections.MEMBERSHIP + ':' + userId,
-        field = type+'Hook';
+        field = type+WEBHOOK_FIELDS;
 
     return mongo.updateOne(userCollection,
       {project_id: mongo.ObjectId(projectId)},
@@ -255,8 +252,7 @@ module.exports = function () {
    * @returns {Promise.<TResult>|Request}
    */
   let grantAdminAccess = function (projectId, userId) {
-    let projectCollection = collections.TEAM + ':' + projectId,
-        userCollection = collections.MEMBERSHIP + ':' + userId;
+    let projectCollection = collections.TEAM + ':' + projectId;
 
     return mongo.updateOne(projectCollection, {user_id: mongo.ObjectId(userId)}, {$set: {role: 'admin'}});
   };
@@ -277,11 +273,28 @@ module.exports = function () {
           .then(function (projectData) {
             userData.projectUri = projectData.uri;
             return userData;
-          })
+          });
       });
   };
 
+  /**
+   * Get unique project uri for user with userId
+   *
+   * @param {String} userId
+   * @param {String} uri
+   * @returns {Request|Promise.<TResult>}
+   */
+  let getProjectUriByUser = function (userId, uri) {
+    let userCollection = collections.MEMBERSHIP + ':' + userId,
+        regexp = new RegExp('^' + uri + '(-[0-9]+)?$', 'i');
 
+    return mongo.find(userCollection, {'project_uri': {$regex: regexp}})
+      .then(function (result) {
+        let index = result.length !== 0 ? '-' + result.length : '';
+
+        return uri + index;
+      });
+  };
 
   return {
     add: add,
