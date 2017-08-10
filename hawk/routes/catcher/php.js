@@ -83,25 +83,25 @@ let getServerErrors = function (req, res) {
     groupHash: md5(location),
     message: request.error_description,
     stack: formatDebugBacktrace(request.debug_backtrace),
-    time: request.error_context._SERVER.REQUEST_TIME,
+    time: request.http_params.REQUEST_TIME,
     errorLocation: {
-      file: request.error_file,
+      file: request.error_file || '',
       line: request.error_line,
       full: request.error_file + ' -> ' + request.error_line
     },
     params: {
-      post: request.error_context._POST,
-      get : request.error_context._GET
+      post: request.error_context._POST || [],
+      get : request.error_context._GET || []
     },
     location: {
-      url: request.error_context._SERVER.SERVER_NAME + request.error_context._SERVER.QUERY_STRING,
-      host: request.error_context._SERVER.SERVER_NAME,
-      path: request.error_context._SERVER.QUERY_STRING,
+      url: request.http_params.SERVER_NAME + request.http_params.QUERY_STRING,
+      host: request.http_params.SERVER_NAME,
+      path: request.http_params.QUERY_STRING,
     },
     request: {
-      ip: request.error_context._SERVER.REMOTE_ADDR,
-      method: request.error_context._SERVER.REQUEST_METHOD,
-      referrer: request.error_context._SERVER.HTTP_REFERRER,
+      ip: request.http_params.REMOTE_ADDR,
+      method: request.http_params.REQUEST_METHOD,
+      referrer: request.http_params.HTTP_REFERRER,
     }
   };
 
