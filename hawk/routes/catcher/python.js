@@ -1,10 +1,9 @@
 let express  = require('express');
 let router = express.Router();
 let events   = require('../../models/events');
-let websites = require('../../models/websites');
-let user = require('../../models/user');
 let notifies = require('../../models/notifies');
 let Crypto = require('crypto');
+let project = require('../../models/project');
 
 let md5 = function (input) {
   return Crypto.createHash('md5').update(input, 'utf8').digest('hex');
@@ -25,8 +24,7 @@ let md5 = function (input) {
  */
 let getPythonErrors = function (req, res) {
   let request = req.body,
-      location = request.errorLocation.file + ':' + request.errorLocation.line,
-      host = request.domain;
+      location = request.errorLocation.file + ':' + request.errorLocation.line;
 
   let event = {
     type          : 'python',
@@ -39,25 +37,24 @@ let getPythonErrors = function (req, res) {
     time          : request.time
   };
 
-  websites.get(event.token, host)
-    .then( function (site) {
-      if (!site) {
+  project.getByToken(event.token)
+    .then( function (foundProject) {
+      if (!foundProject) {
         res.sendStatus(403);
         return;
       }
-      return user.get(site.user)
-        .then(function (foundUser) {
-          notifies.send(foundUser, host, event);
 
-          events.add(host, event)
-            .then(function () {
-              res.sendStatus(200);
-            })
-            .catch(function (e) {
-              logger.error('Can not add event because of ', e);
-              res.sendStatus(500);
-            });
+      return events.add(foundProject._id, event)
+        .then(function () {
+          return foundProject;
         });
+    })
+    .then(function (foundProject) {
+      if (!foundProject) {
+        return;
+      }
+
+      return notifies.send(foundProject, event);
     })
     .catch( function () {
       res.sendStatus(500);

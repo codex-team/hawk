@@ -1,8 +1,6 @@
 let express = require('express');
 let router = express.Router();
 let user = require('../../models/user');
-let websites = require('../../models/websites');
-let project = require('../../models/project');
 
 let csrf = require('../../modules/csrf');
 
@@ -15,7 +13,6 @@ let csrf = require('../../modules/csrf');
 let index = function (req, res) {
   let params = {
     user: res.locals.user,
-    domains: res.locals.userDomains,
     csrfToken: req.csrfToken(),
     meta : {
       title : 'User settings'
@@ -64,30 +61,7 @@ let update = function (req, res) {
   }
 };
 
-/**
- * Unlink domain action
- * Remove domain data from database and unlink it from user's domains list
- *
- * @param req
- * @param res
- */
-let unlinkDomain = function (req, res) {
-  user.current(req)
-    .then(function (currentUser) {
-      let token = req.query.token;
-
-      websites.remove(currentUser, token)
-        .then(function () {
-          res.sendStatus(200);
-        })
-        .catch(function () {
-          res.sendStatus(500);
-        });
-    });
-};
-
 router.get('/settings', csrf, index);
 router.post('/settings/save', csrf, update);
-router.get('/settings/unlink', csrf, unlinkDomain);
 
 module.exports = router;

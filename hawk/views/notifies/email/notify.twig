@@ -1,6 +1,6 @@
 {% extends '../layout.twig' %}
 
-{% set title = "{{ event.tag == 'javascript' ? 'JavaScript Error' : event.tag|capitalize }}" %}
+{% set title = "{{ event.tag|event-type }}" %}
 
 {% block content %}
   <table cellpadding="0" cellspacing="0" border="0">
@@ -8,7 +8,7 @@
       <td>
         <font color="#000000" style="font-size:15px;">
           <span style="line-height: 0.9em; margin-right: 5px;">🙀</span>
-          We have catched {{ times > 1 ? times : 'a' }} {{ event.tag | event-type }}{{ times > 1 ? 's' : '' }} on {{ domain }}. Please, take a look.
+          We have catched {{ times > 1 ? times : 'a' }} {{ event.tag | event-type }}{{ times > 1 ? 's' : '' }} on {{ project.name }} project. Please, take a look.
         </font>
       </td>
     </tr>
@@ -28,7 +28,7 @@
     </tr>
     <tr>
       <td style="padding-top: 25px;">
-        <a href="{{ serverUrl }}/garage/{{ domain }}/event/{{ event.groupHash }}"
+        <a href="{{ serverUrl }}/garage/{{ userData.projectUri }}/event/{{ event.groupHash }}"
           style="background-color: #00bd95; display: inline-block; text-decoration: none;
           color: #ffffff; padding: 10px 15px; border-radius: 3px;">
             <font color="#ffffff" style="font-size:15px;line-height:18px;">
@@ -42,7 +42,7 @@
 
 {% block footer %}
   <a href="{{ serverUrl }}/garage/settings" style="color:#7f87a2;">Notifications preferences</a>
-  <a href="{{ serverUrl }}/unsubscribe?id={{ userId }}&hash={{ userIdHash }}" style="color:#7f87a2;margin-left:15px">
+  <a href="{{ serverUrl }}/unsubscribe?user={{ userData.userId }}&project={{ project._id }}&hash={{ unsubscribeHash }}" style="color:#7f87a2;margin-left:15px">
     Disable email notifications
   </a>
 {% endblock %}

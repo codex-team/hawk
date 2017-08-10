@@ -1,10 +1,9 @@
 let express  = require('express');
 let router = express.Router();
 let events   = require('../../models/events');
-let websites = require('../../models/websites');
-let user = require('../../models/user');
 let notifies = require('../../models/notifies');
 let Crypto = require('crypto');
+let project = require('../../models/project');
 
 let md5 = function (input) {
   return Crypto.createHash('md5').update(input, 'utf8').digest('hex');
@@ -107,25 +106,24 @@ let getServerErrors = function (req, res) {
 
   logger.info('Got php error from ' + event.location.host);
 
-  websites.get(event.token, event.location.host)
-    .then( function (site) {
-      if (!site) {
+  project.getByToken(event.token)
+    .then( function (foundProject) {
+      if (!foundProject) {
         res.sendStatus(403);
         return;
       }
-      return user.get(site.user)
-        .then(function (foundUser) {
-          notifies.send(foundUser, event.location.host, event);
 
-          events.add(event.location.host, event)
-            .then(function () {
-              res.sendStatus(200);
-            })
-            .catch(function (e) {
-              logger.log('error', 'Can not add event because of ', e);
-              res.sendStatus(500);
-            });
+      return events.add(foundProject._id, event)
+        .then(function () {
+          return foundProject;
         });
+    })
+    .then(function (foundProject) {
+      if (!foundProject) {
+        return;
+      }
+
+      return notifies.send(foundProject, event);
     })
     .catch( function () {
       res.sendStatus(500);

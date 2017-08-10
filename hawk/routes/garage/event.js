@@ -4,19 +4,20 @@ let express = require('express');
 let router = express.Router();
 let modelEvents = require('../../models/events');
 let mongo = require('../../modules/database');
+let collections = require('../../config/collections');
 
 /**
  * Check if user can manage passed domain
- * @param  {Array} userDomains  — current user's domains list
- * @param  {string} domainNme   — current user's domns list
  * @return {Promise}
+ * @param userProjects
+ * @param projectUri
  */
-function getDomainInfo(userDomains, domainName) {
+function getProjectInfo(userProjects, projectUri) {
   return new Promise(function (resolve, reject) {
     /** Get domain info by user domain */
-    userDomains.forEach( domain => {
-      if (domain.name === domainName) {
-        resolve(domain);
+    userProjects.forEach( project => {
+      if (project.user.projectUri === projectUri) {
+        resolve(project);
         return;
       }
     });
@@ -28,12 +29,14 @@ function getDomainInfo(userDomains, domainName) {
 
 /**
 * Marks all events in list as read
+* @param currentProject
 * @param {Array} events - events list
 */
-let markEventsAsRead = function (currentDomain, events) {
-  let eventsIds = events.map(event => new mongo.ObjectId(event['_id']));
+let markEventsAsRead = function (currentProject, events) {
+  let eventsIds = events.map(event => new mongo.ObjectId(event['_id'])),
+      collection = collections.EVENTS + ':' + currentProject.id;
 
-  modelEvents.markRead(currentDomain.name, eventsIds).then(function (docs, err) {
+  modelEvents.markRead(collection, eventsIds).then(function (docs, err) {
 
   }).catch(function (err) {
     console.log(err);
@@ -43,73 +46,72 @@ let markEventsAsRead = function (currentDomain, events) {
 };
 
 /**
- * Event page (route /garage/<domain>/event/<hash>)
+ * Event page (route /garage/<project>/event/<hash>)
  *
  * @param req
  * @param res
  */
 let event = function (req, res) {
   Promise.resolve({
-    domainName: req.params.domain,
+    projectUri: req.params.project,
     eventId: req.params.id
   }).then(function (params) {
     /**
-     * Current user's domains list stored in res.locals.userDomains
+     * Current user's project list stored in res.locals.userProjects
      * @see  app.js
      * @type {Array}
      */
-    let userDomains = res.locals.userDomains;
+    let userProjects = res.locals.userProjects;
 
-    getDomainInfo(userDomains, params.domainName)
-      .then(function (currentDomain) {
-        modelEvents.get(currentDomain.name, {groupHash: params.eventId}, false)
+    getProjectInfo(userProjects, params.projectUri)
+      .then(function (currentProject) {
+        return modelEvents.get(currentProject.id, {groupHash: params.eventId}, false)
           .then(function (events) {
-            return markEventsAsRead(currentDomain, events);
-          })
-          .then(function (events) {
-            let currentEvent = events.shift();
-
-            /**
-             * If we have ?popup=1 parameter, send JSON answer
-             */
-
-            if (req.query.popup) {
-              app.render('garage/events/' + currentEvent.type + '/page', {
-                hideHeader: true,
-                currentDomain,
-                event: currentEvent,
-                events: events
-              }, function (err, html) {
-                let response = {};
-
-                if (err) {
-                  logger.error('Can not render event traceback template because of ', err);
-                  response.error = 1;
-                } else {
-                  response.event = currentEvent;
-                  response.traceback = html;
-                }
-
-                res.json(response);
-              });
-            } else {
-              res.render('garage/events/' + currentEvent.type + '/page', {
-                currentDomain,
-                event: currentEvent,
-                events: events
-              });
-            }
-          })
-          .catch(function (err) {
-            logger.error('Error while handling event-page request: ', err);
+            markEventsAsRead(currentProject, events);
+            return {currentProject, events};
           });
       })
-      .catch(function () {
+      .then(function ({currentProject, events}) {
+        let currentEvent = events.shift();
+
+        /**
+         * If we have ?popup=1 parameter, send JSON answer
+         */
+
+        if (req.query.popup) {
+          app.render('garage/events/' + currentEvent.type + '/page', {
+            hideHeader: true,
+            currentProject,
+            event: currentEvent,
+            events: events
+          }, function (err, html) {
+            let response = {};
+
+            if (err) {
+              logger.error('Can not render event traceback template because of ', err);
+              response.error = 1;
+            } else {
+              response.event = currentEvent;
+              response.traceback = html;
+            }
+
+            res.json(response);
+          });
+        } else {
+          res.render('garage/events/' + currentEvent.type + '/page', {
+            currentProject: currentProject,
+            event: currentEvent,
+            events: events
+          });
+        }
+      })
+      .catch(function (err) {
+        logger.error('Error while handling event-page request: ', err);
         res.sendStatus(404);
       });
   });
 };
 
-router.get('/:domain/event/:id?', event);
+router.get('/:project/event/:id?', event);
 
 module.exports = router;
