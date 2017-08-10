@@ -3,6 +3,7 @@ let mongo = require('../modules/database');
 let websites = require('./websites');
 let events = require('./events');
 let collections = require('../config/collections');
+let project = require('./project');
 
 module.exports = function () {
   const collection = collections.USERS;
@@ -137,9 +138,13 @@ module.exports = function () {
         return Promise.all(queries);
       })
       .then(function () {
+        return project.getByUser(currentUser._id);
+      })
+      .then(function (projects) {
         return {
           user: currentUser,
-          domains: domains
+          domains: domains,
+          projects: projects
         };
       })
       .catch(function (e) {

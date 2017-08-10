@@ -128,7 +128,9 @@ app.use(function (req, res, next) {
     if (userData) {
       res.locals.user = userData.user;
       res.locals.userDomains = userData.domains;
-    };
+      res.locals.userProjects = userData.projects;
+    }
+
     next();
   }).catch(function (e) {
     logger.error(e);
