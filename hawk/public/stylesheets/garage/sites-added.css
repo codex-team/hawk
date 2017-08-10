@@ -1,4 +1,4 @@
-.garage-sites-added {
+.garage-projects-added {
     padding: 25px;
 
     &__title {
@@ -59,7 +59,7 @@
     }
 }
 
-.no-domains {
+.no-projects {
     margin: 150px auto;
     text-align: center;
 

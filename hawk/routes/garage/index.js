@@ -3,27 +3,28 @@
 let express = require('express');
 let router = express.Router();
 let events = require('../../models/events');
+let collections = require('../../config/collections');
 
 /**
- * Garage events lists (route /garage/<domain>/<tag>)
+ * Garage events lists (route /garage/<project>/<tag>)
  *
  * @param req
  * @param res
  */
 let index = function (req, res) {
-  let currentDomain,
+  let currentProject,
       currentTag;
 
   let params = req.params,
       allowedTags = ['fatal', 'warnings', 'notice', 'javascript'];
 
-  currentDomain = params.domain;
+  currentProject = params.project;
   currentTag = params.tag;
 
-  /** Check if use tag w\o domain */
-  if (!currentTag && allowedTags.includes(currentDomain)) {
-    currentTag = currentDomain;
-    currentDomain = null;
+  /** Check if use tag w\o project */
+  if (!currentTag && allowedTags.includes(currentProject)) {
+    currentTag = currentProject;
+    currentProject = null;
   }
 
   if (currentTag && !allowedTags.includes(currentTag)) {
@@ -31,18 +32,18 @@ let index = function (req, res) {
     return;
   }
 
-  if (currentDomain) {
-    res.locals.userDomains.forEach(function (domain) {
-      if (domain.name == currentDomain) {
-        currentDomain = domain;
+  if (currentProject) {
+    res.locals.userProjects.forEach(function (project) {
+      if (project.user.projectUri === currentProject) {
+        currentProject = project;
       }
     });
 
-    if (!currentDomain.name) {
+    if (!currentProject.name) {
       res.sendStatus(404);
       return;
     }
-  };
+  }
 
   let findParams = {};
 
@@ -51,19 +52,19 @@ let index = function (req, res) {
   }
 
   Promise.resolve().then(function () {
-    if (currentDomain) {
-      return events.get(currentDomain.name, findParams, true);
+    if (currentProject) {
+      return events.get(currentProject.id, findParams, true);
     } else {
       return events.getAll(res.locals.user, findParams);
     }
   })
-    .then(function (events) {
+    .then(function (foundEvents) {
       res.render('garage/index', {
         user: res.locals.user,
-        userDomains: res.locals.userDomains,
-        currentDomain: currentDomain,
+        userProjects: res.locals.userProjects,
+        currentProject: currentProject,
         currentTag: currentTag,
-        events: events,
+        events: foundEvents,
         meta : {
           title : 'Garage'
         }
@@ -74,6 +75,6 @@ let index = function (req, res) {
     });
 };
 
-router.get('/:domain?/:tag?', index);
+router.get('/:project?/:tag?', index);
 
 module.exports = router;

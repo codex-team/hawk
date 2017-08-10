@@ -6,17 +6,17 @@
 
     <a class="garage-aside__user" href="/garage">{{ user.email }}</a>
 
-    <h4 class="garage-aside__heading">DOMAINS</h4>
+    <h4 class="garage-aside__heading">PROJECTS</h4>
 
-    {% for domain in domains %}
-        {% set url = "/garage/" ~ domain.name %}
+    {% for project in projects %}
+        {% set url = "/garage/" ~ project.user.projectUri %}
         <section class="garage-aside__section">
-            <a class="garage-aside__domain" href="{{ url }}">
-                {{ domain.name }}
+            <a class="garage-aside__project" href="{{ url }}">
+                {{ project.name }}
             </a>
 
             {% for errorType in ['fatal', 'warnings', 'notice', 'javascript'] %}
-              {% set events = attribute(domain, errorType) or null %}
+              {% set events = attribute(project, errorType) or null %}
               <a class="garage-aside__tag" href="{{ url }}/{{ errorType }}">
                 {{ errorType }}
 
@@ -31,6 +31,6 @@
         </section>
     {% endfor %}
 
-    <a class="garage-aside__add button button--bordered" href="/websites/create">+ Add site</a>
+    <a class="garage-aside__add button button--bordered" href="/garage/settings#projects">+ Add project</a>
 
 </div>

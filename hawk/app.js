@@ -116,18 +116,17 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 * Sets response scoped variables
 *
 * res.locals.user        — current authored user
-* res.locals.userDomains — domains list for current user
+* res.locals.userProjects — projects list for current user
 *
 * @fires user.getInfo
 */
 app.use(function (req, res, next) {
   res.locals.user = {};
-  res.locals.userDomains = {};
+  res.locals.userProjects = {};
 
   user.getInfo(req).then(function (userData) {
     if (userData) {
       res.locals.user = userData.user;
-      res.locals.userDomains = userData.domains;
       res.locals.userProjects = userData.projects;
     }
 
@@ -149,13 +148,11 @@ app.use('/garage', garage);
  * Yard
  */
 var index = require('./routes/yard/index');
-var websites = require('./routes/yard/websites');
 var auth = require('./routes/yard/auth/auth');
 var unsubscribe = require('./routes/yard/unsubscribe');
 
 app.use('/', index);
 app.use('/', auth);
-app.use('/websites', websites);
 app.use('/unsubscribe', unsubscribe);
 
 /**

@@ -1,6 +1,6 @@
 <div class="garage-list">
 
-  {% if domain != null %}
+  {% if project != null %}
 
     {% if events.length != 0 %}
 
@@ -9,7 +9,7 @@
         </div>
 
         {% for event in events %}
-            {% include 'garage/events/list-item.twig' with { domain: domain, event: event } %}
+            {% include 'garage/events/list-item.twig' with { project: project, event: event } %}
         {% endfor %}
 
     {% else %}

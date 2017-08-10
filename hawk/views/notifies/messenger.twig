@@ -1,8 +1,8 @@
-🙀 <b>We have catched {{ times > 1 ? times ~ ' errors' : 'an error' }} on {{ domain }}</b>
+🙀 <b>We have catched {{ times > 1 ? times ~ ' errors' : 'an error' }} on {{ project.name }} project</b>
 
 <code>{{ event.message }}</code>
 
 {{ event.errorLocation.full }}
 
-{% set url = serverUrl ~ '/garage/' ~ domain ~ '/event/' ~ event.groupHash %}
+{% set url = serverUrl ~ '/garage/' ~ userData.projectUri ~ '/event/' ~ event.groupHash %}
 <a href='{{ url }}'>{{ url }}</a>

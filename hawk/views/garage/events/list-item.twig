@@ -1,5 +1,5 @@
 {% set eventJson = event|json_encode %}
-<a class="garage-list-item {% if event.status == 0 %}garage-list-item--unread{% endif %}" data-event='{{ eventJson|replace({"'": ""}) }}' data-domain='{{ domain.name }}' href="/garage/{{ domain.name }}/event/{{ event._id }}">
+<a class="garage-list-item {% if event.status == 0 %}garage-list-item--unread{% endif %}" data-event='{{ eventJson|replace({"'": ""}) }}' data-project='{{ project.name }}' href="/garage/{{ project.user.projectUri }}/event/{{ event._id }}">
     <div class="garage-list-item__left">
         <div class="garage-list-item__tag garage-list-item__tag--{{ event.tag }}">
             {{ event.tag == 'javascript' ? 'JavaScript' : event.tag|capitalize }}

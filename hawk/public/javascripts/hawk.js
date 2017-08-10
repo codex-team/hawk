@@ -21,7 +21,6 @@ let hawk = (function ( self ) {
   self.checkbox = require('./checkbox');
   self.copyable = require('./copyable');
   self.ajax     = require('./ajax');
-  self.domain   = require('./domain');
   self.notifier = require('exports-loader?notifier!codex-notifier');
   self.event    = require('./event');
   self.eventPopup = require('./event-popup');

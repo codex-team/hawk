@@ -271,7 +271,11 @@ module.exports = function () {
       .then(function (userData) {
         return mongo.findOne(userCollection, {project_id: mongo.ObjectId(projectId)})
           .then(function (projectData) {
-            userData.projectUri = projectData.uri;
+            userData.projectUri = projectData.project_uri;
+            userData.userId = userId;
+            userData.notifies = projectData.notifies;
+            userData.tgHook = projectData.tgHook;
+            userData.slackHook = projectData.slackHook;
             return userData;
           });
       });
@@ -296,16 +300,22 @@ module.exports = function () {
       });
   };
 
+  let getByToken = function (token) {
+    return mongo.findOne(collections.PROJECTS, {token: token});
+  };
+
   return {
     add: add,
     get: get,
     getByUser: getByUser,
+    getByToken: getByToken,
     addMember: addMember,
     editNotifies: editNotifies,
     saveWebhook: saveWebhook,
     getTeam: getTeam,
     generateInviteHash: generateInviteHash,
     confirmInvitation: confirmInvitation,
-    grantAdminAccess: grantAdminAccess
+    grantAdminAccess: grantAdminAccess,
+    getUserData: getUserData
   };
 }();

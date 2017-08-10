@@ -3,7 +3,7 @@
     padding: 20px 30px;
     color: var(--grayOnDark);
 
-    &__domain {
+    &__project{
         margin-right: 20px;
 
         &:hover {
