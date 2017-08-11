@@ -3,8 +3,6 @@
 {% block body %}
 
     <div class="unsubscribe-page yard">
-        <h1 class="unsubscribe-page__title">Hawk.so</h1>
-        <p class="unsubscribe-page__caption">Fast and lightweight errors tracking service</p>
         <div class="unsubscribe-page__body">
             {{ svg('/public/svg/mailbox.svg') }}
             {% if success %}<h3 class="unsubscribe-page__header">No more letters.</h3>{% endif %}
@@ -17,6 +15,8 @@
             To the Garage
             {{ svg('/public/svg/arrow-right.svg') }}
         </a>
+        <h1 class="unsubscribe-page__title"><a href="/">Hawk.so</a></h1>
+        <p class="unsubscribe-page__caption">Fast and lightweight errors tracking service</p>
     </div>
 
 {% endblock %}
