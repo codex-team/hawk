@@ -27,12 +27,14 @@ module.exports = (function () {
   /**
    * Get project events
    *
+   * https://docs.mongodb.com/manual/meta/aggregation-quick-reference/
+   *
    * @param projectId
-   * @param {object} query  - find params (tag, for example)
-   * @param {bool} group  - if true, group same events
-   * @param {object} sort - sort params, by default sorting by time
-   * @param {number} skip - number of events to skip
-   * @param {number} limit - number of events to return
+   * @param {Object} query  - find params (tag, for example)
+   * @param {Boolean} group  - if true, group same events
+   * @param {Object|Boolean} sort - sort params, by default sorting by time
+   * @param {Number|Boolean} limit - number of events to return
+   * @param {Number|Boolean} skip - number of events to skip
    */
   let get = function (projectId, query, group=false, sort=false, limit=false, skip=false) {
     let pipeline = [
@@ -83,15 +85,14 @@ module.exports = (function () {
    * Marks as read events from collection by id.
    *
    * @param {String} collection - collection name
-   * @param {Array} eventsIds - array of id
+   * @param groupHash
    * @returns {Promise.<TResult>}
    */
-  let markRead = function (collection, eventsIds) {
+  let markRead = function (collection, groupHash) {
     return mongo.updateMany(
       collection,
-      { _id: { $in: eventsIds } },
-      { $set: { 'status': EVENT_STATUS.read } },
-      { upsert: true }
+      { groupHash: groupHash },
+      { $set: { 'status': EVENT_STATUS.read } }
     );
   };
 

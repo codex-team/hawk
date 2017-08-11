@@ -152,7 +152,7 @@ module.exports = function () {
         send_(project, event, timer.times)
           .catch(function (e) {
             logger.error('Error while sending notification ', e);
-          });;
+          });
 
         /**
          * If you don't want to notify about

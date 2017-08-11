@@ -1,0 +1,27 @@
+.spinner {
+    position: relative;
+    color: transparent !important;
+}
+
+.spinner::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 18px;
+    height: 18px;
+    margin: -11px 0 0 -11px;
+    border: 2px solid #d5dbe6;
+    border-left-color: #46a1ff;
+    border-radius: 50%;
+    animation: rotation 1.2s infinite linear;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
