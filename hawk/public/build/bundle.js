@@ -1451,8 +1451,6 @@ var Appender = exports.Appender = function () {
   }, {
     key: 'successCallback',
     value: function successCallback(response) {
-      response = JSON.parse(response);
-
       this.loadMoreButton.classList.remove('spinner');
       if (!response.canLoadMore) {
         this.loadMoreButton.remove();
@@ -1470,7 +1468,6 @@ var Appender = exports.Appender = function () {
      */
     value: function errorCallback(error) {
       if (error) {
-        error = JSON.parse(error);
         this.settings.onError(error);
       }
     }

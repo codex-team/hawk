@@ -1,6 +1,6 @@
 'use strict';
 
-var dom = require('./dom').default;
+let dom = require('./dom').default;
 
 /**
  * Class Appender
@@ -101,8 +101,6 @@ export class Appender {
    * call Customized callback with response
    */
   successCallback(response) {
-    response = JSON.parse(response);
-
     this.loadMoreButton.classList.remove('spinner');
     if (!response.canLoadMore) {
       this.loadMoreButton.remove();
@@ -117,7 +115,6 @@ export class Appender {
    */
   errorCallback(error) {
     if (error) {
-      error = JSON.parse(error);
       this.settings.onError(error);
     }
   };

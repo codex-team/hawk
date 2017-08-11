@@ -28,7 +28,10 @@ let md5 = function (input) {
 let formatDebugBacktrace = function (debugBacktrace) {
   let result = [];
 
-  for (let i = 0; i < debugBacktrace.length; i++) {
+  /** Remove Hawk\HawkErrorManager::Log **/
+  debugBacktrace.shift();
+
+  for (let i = debugBacktrace.length - 1; i >= 0; i--) {
     result[i] = {
       'file': debugBacktrace[i].file,
       'line': debugBacktrace[i].line
@@ -36,9 +39,13 @@ let formatDebugBacktrace = function (debugBacktrace) {
 
     let args = debugBacktrace[i].args;
 
-    debugBacktrace[i].function += '(' + args.slice(0, -1).join(', ') + args[args.length - 1] + ')';
+    if (args) {
+      debugBacktrace[i].function += '(' + args.slice(0, -1).join(', ') + args[args.length - 1] + ')';
+    } else {
+      debugBacktrace[i].function += '()';
+    }
 
-    switch(debugBacktrace[i]['type']) {
+    switch (debugBacktrace[i]['type']) {
       case '::':
         result[i].func = debugBacktrace[i].class + '::' + debugBacktrace[i].function;
         break;

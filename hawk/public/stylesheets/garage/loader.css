@@ -1,29 +1,27 @@
 .spinner {
-  width: 5px;
-  height: 5px;
-  margin: auto;
-  background-color: #333;
-
-  border-radius: 100%;
-  -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
-  animation: sk-scaleout 1.0s infinite ease-in-out;
+    position: relative;
+    color: transparent !important;
 }
 
-@-webkit-keyframes sk-scaleout {
-  0% { -webkit-transform: scale(0) }
-  100% {
-    -webkit-transform: scale(1.0);
-    opacity: 0;
-  }
+.spinner::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 18px;
+    height: 18px;
+    margin: -11px 0 0 -11px;
+    border: 2px solid #d5dbe6;
+    border-left-color: #46a1ff;
+    border-radius: 50%;
+    animation: rotation 1.2s infinite linear;
 }
 
-@keyframes sk-scaleout {
-  0% {
-    -webkit-transform: scale(0);
-    transform: scale(0);
-  } 100% {
-    -webkit-transform: scale(1.0);
-    transform: scale(1.0);
-    opacity: 0;
-  }
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
