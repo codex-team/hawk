@@ -1,14 +1,22 @@
 <div class="request">
 
-    {{ event.request.method|upper }} request
+    {% set isEmpty = true %}
+
+    {% if event.request.method %}
+        {% set isEmpty = false %}
+        {{ event.request.method|upper }} request
+    {% endif %}
     {% if event.reques.ip %}
+        {% set isEmpty = false %}
         from <a href="http://{{ event.request.ip }}" target="_blank">{{ event.request.ip }}</a>
     {% endif %}
     {% if event.request.referrer %}
+        {% set isEmpty = false %}
         referred by <a href="{{ event.request.referrer }}" target="_blank">{{ event.request.referrer }}</a>
     {% endif %}
 
     {% if event.params.get and event.params.get|length not 0 %}
+        {% set isEmpty = false %}
         <div class="request-params">
             <div class="request-params__header">
                 GET
@@ -23,6 +31,7 @@
     {% endif %}
 
     {% if event.params.post and event.params.post|length not 0 %}
+        {% set isEmpty = false %}
         <div class="request-params">
             <div class="request-params__header">
                 POST
@@ -34,6 +43,10 @@
                 </div>
             {% endfor %}
         </div>
+    {% endif %}
+
+    {% if isEmpty %}
+        No data
     {% endif %}
 
 </div>
