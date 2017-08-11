@@ -24,7 +24,7 @@ let md5 = function (input) {
  */
 let getPythonErrors = function (req, res) {
   let request = req.body,
-      location = request.errorLocation.file + ':' + request.errorLocation.line;
+      location = request.message + ':' + request.errorLocation.file + ':' + request.errorLocation.line;
 
   let event = {
     type          : 'python',
