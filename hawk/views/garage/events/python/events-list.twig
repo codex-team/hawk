@@ -1,0 +1,11 @@
+{% for item in events %}
+    <div class="repeations__row">
+        <div class="repeations__date">
+            {{ item.time|date('d M, H:i') }}
+        </div>
+        <div class="repeations__stack" onclick="hawk.event.toggleStack(this, '{{ item._id }}')">{{ svg('/public/svg/stack.svg') }} stack</div>
+    </div>
+    <div class="event-info hide" data-event="{{ item._id }}">
+        {% include 'garage/events/python/stack.twig' with {event: item} %}
+    </div>
+{% endfor %}

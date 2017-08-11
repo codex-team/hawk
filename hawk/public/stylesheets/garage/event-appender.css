@@ -1,0 +1,15 @@
+.eventAppender__loadMoreButton {
+    display: block;
+    text-align: center;
+    padding: 15px;
+    border: 2px solid var(--grayLine);
+    border-radius: 3px;
+    color: var(--grayText);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:hover {
+      color: color(var(--grayText) lightness(-20%))
+    }
+}
