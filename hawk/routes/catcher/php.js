@@ -123,7 +123,9 @@ let getServerErrors = function (req, res) {
         return;
       }
 
-      return notifies.send(foundProject, event);
+      notifies.send(foundProject, event);
+
+      res.sendStatus(200);
     })
     .catch( function () {
       res.sendStatus(500);
