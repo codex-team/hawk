@@ -29,8 +29,7 @@ let reset = {
             email: email
           };
 
-          res.render('yard/auth/reset', params);
-          return;
+          return Promise.reject(params);
         }
 
         return user.saveRecoverHash(foundUser._id);
@@ -49,6 +48,9 @@ let reset = {
             email: email
           });
         });
+      },
+      function (params) {
+        res.render('yard/auth/reset', params);
       })
       .catch(function (e) {
         logger.log('Error while resetting user password ', e);
