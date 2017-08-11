@@ -28,9 +28,6 @@ let md5 = function (input) {
 let formatDebugBacktrace = function (debugBacktrace) {
   let result = [];
 
-  /** Remove Hawk\HawkErrorManager::Log **/
-  debugBacktrace.shift();
-
   for (let i = debugBacktrace.length - 1; i >= 0; i--) {
     result[i] = {
       'file': debugBacktrace[i].file,
@@ -96,8 +93,8 @@ let getServerErrors = function (req, res) {
       full: request.error_file + ' -> ' + request.error_line
     },
     params: {
-      post: request.error_context._POST || [],
-      get : request.error_context._GET || []
+      post: request.POST || [],
+      get : request.GET || []
     },
     location: {
       url: request.http_params.SERVER_NAME + request.http_params.QUERY_STRING,
