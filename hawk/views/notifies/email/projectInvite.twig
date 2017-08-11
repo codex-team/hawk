@@ -1,0 +1,24 @@
+{% extends '../layout.twig' %}
+
+{% set title = "Your password" %}
+
+{% block content %}
+  <table cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td>
+        <font color="#000" style="font-size:15px;">
+          You were invited to {{ project.name }} project.
+        </font>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding-top: 15px;">
+        <font color="#000" style="font-size:16px; line-height: 1.5em;">
+            <a href="{{ inviteLink }}">Join {{ project.name }} team</a>
+        </font>
+      </td>
+    </tr>
+  </table>
+{% endblock %}
+
+{% block footer %}{% endblock %}

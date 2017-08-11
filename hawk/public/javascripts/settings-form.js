@@ -33,7 +33,7 @@ module.exports = function () {
           message: errors[error],
           style: 'error'
         });
-      };
+      }
 
       /** Prevent form sending */
       event.preventDefault();
@@ -52,9 +52,157 @@ module.exports = function () {
     }
   };
 
+  /**
+   * Send request to invite new member to the project
+   *
+   * @param projectId
+   * @param form
+   */
+  let inviteMember = function (projectId, form) {
+    let input = document.getElementById(projectId);
+
+    if (!input) return;
+
+    let email = input.value;
+
+    hawk.ajax.call({
+      type: 'POST',
+      url: '/garage/project/inviteMember',
+      success: function (result) {
+        hawk.notifier.show({
+          style: result.success ? 'success' : 'error',
+          message: result.message
+        });
+        if (result.success) {
+          hawk.toggler.toggle(form);
+          input.value = '';
+        }
+      },
+      error: function () {
+        hawk.notifier.show({
+          style: 'error',
+          message: 'Something went wrong. Try again later.'
+        });
+      },
+      data: JSON.stringify({
+        email: email,
+        projectId: projectId
+      })
+    });
+  };
+
+  /**
+   * Send request to save notifications preferences for the project
+   *
+   * @param checkbox
+   * @param projectId
+   * @param userId
+   */
+  let saveNotifiesPreferences = function (checkbox, projectId, userId) {
+    let input = checkbox.querySelector('input'),
+        value = !input.checked,
+        type = checkbox.dataset.name;
+
+    hawk.ajax.call({
+      type: 'POST',
+      url: '/garage/project/editNotifies',
+      error: function () {
+        hawk.notifier.show({
+          style: 'error',
+          message: 'Can\'t save notifications preferences. Try again later'
+        });
+      },
+      success: function (result) {
+        hawk.notifier.show({
+          style: result.success ? 'success' : 'error',
+          message: result.message
+        });
+      },
+      data: JSON.stringify({
+        projectId: projectId,
+        userId: userId,
+        type: type,
+        value: value
+      })
+    });
+  };
+
+  /**
+   * Send request to save notifications webhook
+   *
+   * @param projectId
+   * @param userId
+   * @param type
+   */
+  let saveWebhook = function (projectId, userId, type) {
+    let input = document.getElementById(type + '-' + projectId),
+        value = input.value;
+
+    hawk.ajax.call({
+      type: 'POST',
+      url: '/garage/project/saveWebhook',
+      error: function () {
+        hawk.notifier.show({
+          style: 'error',
+          message: 'Can\'t save webhook. Try again later'
+        });
+      },
+      success: function (result) {
+        hawk.notifier.show({
+          style: result.success ? 'success' : 'error',
+          message: result.message
+        });
+      },
+      data: JSON.stringify({
+        projectId: projectId,
+        userId: userId,
+        type: type,
+        value: value
+      })
+    });
+  };
+
+  /**
+   * Send request to grant admin access to user
+   *
+   * @param projectId
+   * @param userId
+   * @param button
+   */
+  let grantAdminAccess = function (projectId, userId, button) {
+    hawk.ajax.call({
+      type: 'POST',
+      url: '/garage/project/grantAdminAccess',
+      error: function () {
+        hawk.notifier.show({
+          style: 'error',
+          message: 'Can\'t grant access. Try again later'
+        });
+      },
+      success: function (result) {
+        hawk.notifier.show({
+          style: result.success ? 'success' : 'error',
+          message: result.message
+        });
+        if (result.success) {
+          button.classList.add('project__member-role--admin');
+          button.classList.remove('project__member-role--member');
+          button.textContent = 'Admin';
+        }
+      },
+      data: JSON.stringify({
+        projectId: projectId,
+        userId: userId
+      })
+    });
+  };
 
   return {
     init : init,
     checkForm : checkForm,
+    inviteMember: inviteMember,
+    saveNotifiesPreferences: saveNotifiesPreferences,
+    saveWebhook: saveWebhook,
+    grantAdminAccess: grantAdminAccess
   };
 }();

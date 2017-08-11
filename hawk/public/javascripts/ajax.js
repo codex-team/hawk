@@ -46,7 +46,15 @@ module.exports = (function () {
     XMLHTTP.onreadystatechange = function () {
       if (XMLHTTP.readyState === 4) {
         if (XMLHTTP.status === 200) {
-          successFunction(XMLHTTP.responseText);
+          let result;
+
+          try {
+            result = JSON.parse(XMLHTTP.responseText);
+          } catch (e) {
+            result = XMLHTTP.responseText;
+          }
+
+          successFunction(result);
         } else {
           errorFunction(XMLHTTP.statusText);
         }

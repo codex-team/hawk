@@ -33,9 +33,9 @@
     <div class="repeations" data-module-required="appender">
       <module-settings>
         {
-          "url" : "/garage/{{ domain.name }}/event/{{ event.groupHash }}/?page=",
+          "url" : "/garage/{{ project.user.projectUri }}/event/{{ event.groupHash }}/?page=",
           "event" : "{{ event.groupHash }}",
-          "domain" : "{{ domain.name }}",
+          "project" : "{{ project.name }}",
           "autoloading" : "true",
           "dontWaitFirstClick" : "false"
         }

@@ -1,7 +1,6 @@
 let express = require('express');
 let router = express.Router();
 let user = require('../../models/user');
-let websites = require('../../models/websites');
 
 let csrf = require('../../modules/csrf');
 
@@ -14,13 +13,13 @@ let csrf = require('../../modules/csrf');
 let index = function (req, res) {
   let params = {
     user: res.locals.user,
-    domains: res.locals.userDomains,
     csrfToken: req.csrfToken(),
     meta : {
       title : 'User settings'
     },
     success: req.query.success,
     message: req.query.message,
+    projects: res.locals.userProjects
   };
 
   res.render('garage/settings', params);
@@ -35,71 +34,34 @@ let index = function (req, res) {
 let update = function (req, res) {
   let post = req.body;
 
-  user.current(req)
-    .then(function (currentUser) {
-      let params = {
-        email: post.email,
-        notifies: {
-          email: false,
-          tg: false,
-          slack: false
-        },
-      };
+  try {
+    let params = {
+      email: post.email,
+    };
 
-      if (post['email-notify']) params.notifies.email = true;
-      if (post['tg-notify']) params.notifies.tg = true;
-      if (post['slack-notify']) params.notifies.slack = true;
-
-      if (post.password) {
-        if (post.password != post.repeatedPassword) {
-          throw Error('Passwords don\'t match');
-        }
-        params.password = post.password;
+    if (post.password) {
+      if (post.password !== post.repeatedPassword) {
+        throw Error('Passwords don\'t match');
       }
+      params.password = post.password;
+    }
 
-      if (post['tg-webhook']) params.tgHook = post['tg-webhook'];
-      if (post['slack-webhook']) params.slackHook = post['slack-webhook'];
+    if (!params.email) {
+      throw Error('Email should be passed');
+    }
 
-      if (!params.email) {
-        throw Error('Email should be passed');
-      }
+    user.update(res.locals.user, params)
+      .then(function () {
+        let message = 'Saved 😉';
 
-      return user.update(currentUser, params);
-    })
-    .then(function () {
-      let message = 'Saved 😉';
-
-      res.redirect('/garage/settings?success=1&message='+message);
-    })
-    .catch(function (e) {
-      res.redirect('/garage/settings?success=0&message='+e.message);
-    });
-};
-
-/**
- * Unlink domain action
- * Remove domain data from database and unlink it from user's domains list
- *
- * @param req
- * @param res
- */
-let unlinkDomain = function (req, res) {
-  user.current(req)
-    .then(function (currentUser) {
-      let token = req.query.token;
-
-      websites.remove(currentUser, token)
-        .then(function () {
-          res.sendStatus(200);
-        })
-        .catch(function () {
-          res.sendStatus(500);
-        });
-    });
+        res.redirect('/garage/settings?success=1&message=' + message);
+      });
+  } catch (e) {
+    res.redirect('/garage/settings?success=0&message='+e.message);
+  }
 };
 
 router.get('/settings', csrf, index);
 router.post('/settings/save', csrf, update);
-router.get('/settings/unlink', csrf, unlinkDomain);
 
 module.exports = router;

@@ -18,12 +18,12 @@ let hawk = (function ( self ) {
   self.checkbox = require('./checkbox');
   self.copyable = require('./copyable');
   self.ajax     = require('./ajax');
-  self.domain   = require('./domain');
   self.notifier = require('exports-loader?notifier!codex-notifier');
   self.event    = require('./event');
   self.eventPopup   = require('./event-popup');
   self.appender     = require('./module.appender');
   self.settingsForm = require('./settings-form');
+  self.toggler = require('./toggler');
 
   let delegate = function (element) {
     let modulesRequired;
@@ -64,7 +64,7 @@ let hawk = (function ( self ) {
         self[moduleName].init.call(foundRequiredModule, parsedSettings);
       }
     }
-  };
+  }
 
   return self;
 })({});

@@ -1,0 +1,141 @@
+<div class="project">
+    <img src="{{ project.logo }}" class="project__logo">
+    <h3 class="project__name">{{ project.name }}</h3>
+    <div class="project__info">
+        <span class="project__description">{{ project.description }}</span>
+        <a class="project__domain" target="_blank" href="{{ project.domain }}">{{ project.domain }}</a>
+    </div>
+    <div class="project__section">
+        <h4 class="project__section-header">Token</h4>
+        <div name="js-copyable-authorize">
+            <span name="js-copyable" class="project__token">{{ project.token }}</span>
+            <span class="project__copy-button">{{ svg('/public/svg/copy.svg') }} Copy</span>
+        </div>
+    </div>
+    <div class="project__section">
+        <h4 class="project__section-header">Team</h4>
+        {% for member in project.team %}
+            <div class="project__member">
+                <span class="project__member-icon">{{ svg('/public/svg/user.svg') }}</span>
+                <span class="project__member-email
+                                        {{ member.is_pending ? 'project__member-email--pending' : '' }}">
+                                {{ member.email }}
+                            </span>
+                {% set canGrantAdminAccess = member.role == 'member'
+                and not member.is_pending
+                and project.user.role == 'admin' %}
+                <span class="project__member-role
+                                        project__member-role--{{ member.role }}
+                                        {{ member.is_pending ? 'project__member-role--pending' : '' }}
+                                        {{ canGrantAdminAccess ? 'project__member-role--can-grant-access' : '' }}"
+                        {% if canGrantAdminAccess %}
+                    onclick="hawk.settingsForm.grantAdminAccess('{{ project.id }}',
+                            '{{ member.id }}',
+                            this)"
+                        {% endif %}>
+                                {% if member.role == 'admin' %}
+                                    Admin
+                                {% else %}
+                                    {% if member.is_pending %}
+                                        Invitation sent
+                                    {% else %}
+                                        {{ project.user.role == 'admin' ? 'Grant admin access' : 'Member'}}
+                                    {% endif %}
+                                {% endif %}
+                            </span>
+            </div>
+        {% endfor %}
+
+        {% if project.user.role == 'admin' %}
+            <div class="project__add-button" id="add-member-{{ project.id }}">Add member</div>
+            <div class="project__invitation" name="js-toggle" data-button="add-member-{{ project.id }}">
+                <fieldset class="form__section">
+                    <label class="form__label form__label--thin">Invite member</label>
+                    <input class="form__width-fixed" id="{{ project.id }}" type="email" placeholder="Enter email">
+                    <span class="project__save-button"
+                          onclick="hawk.settingsForm.inviteMember('{{ project.id }}', this.parentNode.parentNode)">
+                                        Send invitation {{ svg('/public/svg/arrow-right.svg') }}
+                                    </span>
+                </fieldset>
+            </div>
+        {% endif %}
+
+    </div>
+    <div class="project__section">
+        <h4 class="project__section-header">Notifications</h4>
+
+        <div class="project__notifies">
+            <label name="custom-checkbox"
+                   class="form__checkbox"
+                   data-name="email"
+                    {{ project.user.notifies.email ? 'data-checked="true"' :}}
+                   onclick="hawk.settingsForm.saveNotifiesPreferences(
+                           this,
+                           '{{ project.id }}',
+                           '{{ user._id }}')">
+                Email
+            </label>
+            <label name="custom-checkbox"
+                   class="form__checkbox"
+                   data-name="tg"
+                    {{ project.user.notifies.tg ? 'data-checked="true"' :}}
+                   onclick="hawk.settingsForm.saveNotifiesPreferences(
+                           this,
+                           '{{ project.id }}',
+                           '{{ user._id }}')">
+                Telegram
+            </label>
+            <label name="custom-checkbox"
+                   class="form__checkbox"
+                   data-name="slack"
+                    {{ project.user.notifies.slack ? 'data-checked="true"' :}}
+                   onclick="hawk.settingsForm.saveNotifiesPreferences(
+                           this,
+                           '{{ project.id }}',
+                           '{{ user._id }}')">
+                Slack
+            </label>
+
+        </div>
+
+        <div class="project__add-button" id="webhooks-{{ project.id }}">Configure Webhooks</div>
+
+        <div class="project__webhooks" name="js-toggle" data-button="webhooks-{{ project.id }}">
+            <fieldset class="form__section">
+                <label class="form__label form__label--thin" for="tg-webhook">Telegram Webhook</label>
+                <input class="form__width-fixed"
+                       name="tg-webhook"
+                       type="url"
+                       value="{{ project.user.tgHook }}"
+                       placeholder="https://notify.bot.ifmo.su/u/DN5N89E3"
+                       id="tg-{{ project.id }}">
+                <span class="project__save-button"
+                      onclick="hawk.settingsForm.saveWebhook(
+                              '{{ project.id }}',
+                              '{{ user._id }}',
+                              'tg')">
+                                    Save {{ svg('/public/svg/arrow-right.svg') }}
+                                </span>
+            </fieldset>
+            <fieldset class="form__section">
+                <label class="form__label form__label--thin" for="slack-webhook">Slack Webhook</label>
+                <input class="form__width-fixed"
+                       name="slack-webhook"
+                       type="url"
+                       value="{{ project.user.slackHook }}"
+                       placeholder="https://notify.bot.ifmo.su/u/VI90Z3NM"
+                       id="slack-{{ project.id }}">
+                <span class="project__save-button"
+                      onclick="hawk.settingsForm.saveWebhook(
+                              '{{ project.id }}',
+                              '{{ user._id }}',
+                              'slack')">
+                                    Save {{ svg('/public/svg/arrow-right.svg') }}
+                                </span>
+            </fieldset>
+            <div class="project__integrations-link">
+                Read more about <a class="inline-link">Telegram and Slack integrations</a>
+            </div>
+        </div>
+    </div>
+</div>

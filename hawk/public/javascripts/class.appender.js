@@ -43,7 +43,7 @@ export class Appender {
     /** call init method with button */
     this.settings.init(this.loadMoreButton);
 
-    if (this.settings.autoload) {
+    if (this.settings.autoloading) {
       this.allowedAutoloading = true;
     }
 

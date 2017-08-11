@@ -193,7 +193,15 @@ module.exports = function () {
     XMLHTTP.onreadystatechange = function () {
       if (XMLHTTP.readyState === 4) {
         if (XMLHTTP.status === 200) {
-          successFunction(XMLHTTP.responseText);
+          var result = void 0;
+
+          try {
+            result = JSON.parse(XMLHTTP.responseText);
+          } catch (e) {
+            result = XMLHTTP.responseText;
+          }
+
+          successFunction(result);
         } else {
           errorFunction(XMLHTTP.statusText);
         }
@@ -343,7 +351,8 @@ module.exports = function () {
  */
 module.exports = function () {
   var NAMES = {
-    copyable: 'js-copyable'
+    copyable: 'js-copyable',
+    authorized: 'js-copyable-authorize'
   };
 
   /**
@@ -363,6 +372,12 @@ module.exports = function () {
       prepareElement(elems[i], copiedCallback);
     }
 
+    var authorizedElems = document.getElementsByName(NAMES.authorized);
+
+    for (var _i = 0; _i < elems.length; _i++) {
+      authorize(authorizedElems[_i]);
+    }
+
     console.log('Copyable module initialized');
   };
 
@@ -378,10 +393,29 @@ module.exports = function () {
   };
 
   /**
+   * Add click listner for authorized element
+   *
+   * @param element
+   */
+  var authorize = function authorize(element) {
+    element.addEventListener('click', authorizedCopy);
+  };
+
+  /**
+   * Click handler for authorized elements
+   */
+  var authorizedCopy = function authorizedCopy() {
+    var authorizedElem = this;
+    var copyable = authorizedElem.querySelector('[name=' + NAMES.copyable + ']');
+
+    copyable.click();
+  };
+
+  /**
    * Click handler
    * Create new range, select copyable element and add range to selection. Then exec 'copy' command
    */
-  var elementClicked = function elementClicked() {
+  var elementClicked = function elementClicked(event) {
     var selection = window.getSelection(),
         range = document.createRange();
 
@@ -403,6 +437,7 @@ module.exports = function () {
     });
 
     this.dispatchEvent(CopiedEvent);
+    event.stopPropagation();
   };
 
   return {
@@ -412,61 +447,6 @@ module.exports = function () {
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = function () {
-  /**
-   * Unlink domain handler
-   *
-   * @param button
-   * @param token - domain token
-   */
-  var unlink = function unlink(button, token) {
-    var success = function success() {
-      hawk.notifier.show({
-        message: 'Domain was successfully unlinked',
-        style: 'success'
-      });
-      button.parentNode.remove();
-    };
-
-    var error = function error() {
-      hawk.notifier.show({
-        message: 'Sorry, there is a server error',
-        style: 'error'
-      });
-    };
-
-    var sendAjax = function sendAjax() {
-      hawk.ajax.call({
-        data: 'token=' + token,
-        type: 'GET',
-        success: success,
-        error: error,
-        url: 'settings/unlink'
-      });
-    };
-
-    var domain = button.dataset.name;
-
-    hawk.notifier.show({
-      message: 'Confirm ' + domain + ' unlinking',
-      type: 'confirm',
-      okText: 'Unlink',
-      okHandler: sendAjax
-    });
-  };
-
-  return {
-    unlink: unlink
-  };
-}();
-
-/***/ }),
-/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -688,8 +668,6 @@ var eventPopup = function (self) {
    *                                  event: {}
    */
   var handleSuccessResponse_ = function handleSuccessResponse_(response) {
-    response = JSON.parse(response);
-
     /** Remove loader */
     popup.holder.classList.remove(CSS.popupLoading);
 
@@ -703,16 +681,16 @@ var eventPopup = function (self) {
   /**
    * get all necessary information from DOM
    * make templated traceback header
-   * @param {Object} domainName - domain name
+   * @param {Object} projectName - project name
    * @param {Object} event - traceback header
-   * @type {Integer} event.count - aggregated event's count
+   * @type {Number} event.count - aggregated event's count
    * @type {Object} event.errorLocation - event's location
    * @type {String} event.message - event's message
    * @type {String} event.tag - event's type
-   * @type {Integer} event.time - time
+   * @type {Number} event.time - time
    */
-  function fillHeader(event, domainName) {
-    popup.content.insertAdjacentHTML('afterbegin', '<div class="event">\n      <div class="event__header">\n        <span class="event__domain">' + domainName + '</span>\n        <span class="event__type event__type--' + event.tag + '">\n          ' + (event.tag === 'javascript' ? 'JavaScript Error' : event.tag) + '\n        </span>\n      </div>\n      <div class="event__content clearfix">\n        <div class="event__counter">\n          <div class="event__counter-number">\n            <div class="event__counter-number--digit">' + event.count + '</div>\n            times\n          </div>\n          <div class="event__counter-date">\n            <div class="event__placeholder"></div>\n            <div class="event__placeholder"></div>\n          </div>\n        </div>\n        <div class="event__title">\n          ' + event.message + '\n        </div>\n        <div class="event__path">\n          ' + event.errorLocation.full + '\n        </div>\n      </div>\n    </div>');
+  function fillHeader(event, projectName) {
+    popup.content.insertAdjacentHTML('afterbegin', '<div class="event">\n      <div class="event__header">\n        <span class="event__project">' + projectName + '</span>\n        <span class="event__type event__type--' + event.tag + '">\n          ' + (event.tag === 'javascript' ? 'JavaScript Error' : event.tag) + '\n        </span>\n      </div>\n      <div class="event__content clearfix">\n        <div class="event__counter">\n          <div class="event__counter-number">\n            <div class="event__counter-number--digit">' + event.count + '</div>\n            times\n          </div>\n          <div class="event__counter-date">\n            <div class="event__placeholder"></div>\n            <div class="event__placeholder"></div>\n          </div>\n        </div>\n        <div class="event__title">\n          ' + event.message + '\n        </div>\n        <div class="event__path">\n          ' + event.errorLocation.full + '\n        </div>\n      </div>\n    </div>');
   }
 
   /**
@@ -720,7 +698,8 @@ var eventPopup = function (self) {
    *
    * send ajax request and delegate to handleSuccessResponse_ on success response
    *
-   * @param {string} domainName
+   * @param event
+   * @param eventUrl
    *
    * @param {string} event._id
    * @param {string} event.type
@@ -730,12 +709,10 @@ var eventPopup = function (self) {
    * @param {number} event.time
    * @param {number} event.count
    */
-  var sendPopupRequest_ = function sendPopupRequest_(event, domainName) {
-    if (!domainName) {
+  var sendPopupRequest_ = function sendPopupRequest_(event, eventUrl) {
+    if (!eventUrl) {
       return;
     }
-
-    var eventPageURL = '/garage/' + domainName + '/event/' + event._id;
 
     /** Open popup with known data */
     self.open();
@@ -743,13 +720,13 @@ var eventPopup = function (self) {
     eventsListURL = document.location.pathname;
 
     /** Replace current URL and add new history record */
-    window.history.pushState({ 'popupOpened': true }, event.message, eventPageURL);
+    window.history.pushState({ 'popupOpened': true }, event.message, eventUrl);
 
     /** Add loader */
     popup.holder.classList.add(CSS.popupLoading);
 
     hawk.ajax.call({
-      url: eventPageURL + '?popup=true',
+      url: eventUrl + '?popup=true',
       method: 'GET',
       success: handleSuccessResponse_,
       error: function error(err) {
@@ -779,7 +756,8 @@ var eventPopup = function (self) {
     }
 
     var event = row.dataset.event,
-        domainName = row.dataset.domain;
+        projectName = row.dataset.project,
+        eventUrl = row.href;
 
     event = JSON.parse(event);
 
@@ -791,12 +769,12 @@ var eventPopup = function (self) {
     /**
      * Fill popup header with data we are already have
      */
-    fillHeader(event, domainName);
+    fillHeader(event, projectName);
 
     /**
      * Require other information
      */
-    sendPopupRequest_(event, domainName);
+    sendPopupRequest_(event, eventUrl);
 
     /**
      * Disable link segue
@@ -850,7 +828,7 @@ var eventPopup = function (self) {
    * If non of this elements found, do not Initialize module
    * In case when something gone wrong, check that all elements has been found before delegation
    */
-  self.init = function (settings) {
+  self.init = function () {
     var element = this;
 
     popup = makePopup();
@@ -877,7 +855,7 @@ var eventPopup = function (self) {
 module.exports = eventPopup;
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -903,7 +881,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -925,7 +903,7 @@ module.exports = function (self) {
           el.insertAdjacentHTML('beforeEnd', items.traceback);
         }
       },
-      onError: function onError(error) {
+      onError: function onError() {
         hawk.notifier.show({
           message: 'Can\'t load data. Please try again later',
           style: 'error'
@@ -945,7 +923,7 @@ module.exports = function (self) {
         */
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -986,7 +964,7 @@ module.exports = function () {
           message: errors[error],
           style: 'error'
         });
-      };
+      }
 
       /** Prevent form sending */
       event.preventDefault();
@@ -1005,9 +983,244 @@ module.exports = function () {
     }
   };
 
+  /**
+   * Send request to invite new member to the project
+   *
+   * @param projectId
+   * @param form
+   */
+  var inviteMember = function inviteMember(projectId, form) {
+    var input = document.getElementById(projectId);
+
+    if (!input) return;
+
+    var email = input.value;
+
+    hawk.ajax.call({
+      type: 'POST',
+      url: '/garage/project/inviteMember',
+      success: function success(result) {
+        hawk.notifier.show({
+          style: result.success ? 'success' : 'error',
+          message: result.message
+        });
+        if (result.success) {
+          hawk.toggler.toggle(form);
+          input.value = '';
+        }
+      },
+      error: function error() {
+        hawk.notifier.show({
+          style: 'error',
+          message: 'Something went wrong. Try again later.'
+        });
+      },
+      data: JSON.stringify({
+        email: email,
+        projectId: projectId
+      })
+    });
+  };
+
+  /**
+   * Send request to save notifications preferences for the project
+   *
+   * @param checkbox
+   * @param projectId
+   * @param userId
+   */
+  var saveNotifiesPreferences = function saveNotifiesPreferences(checkbox, projectId, userId) {
+    var input = checkbox.querySelector('input'),
+        value = !input.checked,
+        type = checkbox.dataset.name;
+
+    hawk.ajax.call({
+      type: 'POST',
+      url: '/garage/project/editNotifies',
+      error: function error() {
+        hawk.notifier.show({
+          style: 'error',
+          message: 'Can\'t save notifications preferences. Try again later'
+        });
+      },
+      success: function success(result) {
+        hawk.notifier.show({
+          style: result.success ? 'success' : 'error',
+          message: result.message
+        });
+      },
+      data: JSON.stringify({
+        projectId: projectId,
+        userId: userId,
+        type: type,
+        value: value
+      })
+    });
+  };
+
+  /**
+   * Send request to save notifications webhook
+   *
+   * @param projectId
+   * @param userId
+   * @param type
+   */
+  var saveWebhook = function saveWebhook(projectId, userId, type) {
+    var input = document.getElementById(type + '-' + projectId),
+        value = input.value;
+
+    hawk.ajax.call({
+      type: 'POST',
+      url: '/garage/project/saveWebhook',
+      error: function error() {
+        hawk.notifier.show({
+          style: 'error',
+          message: 'Can\'t save webhook. Try again later'
+        });
+      },
+      success: function success(result) {
+        hawk.notifier.show({
+          style: result.success ? 'success' : 'error',
+          message: result.message
+        });
+      },
+      data: JSON.stringify({
+        projectId: projectId,
+        userId: userId,
+        type: type,
+        value: value
+      })
+    });
+  };
+
+  /**
+   * Send request to grant admin access to user
+   *
+   * @param projectId
+   * @param userId
+   * @param button
+   */
+  var grantAdminAccess = function grantAdminAccess(projectId, userId, button) {
+    hawk.ajax.call({
+      type: 'POST',
+      url: '/garage/project/grantAdminAccess',
+      error: function error() {
+        hawk.notifier.show({
+          style: 'error',
+          message: 'Can\'t grant access. Try again later'
+        });
+      },
+      success: function success(result) {
+        hawk.notifier.show({
+          style: result.success ? 'success' : 'error',
+          message: result.message
+        });
+        if (result.success) {
+          button.classList.add('project__member-role--admin');
+          button.classList.remove('project__member-role--member');
+          button.textContent = 'Admin';
+        }
+      },
+      data: JSON.stringify({
+        projectId: projectId,
+        userId: userId
+      })
+    });
+  };
+
   return {
     init: init,
-    checkForm: checkForm
+    checkForm: checkForm,
+    inviteMember: inviteMember,
+    saveNotifiesPreferences: saveNotifiesPreferences,
+    saveWebhook: saveWebhook,
+    grantAdminAccess: grantAdminAccess
+  };
+}();
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Toggler module allows you toggle element display property by trigger element
+ * Add name 'js-toggle' and data-button attribute that consist id of trigger element
+ * After click on trigger element it will hide
+ *
+ * @example
+ * <button id="myButton">Show label</button>
+ * <label name="js-toggle" data-button="myButton">This is label</button>
+ *
+ * @type {{init, toggle}}
+ */
+module.exports = function () {
+  var NAME = 'js-toggle';
+  var HIDE_CLASS = 'hide';
+
+  var elements = {};
+
+  /**
+   * Get all elements with 'js-toggle' name and prepare them
+   */
+  var init = function init() {
+    var elems = document.getElementsByName(NAME);
+
+    for (var i = 0; i < elems.length; i++) {
+      prepareElem(elems[i]);
+    }
+  };
+
+  /**
+   * Get toggle buttons and save them and add click listeners
+   *
+   * @param elem
+   */
+  var prepareElem = function prepareElem(elem) {
+    var buttonId = elem.dataset.button,
+        button = document.getElementById(buttonId);
+
+    elem.classList.add(HIDE_CLASS);
+    elements[buttonId] = elem;
+
+    button.addEventListener('click', buttonClicked);
+  };
+
+  /**
+   * Toggle button click handler
+   */
+  var buttonClicked = function buttonClicked() {
+    var button = this,
+        buttonId = button.id;
+
+    button.classList.add(HIDE_CLASS);
+    elements[buttonId].classList.remove(HIDE_CLASS);
+  };
+
+  /**
+   * Toggle element display property
+   *
+   * @param elem
+   * @param elem.dataset.button — id of trigger element
+   */
+  var toggle = function toggle(elem) {
+    var buttonId = elem.dataset.button,
+        button = document.getElementById(buttonId);
+
+    button.classList.toggle(HIDE_CLASS);
+
+    if (button.classList.contains(HIDE_CLASS)) {
+      elem.classList.remove(HIDE_CLASS);
+    } else {
+      elem.classList.add(HIDE_CLASS);
+    }
+  };
+
+  return {
+    init: init,
+    toggle: toggle
   };
 }();
 
@@ -1164,7 +1377,7 @@ var Appender = exports.Appender = function () {
     /** call init method with button */
     this.settings.init(this.loadMoreButton);
 
-    if (this.settings.autoload) {
+    if (this.settings.autoloading) {
       this.allowedAutoloading = true;
     }
 
@@ -1293,12 +1506,12 @@ var hawk = function (self) {
   self.checkbox = __webpack_require__(2);
   self.copyable = __webpack_require__(3);
   self.ajax = __webpack_require__(1);
-  self.domain = __webpack_require__(4);
   self.notifier = __webpack_require__(9);
-  self.event = __webpack_require__(6);
-  self.eventPopup = __webpack_require__(5);
-  self.appender = __webpack_require__(7);
-  self.settingsForm = __webpack_require__(8);
+  self.event = __webpack_require__(5);
+  self.eventPopup = __webpack_require__(4);
+  self.appender = __webpack_require__(6);
+  self.settingsForm = __webpack_require__(7);
+  self.toggler = __webpack_require__(8);
 
   var delegate = function delegate(element) {
     var modulesRequired = void 0;
@@ -1339,7 +1552,7 @@ var hawk = function (self) {
         self[moduleName].init.call(foundRequiredModule, parsedSettings);
       }
     }
-  };
+  }
 
   return self;
 }({});

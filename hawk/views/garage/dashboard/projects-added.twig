@@ -1,0 +1,33 @@
+{% if projects.length != 0  %}
+
+    {% if project == null %}
+        <div class="garage-projects-added">
+            <h1 class="garage-projects-added__title">Select project to view events list</h1>
+
+            {% for project in projects %}
+                {% set url = "/garage/" ~ project.user.projectUri %}
+                <a href="{{ url }}">
+                    <div class="garage-projects-added__item">
+                        <img class="garage-projects-added__img" src="">
+                        <span class="garage-projects-added__name">{{ project.name }}</span>
+                        {% if project.events.unread %}
+                            <span class="garage-projects-added__new-events">{{ project.events.unread }} new</span>
+                        {% endif %}
+                        <span class="garage-projects-added__events">{{ project.events.count }} events</span>
+                    </div>
+                </a>
+            {% endfor %}
+
+            <a class="garage-projects-added__add-project" href="/garage/settings#projects">+ Add another project</a>
+        </div>
+    {% endif %}
+
+{% else %}
+
+    <div class="no-projects">
+        {{ svg('/public/svg/stack-gray.svg') }}
+        <div class="no-projects__text">To start improving your projects, <br> add the first one and set up an integration</div>
+        <a class="no-projects__add-project" href="/garage/settings#projects">+ Add project</a>
+    </div>
+
+{% endif %}

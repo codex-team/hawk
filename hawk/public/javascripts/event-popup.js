@@ -12,7 +12,7 @@ let eventPopup = (function ( self ) {
    * DOM manipulations lib
    * @type {Class}
    */
-  var dom = require('./dom').default;
+  let dom = require('./dom').default;
 
   let keyCodes_ = {
     ESC : 27
@@ -208,8 +208,6 @@ let eventPopup = (function ( self ) {
    *                                  event: {}
    */
   let handleSuccessResponse_ = function (response) {
-    response = JSON.parse(response);
-
     /** Remove loader */
     popup.holder.classList.remove(CSS.popupLoading);
 
@@ -223,18 +221,18 @@ let eventPopup = (function ( self ) {
   /**
    * get all necessary information from DOM
    * make templated traceback header
-   * @param {Object} domainName - domain name
+   * @param {Object} projectName - project name
    * @param {Object} event - traceback header
-   * @type {Integer} event.count - aggregated event's count
+   * @type {Number} event.count - aggregated event's count
    * @type {Object} event.errorLocation - event's location
    * @type {String} event.message - event's message
    * @type {String} event.tag - event's type
-   * @type {Integer} event.time - time
+   * @type {Number} event.time - time
    */
-  function fillHeader(event, domainName) {
+  function fillHeader(event, projectName) {
     popup.content.insertAdjacentHTML('afterbegin', `<div class="event">
       <div class="event__header">
-        <span class="event__domain">${domainName}</span>
+        <span class="event__project">${projectName}</span>
         <span class="event__type event__type--${event.tag}">
           ${event.tag === 'javascript' ? 'JavaScript Error' : event.tag}
         </span>
@@ -265,7 +263,8 @@ let eventPopup = (function ( self ) {
    *
    * send ajax request and delegate to handleSuccessResponse_ on success response
    *
-   * @param {string} domainName
+   * @param event
+   * @param eventUrl
    *
    * @param {string} event._id
    * @param {string} event.type
@@ -275,12 +274,10 @@ let eventPopup = (function ( self ) {
    * @param {number} event.time
    * @param {number} event.count
    */
-  let sendPopupRequest_ = function (event, domainName) {
-    if (!domainName) {
+  let sendPopupRequest_ = function (event, eventUrl) {
+    if (!eventUrl) {
       return;
     }
-
-    let eventPageURL = '/garage/' + domainName + '/event/' + event._id;
 
     /** Open popup with known data */
     self.open();
@@ -288,13 +285,13 @@ let eventPopup = (function ( self ) {
     eventsListURL = document.location.pathname;
 
     /** Replace current URL and add new history record */
-    window.history.pushState({ 'popupOpened': true }, event.message, eventPageURL);
+    window.history.pushState({ 'popupOpened': true }, event.message, eventUrl);
 
     /** Add loader */
     popup.holder.classList.add(CSS.popupLoading);
 
     hawk.ajax.call({
-      url: `${eventPageURL}?popup=true`,
+      url: `${eventUrl}?popup=true`,
       method: 'GET',
       success: handleSuccessResponse_,
       error: err => {
@@ -325,7 +322,8 @@ let eventPopup = (function ( self ) {
 
 
     let event = row.dataset.event,
-        domainName = row.dataset.domain;
+        projectName = row.dataset.project,
+        eventUrl = row.href;
 
     event = JSON.parse(event);
 
@@ -337,12 +335,12 @@ let eventPopup = (function ( self ) {
     /**
      * Fill popup header with data we are already have
      */
-    fillHeader(event, domainName);
+    fillHeader(event, projectName);
 
     /**
      * Require other information
      */
-    sendPopupRequest_(event, domainName);
+    sendPopupRequest_(event, eventUrl);
 
     /**
      * Disable link segue
@@ -363,7 +361,7 @@ let eventPopup = (function ( self ) {
       return;
     }
 
-    for (var i = items.length - 1; i >= 0; i--) {
+    for (let i = items.length - 1; i >= 0; i--) {
       items[i].addEventListener('click', eventRowClicked, false);
     }
   };
@@ -397,7 +395,7 @@ let eventPopup = (function ( self ) {
    * If non of this elements found, do not Initialize module
    * In case when something gone wrong, check that all elements has been found before delegation
    */
-  self.init = function (settings) {
+  self.init = function () {
     let element = this;
 
     popup = makePopup();

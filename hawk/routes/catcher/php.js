@@ -1,10 +1,9 @@
 let express  = require('express');
 let router = express.Router();
 let events   = require('../../models/events');
-let websites = require('../../models/websites');
-let user = require('../../models/user');
 let notifies = require('../../models/notifies');
 let Crypto = require('crypto');
+let project = require('../../models/project');
 
 let md5 = function (input) {
   return Crypto.createHash('md5').update(input, 'utf8').digest('hex');
@@ -83,49 +82,48 @@ let getServerErrors = function (req, res) {
     groupHash: md5(location),
     message: request.error_description,
     stack: formatDebugBacktrace(request.debug_backtrace),
-    time: request.error_context._SERVER.REQUEST_TIME,
+    time: request.http_params.REQUEST_TIME,
     errorLocation: {
-      file: request.error_file,
+      file: request.error_file || '',
       line: request.error_line,
       full: request.error_file + ' -> ' + request.error_line
     },
     params: {
-      post: request.error_context._POST,
-      get : request.error_context._GET
+      post: request.error_context._POST || [],
+      get : request.error_context._GET || []
     },
     location: {
-      url: request.error_context._SERVER.SERVER_NAME + request.error_context._SERVER.QUERY_STRING,
-      host: request.error_context._SERVER.SERVER_NAME,
-      path: request.error_context._SERVER.QUERY_STRING,
+      url: request.http_params.SERVER_NAME + request.http_params.QUERY_STRING,
+      host: request.http_params.SERVER_NAME,
+      path: request.http_params.QUERY_STRING,
     },
     request: {
-      ip: request.error_context._SERVER.REMOTE_ADDR,
-      method: request.error_context._SERVER.REQUEST_METHOD,
-      referrer: request.error_context._SERVER.HTTP_REFERRER,
+      ip: request.http_params.REMOTE_ADDR,
+      method: request.http_params.REQUEST_METHOD,
+      referrer: request.http_params.HTTP_REFERRER,
     }
   };
 
   logger.info('Got php error from ' + event.location.host);
 
-  websites.get(event.token, event.location.host)
-    .then( function (site) {
-      if (!site) {
+  project.getByToken(event.token)
+    .then( function (foundProject) {
+      if (!foundProject) {
         res.sendStatus(403);
         return;
       }
-      return user.get(site.user)
-        .then(function (foundUser) {
-          notifies.send(foundUser, event.location.host, event);
 
-          events.add(event.location.host, event)
-            .then(function () {
-              res.sendStatus(200);
-            })
-            .catch(function (e) {
-              logger.log('error', 'Can not add event because of ', e);
-              res.sendStatus(500);
-            });
+      return events.add(foundProject._id, event)
+        .then(function () {
+          return foundProject;
         });
+    })
+    .then(function (foundProject) {
+      if (!foundProject) {
+        return;
+      }
+
+      return notifies.send(foundProject, event);
     })
     .catch( function () {
       res.sendStatus(500);

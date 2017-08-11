@@ -2,6 +2,7 @@ module.exports = (function () {
   'use strict';
 
   let mongo = require('../modules/database');
+  let collections = require('../config/collections');
 
   const EVENT_STATUS = {
     unread: 0,
@@ -9,30 +10,33 @@ module.exports = (function () {
   };
 
   /**
-   * Add new event to domain collection
+   * Add new event to project collection
    *
-   * @param domain
+   * @param projectId
    * @param event
    */
-  let add = function (domain, event) {
+  let add = function (projectId, event) {
     /* Status equals 1 if event is read otherwise it equals 0  */
     event.status = EVENT_STATUS.unread;
-    return mongo.insertOne(domain, event);
+
+    let collection = collections.EVENTS + ':' + projectId;
+
+    return mongo.insertOne(collection, event);
   };
 
   /**
-   * Get domain events
+   * Get project events
    *
    * https://docs.mongodb.com/manual/meta/aggregation-quick-reference/
    *
-   * @param {string} domain - domain name
-   * @param {object} query  - find params (tag, for example)
-   * @param {bool} group  - if true, group same events
-   * @param {object} sort - sort params, by default sorting by time
-   * @param {number} limit - number of events to return
-   * @param {number} skip - number of events to skip
+   * @param projectId
+   * @param {Object} query  - find params (tag, for example)
+   * @param {Boolean} group  - if true, group same events
+   * @param {Object|Boolean} sort - sort params, by default sorting by time
+   * @param {Number|Boolean} limit - number of events to return
+   * @param {Number|Boolean} skip - number of events to skip
    */
-  let get = function (domain, query, group, sort, limit, skip) {
+  let get = function (projectId, query, group=false, sort=false, limit=false, skip=false) {
     let pipeline = [
       {$match: query}
     ];
@@ -72,7 +76,9 @@ module.exports = (function () {
       });
     }
 
-    return mongo.aggregation(domain, pipeline);
+    let collection = collections.EVENTS + ':' + projectId;
+
+    return mongo.aggregation(collection, pipeline);
   };
 
   /**
@@ -86,18 +92,19 @@ module.exports = (function () {
     return mongo.updateMany(
       collection,
       { _id: { $in: eventsIds } },
-      { $set: { 'status': EVENT_STATUS.read } },
-      { upsert: true }
+      { $set: { 'status': EVENT_STATUS.read } }
     );
   };
 
   /**
    * Count events by tags (fatal, warnings, notice, javascript)
    *
-   * @param domain
+   * @param projectId
    */
-  let countTags = function (domain) {
-    return mongo.aggregation(domain, [
+  let countTags = function (projectId) {
+    let collection = collections.EVENTS + ':' + projectId;
+
+    return mongo.aggregation(collection, [
       {
         $group: {
           _id: '$tag',
@@ -109,7 +116,7 @@ module.exports = (function () {
   };
 
   /**
-   * Get events for all users domains
+   * Get events for all users projects
    *
    * @param user
    * @param query
@@ -119,13 +126,13 @@ module.exports = (function () {
     let result = [],
         queries = [];
 
-    if (!user.domains) {
+    if (!user.projects) {
       return Promise.resolve([]);
     }
 
-    user.domains.forEach(function (domain) {
+    user.projects.forEach(function (project) {
       queries.push(
-        get(domain, query)
+        get(project.id, query)
           .then(function (events) {
             result = result.concat(events);
           })

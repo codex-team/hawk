@@ -26,16 +26,20 @@
     --submitButtonBg: #4592da;
     --lightGrayBg: #f3f3f3;
     --unreadBg: #e6f9f6;
+    --greenBg: #00bd95;
+    --lightGreenBg: #edfff6;
 
     /** Borders */
     --lightGrayLine: #edebeb;
     --grayLine: #d4d6d8;
+    --grayBlueLine: #e6e9f2;
 
     /** Bounce timing function for transition */
     --bounceTiming: cubic-bezier(0.6, -0.28, 0.735, 0.045);
 
     /** Left sidebar width */
     --garage-aside-width: 250px;
+
 }
 
 /**

@@ -4,6 +4,7 @@ let email = require('../modules/email');
 let mongo = require('../modules/database');
 let collections = require('../config/collections');
 let Crypto = require('crypto');
+let projectModel = require('./project');
 
 /** Notifications config **/
 let config = require('../config/notifications');
@@ -27,66 +28,86 @@ module.exports = function () {
    * - Slack
    * - Email
    *
-   * @param user
-   * @param domain
+   * @param project
    * @param event
    * @param times
    */
-  let send_ =function (user, domain, event, times) {
+  let send_ = function (project, event, times) {
     if (!times) {
       return;
     }
 
-    let userId = user._id.toString();
+    let users = [];
 
-    let renderParams = {
-      event: event,
-      domain: domain,
-      serverUrl: process.env.SERVER_URL,
-      times: times,
-      userId: userId,
-      userIdHash: generateUnsubscribeHash(userId)
-    };
+    return projectModel.getTeam(project._id)
+      .then(function (team) {
+        let queries = [];
+
+        team.forEach(function (member) {
+          let query = projectModel.getUserData(project._id, member.id)
+            .then(function (userData) {
+              userData.email = member.email;
+              users.push(userData);
+            });
+
+          queries.push(query);
+        });
+
+        return Promise.all(queries);
+      })
+      .then(function () {
+        users.forEach(function (userData) {
+          let userId = userData.userId.toString(),
+              renderParams = {
+                event: event,
+                project: project,
+                serverUrl: process.env.SERVER_URL,
+                times: times,
+                userData: userData,
+                unsubscribeHash: generateUnsubscribeHash(userId, project._id)
+              };
 
 
-    Twig.renderFile(templatesPath + templates.messenger, renderParams, function (err, html) {
-      if (err) {
-        logger.error('Can not render notify template because of ', err);
-        return;
-      }
+          Twig.renderFile(templatesPath + templates.messenger, renderParams, function (err, html) {
+            if (err) {
+              logger.error('Can not render notify template because of ', err);
+              return;
+            }
 
-      if (user.notifies.tg && user.tgHook) {
-        request.post({url: user.tgHook, form: {message: html, parse_mode: 'HTML'}});
-      }
+            if (userData.notifies.tg && userData.tgHook) {
+              request.post({url: userData.tgHook, form: {message: html, parse_mode: 'HTML'}});
+            }
 
-      if (user.notifies.slack && user.slackHook) {
-        request.post({url: user.slackHook, form: {message: html, parse_mode: 'HTML'}});
-      }
-    });
+            if (userData.notifies.slack && userData.slackHook) {
+              request.post({url: userData.slackHook, form: {message: html, parse_mode: 'HTML'}});
+            }
+          });
 
-    if (user.notifies.email) {
-      Twig.renderFile(templatesPath + templates.email, renderParams, function (err, html) {
-        if (err) {
-          logger.error('Can not render notify template because of ', err);
-          return;
-        }
+          if (userData.notifies.email) {
+            Twig.renderFile(templatesPath + templates.email, renderParams, function (err, html) {
+              if (err) {
+                logger.error('Can not render notify template because of ', err);
+                return;
+              }
 
-        let emailSubject = ' on ' + domain + ': «' + event.message + '»';
+              let emailSubject = ' on ' + project.name + ': «' + event.message + '»';
 
-        if (times > 1) {
-          emailSubject = times + ' errors' + emailSubject;
-        } else {
-          emailSubject = 'Error' + emailSubject;
-        }
+              if (times > 1) {
+                emailSubject = times + ' errors' + emailSubject;
+              } else {
+                emailSubject = 'Error' + emailSubject;
+              }
 
-        email.send(
-          user.email,
-          emailSubject,
-          '',
-          html
-        );
+              email.send(
+                userData.email,
+                emailSubject,
+                '',
+                html
+              );
+            });
+          }
+        });
       });
-    }
   };
 
   /**
@@ -94,11 +115,10 @@ module.exports = function () {
    * If there are no more new events in timeout was set, notification will send by private send_ method
    * Otherwise, if new events are coming, Timeout will be restart
    *
-   * @param user
-   * @param domain
+   * @param project
    * @param event
    */
-  let send = function (user, domain, event) {
+  let send = function (project, event) {
     /** getting a pack for this error with errors number */
     let timer = timers[event.groupHash];
 
@@ -113,7 +133,10 @@ module.exports = function () {
       clearTimeout(timer.timeout);
     } else {
       /** notify about first event */
-      send_(user, domain, event, 1);
+      send_(project, event, 1)
+        .catch(function (e) {
+          logger.error('Error while sending notification ', e);
+        });
       notFirstError = false;
 
       /** create a new error pack with 0 errors */
@@ -126,7 +149,10 @@ module.exports = function () {
     if (notFirstError) {
       timer.timeout = setTimeout(function () {
         /** notify about pack of errors */
-        send_(user, domain, event, timer.times);
+        send_(project, event, timer.times)
+          .catch(function (e) {
+            logger.error('Error while sending notification ', e);
+          });;
 
         /**
          * If you don't want to notify about
@@ -145,19 +171,20 @@ module.exports = function () {
          */
         delete timers[event.groupHash];
       }, GROUP_TIME);
-    };
+    }
   };
 
   /**
    * Generate unsubscribe hash from user id
    *
    * @param userId
+   * @param projectId
    * @returns {String} generated hash
    */
-  let generateUnsubscribeHash = function (userId) {
-    userId = userId + process.env.SALT;
+  let generateUnsubscribeHash = function (userId, projectId) {
+    let string = userId + process.env.SALT + projectId;
 
-    let hash = Crypto.createHash('sha256').update(userId, 'utf8').digest('hex');
+    let hash = Crypto.createHash('sha256').update(string, 'utf8').digest('hex');
 
     return hash;
   };
@@ -166,14 +193,16 @@ module.exports = function () {
    * Set notifies.email flag in user profile to false
    *
    * @param userId
+   * @param projectId
    * @param type
    */
-  let unsubscribe = function (userId, type='email') {
-    let field = 'notifies.' + type;
+  let unsubscribe = function (userId, projectId, type='email') {
+    let field = 'notifies.' + type,
+        collection = collections.MEMBERSHIP + ':' + userId;
 
     return mongo.updateOne(
-      collections.USERS,
-      {_id: mongo.ObjectId(userId)},
+      collection,
+      {project_id: mongo.ObjectId(projectId)},
       {$set: {[field]: false}}
     );
   };

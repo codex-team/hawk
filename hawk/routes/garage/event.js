@@ -4,6 +4,7 @@ let express = require('express');
 let router = express.Router();
 let modelEvents = require('../../models/events');
 let mongo = require('../../modules/database');
+let collections = require('../../config/collections');
 
 /**
  * limit count of events per page
@@ -13,38 +14,31 @@ const EVENT_LIMIT = 10;
 
 /**
  * Check if user can manage passed domain
- * @param  {Array} userDomains  — current user's domains list
- * @param  {string} domainNme   — current user's domns list
  * @return {Promise}
+ * @param userProjects
+ * @param projectUri
  */
-function getDomainInfo(userDomains, domainName) {
-  return new Promise(function (resolve, reject) {
-    /** Get domain info by user domain */
-    userDomains.forEach( domain => {
-      if (domain.name === domainName) {
-        resolve(domain);
-        return;
-      }
-    });
-
-    /** If passed domain name was not found in user domains list */
-    reject();
-  });
-}
+let getProjectInfo = function (userProjects, projectUri) {
+  for (let i = 0; i < userProjects.length; i++) {
+    if (userProjects[i].user.projectUri === projectUri) {
+      return userProjects[i];
+    }
+  }
+};
 
 /**
 * Marks all events in list as read
+* @param currentProject
 * @param {Array} events - events list
 */
-let markEventsAsRead = function (currentDomain, eventList) {
-  let eventsIds = eventList.map(event => new mongo.ObjectId(event['_id']));
+let markEventsAsRead = function (currentProject, events) {
+  let eventsIds = events.map(event => new mongo.ObjectId(event['_id'])),
+      collection = collections.EVENTS + ':' + currentProject.id;
 
-  modelEvents.markRead(currentDomain.name, eventsIds)
-    .catch(function (err) {
-      console.log(err);
+  return modelEvents.markRead(collection, eventsIds)
+    .then(function () {
+      return events;
     });
-
-  return eventList;
 };
 
 /**
@@ -58,12 +52,11 @@ let markEventsAsRead = function (currentDomain, eventList) {
  *
  * @this {Object} GarageResponseContext
  *
- * @param {String} domain - requsted domain
- * @param {Object} data
- * @param {Array} data.eventList - obtained from Database events
- * @param {Boolean} data.canLoadMore - is next page exist ?
+ * @param {Object} currentProject
+ * @param {Array} events
+ * @param {Boolean} canLoadMore
  */
-let makeResponse_ = function (domain, data) {
+let makeResponse_ = function  (currentProject, events, canLoadMore) {
   /**
      * work with current request context
      * context:
@@ -75,21 +68,18 @@ let makeResponse_ = function (domain, data) {
   let request = context.req,
       response = context.res,
       isAjaxRequest = request.xhr,
-      eventList = data.eventList,
-      canLoadMore = data.canLoadMore,
-      currentEvent = eventList.shift(),
-      templatePath = 'garage/events/' + currentEvent.type;
+      templatePath = 'garage/events/' + events[0].type;
 
   /** requiring page via AJAX */
   if (isAjaxRequest && request.query.page) {
-    return loadMoreDataForPagination_.call(response, templatePath + '/events-list', domain, eventList, canLoadMore);
+    return loadMoreDataForPagination_.call(response, templatePath + '/events-list', events, canLoadMore);
   }
 
   /** If we have ?popup=1 parameter, send JSON answer */
   if (request.query.popup) {
-    return loadDataForPopup_.call(response, templatePath + '/page', domain, eventList);
+    return loadDataForPopup_.call(response, templatePath + '/page', currentProject, events);
   } else {
-    return loadPageData_.call(response, templatePath + '/page', domain, eventList);
+    return loadPageData_.call(response, templatePath + '/page', currentProject, events);
   }
 };
 
@@ -97,15 +87,15 @@ let makeResponse_ = function (domain, data) {
  * @this Request
  *
  * @param {String} templatePath - path to template
- * @param {Object} domain
+ * @param project
  * @param {Object} eventList
  * @return {String} - HTML content
  */
-let loadPageData_ = function (templatePath, domain, eventList) {
+let loadPageData_ = function (templatePath, project, eventList) {
   let response = this;
 
   return response.render(templatePath, {
-    domain : domain,
+    project : project,
     event  : eventList.shift(),
     events : eventList
   });
@@ -115,17 +105,17 @@ let loadPageData_ = function (templatePath, domain, eventList) {
  * @this Response
  *
  * @param {String} templatePath - path to template
- * @param {Object} domain
+ * @param project
  * @param {Object} eventList
  * @return {String} - JSON formatted response
  */
-let loadDataForPopup_ = function (templatePath, domain, eventList) {
+let loadDataForPopup_ = function (templatePath, project, eventList) {
   let response = this,
       currentEvent = eventList.shift();
 
   app.render(templatePath, {
     hideHeader : true,
-    domain     : domain,
+    project     : project,
     event      : currentEvent,
     events     : eventList
   }, function (err, html) {
@@ -145,79 +135,62 @@ let loadDataForPopup_ = function (templatePath, domain, eventList) {
 
 /**
  * @param {String} templatePath - path to template
- * @param {Object} domain
- * @param {Object} eventList
+ * @param events
  * @param {Boolean} canLoadMore
  * @return {String} - JSON formatted response
  */
-let loadMoreDataForPagination_ = function (templatePath, domain, eventList, canLoadMore) {
+let loadMoreDataForPagination_ = function (templatePath, events, canLoadMore) {
   let response = this,
-      currentEvent = eventList.shift();
+      currentEvent = events.shift();
 
-  if (canLoadMore) {
-    app.render(templatePath, {
-      domain,
-      events : eventList
-    }, function (err, res) {
-      if (err) {
-        logger.error(`Something wrong happened. Can't load more ${currentEvent.type} events from ${domain} because of `, err);
-      }
+  app.render(templatePath, {
+    events
+  }, function (err, html) {
+    if (err) {
+      logger.error(`Something wrong happened. Can't load more ${currentEvent.type} events because of `, err);
+      response.sendStatus(500);
+    }
 
-      return response.json({traceback: res, canLoadMore: true});
-    });
-  } else {
-    return response.json ({ traceback : '', canLoadMore : false });
-  }
+    return response.json({traceback: html, canLoadMore: canLoadMore});
+  });
 };
 
 /**
- * Event page (route /garage/<domain>/event/<hash>)
+ * Event page (route /garage/<project>/event/<hash>)
  *
  * @param req
  * @param res
  */
 let event = function (req, res) {
-  Promise.resolve({
-    domainName: req.params.domain,
-    eventId: req.params.id
-  })
-    .then(function (params) {
-      /**
-         * Current user's domains list stored in res.locals.userDomains
-         * @see  app.js
-         * @type {Object} userDomains
-         */
-      let userDomains = res.locals.userDomains;
+  /**
+   * Current user's project list stored in res.locals.userProjects
+   * @see  app.js
+   * @type {Array}
+   */
+  let userProjects   = res.locals.userProjects,
+      projectUri     = req.params.project,
+      eventGroupHash = req.params.id;
 
-      /** pagination settings */
-      let page    = req.query.page || 1,
-          limit   = EVENT_LIMIT,
-          skip    = (parseInt(page) - 1) * limit;
+  /** pagination settings */
+  let page    = req.query.page || 1,
+      limit   = EVENT_LIMIT,
+      skip    = (parseInt(page) - 1) * limit;
 
-      getDomainInfo(userDomains, params.domainName)
-        .then((currentDomain) => {
-          modelEvents.get(currentDomain.name, {groupHash: params.eventId}, false, false, limit + 1, skip)
-            .then((eventList) => markEventsAsRead(currentDomain, eventList))
-            .then((eventList) => {
-              let canLoadMore = eventList.length > limit;
+  let currentProject = getProjectInfo(userProjects, projectUri);
 
-              return {
-                eventList,
-                canLoadMore
-              };
-            })
-            .then(makeResponse_.bind({ req, res }, currentDomain))
-            .catch(function (err) {
-              logger.error('Error while handling event-page request: ', err);
-              res.sendStatus(404);
-            });
-        })
-        .catch(function () {
-          res.sendStatus(404);
-        });
+  modelEvents.get(currentProject.id, {groupHash: eventGroupHash}, false, false, limit + 1, skip)
+    .then(markEventsAsRead.bind(null, currentProject))
+    .then(function (events) {
+      let canLoadMore = events.length > limit;
+
+      return makeResponse_.call({req, res}, currentProject, events, canLoadMore);
+    })
+    .catch(function (err) {
+      logger.error('Error while handling event-page request: ', err);
+      res.sendStatus(404);
     });
 };
 
-router.get('/:domain/event/:id?', event);
+router.get('/:project/event/:id?', event);
 
 module.exports = router;

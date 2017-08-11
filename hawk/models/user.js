@@ -1,8 +1,8 @@
 let auth = require('../modules/auth');
 let mongo = require('../modules/database');
-let websites = require('./websites');
 let events = require('./events');
 let collections = require('../config/collections');
+let project = require('./project');
 
 module.exports = function () {
   const collection = collections.USERS;
@@ -51,7 +51,6 @@ module.exports = function () {
     let user = {
       'email': userEmail,
       'password': passwordHashed,
-      'domains': [],
       'notifies': {
         'email': true,
         'tg': false,
@@ -75,14 +74,13 @@ module.exports = function () {
   };
 
   /**
-   * Get logged user data and his domains data
+   * Get logged user data and his projects data
    *
    * @param req
    * @returns {Promise.<TResult>}
    */
   let getInfo = function (req) {
-    let currentUser = null,
-        domains = null;
+    let currentUser = null;
 
     return current(req)
       .then(function (currentUser_) {
@@ -92,18 +90,16 @@ module.exports = function () {
           throw null;
         }
 
-        return websites.getByUser(currentUser);
+        return project.getByUser(currentUser._id);
       })
-      .then(function (domains_) {
-        domains = domains_;
-
+      .then(function (projects) {
         let queries = [];
 
         /**
-         * domain : {
+         * project : {
          *   'events': {
-         *     'count': 0,     total number of events for this domain
-         *     'unread': 0     total number of unread events for this domain
+         *     'count': 0,     total number of events for this project
+         *     'unread': 0     total number of unread events for this project
          *   },
          *   *event_tag*: {
          *     'count': 0,     number of events fot this *event_tag*
@@ -112,20 +108,20 @@ module.exports = function () {
          *   ...
          * }
          */
-        domains.forEach(function (domain) {
-          let query = events.countTags(domain.name)
+        projects.forEach(function (currentProject) {
+          let query = events.countTags(currentProject.id)
             .then(function (tags) {
-              domain['events'] = {
+              currentProject['events'] = {
                 'count': 0,
                 'unread': 0
               };
               tags.forEach(function (tag) {
-                domain[tag._id] = {
+                currentProject[tag._id] = {
                   'count': tag.count,
                   'unread': tag.unread
                 };
-                domain['events']['count'] += tag.count;
-                domain['events']['unread'] += tag.unread;
+                currentProject['events']['count'] += tag.count;
+                currentProject['events']['unread'] += tag.unread;
               });
             }).catch(function (e) {
               logger.error('Events Query composing error: ', e);
@@ -134,18 +130,21 @@ module.exports = function () {
           queries.push(query);
         });
 
-        return Promise.all(queries);
+        return Promise.all(queries)
+          .then(function () {
+            return projects;
+          });
       })
-      .then(function () {
+      .then(function (projects) {
         return {
           user: currentUser,
-          domains: domains
+          projects: projects
         };
       })
       .catch(function (e) {
         if (e) {
           logger.error('Can\'t get user because of ' + e);
-        };
+        }
         return {};
       });
   };
