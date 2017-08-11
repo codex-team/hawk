@@ -85,13 +85,13 @@ module.exports = (function () {
    * Marks as read events from collection by id.
    *
    * @param {String} collection - collection name
-   * @param {Array} eventsIds - array of id
+   * @param groupHash
    * @returns {Promise.<TResult>}
    */
-  let markRead = function (collection, eventsIds) {
+  let markRead = function (collection, groupHash) {
     return mongo.updateMany(
       collection,
-      { _id: { $in: eventsIds } },
+      { groupHash: groupHash },
       { $set: { 'status': EVENT_STATUS.read } }
     );
   };

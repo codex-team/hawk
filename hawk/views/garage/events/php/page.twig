@@ -37,7 +37,7 @@
 
 {% block repeations %}
     {% if events %}<h3>Repeations</h3>{% endif %}
-    <div class="repeations" data-module-required="appender">
+    <div class="repeations" {% if events and canLoadMore %}data-module-required="appender"{% endif %}>
       <module-settings>
         {
           "url" : "/garage/{{ project.user.projectUri }}/event/{{ event.groupHash }}/?page=",

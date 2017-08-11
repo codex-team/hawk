@@ -32,10 +32,9 @@ let getProjectInfo = function (userProjects, projectUri) {
 * @param {Array} events - events list
 */
 let markEventsAsRead = function (currentProject, events) {
-  let eventsIds = events.map(event => new mongo.ObjectId(event['_id'])),
-      collection = collections.EVENTS + ':' + currentProject.id;
+  let  collection = collections.EVENTS + ':' + currentProject.id;
 
-  return modelEvents.markRead(collection, eventsIds)
+  return modelEvents.markRead(collection, events[0].groupHash)
     .then(function () {
       return events;
     });
@@ -77,9 +76,9 @@ let makeResponse_ = function  (currentProject, events, canLoadMore) {
 
   /** If we have ?popup=1 parameter, send JSON answer */
   if (request.query.popup) {
-    return loadDataForPopup_.call(response, templatePath + '/page', currentProject, events);
+    return loadDataForPopup_.call(response, templatePath + '/page', currentProject, events, canLoadMore);
   } else {
-    return loadPageData_.call(response, templatePath + '/page', currentProject, events);
+    return loadPageData_.call(response, templatePath + '/page', currentProject, events, canLoadMore);
   }
 };
 
@@ -89,15 +88,17 @@ let makeResponse_ = function  (currentProject, events, canLoadMore) {
  * @param {String} templatePath - path to template
  * @param project
  * @param {Object} eventList
+ * @param canLoadMore
  * @return {String} - HTML content
  */
-let loadPageData_ = function (templatePath, project, eventList) {
+let loadPageData_ = function (templatePath, project, eventList, canLoadMore) {
   let response = this;
 
   return response.render(templatePath, {
     project : project,
     event  : eventList.shift(),
-    events : eventList
+    events : eventList,
+    canLoadMore: canLoadMore
   });
 };
 
@@ -107,9 +108,10 @@ let loadPageData_ = function (templatePath, project, eventList) {
  * @param {String} templatePath - path to template
  * @param project
  * @param {Object} eventList
+ * @param canLoadMore
  * @return {String} - JSON formatted response
  */
-let loadDataForPopup_ = function (templatePath, project, eventList) {
+let loadDataForPopup_ = function (templatePath, project, eventList, canLoadMore) {
   let response = this,
       currentEvent = eventList.shift();
 
@@ -117,7 +119,8 @@ let loadDataForPopup_ = function (templatePath, project, eventList) {
     hideHeader : true,
     project     : project,
     event      : currentEvent,
-    events     : eventList
+    events     : eventList,
+    canLoadMore: canLoadMore
   }, function (err, html) {
     let renderResponse = {};
 

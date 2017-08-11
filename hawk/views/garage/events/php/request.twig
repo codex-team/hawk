@@ -1,12 +1,14 @@
 <div class="request">
 
     {{ event.request.method|upper }} request
-    from <a href="http://{{ event.request.ip }}" target="_blank">{{ event.request.ip }}</a>
+    {% if event.reques.ip %}
+        from <a href="http://{{ event.request.ip }}" target="_blank">{{ event.request.ip }}</a>
+    {% endif %}
     {% if event.request.referrer %}
         referred by <a href="{{ event.request.referrer }}" target="_blank">{{ event.request.referrer }}</a>
     {% endif %}
 
-    {% if event.params.get|length not 0 %}
+    {% if event.params.get and event.params.get|length not 0 %}
         <div class="request-params">
             <div class="request-params__header">
                 GET
@@ -20,7 +22,7 @@
         </div>
     {% endif %}
 
-    {% if event.params.post|length not 0 %}
+    {% if event.params.post and event.params.post|length not 0 %}
         <div class="request-params">
             <div class="request-params__header">
                 POST
