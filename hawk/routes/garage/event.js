@@ -7,25 +7,24 @@ let mongo = require('../../modules/database');
 let collections = require('../../config/collections');
 
 /**
+ * limit count of events per page
+ */
+const EVENT_LIMIT = 10;
+
+
+/**
  * Check if user can manage passed domain
  * @return {Promise}
  * @param userProjects
  * @param projectUri
  */
-function getProjectInfo(userProjects, projectUri) {
-  return new Promise(function (resolve, reject) {
-    /** Get domain info by user domain */
-    userProjects.forEach( project => {
-      if (project.user.projectUri === projectUri) {
-        resolve(project);
-        return;
-      }
-    });
-
-    /** If passed domain name was not found in user domains list */
-    reject();
-  });
-}
+let getProjectInfo = function (userProjects, projectUri) {
+  for (let i = 0; i < userProjects.length; i++) {
+    if (userProjects[i].user.projectUri === projectUri) {
+      return userProjects[i];
+    }
+  }
+};
 
 /**
 * Marks all events in list as read
@@ -36,13 +35,124 @@ let markEventsAsRead = function (currentProject, events) {
   let eventsIds = events.map(event => new mongo.ObjectId(event['_id'])),
       collection = collections.EVENTS + ':' + currentProject.id;
 
-  modelEvents.markRead(collection, eventsIds).then(function (docs, err) {
+  return modelEvents.markRead(collection, eventsIds)
+    .then(function () {
+      return events;
+    });
+};
 
-  }).catch(function (err) {
-    console.log(err);
+/**
+ * Global request handler
+ * Calls in current Request and Response context via necessary data
+ * Delegates request into separate functions that has their own response
+ *
+ * @typedef {Object} GarageResponseContext
+ * @type {Object} req - Request
+ * @type {Object} res - Response
+ *
+ * @this {Object} GarageResponseContext
+ *
+ * @param {Object} currentProject
+ * @param {Array} events
+ * @param {Boolean} canLoadMore
+ */
+let makeResponse_ = function  (currentProject, events, canLoadMore) {
+  /**
+     * work with current request context
+     * context:
+     *  - Request
+     *  - Response
+     */
+  let context = this;
+
+  let request = context.req,
+      response = context.res,
+      isAjaxRequest = request.xhr,
+      templatePath = 'garage/events/' + events[0].type;
+
+  /** requiring page via AJAX */
+  if (isAjaxRequest && request.query.page) {
+    return loadMoreDataForPagination_.call(response, templatePath + '/events-list', events, canLoadMore);
+  }
+
+  /** If we have ?popup=1 parameter, send JSON answer */
+  if (request.query.popup) {
+    return loadDataForPopup_.call(response, templatePath + '/page', currentProject, events);
+  } else {
+    return loadPageData_.call(response, templatePath + '/page', currentProject, events);
+  }
+};
+
+/**
+ * @this Request
+ *
+ * @param {String} templatePath - path to template
+ * @param project
+ * @param {Object} eventList
+ * @return {String} - HTML content
+ */
+let loadPageData_ = function (templatePath, project, eventList) {
+  let response = this;
+
+  return response.render(templatePath, {
+    project : project,
+    event  : eventList.shift(),
+    events : eventList
   });
+};
 
-  return events;
+/**
+ * @this Response
+ *
+ * @param {String} templatePath - path to template
+ * @param project
+ * @param {Object} eventList
+ * @return {String} - JSON formatted response
+ */
+let loadDataForPopup_ = function (templatePath, project, eventList) {
+  let response = this,
+      currentEvent = eventList.shift();
+
+  app.render(templatePath, {
+    hideHeader : true,
+    project     : project,
+    event      : currentEvent,
+    events     : eventList
+  }, function (err, html) {
+    let renderResponse = {};
+
+    if (err) {
+      logger.error('Can\'t render event traceback template because of ', err);
+      renderResponse.error = 1;
+    } else {
+      renderResponse.event = currentEvent;
+      renderResponse.traceback = html;
+    }
+
+    return response.json(renderResponse);
+  });
+};
+
+/**
+ * @param {String} templatePath - path to template
+ * @param events
+ * @param {Boolean} canLoadMore
+ * @return {String} - JSON formatted response
+ */
+let loadMoreDataForPagination_ = function (templatePath, events, canLoadMore) {
+  let response = this,
+      currentEvent = events.shift();
+
+  app.render(templatePath, {
+    events
+  }, function (err, html) {
+    if (err) {
+      logger.error(`Something wrong happened. Can't load more ${currentEvent.type} events because of `, err);
+      response.sendStatus(500);
+    }
+
+    return response.json({traceback: html, canLoadMore: canLoadMore});
+  });
 };
 
 /**
@@ -52,64 +162,33 @@ let markEventsAsRead = function (currentProject, events) {
  * @param res
  */
 let event = function (req, res) {
-  Promise.resolve({
-    projectUri: req.params.project,
-    eventId: req.params.id
-  }).then(function (params) {
-    /**
-     * Current user's project list stored in res.locals.userProjects
-     * @see  app.js
-     * @type {Array}
-     */
-    let userProjects = res.locals.userProjects;
+  /**
+   * Current user's project list stored in res.locals.userProjects
+   * @see  app.js
+   * @type {Array}
+   */
+  let userProjects   = res.locals.userProjects,
+      projectUri     = req.params.project,
+      eventGroupHash = req.params.id;
 
-    getProjectInfo(userProjects, params.projectUri)
-      .then(function (currentProject) {
-        return modelEvents.get(currentProject.id, {groupHash: params.eventId}, false)
-          .then(function (events) {
-            markEventsAsRead(currentProject, events);
-            return {currentProject, events};
-          });
-      })
-      .then(function ({currentProject, events}) {
-        let currentEvent = events.shift();
+  /** pagination settings */
+  let page    = req.query.page || 1,
+      limit   = EVENT_LIMIT,
+      skip    = (parseInt(page) - 1) * limit;
 
-        /**
-         * If we have ?popup=1 parameter, send JSON answer
-         */
+  let currentProject = getProjectInfo(userProjects, projectUri);
 
-        if (req.query.popup) {
-          app.render('garage/events/' + currentEvent.type + '/page', {
-            hideHeader: true,
-            currentProject,
-            event: currentEvent,
-            events: events
-          }, function (err, html) {
-            let response = {};
+  modelEvents.get(currentProject.id, {groupHash: eventGroupHash}, false, false, limit + 1, skip)
+    .then(markEventsAsRead.bind(null, currentProject))
+    .then(function (events) {
+      let canLoadMore = events.length > limit;
 
-            if (err) {
-              logger.error('Can not render event traceback template because of ', err);
-              response.error = 1;
-            } else {
-              response.event = currentEvent;
-              response.traceback = html;
-            }
-
-            res.json(response);
-          });
-        } else {
-          res.render('garage/events/' + currentEvent.type + '/page', {
-            currentProject: currentProject,
-            event: currentEvent,
-            events: events
-          });
-        }
-      })
-      .catch(function (err) {
-        logger.error('Error while handling event-page request: ', err);
-        res.sendStatus(404);
-      });
-  });
+      return makeResponse_.call({req, res}, currentProject, events, canLoadMore);
+    })
+    .catch(function (err) {
+      logger.error('Error while handling event-page request: ', err);
+      res.sendStatus(404);
+    });
 };
 
 router.get('/:project/event/:id?', event);

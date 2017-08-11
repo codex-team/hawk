@@ -1,6 +1,4 @@
-<div class="garage-list">
-
-  {% if project != null %}
+<div class="garage-list" data-module-required="eventPopup">
 
     {% if events.length != 0 %}
 
@@ -16,7 +14,7 @@
         <div class="garage-list__empty">
             <p>You have no errors logged. Looks strange 😑</p>
             <p class="garage-list__installation-guide-text">If you don't have installed Catcher for this type of event, follow our
-              installation guide to set up an integation:</p>
+              installation guide to set up an integration:</p>
             <ul class="garage-list__links">
                 {% if tag == 'javascript' %}
                     <li><a href="/docs#add-client-catcher">JavaScript</a></li>
@@ -29,5 +27,4 @@
         </div>
     {% endif %}
 
-  {% endif %}
 </div>

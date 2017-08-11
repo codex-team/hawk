@@ -172,6 +172,12 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
+
+  /**
+   * @todo useless middleware or need refator
+   * Shows error thrown everytime
+   */
+
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = process.env.ENVIRONMENT === 'DEVELOPMENT' ? err : {};

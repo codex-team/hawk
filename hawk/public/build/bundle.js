@@ -64,11 +64,82 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 11);
+/******/ 	return __webpack_require__(__webpack_require__.s = 12);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * DOM manipulations methods
+ */
+var DOM = function () {
+  function DOM() {
+    _classCallCheck(this, DOM);
+  }
+
+  _createClass(DOM, null, [{
+    key: "make",
+
+    /**
+     * Helper for making Elements with classname and attributes
+     * @param  {string} tagName           - new Element tag name
+     * @param  {array|string} classNames  - list or name of CSS classname(s)
+     * @param  {Object} attributes        - any attributes
+     * @return {Element}
+     */
+    value: function make(tagName, classNames, attributes) {
+      var el = document.createElement(tagName);
+
+      if (Array.isArray(classNames)) {
+        var _el$classList;
+
+        (_el$classList = el.classList).add.apply(_el$classList, _toConsumableArray(classNames));
+      } else if (classNames) {
+        el.classList.add(classNames);
+      }
+
+      for (var attrName in attributes) {
+        el[attrName] = attributes[attrName];
+      }
+
+      return el;
+    }
+
+    /**
+    * Replaces node with
+    * @param {Element} nodeToReplace
+    * @param {Element} replaceWith
+    */
+
+  }, {
+    key: "replace",
+    value: function replace(nodeToReplace, replaceWith) {
+      return nodeToReplace.parentNode.replaceChild(replaceWith, nodeToReplace);
+    }
+  }]);
+
+  return DOM;
+}();
+
+exports.default = DOM;
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -104,7 +175,7 @@ module.exports = function () {
     }
 
     if (data.beforeSend && typeof data.beforeSend === 'function') {
-      if (!data.beforeSend.call()) {
+      if (data.beforeSend.call() === false) {
         return;
       }
     }
@@ -157,7 +228,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -261,7 +332,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -375,7 +446,6 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 3 */,
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -399,7 +469,7 @@ var eventPopup = function (self) {
    * @type {Class}
    */
 
-  var dom = __webpack_require__(10).default;
+  var dom = __webpack_require__(0).default;
 
   var keyCodes_ = {
     ESC: 27
@@ -476,6 +546,7 @@ var eventPopup = function (self) {
    * Removes class when clicked ESC
    */
   var closePopupByEscape_ = function closePopupByEscape_(event) {
+    console.log('evve', event);
     switch (event.keyCode) {
       case keyCodes_.ESC:
         popup.holder.classList.remove(CSS.popupShowed);
@@ -602,6 +673,9 @@ var eventPopup = function (self) {
 
     popup.content.insertAdjacentHTML('beforeEnd', response.traceback);
     updateHeaderTime(response.event ? response.event.time : 0);
+
+    /** initialize modules inside html response */
+    hawk.initInternalModules(popup.holder);
   };
 
   /**
@@ -755,11 +829,7 @@ var eventPopup = function (self) {
    * In case when something gone wrong, check that all elements has been found before delegation
    */
   self.init = function () {
-    var isNeed = document.querySelector('[data-module-required="eventPopup"]');
-
-    if (!isNeed) {
-      return;
-    }
+    var element = this;
 
     popup = makePopup();
 
@@ -768,7 +838,7 @@ var eventPopup = function (self) {
     /**
      * Handle clicks on rows
      */
-    eventRows = document.querySelectorAll('.' + CSS.eventRow);
+    eventRows = element.querySelectorAll('.' + CSS.eventRow);
     bindRowsClickHandler(eventRows);
 
     /** Close popup by Back/Forward navigation */
@@ -812,6 +882,48 @@ module.exports = function () {
 
 /***/ }),
 /* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _class = __webpack_require__(11);
+
+module.exports = function (self) {
+  self.init = function (settings) {
+    var el = this;
+
+    new _class.Appender({
+      url: settings.url,
+      init: function init(loadMoreButton) {
+        el.insertAdjacentElement('afterEnd', loadMoreButton);
+      },
+      appendItemsOnLoad: function appendItemsOnLoad(items) {
+        if (items.traceback.trim()) {
+          el.insertAdjacentHTML('beforeEnd', items.traceback);
+        }
+      },
+      onError: function onError() {
+        hawk.notifier.show({
+          message: 'Can\'t load data. Please try again later',
+          style: 'error'
+        });
+      }
+    });
+  };
+
+  return self;
+}({}); /**
+        * @module Module Appender
+        *
+        * Creates instanses to required modules
+        * Can be customized
+        *
+        * Appends after element generates by class "load more button"
+        */
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1027,7 +1139,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1113,7 +1225,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1199,13 +1311,13 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1217,66 +1329,158 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var dom = __webpack_require__(0).default;
+
 /**
- * DOM manipulations methods
+ * Class Appender
+ * @constructor
+ * @type {Object} settings
+ * @type {String} settings.url - sends requests to this URL to get items
+ * @type {Function} settings.init - function will be called with "load more button"
+ * @type {Function} settings.appendItemsOnLoad - function will be called after servers response
+ *
+ *
+ * Usage:
+ *   new Appender({
+ *     url : YOUR URL,
+ *     init : YOUR CUSTOM CALLBACK,
+ *     appendItemsOnLoad : YOUR CUSTOM CALLBACK,
+ *     onError : YOUR CALLBACK
+ *   })
+ *
  */
-var DOM = function () {
-  function DOM() {
-    _classCallCheck(this, DOM);
+
+var Appender = exports.Appender = function () {
+  /**
+   * Class internal properties:
+   * @property {Object} settings - comes outsite
+   * @property {Boolean} autoload - load data by scroll
+   * @property {Number} nextPage - page rotation
+   * @property {Object} CSS - styles
+   */
+  function Appender(settings) {
+    _classCallCheck(this, Appender);
+
+    this.settings = settings;
+    this.nextPage = 2;
+    this.allowedAutoloading = false;
+
+    this.CSS = {
+      loadMoreButton: 'eventAppender__loadMoreButton'
+    };
+
+    this.loadMoreButton = this.drawLoadMoreButton();
+    this.loadMoreButton.addEventListener('click', this.loadMoreEvents.bind(this), false);
+
+    /** call init method with button */
+    this.settings.init(this.loadMoreButton);
+
+    if (this.settings.autoloading) {
+      this.allowedAutoloading = true;
+    }
+
+    if (this.settings.dontWaitFirstClick) {
+      this.loadByScroll();
+    }
   }
 
-  _createClass(DOM, null, [{
-    key: "make",
+  _createClass(Appender, [{
+    key: 'drawLoadMoreButton',
+
 
     /**
-     * Helper for making Elements with classname and attributes
-     * @param  {string} tagName           - new Element tag name
-     * @param  {array|string} classNames  - list or name of CSS classname(s)
-     * @param  {Object} attributes        - any attributes
-     * @return {Element}
+     * Draws load more button
      */
-    value: function make(tagName, classNames, attributes) {
-      var el = document.createElement(tagName);
+    value: function drawLoadMoreButton() {
+      var block = dom.make('DIV', this.CSS.loadMoreButton, {
+        textContent: 'Load more'
+      });
 
-      if (Array.isArray(classNames)) {
-        var _el$classList;
+      return block;
+    }
+  }, {
+    key: 'loadByScroll',
 
-        (_el$classList = el.classList).add.apply(_el$classList, _toConsumableArray(classNames));
-      } else if (classNames) {
-        el.classList.add(classNames);
+
+    /**
+     * load data by scroll
+     */
+    value: function loadByScroll() {
+      if (!this.allowedAutoloading) {
+        return;
       }
-
-      for (var attrName in attributes) {
-        el[attrName] = attributes[attrName];
-      }
-
-      return el;
     }
 
     /**
-    * Replaces node with
-    * @param {Element} nodeToReplace
-    * @param {Element} replaceWith
-    */
+     * Sends a request to the server
+     * After getting response calls {settings.appendItemsOnLoad} Function
+     */
 
   }, {
-    key: "replace",
-    value: function replace(nodeToReplace, replaceWith) {
-      return nodeToReplace.parentNode.replaceChild(replaceWith, nodeToReplace);
+    key: 'loadMoreEvents',
+    value: function loadMoreEvents(event) {
+      event.preventDefault();
+
+      hawk.ajax.call({
+        url: this.settings.url + this.nextPage,
+        beforeSend: this.beforeSend.bind(this),
+        success: this.successCallback.bind(this),
+        error: this.errorCallback.bind(this)
+      });
+
+      this.loadByScroll();
+    }
+  }, {
+    key: 'beforeSend',
+
+
+    /**
+     * Append spinner
+     */
+    value: function beforeSend() {
+      this.loadMoreButton.classList.add('spinner');
+    }
+
+    /**
+     * remove "load more button" if server says "can't load more"
+     * call Customized callback with response
+     */
+
+  }, {
+    key: 'successCallback',
+    value: function successCallback(response) {
+      response = JSON.parse(response);
+
+      this.loadMoreButton.classList.remove('spinner');
+      if (!response.canLoadMore) {
+        this.loadMoreButton.remove();
+      }
+
+      this.nextPage++;
+      this.settings.appendItemsOnLoad(response);
+    }
+  }, {
+    key: 'errorCallback',
+
+
+    /**
+     * Handle error responses
+     */
+    value: function errorCallback(error) {
+      if (error) {
+        error = JSON.parse(error);
+        this.settings.onError(error);
+      }
     }
   }]);
 
-  return DOM;
+  return Appender;
 }();
 
-exports.default = DOM;
-
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1285,16 +1489,13 @@ exports.default = DOM;
 /**
 * Require CSS build
 */
-__webpack_require__(9);
+__webpack_require__(10);
 
 var hawk = function (self) {
   'use strict';
 
   self.init = function () {
-    /**
-     * Event popup
-     */
-    self.eventPopup.init();
+    delegate();
 
     /** Settings-form checker for validity */
     self.settingsForm.init();
@@ -1302,14 +1503,56 @@ var hawk = function (self) {
     console.log('Hawk app initialized');
   };
 
-  self.checkbox = __webpack_require__(1);
-  self.copyable = __webpack_require__(2);
-  self.ajax = __webpack_require__(0);
-  self.notifier = __webpack_require__(8);
+  self.checkbox = __webpack_require__(2);
+  self.copyable = __webpack_require__(3);
+  self.ajax = __webpack_require__(1);
+  self.notifier = __webpack_require__(9);
   self.event = __webpack_require__(5);
   self.eventPopup = __webpack_require__(4);
-  self.settingsForm = __webpack_require__(6);
-  self.toggler = __webpack_require__(7);
+  self.appender = __webpack_require__(6);
+  self.settingsForm = __webpack_require__(7);
+  self.toggler = __webpack_require__(8);
+
+  var delegate = function delegate(element) {
+    var modulesRequired = void 0;
+
+    if (element) {
+      modulesRequired = element.querySelectorAll('[data-module-required]');
+    } else {
+      modulesRequired = document.querySelectorAll('[data-module-required]');
+    }
+
+    for (var i = 0; i < modulesRequired.length; i++) {
+      initModule(modulesRequired[i]);
+    }
+  };
+
+  self.initInternalModules = function (element) {
+    delegate(element);
+  };
+
+  /**
+   * get's module name from data attributes
+   * Calls module with settings that are defined below on <module-settings> tag
+   */
+  function initModule(foundRequiredModule) {
+    var moduleName = foundRequiredModule.dataset.moduleRequired,
+        moduleSettings = void 0;
+
+    if (self[moduleName]) {
+      moduleSettings = foundRequiredModule.querySelector('module-settings');
+
+      if (moduleSettings) {
+        moduleSettings = moduleSettings.textContent.trim();
+      }
+
+      if (self[moduleName].init) {
+        var parsedSettings = JSON.parse(moduleSettings);
+
+        self[moduleName].init.call(foundRequiredModule, parsedSettings);
+      }
+    }
+  }
 
   return self;
 }({});
