@@ -64,7 +64,7 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 11);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -375,8 +375,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 3 */,
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -399,7 +398,7 @@ var eventPopup = function (self) {
    * @type {Class}
    */
 
-  var dom = __webpack_require__(10).default;
+  var dom = __webpack_require__(9).default;
 
   var keyCodes_ = {
     ESC: 27
@@ -785,7 +784,7 @@ var eventPopup = function (self) {
 module.exports = eventPopup;
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -811,7 +810,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1027,7 +1026,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1113,7 +1112,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1199,13 +1198,13 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1276,7 +1275,7 @@ var DOM = function () {
 exports.default = DOM;
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1285,7 +1284,7 @@ exports.default = DOM;
 /**
 * Require CSS build
 */
-__webpack_require__(9);
+__webpack_require__(8);
 
 var hawk = function (self) {
   'use strict';
@@ -1305,11 +1304,11 @@ var hawk = function (self) {
   self.checkbox = __webpack_require__(1);
   self.copyable = __webpack_require__(2);
   self.ajax = __webpack_require__(0);
-  self.notifier = __webpack_require__(8);
-  self.event = __webpack_require__(5);
-  self.eventPopup = __webpack_require__(4);
-  self.settingsForm = __webpack_require__(6);
-  self.toggler = __webpack_require__(7);
+  self.notifier = __webpack_require__(7);
+  self.event = __webpack_require__(4);
+  self.eventPopup = __webpack_require__(3);
+  self.settingsForm = __webpack_require__(5);
+  self.toggler = __webpack_require__(6);
 
   return self;
 }({});
