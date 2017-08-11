@@ -70,7 +70,7 @@ let join = {
         res.render('yard/auth/join', {
           message: {
             type: 'error',
-            text: 'This email already registered. Please, <a href="/login">login</a>.'
+            text: 'This email is already registered. Please, <a href="/login">login</a>.'
           }
         });
         return;
