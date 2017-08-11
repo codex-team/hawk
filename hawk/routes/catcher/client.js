@@ -17,7 +17,7 @@ let receiver = new WebSocket.Server({
 
 let connection = function (ws) {
   function getClientErrors(message) {
-    let location = message.error_location.file + ':' + message.error_location.line + ':' + message.error_location.col;
+    let location = message.message + ':' + message.error_location.file + ':' + message.error_location.line + ':' + message.error_location.col;
 
     message.error_location.full = message.error_location.file + ' -> ' +
                                   message.error_location.line + ':' +
