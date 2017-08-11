@@ -89,7 +89,6 @@ let eventPopup = (function ( self ) {
    * Removes class when clicked ESC
    */
   let closePopupByEscape_ = function (event) {
-    console.log('evve', event);
     switch (event.keyCode) {
       case keyCodes_.ESC:
         popup.holder.classList.remove(CSS.popupShowed);
