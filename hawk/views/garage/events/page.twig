@@ -7,7 +7,7 @@
     <div class="event">
       <div class="event__header">
         <a class="event__project" href="/garage/{{ project.user.projectUri }}">{{ project.name }}</a>
-        <a class="event__type event__type--{{ event.tag }}" href="/garage/{{ project.user.projectUri }}/event/{{ event.tag }}">
+        <a class="event__type event__type--{{ event.tag }}" href="/garage/{{ project.user.projectUri }}/{{ event.tag }}">
           {{ event.tag|event-type }}
         </a>
       </div>
