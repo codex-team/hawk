@@ -30,7 +30,7 @@ let reset = {
           };
 
           res.render('yard/auth/reset', params);
-          return;
+          return Promise.reject();
         }
 
         return user.saveRecoverHash(foundUser._id);

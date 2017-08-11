@@ -73,7 +73,7 @@ let getServerErrors = function (req, res) {
   };
 
   let request = req.body,
-      location = request.error_file + request.error_line;
+      location = request.error_description + ':' + request.error_file + ':' + request.error_line;
 
   let event = {
     type: 'php',
@@ -123,7 +123,9 @@ let getServerErrors = function (req, res) {
         return;
       }
 
-      return notifies.send(foundProject, event);
+      notifies.send(foundProject, event);
+
+      res.sendStatus(200);
     })
     .catch( function () {
       res.sendStatus(500);
