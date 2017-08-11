@@ -14,7 +14,7 @@
         } %}
         {% include 'garage/settings/form.twig' with formParams %}
 
-        <h4 class="garage-settings__header">Projects</h4>
+        <h4 class="garage-settings__header" id="projects">Projects</h4>
         <a class="garage-settings__add-project" id="add-project">Add new Project</a>
 
         <form class="project" action="/garage/project/add" method="post" name="js-toggle" data-button="add-project">

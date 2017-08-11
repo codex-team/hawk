@@ -38,7 +38,8 @@ module.exports = function (string, isUrl=false) {
     'э': 'e',
     'ю': 'yu',
     'я': 'ya',
-    ' ': isUrl ? '-' : ' '
+    ' ': isUrl ? '-' : ' ',
+    '.': isUrl ? '-' : '.'
   };
 
   let letters = string.toLowerCase().trim().split('');

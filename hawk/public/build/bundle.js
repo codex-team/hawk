@@ -64,7 +64,7 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 11);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -381,61 +381,6 @@ module.exports = function () {
 "use strict";
 
 
-module.exports = function () {
-  /**
-   * Unlink domain handler
-   *
-   * @param button
-   * @param token - domain token
-   */
-  var unlink = function unlink(button, token) {
-    var success = function success() {
-      hawk.notifier.show({
-        message: 'Domain was successfully unlinked',
-        style: 'success'
-      });
-      button.parentNode.remove();
-    };
-
-    var error = function error() {
-      hawk.notifier.show({
-        message: 'Sorry, there is a server error',
-        style: 'error'
-      });
-    };
-
-    var sendAjax = function sendAjax() {
-      hawk.ajax.call({
-        data: 'token=' + token,
-        type: 'GET',
-        success: success,
-        error: error,
-        url: 'settings/unlink'
-      });
-    };
-
-    var domain = button.dataset.name;
-
-    hawk.notifier.show({
-      message: 'Confirm ' + domain + ' unlinking',
-      type: 'confirm',
-      okText: 'Unlink',
-      okHandler: sendAjax
-    });
-  };
-
-  return {
-    unlink: unlink
-  };
-}();
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 /**
@@ -453,7 +398,7 @@ var eventPopup = function (self) {
    * @type {Class}
    */
 
-  var dom = __webpack_require__(10).default;
+  var dom = __webpack_require__(9).default;
 
   var keyCodes_ = {
     ESC: 27
@@ -651,8 +596,6 @@ var eventPopup = function (self) {
    *                                  event: {}
    */
   var handleSuccessResponse_ = function handleSuccessResponse_(response) {
-    response = JSON.parse(response);
-
     /** Remove loader */
     popup.holder.classList.remove(CSS.popupLoading);
 
@@ -663,16 +606,16 @@ var eventPopup = function (self) {
   /**
    * get all necessary information from DOM
    * make templated traceback header
-   * @param {Object} domainName - domain name
+   * @param {Object} projectName - project name
    * @param {Object} event - traceback header
-   * @type {Integer} event.count - aggregated event's count
+   * @type {Number} event.count - aggregated event's count
    * @type {Object} event.errorLocation - event's location
    * @type {String} event.message - event's message
    * @type {String} event.tag - event's type
-   * @type {Integer} event.time - time
+   * @type {Number} event.time - time
    */
-  function fillHeader(event, domainName) {
-    popup.content.insertAdjacentHTML('afterbegin', '<div class="event">\n      <div class="event__header">\n        <span class="event__domain">' + domainName + '</span>\n        <span class="event__type event__type--' + event.tag + '">\n          ' + (event.tag === 'javascript' ? 'JavaScript Error' : event.tag) + '\n        </span>\n      </div>\n      <div class="event__content clearfix">\n        <div class="event__counter">\n          <div class="event__counter-number">\n            <div class="event__counter-number--digit">' + event.count + '</div>\n            times\n          </div>\n          <div class="event__counter-date">\n            <div class="event__placeholder"></div>\n            <div class="event__placeholder"></div>\n          </div>\n        </div>\n        <div class="event__title">\n          ' + event.message + '\n        </div>\n        <div class="event__path">\n          ' + event.errorLocation.full + '\n        </div>\n      </div>\n    </div>');
+  function fillHeader(event, projectName) {
+    popup.content.insertAdjacentHTML('afterbegin', '<div class="event">\n      <div class="event__header">\n        <span class="event__project">' + projectName + '</span>\n        <span class="event__type event__type--' + event.tag + '">\n          ' + (event.tag === 'javascript' ? 'JavaScript Error' : event.tag) + '\n        </span>\n      </div>\n      <div class="event__content clearfix">\n        <div class="event__counter">\n          <div class="event__counter-number">\n            <div class="event__counter-number--digit">' + event.count + '</div>\n            times\n          </div>\n          <div class="event__counter-date">\n            <div class="event__placeholder"></div>\n            <div class="event__placeholder"></div>\n          </div>\n        </div>\n        <div class="event__title">\n          ' + event.message + '\n        </div>\n        <div class="event__path">\n          ' + event.errorLocation.full + '\n        </div>\n      </div>\n    </div>');
   }
 
   /**
@@ -680,7 +623,8 @@ var eventPopup = function (self) {
    *
    * send ajax request and delegate to handleSuccessResponse_ on success response
    *
-   * @param {string} domainName
+   * @param event
+   * @param eventUrl
    *
    * @param {string} event._id
    * @param {string} event.type
@@ -690,12 +634,10 @@ var eventPopup = function (self) {
    * @param {number} event.time
    * @param {number} event.count
    */
-  var sendPopupRequest_ = function sendPopupRequest_(event, domainName) {
-    if (!domainName) {
+  var sendPopupRequest_ = function sendPopupRequest_(event, eventUrl) {
+    if (!eventUrl) {
       return;
     }
-
-    var eventPageURL = '/garage/' + domainName + '/event/' + event._id;
 
     /** Open popup with known data */
     self.open();
@@ -703,13 +645,13 @@ var eventPopup = function (self) {
     eventsListURL = document.location.pathname;
 
     /** Replace current URL and add new history record */
-    window.history.pushState({ 'popupOpened': true }, event.message, eventPageURL);
+    window.history.pushState({ 'popupOpened': true }, event.message, eventUrl);
 
     /** Add loader */
     popup.holder.classList.add(CSS.popupLoading);
 
     hawk.ajax.call({
-      url: eventPageURL + '?popup=true',
+      url: eventUrl + '?popup=true',
       method: 'GET',
       success: handleSuccessResponse_,
       error: function error(err) {
@@ -739,7 +681,8 @@ var eventPopup = function (self) {
     }
 
     var event = row.dataset.event,
-        domainName = row.dataset.domain;
+        projectName = row.dataset.project,
+        eventUrl = row.href;
 
     event = JSON.parse(event);
 
@@ -751,12 +694,12 @@ var eventPopup = function (self) {
     /**
      * Fill popup header with data we are already have
      */
-    fillHeader(event, domainName);
+    fillHeader(event, projectName);
 
     /**
      * Require other information
      */
-    sendPopupRequest_(event, domainName);
+    sendPopupRequest_(event, eventUrl);
 
     /**
      * Disable link segue
@@ -841,7 +784,7 @@ var eventPopup = function (self) {
 module.exports = eventPopup;
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -867,7 +810,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1083,7 +1026,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1169,7 +1112,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1255,13 +1198,13 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1332,7 +1275,7 @@ var DOM = function () {
 exports.default = DOM;
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1341,7 +1284,7 @@ exports.default = DOM;
 /**
 * Require CSS build
 */
-__webpack_require__(9);
+__webpack_require__(8);
 
 var hawk = function (self) {
   'use strict';
@@ -1361,12 +1304,11 @@ var hawk = function (self) {
   self.checkbox = __webpack_require__(1);
   self.copyable = __webpack_require__(2);
   self.ajax = __webpack_require__(0);
-  self.domain = __webpack_require__(3);
-  self.notifier = __webpack_require__(8);
-  self.event = __webpack_require__(5);
-  self.eventPopup = __webpack_require__(4);
-  self.settingsForm = __webpack_require__(6);
-  self.toggler = __webpack_require__(7);
+  self.notifier = __webpack_require__(7);
+  self.event = __webpack_require__(4);
+  self.eventPopup = __webpack_require__(3);
+  self.settingsForm = __webpack_require__(5);
+  self.toggler = __webpack_require__(6);
 
   return self;
 }({});

@@ -1,9 +1,9 @@
 module.exports = {
 
   USERS: 'users',
-  WEBSITES: 'websites',
   PROJECTS: 'projects',
   MEMBERSHIP: 'membership',
-  TEAM: 'team'
+  TEAM: 'team',
+  EVENTS: 'events'
 
 };
