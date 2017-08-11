@@ -39,7 +39,8 @@ let join = {
                 console.log('Your password: ', password);
               } else {
                 let renderParams = {
-                  password: password
+                  password: password,
+                  settingsLink : process.env.SERVER_URL + '/garage/settings'
                 };
 
                 Twig.renderFile('views/notifies/email/join.twig', renderParams, function (err, html) {
@@ -69,7 +70,7 @@ let join = {
         res.render('yard/auth/join', {
           message: {
             type: 'error',
-            text: 'This email already registred. Please, <a href="/login">login</a>.'
+            text: 'This email already registered. Please, <a href="/login">login</a>.'
           }
         });
         return;
