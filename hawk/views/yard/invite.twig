@@ -1,0 +1,23 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+    <div class=" invite-page yard">
+
+        {{ svg('/public/svg/team.svg') }}
+        <h3 class="invite-page__header">Have a nice day</h3>
+        <p class="invite-page__description">
+            You joined the {{ project.name }} team.<br>
+            Now you can setup notifications preferences in the Garage.
+            We support email, Slack and Telegram alerts, it's very useful.
+        </p>
+
+        <a class="unsubscribe-page__garage-link" href="{{ user ? '/garage' : '/login'}}">
+            {{ user ? 'To the Garage' : 'Log in' }}
+            {{ svg('/public/svg/arrow-right.svg') }}
+        </a>
+        <h1 class="invite-page__title"><a href="/">Hawk.so</a></h1>
+        <p class="invite-page__caption">Fast and lightweight errors tracking service</p>
+
+    </div>
+
+{% endblock %}
