@@ -3,10 +3,14 @@
 let express = require('express');
 let router = express.Router();
 let events = require('../../models/events');
-let collections = require('../../config/collections');
 
 /**
- * Garage events lists (route /garage/<project>/<tag>)
+ * limit count of events per page
+ */
+const EVENT_LIMIT = 8;
+
+/**
+ * Garage events lists (route /garage/<project>/<tag>?page=<page>)
  *
  * @param req
  * @param res
@@ -51,29 +55,65 @@ let index = function (req, res) {
     findParams.tag = currentTag;
   }
 
+  /** pagination settings */
+  let page    = req.query.page || 1,
+      limit   = EVENT_LIMIT,
+      skip    = (parseInt(page) - 1) * (limit + 1);
+
   Promise.resolve().then(function () {
     if (currentProject) {
-      return events.get(currentProject.id, findParams, true);
+      return events.get(currentProject.id, findParams, true, false, limit + 1, skip);
     } else {
-      return events.getAll(res.locals.user, findParams);
+      return [];
     }
   })
     .then(function (foundEvents) {
-      res.render('garage/index', {
-        user: res.locals.user,
-        userProjects: res.locals.userProjects,
-        currentProject: currentProject,
-        currentTag: currentTag,
-        events: foundEvents,
-        meta : {
-          title : 'Garage'
-        }
-      });
+      let canLoadMore = foundEvents.length > limit;
+
+      return makeResponse_.call({req, res}, foundEvents, currentProject, currentTag, canLoadMore);
     })
     .catch (function (e) {
       logger.error('Error while getting user data for main garage page: ', e);
     });
 };
+
+/**
+ * Global response function
+ *
+ * @param foundEvents
+ * @param currentProject
+ * @param currentTag
+ * @param canLoadMore
+ * @private
+ */
+let makeResponse_ = function (foundEvents, currentProject, currentTag, canLoadMore) {
+  let {req, res} = this;
+
+  if (req.xhr && req.query.page) {
+    app.render('garage/events/list', {events: foundEvents, project: currentProject}, function (err, html) {
+      if (err) {
+        logger.error(`Something wrong happened. Can't load more ${currentProject.name} events because of `, err);
+        res.sendStatus(500);
+      }
+
+      return res.json({traceback: html, canLoadMore: canLoadMore});
+    });
+    return;
+  }
+
+  res.render('garage/index', {
+    user: res.locals.user,
+    userProjects: res.locals.userProjects,
+    currentProject: currentProject,
+    currentTag: currentTag,
+    events: foundEvents,
+    canLoadMore: canLoadMore,
+    meta : {
+      title : 'Garage'
+    }
+  });
+};
+
 
 router.get('/:project?/:tag?', index);
 

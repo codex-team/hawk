@@ -1,34 +1,3 @@
-<div class="garage-list" data-module-required="eventPopup">
-
-    {% if project != null %}
-
-        {% if events.length != 0 %}
-
-            <div class="garage-list__header">
-                Total {{ events.length }} events ordered by date
-            </div>
-
-            {% for event in events %}
-                {% include 'garage/events/list-item.twig' with { project: project, event: event } %}
-            {% endfor %}
-
-        {% else %}
-            <div class="garage-list__empty">
-                <p>You have no errors logged. Looks strange 😑</p>
-                <p class="garage-list__installation-guide-text">If you don't have installed Catcher for this type of event, follow our
-                  installation guide to set up an integration:</p>
-                <ul class="garage-list__links">
-                    {% if tag == 'javascript' %}
-                        <li><a href="/docs#add-client-catcher">JavaScript</a></li>
-                    {% else %}
-                        <li><a href="/docs#add-server-handler">PHP</a></li>
-                        <li><a href="/docs#add-server-handler">Python</a></li>
-                        <li><a href="/docs#add-server-handler">Node.js</a></li>
-                    {% endif %}
-                </ul>
-            </div>
-        {% endif %}
-
-    {% endif %}
-
-</div>
+{% for event in events %}
+    {% include 'garage/events/list-item.twig' with { project: project, event: event } %}
+{% endfor %}
