@@ -287,3 +287,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
     font-size: 15px;
 }
+
+module-settings {
+  display: none;
+}

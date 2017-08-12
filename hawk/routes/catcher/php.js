@@ -28,7 +28,7 @@ let md5 = function (input) {
 let formatDebugBacktrace = function (debugBacktrace) {
   let result = [];
 
-  for (let i = 0; i < debugBacktrace.length; i++) {
+  for (let i = debugBacktrace.length - 1; i >= 0; i--) {
     result[i] = {
       'file': debugBacktrace[i].file,
       'line': debugBacktrace[i].line
@@ -36,9 +36,13 @@ let formatDebugBacktrace = function (debugBacktrace) {
 
     let args = debugBacktrace[i].args;
 
-    debugBacktrace[i].function += '(' + args.slice(0, -1).join(', ') + args[args.length - 1] + ')';
+    if (args) {
+      debugBacktrace[i].function += '(' + args.slice(0, -1).join(', ') + args[args.length - 1] + ')';
+    } else {
+      debugBacktrace[i].function += '()';
+    }
 
-    switch(debugBacktrace[i]['type']) {
+    switch (debugBacktrace[i]['type']) {
       case '::':
         result[i].func = debugBacktrace[i].class + '::' + debugBacktrace[i].function;
         break;
@@ -89,11 +93,11 @@ let getServerErrors = function (req, res) {
       full: request.error_file + ' -> ' + request.error_line
     },
     params: {
-      post: request.error_context._POST || [],
-      get : request.error_context._GET || []
+      post: request.POST || [],
+      get : request.GET || []
     },
     location: {
-      url: request.http_params.SERVER_NAME + request.http_params.QUERY_STRING,
+      url: request.http_params.SERVER_NAME + '?' + request.http_params.QUERY_STRING,
       host: request.http_params.SERVER_NAME,
       path: request.http_params.QUERY_STRING,
     },
