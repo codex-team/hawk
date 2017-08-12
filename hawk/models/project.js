@@ -67,7 +67,9 @@ module.exports = function () {
 
         return Promise.all(queries)
           .then(function () {
-            return projects;
+            return projects.filter(function (project) {
+              return !project.user.is_pending;
+            });
           });
       });
   };
