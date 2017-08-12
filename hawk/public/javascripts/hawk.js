@@ -12,6 +12,9 @@ let hawk = (function ( self ) {
     /** Settings-form checker for validity */
     self.settingsForm.init();
 
+    /** Custom keyboard events **/
+    self.keyboard.init();
+
     console.log('Hawk app initialized');
   };
 
@@ -24,6 +27,7 @@ let hawk = (function ( self ) {
   self.appender     = require('./module.appender');
   self.settingsForm = require('./settings-form');
   self.toggler = require('./toggler');
+  self.keyboard = require('./keyboard');
 
   let delegate = function (element) {
     let modulesRequired;

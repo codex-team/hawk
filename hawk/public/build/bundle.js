@@ -1496,6 +1496,9 @@ var hawk = function (self) {
     /** Settings-form checker for validity */
     self.settingsForm.init();
 
+    /** Custom keyboard events **/
+    self.keyboard.init();
+
     console.log('Hawk app initialized');
   };
 
@@ -1508,6 +1511,7 @@ var hawk = function (self) {
   self.appender = __webpack_require__(6);
   self.settingsForm = __webpack_require__(7);
   self.toggler = __webpack_require__(8);
+  self.keyboard = __webpack_require__(15);
 
   var delegate = function delegate(element) {
     var modulesRequired = void 0;
@@ -1561,6 +1565,69 @@ hawk.docReady = function (f) {
 };
 
 module.exports = hawk;
+
+/***/ }),
+/* 13 */,
+/* 14 */,
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * This module allows add event listeners for keyboard keys.
+ *
+ * @examples
+ * element.addEventListener('enter', myEnterHandler);
+ * element.addEventListener('space', mySpaceHandler);
+ * element.addEventListener('keyc', myCKeyHandler);
+ *
+ * CustomEvent will be passed to your handler with original event in detail property
+ *
+ * function myEnterHandler (customEvent) {
+ *    console.log('Here is original keyDown event: ', customEvent.detail);
+ * }
+ *
+ * Or you can just add 'on' + keyName attribute to element like onclick or onkeydown
+ * @example
+ * <input onenter="console.log('You press enter on: ', this); console.log('Here is event: ', event);">
+ *
+ * @type {{init}}
+ */
+module.exports = function () {
+  var init = function init() {
+    window.addEventListener('keydown', keyDownHandler);
+  };
+
+  var keyDownHandler = function keyDownHandler(event) {
+    var eventType = event.code.toLowerCase(),
+        target = event.target;
+
+    if (target.hasAttribute('on' + eventType)) {
+      try {
+        evalAttributeCode.call(target, event);
+      } catch (e) {
+        console.log('Error while eval %o on%s code: %o', target, eventType, e);
+      }
+    }
+
+    var customEvent = new CustomEvent(eventType, {
+      detail: event,
+      bubbles: true
+    });
+
+    target.dispatchEvent(customEvent);
+  };
+
+  var evalAttributeCode = function evalAttributeCode(event) {
+    eval(this.getAttribute('on' + event.key.toLowerCase()));
+  };
+
+  return {
+    init: init
+  };
+}();
 
 /***/ })
 /******/ ]);
