@@ -97,7 +97,7 @@ let getServerErrors = function (req, res) {
       get : request.GET || []
     },
     location: {
-      url: request.http_params.SERVER_NAME + request.http_params.QUERY_STRING,
+      url: request.http_params.SERVER_NAME + '?' + request.http_params.QUERY_STRING,
       host: request.http_params.SERVER_NAME,
       path: request.http_params.QUERY_STRING,
     },

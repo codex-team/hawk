@@ -101,8 +101,10 @@ let user = require('./models/user');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'twig');
 
-// uncomment after placing your favicon in /public
-// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+/**
+ * Deliver favicon.ico by /favicon.ico route
+ */
+app.use(favicon(path.join(__dirname, 'public/images', 'favicon.ico')));
 
 /** We use morgan as express middleware to link winston and express **/
 app.use(morgan('combined', { stream: accessLogger.stream }));
@@ -171,13 +173,7 @@ app.use(function (req, res, next) {
 });
 
 // error handler
-app.use(function (err, req, res, next) {
-
-  /**
-   * @todo useless middleware or need refator
-   * Shows error thrown everytime
-   */
-
+app.use(function (err, req, res) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = process.env.ENVIRONMENT === 'DEVELOPMENT' ? err : {};
