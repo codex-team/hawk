@@ -14,6 +14,12 @@ let eventPopup = (function ( self ) {
    */
   let dom = require('./dom').default;
 
+  /**
+   * Module holder element
+   * @type {null}
+   */
+  let wrapper = null;
+
   let keyCodes_ = {
     ESC : 27
   };
@@ -86,12 +92,25 @@ let eventPopup = (function ( self ) {
   };
 
   /**
+   * @inner
+   *
+   * Remove event listeners if popup was closed
+   *
+   */
+  let removeClosingButtonHandler = function () {
+    document.removeEventListener('click', self.close, false);
+    document.removeEventListener('keydown', self.close, false);
+    window.history.replaceState(null, '', eventsListURL);
+  };
+
+  /**
    * Removes class when clicked ESC
    */
   let closePopupByEscape_ = function (event) {
     switch (event.keyCode) {
       case keyCodes_.ESC:
         popup.holder.classList.remove(CSS.popupShowed);
+        removeClosingButtonHandler();
         break;
     }
   };
@@ -124,6 +143,7 @@ let eventPopup = (function ( self ) {
 
     if (!clickedOnPopup) {
       popup.holder.classList.remove(CSS.popupShowed);
+      removeClosingButtonHandler();
     }
   };
 
@@ -144,12 +164,9 @@ let eventPopup = (function ( self ) {
         break;
       case 'popstate':
         popup.holder.classList.remove(CSS.popupShowed);
+        removeClosingButtonHandler();
         break;
     }
-
-    document.removeEventListener('click', self.close, false);
-    document.removeEventListener('keydown', self.close, false);
-    window.history.replaceState(null, '', eventsListURL);
   };
 
   /**
@@ -395,7 +412,7 @@ let eventPopup = (function ( self ) {
    * In case when something gone wrong, check that all elements has been found before delegation
    */
   self.init = function () {
-    let element = this;
+    wrapper = this;
 
     popup = makePopup();
 
@@ -404,7 +421,7 @@ let eventPopup = (function ( self ) {
     /**
      * Handle clicks on rows
      */
-    eventRows = element.querySelectorAll(`.${CSS.eventRow}`);
+    eventRows = wrapper.querySelectorAll(`.${CSS.eventRow}`);
     bindRowsClickHandler(eventRows);
 
     /** Close popup by Back/Forward navigation */
@@ -415,6 +432,20 @@ let eventPopup = (function ( self ) {
     };
   };
 
+  /**
+   * Update elements click handler
+   */
+  self.update = function () {
+    if (!wrapper) {
+      return;
+    }
+
+    /**
+     * Handle clicks on rows
+     */
+    eventRows = wrapper.querySelectorAll(`.${CSS.eventRow}`);
+    bindRowsClickHandler(eventRows);
+  };
 
   return self;
 })({});

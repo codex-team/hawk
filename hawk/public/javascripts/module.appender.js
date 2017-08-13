@@ -1,7 +1,7 @@
 /**
  * @module Module Appender
  *
- * Creates instanses to required modules
+ * Creates instances to required modules
  * Can be customized
  *
  * Appends after element generates by class "load more button"
@@ -20,6 +20,13 @@ module.exports = (function (self) {
       appendItemsOnLoad : function (items) {
         if (items.traceback.trim()) {
           el.insertAdjacentHTML('beforeEnd', items.traceback);
+        }
+        if (settings.onLoadItems) {
+          try {
+            eval(settings.onLoadItems);
+          } catch (e) {
+            console.log('Can\'t fire onLoadItems functions because of %o', e);
+          }
         }
       },
       onError : function () {

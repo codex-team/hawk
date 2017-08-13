@@ -1,6 +1,8 @@
 .garage-list {
+    padding: 0 25px;
+
     &__header {
-        padding: 25px;
+        padding: 25px 0;
     }
 
     &__installation-guide-text {
@@ -30,9 +32,10 @@
  */
 .garage-list-item {
     display: flex;
-    width: 100%;
-    box-sizing: border-box;
+    margin-left: -25px;
+    margin-right: -25px;
     padding: 0 25px;
+    box-sizing: border-box;
     position: relative;
 
     &:hover {
