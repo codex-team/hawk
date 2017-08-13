@@ -102,9 +102,9 @@ let inviteMember = function (req, res) {
     })
     .then(function ({foundProject, foundUser}) {
       let inviteHash = project.generateInviteHash(foundUser._id, foundProject._id),
-          inviteLink = process.env.SERVER_URL + '/garage/project/invite?user=' + foundUser._id
-                                                                    + '&project=' + foundProject._id
-                                                                    + '&hash=' + inviteHash,
+          inviteLink = process.env.SERVER_URL + '/invite?user=' + foundUser._id
+                                                     + '&project=' + foundProject._id
+                                                     + '&hash=' + inviteHash,
           renderParams = {
             project: foundProject,
             inviteLink: inviteLink
@@ -187,39 +187,6 @@ let saveWebhook = function (req, res) {
 };
 
 /**
- * GET /project/invite handler
- *
- * Confirm user participation in project
- *
- * @param req
- * @param res
- */
-let confirmInvite = function (req, res) {
-  let get = req.query;
-
-  let generatedHash = project.generateInviteHash(get.user, get.project);
-
-  if (generatedHash !== get.hash) {
-    res.render('yard/errors/error.twig', {
-      title: 'Invalid link',
-      message: 'Sorry, this link doesn\'t work. Request new from team leader'
-    });
-    return;
-  }
-
-  project.confirmInvitation(get.project, get.user)
-    .then(function () {
-      let message = 'You was successfully added to the project';
-
-      res.redirect('/garage/settings?success=1&message=' + message);
-    })
-    .catch(function (e) {
-      logger.error('Error while confirm project invitation ', e);
-      res.redirect('/garage/settings?success=0&message=' + e.message);
-    });
-};
-
-/**
  * POST /project/grantAdminAccess handler
  *
  * Gran admin access to user
@@ -251,6 +218,5 @@ router.post('/project/inviteMember', inviteMember);
 router.post('/project/editNotifies', editNotifies);
 router.post('/project/saveWebhook', saveWebhook);
 router.post('/project/grantAdminAccess', granAdminAccess);
-router.get('/project/invite', confirmInvite);
 
 module.exports = router;
