@@ -152,9 +152,11 @@ app.use('/garage', garage);
 var index = require('./routes/yard/index');
 var auth = require('./routes/yard/auth/auth');
 var unsubscribe = require('./routes/yard/unsubscribe');
+var invite = require('./routes/yard/invite');
 
 app.use('/', index);
 app.use('/', auth);
+app.use('/invite', invite);
 app.use('/unsubscribe', unsubscribe);
 
 /**

@@ -243,7 +243,10 @@ module.exports = function () {
   let confirmInvitation = function (projectId, userId) {
     let projectCollection = collections.TEAM + ':' + projectId;
 
-    return mongo.updateOne(projectCollection, {user_id: mongo.ObjectId(userId)}, {$set: {is_pending: false}});
+    return mongo.updateOne(projectCollection, {user_id: mongo.ObjectId(userId)}, {$set: {is_pending: false}})
+      .then(function () {
+        return get(projectId);
+      });
   };
 
   /**

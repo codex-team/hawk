@@ -6,16 +6,7 @@
 
     {% if currentProject != null %}
 
-        <div class="garage-list" {% if canLoadMore %}data-module-required="appender"{% endif %}>
-
-            <module-settings>
-                {
-                "url" : "/garage/{{ currentProject.user.projectUri }}{{ currentTag ? '/'~currentTag : '' }}?page=",
-                "project" : "{{ project.name }}",
-                "autoloading" : "true",
-                "dontWaitFirstClick" : "false"
-                }
-            </module-settings>
+        <div class="garage-list" data-module-required="eventPopup">
 
             {% if events.length != 0 %}
 
@@ -23,7 +14,16 @@
                     Total {{ currentProject.events.count }} events ordered by date
                 </div>
 
-                <div data-module-required="eventPopup">
+                <div {% if canLoadMore %}data-module-required="appender"{% endif %}>
+                    <module-settings>
+                        {
+                        "url" : "/garage/{{ currentProject.user.projectUri }}{{ currentTag ? '/'~currentTag : '' }}?page=",
+                        "project" : "{{ project.name }}",
+                        "autoloading" : "true",
+                        "dontWaitFirstClick" : "false",
+                        "onLoadItems": "hawk.eventPopup.update()"
+                        }
+                    </module-settings>
                     {% include 'garage/events/list.twig' with { project: currentProject, events: events} %}
                 </div>
             {% else %}

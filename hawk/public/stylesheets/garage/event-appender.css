@@ -1,6 +1,7 @@
 .eventAppender__loadMoreButton {
     display: block;
     text-align: center;
+    margin-top: 5px;
     padding: 15px;
     border: 2px solid var(--grayLine);
     border-radius: 3px;
