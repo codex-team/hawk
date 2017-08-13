@@ -64,7 +64,7 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 12);
+/******/ 	return __webpack_require__(__webpack_require__.s = 13);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -886,7 +886,68 @@ module.exports = function () {
 "use strict";
 
 
-var _class = __webpack_require__(11);
+/**
+ * This module allows add event listeners for keyboard keys.
+ *
+ * @examples
+ * element.addEventListener('enter', myEnterHandler);
+ * element.addEventListener('space', mySpaceHandler);
+ * element.addEventListener('keyc', myCKeyHandler);
+ *
+ * CustomEvent will be passed to your handler with original event in detail property
+ *
+ * function myEnterHandler (customEvent) {
+ *    console.log('Here is original keyDown event: ', customEvent.detail);
+ * }
+ *
+ * Or you can just add 'on' + keyName attribute to element like onclick or onkeydown
+ * @example
+ * <input onenter="console.log('You press enter on: ', this); console.log('Here is event: ', event);">
+ *
+ * @type {{init}}
+ */
+module.exports = function () {
+  var init = function init() {
+    window.addEventListener('keydown', keyDownHandler);
+  };
+
+  var keyDownHandler = function keyDownHandler(event) {
+    var eventType = event.code.toLowerCase(),
+        target = event.target;
+
+    if (target.hasAttribute('on' + eventType)) {
+      try {
+        evalAttributeCode.call(target, event);
+      } catch (e) {
+        console.log('Error while eval %o on%s code: %o', target, eventType, e);
+      }
+    }
+
+    var customEvent = new CustomEvent(eventType, {
+      detail: event,
+      bubbles: true
+    });
+
+    target.dispatchEvent(customEvent);
+  };
+
+  var evalAttributeCode = function evalAttributeCode(event) {
+    eval(this.getAttribute('on' + event.key.toLowerCase()));
+  };
+
+  return {
+    init: init
+  };
+}();
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _class = __webpack_require__(12);
 
 module.exports = function (self) {
   self.init = function (settings) {
@@ -922,7 +983,7 @@ module.exports = function (self) {
         */
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1138,7 +1199,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1224,7 +1285,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1310,13 +1371,13 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1476,7 +1537,7 @@ var Appender = exports.Appender = function () {
 }();
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1485,7 +1546,7 @@ var Appender = exports.Appender = function () {
 /**
 * Require CSS build
 */
-__webpack_require__(10);
+__webpack_require__(11);
 
 var hawk = function (self) {
   'use strict';
@@ -1496,18 +1557,22 @@ var hawk = function (self) {
     /** Settings-form checker for validity */
     self.settingsForm.init();
 
+    /** Custom keyboard events **/
+    self.keyboard.init();
+
     console.log('Hawk app initialized');
   };
 
   self.checkbox = __webpack_require__(2);
   self.copyable = __webpack_require__(3);
   self.ajax = __webpack_require__(1);
-  self.notifier = __webpack_require__(9);
+  self.notifier = __webpack_require__(10);
   self.event = __webpack_require__(5);
   self.eventPopup = __webpack_require__(4);
-  self.appender = __webpack_require__(6);
-  self.settingsForm = __webpack_require__(7);
-  self.toggler = __webpack_require__(8);
+  self.appender = __webpack_require__(7);
+  self.settingsForm = __webpack_require__(8);
+  self.toggler = __webpack_require__(9);
+  self.keyboard = __webpack_require__(6);
 
   var delegate = function delegate(element) {
     var modulesRequired = void 0;
