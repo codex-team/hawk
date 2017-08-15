@@ -24,7 +24,7 @@ let md5 = function (input) {
  */
 let getPythonErrors = function (req, res) {
   let request = req.body,
-      location = request.message + ':' + request.errorLocation.file + ':' + request.errorLocation.line;
+      location = request.message + ':' + request.errorLocation.file;
 
   let event = {
     type          : 'python',
@@ -55,7 +55,7 @@ let getPythonErrors = function (req, res) {
       }
 
       notifies.send(foundProject, event);
-    
+
       res.sendStatus(200);
     })
     .catch( function () {
