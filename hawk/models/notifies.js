@@ -147,7 +147,6 @@ module.exports = function () {
 
     /** Remove timer if no error in GROUP_TIME seconds */
     timer.timeout = setTimeout(function () {
-
       if (notFirstError) {
         /** notify about pack of errors */
         send_(project, event, timer.times)
@@ -164,7 +163,6 @@ module.exports = function () {
        */
       delete timers[event.groupHash];
     }, GROUP_TIME);
-    }
   };
 
   /**
