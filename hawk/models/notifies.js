@@ -145,33 +145,24 @@ module.exports = function () {
       };
     }
 
-    /** ready to send. if this error is not first need to set timeout */
-    if (notFirstError) {
-      timer.timeout = setTimeout(function () {
+    /** Remove timer if no error in GROUP_TIME seconds */
+    timer.timeout = setTimeout(function () {
+      if (notFirstError) {
         /** notify about pack of errors */
         send_(project, event, timer.times)
           .catch(function (e) {
             logger.error('Error while sending notification ', e);
           });
+      }
 
-        /**
-         * If you don't want to notify about
-         * first error this type never ever
-         * then just RESET counter.
-         */
-        // timer = timers[event.groupHash] = {
-        //   times: 0
-        // };
-
-        /**
-         * If you want to notify user when this
-         * error happens again firstly in a big
-         * avalanche then REMOVE this error's pack.
-         * It would be better for your server's RAM.
-         */
-        delete timers[event.groupHash];
-      }, GROUP_TIME);
-    }
+      /**
+       * If you want to notify user when this
+       * error happens again firstly in a big
+       * avalanche then REMOVE this error's pack.
+       * It would be better for your server's RAM.
+       */
+      delete timers[event.groupHash];
+    }, GROUP_TIME);
   };
 
   /**
