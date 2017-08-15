@@ -143,6 +143,14 @@ module.exports = function () {
       timer = timers[event.groupHash] = {
         times: 0
       };
+
+      /** Remove timer if no error in GROUP_TIME seconds */
+      setTimeout(function () {
+        /** notify about pack of errors */
+        if (timers[event.groupHash].times == 0) {
+          delete timers[event.groupHash];
+        };
+      }, GROUP_TIME);
     }
 
     /** ready to send. if this error is not first need to set timeout */
