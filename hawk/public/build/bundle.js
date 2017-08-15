@@ -471,6 +471,12 @@ var eventPopup = function (self) {
 
   var dom = __webpack_require__(0).default;
 
+  /**
+   * Module holder element
+   * @type {null}
+   */
+  var wrapper = null;
+
   var keyCodes_ = {
     ESC: 27
   };
@@ -543,12 +549,25 @@ var eventPopup = function (self) {
   };
 
   /**
+   * @inner
+   *
+   * Remove event listeners if popup was closed
+   *
+   */
+  var removeClosingButtonHandler = function removeClosingButtonHandler() {
+    document.removeEventListener('click', self.close, false);
+    document.removeEventListener('keydown', self.close, false);
+    window.history.replaceState(null, '', eventsListURL);
+  };
+
+  /**
    * Removes class when clicked ESC
    */
   var closePopupByEscape_ = function closePopupByEscape_(event) {
     switch (event.keyCode) {
       case keyCodes_.ESC:
         popup.holder.classList.remove(CSS.popupShowed);
+        removeClosingButtonHandler();
         break;
     }
   };
@@ -580,6 +599,7 @@ var eventPopup = function (self) {
 
     if (!clickedOnPopup) {
       popup.holder.classList.remove(CSS.popupShowed);
+      removeClosingButtonHandler();
     }
   };
 
@@ -599,12 +619,9 @@ var eventPopup = function (self) {
         break;
       case 'popstate':
         popup.holder.classList.remove(CSS.popupShowed);
+        removeClosingButtonHandler();
         break;
     }
-
-    document.removeEventListener('click', self.close, false);
-    document.removeEventListener('keydown', self.close, false);
-    window.history.replaceState(null, '', eventsListURL);
   };
 
   /**
@@ -828,7 +845,7 @@ var eventPopup = function (self) {
    * In case when something gone wrong, check that all elements has been found before delegation
    */
   self.init = function () {
-    var element = this;
+    wrapper = this;
 
     popup = makePopup();
 
@@ -837,7 +854,7 @@ var eventPopup = function (self) {
     /**
      * Handle clicks on rows
      */
-    eventRows = element.querySelectorAll('.' + CSS.eventRow);
+    eventRows = wrapper.querySelectorAll('.' + CSS.eventRow);
     bindRowsClickHandler(eventRows);
 
     /** Close popup by Back/Forward navigation */
@@ -846,6 +863,21 @@ var eventPopup = function (self) {
         self.close(e);
       }
     };
+  };
+
+  /**
+   * Update elements click handler
+   */
+  self.update = function () {
+    if (!wrapper) {
+      return;
+    }
+
+    /**
+     * Handle clicks on rows
+     */
+    eventRows = wrapper.querySelectorAll('.' + CSS.eventRow);
+    bindRowsClickHandler(eventRows);
   };
 
   return self;
@@ -962,6 +994,13 @@ module.exports = function (self) {
         if (items.traceback.trim()) {
           el.insertAdjacentHTML('beforeEnd', items.traceback);
         }
+        if (settings.onLoadItems) {
+          try {
+            eval(settings.onLoadItems);
+          } catch (e) {
+            console.log('Can\'t fire onLoadItems functions because of %o', e);
+          }
+        }
       },
       onError: function onError() {
         hawk.notifier.show({
@@ -976,7 +1015,7 @@ module.exports = function (self) {
 }({}); /**
         * @module Module Appender
         *
-        * Creates instanses to required modules
+        * Creates instances to required modules
         * Can be customized
         *
         * Appends after element generates by class "load more button"

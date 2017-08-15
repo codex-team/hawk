@@ -177,7 +177,7 @@ let event = function (req, res) {
   /** pagination settings */
   let page    = req.query.page || 1,
       limit   = EVENT_LIMIT,
-      skip    = (parseInt(page) - 1) * limit;
+      skip    = (parseInt(page) - 1) * (limit + 1);
 
   let currentProject = getProjectInfo(userProjects, projectUri);
 

@@ -3,5 +3,46 @@
 {% block content %}
     {% include 'garage/header.twig' with { project: currentProject, tab: currentTag } %}
     {% include 'garage/dashboard/projects-added.twig' with { project: currentProject, projects: userProjects, events: events } %}
-    {% include 'garage/events/list.twig' with { project: currentProject, events: events, tag: currentTag } %}
+
+    {% if currentProject != null %}
+
+        <div class="garage-list" data-module-required="eventPopup">
+
+            {% if events.length != 0 %}
+
+                <div class="garage-list__header">
+                    Total {{ currentProject.events.count }} events ordered by date
+                </div>
+
+                <div {% if canLoadMore %}data-module-required="appender"{% endif %}>
+                    <module-settings>
+                        {
+                        "url" : "/garage/{{ currentProject.user.projectUri }}{{ currentTag ? '/'~currentTag : '' }}?page=",
+                        "project" : "{{ project.name }}",
+                        "autoloading" : "true",
+                        "dontWaitFirstClick" : "false",
+                        "onLoadItems": "hawk.eventPopup.update()"
+                        }
+                    </module-settings>
+                    {% include 'garage/events/list.twig' with { project: currentProject, events: events} %}
+                </div>
+            {% else %}
+                <div class="garage-list__empty">
+                    <p>You have no errors logged. Looks strange 😑</p>
+                    <p class="garage-list__installation-guide-text">If you don't have installed Catcher for this type of event, follow our
+                        installation guide to set up an integration:</p>
+                    <ul class="garage-list__links">
+                        {% if currentTag == 'javascript' %}
+                            <li><a href="/docs#add-client-catcher">JavaScript</a></li>
+                        {% else %}
+                            <li><a href="/docs#add-server-handler">PHP</a></li>
+                            <li><a href="/docs#add-server-handler">Python</a></li>
+                            <li><a href="/docs#add-server-handler">Node.js</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            {% endif %}
+
+        </div>
+    {% endif %}
 {% endblock %}

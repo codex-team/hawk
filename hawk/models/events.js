@@ -120,9 +120,11 @@ module.exports = (function () {
    *
    * @param user
    * @param query
+   * @param limit
+   * @param skip
    * @returns {Promise.<TResult>}
    */
-  let getAll = function (user, query) {
+  let getAll = function (user, query, limit=false, skip=false) {
     let result = [],
         queries = [];
 
@@ -132,7 +134,7 @@ module.exports = (function () {
 
     user.projects.forEach(function (project) {
       queries.push(
-        get(project.id, query)
+        get(project.id, query, true, false, limit, skip)
           .then(function (events) {
             result = result.concat(events);
           })
