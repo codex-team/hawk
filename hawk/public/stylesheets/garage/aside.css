@@ -2,6 +2,9 @@
  * Garage sidebar stylesheets
  */
 .garage-aside {
+    position: absolute;
+    top: 0;
+    left: 0;
     background: var(--darkGrayBg);
     padding: 25px;
     height: 100%;
