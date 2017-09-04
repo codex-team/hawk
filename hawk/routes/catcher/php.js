@@ -77,14 +77,14 @@ let getServerErrors = function (req, res) {
   };
 
   let request = req.body,
-      location = request.error_description + ':' + request.error_file,
+      eventGroupPrehashed = request.error_description,
       server = request.http_params;
 
   let event = {
     type: 'php',
     tag: tags[request.error_type],
     token: request.access_token,
-    groupHash: md5(location),
+    groupHash: md5(eventGroupPrehashed),
     message: request.error_description,
     stack: formatDebugBacktrace(request.debug_backtrace),
     time: server.REQUEST_TIME,
