@@ -17,7 +17,7 @@ let receiver = new WebSocket.Server({
 
 let connection = function (ws) {
   function getClientErrors(message) {
-    let location = message.message + ':' + message.error_location.file;
+    let eventGroupPrehashed = message.message;
 
     message.error_location.full = message.error_location.file + ' -> ' +
                                   message.error_location.line + ':' +
@@ -30,7 +30,7 @@ let connection = function (ws) {
       errorLocation : message.error_location,
       location      : message.location,
       stack         : stack.parse(message),
-      groupHash     : md5(location),
+      groupHash     : md5(eventGroupPrehashed),
       userAgent     : message.navigator,
       time          : Math.floor(message.time / 1000)
     };

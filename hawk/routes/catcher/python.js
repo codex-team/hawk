@@ -24,7 +24,7 @@ let md5 = function (input) {
  */
 let getPythonErrors = function (req, res) {
   let request = req.body,
-      location = request.message + ':' + request.errorLocation.file;
+      eventGroupPrehashed = request.message;
 
   let event = {
     type          : 'python',
@@ -33,7 +33,7 @@ let getPythonErrors = function (req, res) {
     message       : request.message,
     errorLocation : request.errorLocation,
     stack         : request.stack,
-    groupHash     : md5(location),
+    groupHash     : md5(eventGroupPrehashed),
     time          : request.time
   };
 
