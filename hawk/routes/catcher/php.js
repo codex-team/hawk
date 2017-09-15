@@ -77,16 +77,17 @@ let getServerErrors = function (req, res) {
   };
 
   let request = req.body,
-      location = request.error_description + ':' + request.error_file;
+      eventGroupPrehashed = request.error_description,
+      server = request.http_params;
 
   let event = {
     type: 'php',
     tag: tags[request.error_type],
     token: request.access_token,
-    groupHash: md5(location),
+    groupHash: md5(eventGroupPrehashed),
     message: request.error_description,
     stack: formatDebugBacktrace(request.debug_backtrace),
-    time: request.http_params.REQUEST_TIME,
+    time: server.REQUEST_TIME,
     errorLocation: {
       file: request.error_file || '',
       line: request.error_line,
@@ -97,14 +98,14 @@ let getServerErrors = function (req, res) {
       get : request.GET || []
     },
     location: {
-      url: request.http_params.SERVER_NAME + '?' + request.http_params.QUERY_STRING,
-      host: request.http_params.SERVER_NAME,
-      path: request.http_params.QUERY_STRING,
+      url: 'http' + (server.HTTPS ? 's' : '') + server.SERVER_NAME + server.REQUEST_URI + '?' + server.QUERY_STRING,
+      host: server.SERVER_NAME,
+      path: server.REQUEST_URI,
     },
     request: {
-      ip: request.http_params.REMOTE_ADDR,
-      method: request.http_params.REQUEST_METHOD,
-      referrer: request.http_params.HTTP_REFERRER,
+      ip: server.REMOTE_ADDR,
+      method: server.REQUEST_METHOD,
+      referrer: server.HTTP_REFERRER,
     }
   };
 
