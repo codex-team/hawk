@@ -4,6 +4,7 @@ let WebSocket = require('ws');
 let Crypto = require('crypto');
 let stack = require('../../modules/stack');
 let project = require('../../models/project');
+let bowser = require('bowser');
 
 let md5 = function (input) {
   return Crypto.createHash('md5').update(input, 'utf8').digest('hex');
@@ -31,7 +32,7 @@ let connection = function (ws) {
       location      : message.location,
       stack         : stack.parse(message),
       groupHash     : md5(eventGroupPrehashed),
-      userAgent     : message.navigator,
+      userAgent     : bowser._detect(message.navigator),
       time          : Math.floor(message.time / 1000)
     };
 
