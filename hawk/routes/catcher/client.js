@@ -9,6 +9,76 @@ let md5 = function (input) {
   return Crypto.createHash('md5').update(input, 'utf8').digest('hex');
 };
 
+/**
+ * Get info about user browser and platform
+ *
+ * @returns {{browser: {name: *, version: *, engine, capability}, device: {os, osversion: *, type}, userAgent: string}}
+ */
+let detect = function (ua) {
+  let bowser = require('bowser')._detect(ua);
+
+  let getRenderingEngine = function () {
+    if (bowser.webkit) return 'Webkit';
+    if (bowser.blink) return 'Blink';
+    if (bowser.gecko) return 'Gecko';
+    if (bowser.msie) return 'MS IE';
+    if (bowser.msedge) return 'MS Edge';
+
+    return undefined;
+  };
+
+  let getOs = function () {
+    if (bowser.mac) return 'MacOS';
+    if (bowser.windows) return 'Windows';
+    if (bowser.windowsphone) return 'Windows Phone';
+    if (bowser.linux) return 'Linux';
+    if (bowser.chromeos) return 'ChromeOS';
+    if (bowser.android) return 'Android';
+    if (bowser.ios) return 'iOS';
+    if (bowser.firefox) return 'Firefox OS';
+    if (bowser.webos) return 'WebOS';
+    if (bowser.bada) return 'Bada';
+    if (bowser.tizen) return 'Tizen';
+    if (bowser.sailfish) return 'Sailfish OS';
+
+    return undefined;
+  };
+
+  let getDeviceType = function () {
+    if (bowser.tablet) return 'tablet';
+    if (bowser.mobile) return 'mobile';
+
+    return 'desktop';
+  };
+
+  let getCapability = function () {
+    if (bowser.a) return 'full';
+    if (bowser.b) return 'degraded';
+    if (bowser) return 'minimal';
+
+    return 'browser unknown';
+  };
+
+  let browser = {
+    name: bowser.name,
+    version: bowser.version,
+    engine: getRenderingEngine(),
+    capability: getCapability()
+  };
+
+  let device = {
+    os: getOs(),
+    osversion: bowser.osversion,
+    type: getDeviceType()
+  };
+
+  return {
+    browser: browser,
+    device: device,
+    userAgent: ua
+  };
+};
+
 /* GET client errors. */
 let receiver = new WebSocket.Server({
   path: '/catcher/client',
@@ -23,6 +93,11 @@ let connection = function (ws) {
                                   message.error_location.line + ':' +
                                   message.error_location.col;
 
+    let clientInfo = detect(message.navigator.ua);
+
+    clientInfo.device.width = message.navigator.frame.width;
+    clientInfo.device.height = message.navigator.frame.height;
+
     let event = {
       type          : 'client',
       tag           : 'javascript',
@@ -31,7 +106,7 @@ let connection = function (ws) {
       location      : message.location,
       stack         : stack.parse(message),
       groupHash     : md5(eventGroupPrehashed),
-      userAgent     : message.navigator,
+      userAgent     : clientInfo,
       time          : Math.floor(message.time / 1000)
     };
 
