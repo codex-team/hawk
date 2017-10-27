@@ -23,8 +23,11 @@ let router = express.Router();
 let client = require('./client');
 let php = require('./php');
 let python = require('./python');
+let javaAndroid = require('./javaAndroid');
+
 
 router.use(php);
 router.use(python);
+router.use(javaAndroid);
 
 module.exports = router;
