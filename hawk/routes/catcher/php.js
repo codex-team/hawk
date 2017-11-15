@@ -6,7 +6,7 @@ let Crypto = require('crypto');
 let project = require('../../models/project');
 
 let md5 = function (input) {
-  return Crypto.createHash('md5').update(input, 'utf8').digest('hex');
+  return Crypto.createHash('md5').update(input.toString(), 'utf8').digest('hex');
 };
 
 /**
