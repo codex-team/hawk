@@ -16,12 +16,12 @@ let md5 = function (input) {
  * @param req
  * @param res
  */
-let getJavaErrors = function (req, res) {
+let getAndroidErrors = function (req, res) {
     let request = req.body,
         eventGroupPrehashed = request.message;
 
     let event = {
-        type: 'java android',
+        type: 'android',
         tag: 'fatal',
         token: request.token,
         message: request.message,
@@ -67,7 +67,7 @@ let getJavaErrors = function (req, res) {
         });
 };
 
-/* GET java errors. */
-router.post('/javaAndroid', getJavaErrors);
+/* GET android errors. */
+router.post('/android', getAndroidErrors);
 
 module.exports = router;
