@@ -40,7 +40,6 @@ module.exports = (function () {
     let pipeline = [
       {$match: query}
     ];
-
     if (group) {
       pipeline.push({$group: {
         _id: '$groupHash',
