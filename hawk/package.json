@@ -57,7 +57,7 @@
     "debug": "~2.6.3",
     "dotenv": "^4.0.0",
     "exports-loader": "^0.6.4",
-    "express": "~4.15.2",
+    "express": "^4.15.5",
     "mongodb": "^2.2.29",
     "morgan": "~1.8.1",
     "nodemailer": "^4.0.1",

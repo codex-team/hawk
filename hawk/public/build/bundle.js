@@ -1521,7 +1521,6 @@ var Appender = exports.Appender = function () {
     key: 'loadMoreEvents',
     value: function loadMoreEvents(event) {
       event.preventDefault();
-
       hawk.ajax.call({
         url: this.settings.url + this.nextPage,
         beforeSend: this.beforeSend.bind(this),
