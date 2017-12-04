@@ -1,0 +1,29 @@
+{% for item in events %}
+    <div class="repeations__row">
+        <div class="repeations__date" style="position: relative; display: inline-flex; width: 100%">
+            {{ item.time|date('d M, H:i') }}
+
+            <div style="margin-left: 10px">
+                {{ item.deviceInfo.brand }} {{ item.deviceInfo.model }}
+            </div>
+            <span class="event-badge" style="margin: auto"><img src="/static/svg/android.svg" alt="android"><strong> {{ event.deviceInfo.release}}</strong></span>
+            <div style="position: absolute; right: 10px">
+                {{ item.stack[0].location }}
+            </div>
+
+        </div>
+        {% if item.request.method %}
+            <span class="event-badge">
+                  {{ item.request.method }}
+                </span>
+        {% endif %}
+
+        <div class="repeations__stack"
+             onclick="hawk.event.toggleStack(this, '{{ item._id }}')" style="display: flex">{{ svg('/public/svg/stack.svg') }} stack
+        </div>
+    </div>
+    <div class="event-info hide" data-event="{{ item._id }}">
+        <h4>Stack</h4>
+        {% include 'garage/events/android/stack.twig' with {event: item} %}
+    </div>
+{% endfor %}

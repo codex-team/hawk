@@ -1,0 +1,19 @@
+<div class="request"
+     {% if header == false %}style="left: 100%; position: absolute; width: max-content; top: 0px"{% endif %}>
+    {% set isEmpty = true %}
+    {% if event.deviceInfo %}
+        {% set isEmpty = false %}
+        <div>
+            <span class="event-badge">{{ event.deviceInfo.brand }} {{ event.deviceInfo.model }}</span>
+            <span class="event-badge"><img src="/static/svg/android.svg"
+                                           alt="android"> {{ event.deviceInfo.release }}</span>
+            <span class="event-badge"><img src="/static/svg/desktop.svg"
+                                           alt="screen resolution"> {{ event.deviceInfo.screenSize }}</span>
+            <span class="event-badge">SDK {{ event.deviceInfo.SDK }}</span>
+        </div>
+    {% endif %}
+
+    {% if isEmpty %}
+        No device found
+    {% endif %}
+</div>
