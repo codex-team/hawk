@@ -42,14 +42,15 @@ module.exports = function () {
         name: '$project.name',
         description: '$project.description',
         uri: '$project_uri',
+        logo: '$project.logo',
         domain: '$project.domain',
         token: '$project.token',
       }}
     ])
       .then(function (projects) {
         let queries = [];
-
         for (let i = 0; i < projects.length; i++) {
+          console.log(projects[i].logo);
           queries.push(
             getTeam(projects[i].id)
               .then(function (team) {
@@ -132,6 +133,7 @@ module.exports = function () {
    * @param {String} data.uid_added
    * @param {String} data.uri
    * @param {String} data.token
+   * @param {String} data.logo
    *
    * @returns {Request|Promise.<TResult>}
    */
@@ -309,6 +311,17 @@ module.exports = function () {
     return mongo.findOne(collections.PROJECTS, {token: token});
   };
 
+  /**
+   * Change icon path in database
+   *
+   * @param projectId
+   * @param logoPath
+   * @returns {*}
+   */
+  let setIcon = function (projectId,logoPath) {
+    return mongo.updateOne(collections.PROJECTS, {_id: mongo.ObjectId(projectId)}, {$set:{logo: logoPath}});
+  };
+
   return {
     add: add,
     get: get,
@@ -321,6 +334,7 @@ module.exports = function () {
     generateInviteHash: generateInviteHash,
     confirmInvitation: confirmInvitation,
     grantAdminAccess: grantAdminAccess,
-    getUserData: getUserData
+    getUserData: getUserData,
+    setIcon: setIcon
   };
 }();

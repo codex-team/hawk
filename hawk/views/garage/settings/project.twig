@@ -1,5 +1,20 @@
 <div class="project">
-    <img src="{{ project.logo }}" class="project__logo">
+        <form  class="project__logo" action="/garage/settings/set_icon?id={{ project.id  }}" method="post" name="load_icon" enctype="multipart/form-data" id="file-form-{{ project.id }}">
+            <input type="file" accept=".png,.jpg" name="file-{{ project.id }}" id="file-{{ project.id }}" style="display: none" onchange="onFileChooseDialogOpen{{ project.id  }}();" />
+            <img id="logo-{{ project.id }}" style="cursor: pointer;width: inherit; height: inherit;" src="{{ project.logo }}" onclick="iconClick{{ project.id  }}();"/>
+            <div id="progress-logo-{{ project.id }}" class="spinner" style="visibility: hidden; top: -50%;"></div>
+        </form>
+    <!-- Project icon logic -->
+    <script type="application/javascript">
+        function onFileChooseDialogOpen{{ project.id  }}() {
+          document.getElementById('logo-{{ project.id }}').src = '/static/images/miss-image.png';
+          document.getElementById('progress-logo-{{ project.id }}').style.visibility = 'visible';
+          document.getElementById('file-form-{{ project.id }}').submit();
+        }
+        function iconClick{{ project.id  }}() {
+          document.getElementById('file-{{ project.id }}').click();
+        }
+    </script>
     <h3 class="project__name">{{ project.name }}</h3>
     <div class="project__info">
         <span class="project__description">{{ project.description }}</span>
@@ -146,7 +161,7 @@
                                 </span>
             </fieldset>
             <div class="project__integrations-link">
-                Read more about <a class="inline-link">Telegram and Slack integrations</a>
+                Read more about <a class="inline-link" href="https://github.com/codex-bot/Webhooks/blob/master/README.md">Telegram and Slack integrations</a>
             </div>
         </div>
     </div>
