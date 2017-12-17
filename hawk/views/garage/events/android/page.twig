@@ -1,0 +1,65 @@
+{% extends 'garage/events/page.twig' %}
+
+{% block eventContent %}
+    <div class="event__content clearfix">
+        <div class="event__counter">
+            <div class="event__counter-number">
+                <div class="event__counter-number--digit">{{ events|length + 1 }}</div>
+                times
+            </div>
+            <div class="event__counter-date">since<br>{{ event.time|date('d M Y') }}</div>
+        </div>
+        <div class="event__title">
+            {{ event.message }}
+        </div>
+        <div class="event__path">
+            {{ event.stack[0].location }}
+        </div>
+        <div>
+            {% if event.request.method %}
+                <span class="event-badge">
+                    {{ event.request.method|upper }}
+                </span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="event__badges">
+        {% if event.deviceInfo %}
+            <span class="event-badge">
+                {{ event.deviceInfo.brand }} {{ event.deviceInfo.model }}
+            </span>
+            <span class="event-badge">
+                {{ svg('/public/svg/android.svg') }}
+                {{ event.deviceInfo.release }}</span>
+            <span class="event-badge">
+                {{ svg('/public/svg/desktop.svg') }}
+                {{ event.deviceInfo.screenSize }}
+            </span>
+            <span class="event-badge">
+                SDK {{ event.deviceInfo.SDK }}
+            </span>
+        {% endif %}
+    </div>
+
+{% endblock %}
+
+{% block eventInfo %}
+    <h3>Traceback</h3>
+    {% include 'garage/events/android/stack.twig' with {event: event} %}
+{% endblock %}
+
+{% block repeations %}
+    {% if events %}<h3>Repeations</h3>{% endif %}
+    <div class="repeations" {% if events and canLoadMore %}data-module-required="appender"{% endif %}>
+        <module-settings>
+            {
+            "url" : "/garage/{{ project.user.projectUri }}/event/{{ event.groupHash }}/?page=",
+            "event" : "{{ event.groupHash }}",
+            "project" : "{{ project.name }}",
+            "autoloading" : "true",
+            "dontWaitFirstClick" : "false"
+            }
+        </module-settings>
+        {% include 'garage/events/android/events-list.twig' with {events: events} %}
+    </div>
+{% endblock %}

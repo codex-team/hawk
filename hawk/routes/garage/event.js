@@ -27,10 +27,10 @@ let getProjectInfo = function (userProjects, projectUri) {
 };
 
 /**
-* Marks all events in list as read
-* @param currentProject
-* @param {Array} events - events list
-*/
+ * Marks all events in list as read
+ * @param currentProject
+ * @param {Array} events - events list
+ */
 let markEventsAsRead = function (currentProject, events) {
   let  collection = collections.EVENTS + ':' + currentProject.id;
 
@@ -57,17 +57,17 @@ let markEventsAsRead = function (currentProject, events) {
  */
 let makeResponse_ = function  (currentProject, events, canLoadMore) {
   /**
-     * work with current request context
-     * context:
-     *  - Request
-     *  - Response
-     */
+   * work with current request context
+   * context:
+   *  - Request
+   *  - Response
+   */
   let context = this;
 
   let request = context.req,
-      response = context.res,
-      isAjaxRequest = request.xhr,
-      templatePath = 'garage/events/' + events[0].type;
+    response = context.res,
+    isAjaxRequest = request.xhr,
+    templatePath = 'garage/events/' + events[0].type;
 
   /** requiring page via AJAX */
   if (isAjaxRequest && request.query.page) {
@@ -113,7 +113,7 @@ let loadPageData_ = function (templatePath, project, eventList, canLoadMore) {
  */
 let loadDataForPopup_ = function (templatePath, project, eventList, canLoadMore) {
   let response = this,
-      currentEvent = eventList.shift();
+    currentEvent = eventList.shift();
 
   app.render(templatePath, {
     hideHeader : true,
@@ -144,7 +144,7 @@ let loadDataForPopup_ = function (templatePath, project, eventList, canLoadMore)
  */
 let loadMoreDataForPagination_ = function (templatePath, events, canLoadMore) {
   let response = this,
-      currentEvent = events.shift();
+    currentEvent = events.shift();
 
   app.render(templatePath, {
     events
@@ -171,13 +171,13 @@ let event = function (req, res) {
    * @type {Array}
    */
   let userProjects   = res.locals.userProjects,
-      projectUri     = req.params.project,
-      eventGroupHash = req.params.id;
+    projectUri     = req.params.project,
+    eventGroupHash = req.params.id;
 
   /** pagination settings */
   let page    = req.query.page || 1,
-      limit   = EVENT_LIMIT,
-      skip    = (parseInt(page) - 1) * (limit + 1);
+    limit   = EVENT_LIMIT,
+    skip    = (parseInt(page) - 1) * (limit + 1);
 
   let currentProject = getProjectInfo(userProjects, projectUri);
 

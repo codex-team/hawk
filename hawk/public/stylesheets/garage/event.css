@@ -167,10 +167,14 @@
         margin: 0 15px;
         flex-grow: 1;
 
-        &:hover {
+        a&:hover {
             color: var(--hoverColor);
         }
 
+    }
+
+    &__device {
+        margin: 0 15px;
     }
 
     &__stack {
@@ -256,6 +260,12 @@
             height: 15px;
         }
 
+    }
+
+    svg {
+        display: inline-block;
+        vertical-align: middle;
+        margin: -2px 2px 0 2px;
     }
 
     &--device-size {
