@@ -16,7 +16,6 @@
             {{ event.stack[0].location }}
         </div>
         <div>
-            </span>
             {% if event.request.method %}
                 <span class="event-badge">
                     {{ event.request.method|upper }}
@@ -24,7 +23,24 @@
             {% endif %}
         </div>
     </div>
-    {% include 'garage/events/android/device.twig' with {event: event, header: true} %}
+    <div class="event__badges">
+        {% if event.deviceInfo %}
+            <span class="event-badge">
+                {{ event.deviceInfo.brand }} {{ event.deviceInfo.model }}
+            </span>
+            <span class="event-badge">
+                {{ svg('/public/svg/android.svg') }}
+                {{ event.deviceInfo.release }}</span>
+            <span class="event-badge">
+                {{ svg('/public/svg/desktop.svg') }}
+                {{ event.deviceInfo.screenSize }}
+            </span>
+            <span class="event-badge">
+                SDK {{ event.deviceInfo.SDK }}
+            </span>
+        {% endif %}
+    </div>
+
 {% endblock %}
 
 {% block eventInfo %}
