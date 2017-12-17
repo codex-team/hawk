@@ -96,7 +96,7 @@ let loadPageData_ = function (templatePath, project, eventList, canLoadMore) {
 
   return response.render(templatePath, {
     project : project,
-    event  : eventList.pop(),
+    event  : eventList.shift(),
     events : eventList,
     canLoadMore: canLoadMore
   });
@@ -113,7 +113,7 @@ let loadPageData_ = function (templatePath, project, eventList, canLoadMore) {
  */
 let loadDataForPopup_ = function (templatePath, project, eventList, canLoadMore) {
   let response = this,
-    currentEvent = eventList.pop();
+    currentEvent = eventList.shift();
 
   app.render(templatePath, {
     hideHeader : true,
@@ -144,7 +144,7 @@ let loadDataForPopup_ = function (templatePath, project, eventList, canLoadMore)
  */
 let loadMoreDataForPagination_ = function (templatePath, events, canLoadMore) {
   let response = this,
-    currentEvent = events.pop();
+    currentEvent = events.shift();
 
   app.render(templatePath, {
     events
