@@ -50,7 +50,6 @@ module.exports = function () {
       .then(function (projects) {
         let queries = [];
         for (let i = 0; i < projects.length; i++) {
-          console.log(projects[i].logo);
           queries.push(
             getTeam(projects[i].id)
               .then(function (team) {
@@ -312,13 +311,13 @@ module.exports = function () {
   };
 
   /**
-   * Change icon path in database
+   * Updates project's logo URL
    *
-   * @param projectId
-   * @param logoPath
-   * @returns {*}
+   * @param {String} projectId
+   * @param {String} logoPath
+   * @returns {Promise.<TResult>|Request}
    */
-  let setIcon = function (projectId,logoPath) {
+  let setIcon = function (projectId, logoPath) {
     return mongo.updateOne(collections.PROJECTS, {_id: mongo.ObjectId(projectId)}, {$set:{logo: logoPath}});
   };
 

@@ -1,11 +1,11 @@
-let express = require('express')
-let router = express.Router()
-let uuid = require('uuid')
-let Twig = require('twig')
-let email = require('../../modules/email')
-let project = require('../../models/project')
-let user = require('../../models/user')
-let translit = require('../../modules/translit')
+let express = require('express');
+let router = express.Router();
+let uuid = require('uuid');
+let Twig = require('twig');
+let email = require('../../modules/email');
+let project = require('../../models/project');
+let user = require('../../models/user');
+let translit = require('../../modules/translit');
 
 /**
  * POST /project/add handler
@@ -16,13 +16,13 @@ let translit = require('../../modules/translit')
  */
 let add = function (req, res) {
   let post = req.body,
-    token = uuid.v4()
+    token = uuid.v4();
 
   if (!post.name || !post.name.trim()) {
-    let message = 'Please, pass project name'
+    let message = 'Please, pass project name';
 
-    res.redirect('/garage/settings?success=0&message=' + message)
-    return
+    res.redirect('/garage/settings?success=0&message=' + message);
+    return;
   }
 
   let coverIconPath = process.env.SERVER_URL + '/static/svg/cover.svg';
@@ -36,7 +36,7 @@ let add = function (req, res) {
     token: token,
     logo: coverIconPath,
     uri: translit(post.name, true)
-  }
+  };
 
   project.add(data)
     .then(function (insertedProject) {
@@ -44,12 +44,12 @@ let add = function (req, res) {
         name: insertedProject.name,
         token: insertedProject.token,
         serverUrl: process.env.SERVER_URL
-      }
+      };
 
       Twig.renderFile('views/notifies/email/project.twig', renderParams, function (err, html) {
         if (err) {
-          logger.error('Can not render notify template because of ', err)
-          return
+          logger.error('Can not render notify template because of ', err);
+          return;
         }
 
         email.send(
@@ -57,12 +57,12 @@ let add = function (req, res) {
           'Integration token for ' + insertedProject.name,
           '',
           html
-        )
+        );
       })
 
-      let message = insertedProject.name + ' was successfully added'
+      let message = insertedProject.name + ' was successfully added';
 
-      res.redirect('/garage/settings?success=1&message=' + message)
+      res.redirect('/garage/settings?success=1&message=' + message);
     });
 }
 
