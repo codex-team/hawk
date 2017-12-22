@@ -3,3 +3,4 @@
 *.log
 .idea/
 hawk/package-lock.json
+.node_modules/
