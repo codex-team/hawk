@@ -25,7 +25,7 @@ let add = function (req, res) {
     return;
   }
 
-  let coverIconPath = process.env.SERVER_URL + '/static/svg/cover.svg';
+  let coverIconPath = process.env.SERVER_URL + '/static/svg/project-icon-cover.svg';
 
   let data = {
     name: post.name,
