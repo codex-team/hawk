@@ -64,7 +64,7 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 13);
+/******/ 	return __webpack_require__(__webpack_require__.s = 16);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -338,6 +338,55 @@ module.exports = function () {
 "use strict";
 
 
+module.exports = function () {
+  var transport = __webpack_require__(13);
+
+  /**
+   * Run choose file dialog by post method with project id.
+   *
+   * @param {String} url
+   * @param {String} projectId
+   */
+  var runChooseFileDialog = function runChooseFileDialog(url, projectId) {
+    transport.init({
+      url: url,
+      multiple: false,
+      accept: 'image/*',
+      data: {
+        'projectId': projectId
+      },
+      before: function before() {},
+      progress: function progress(percentage) {
+        document.getElementById('logo-' + projectId).src = '/static/images/miss-image.png';
+        document.getElementById('progress-logo-' + projectId).style.visibility = 'visible';
+      },
+      success: function success(response) {
+        if (response.status == 200) {
+          document.getElementById('logo-' + projectId).src = response.logoUrl;
+          document.getElementById('progress-logo-' + projectId).style.visibility = 'hidden';
+        } else {
+          window.location.href = '/garage/settings?success=0&message=' + response.message;
+        }
+      },
+      error: function error(response) {
+        window.location.href = '/garage/settings?success=0&message=Fatal error. Try again';
+      },
+      after: function after() {}
+    });
+  };
+
+  return {
+    runChooseFileDialog: runChooseFileDialog
+  };
+}();
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 /**
  * Copyable module allows you to add text to copy buffer by click
  * Just add 'js-copyable' name to element and call init method
@@ -446,7 +495,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -886,7 +935,7 @@ var eventPopup = function (self) {
 module.exports = eventPopup;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -912,7 +961,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -973,13 +1022,13 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _class = __webpack_require__(12);
+var _class = __webpack_require__(15);
 
 module.exports = function (self) {
   self.init = function (settings) {
@@ -1022,7 +1071,7 @@ module.exports = function (self) {
         */
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1238,7 +1287,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1324,7 +1373,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1410,13 +1459,157 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 12 */
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+!function (t, e) {
+  "object" == ( false ? "undefined" : _typeof(exports)) && "object" == ( false ? "undefined" : _typeof(module)) ? module.exports = e() :  true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (e),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : "object" == (typeof exports === "undefined" ? "undefined" : _typeof(exports)) ? exports.transport = e() : t.transport = e();
+}(undefined, function () {
+  return function (t) {
+    function e(r) {
+      if (n[r]) return n[r].exports;var o = n[r] = { i: r, l: !1, exports: {} };return t[r].call(o.exports, o, o.exports, e), o.l = !0, o.exports;
+    }var n = {};return e.m = t, e.c = n, e.d = function (t, n, r) {
+      e.o(t, n) || Object.defineProperty(t, n, { configurable: !1, enumerable: !0, get: r });
+    }, e.n = function (t) {
+      var n = t && t.__esModule ? function () {
+        return t.default;
+      } : function () {
+        return t;
+      };return e.d(n, "a", n), n;
+    }, e.o = function (t, e) {
+      return Object.prototype.hasOwnProperty.call(t, e);
+    }, e.p = "", e(e.s = 0);
+  }([function (t, e, n) {
+    "use strict";
+    var r = "function" == typeof Symbol && "symbol" == _typeof(Symbol.iterator) ? function (t) {
+      return typeof t === "undefined" ? "undefined" : _typeof(t);
+    } : function (t) {
+      return t && "function" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? "symbol" : typeof t === "undefined" ? "undefined" : _typeof(t);
+    },
+        o = n(1);t.exports = function (t) {
+      var e = null;t.input = null;var n = function n() {
+        t.input.click();
+      },
+          u = function u() {
+        e.before(t.input.files);
+      },
+          a = function a() {
+        var n = e.url,
+            a = e.data,
+            i = u,
+            c = e.progress,
+            f = e.success,
+            s = e.error,
+            p = e.after,
+            l = new FormData(),
+            d = t.input.files;if (d.length > 1) for (var y = 0; y < d.length; y++) {
+          l.append("files[]", d[y], d[y].name);
+        } else l.append("file", d[0], d[0].name);if (null !== a && "object" === (void 0 === a ? "undefined" : r(a))) for (var b in a) {
+          l.append(b, a[b]);
+        }o.call({ type: "POST", data: l, url: n, before: i, progress: c, success: f, error: s, after: p });
+      };return t.init = function (r) {
+        if (!r.url) return void console.log("Can't send request because `url` is missed");e = r;var o = document.createElement("INPUT");o.type = "file", e && e.multiple && o.setAttribute("multiple", "multiple"), e && e.accept && o.setAttribute("accept", e.accept), o.addEventListener("change", a, !1), t.input = o, n();
+      }, t;
+    }({});
+  }, function (t, e, n) {
+    !function (e, n) {
+      t.exports = n();
+    }(0, function () {
+      return function (t) {
+        function e(r) {
+          if (n[r]) return n[r].exports;var o = n[r] = { i: r, l: !1, exports: {} };return t[r].call(o.exports, o, o.exports, e), o.l = !0, o.exports;
+        }var n = {};return e.m = t, e.c = n, e.d = function (t, n, r) {
+          e.o(t, n) || Object.defineProperty(t, n, { configurable: !1, enumerable: !0, get: r });
+        }, e.n = function (t) {
+          var n = t && t.__esModule ? function () {
+            return t.default;
+          } : function () {
+            return t;
+          };return e.d(n, "a", n), n;
+        }, e.o = function (t, e) {
+          return Object.prototype.hasOwnProperty.call(t, e);
+        }, e.p = "", e(e.s = 0);
+      }([function (t, e, n) {
+        "use strict";
+        t.exports = function () {
+          var t = function t(_t) {
+            return _t instanceof FormData;
+          };return { call: function call(e) {
+              if (e && e.url) {
+                var n = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject("Microsoft.XMLHTTP"),
+                    r = e.progress || null,
+                    o = e.success || function () {},
+                    u = e.error || function () {},
+                    a = e.before || null,
+                    i = e.after ? e.after.bind(null, e.data) : null;if (e.async = !0, e.type = e.type || "GET", e.data = e.data || "", e["content-type"] = e["content-type"] || "application/json; charset=utf-8", "GET" === e.type && e.data && (e.url = /\?/.test(e.url) ? e.url + "&" + e.data : e.url + "?" + e.data), e.withCredentials && (n.withCredentials = !0), a && "function" == typeof a && !1 === a(e.data)) return;if (n.open(e.type, e.url, e.async), !t(e.data)) {
+                  var c = new FormData();for (var f in e.data) {
+                    c.append(f, e.data[f]);
+                  }e.data = c;
+                }r && "function" == typeof r && n.upload.addEventListener("progress", function (t) {
+                  var e = parseInt(t.loaded / t.total * 100);r(e);
+                }, !1), n.setRequestHeader("X-Requested-With", "XMLHttpRequest"), n.onreadystatechange = function () {
+                  if (4 === n.readyState) {
+                    var t = n.responseText;try {
+                      t = JSON.parse(t);
+                    } catch (t) {}200 === n.status ? o(t) : u(t), i && "function" == typeof i && i();
+                  }
+                }, n.send(e.data);
+              }
+            } };
+        }();
+      }]);
+    });
+  }]);
+});
+//# sourceMappingURL=bundle.js.map
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)(module)))
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function (module) {
+	if (!module.webpackPolyfill) {
+		module.deprecate = function () {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if (!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function get() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function get() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+/***/ }),
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1521,6 +1714,7 @@ var Appender = exports.Appender = function () {
     key: 'loadMoreEvents',
     value: function loadMoreEvents(event) {
       event.preventDefault();
+
       hawk.ajax.call({
         url: this.settings.url + this.nextPage,
         beforeSend: this.beforeSend.bind(this),
@@ -1575,7 +1769,7 @@ var Appender = exports.Appender = function () {
 }();
 
 /***/ }),
-/* 13 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1584,7 +1778,7 @@ var Appender = exports.Appender = function () {
 /**
 * Require CSS build
 */
-__webpack_require__(11);
+__webpack_require__(12);
 
 var hawk = function (self) {
   'use strict';
@@ -1602,15 +1796,16 @@ var hawk = function (self) {
   };
 
   self.checkbox = __webpack_require__(2);
-  self.copyable = __webpack_require__(3);
+  self.copyable = __webpack_require__(4);
   self.ajax = __webpack_require__(1);
-  self.notifier = __webpack_require__(10);
-  self.event = __webpack_require__(5);
-  self.eventPopup = __webpack_require__(4);
-  self.appender = __webpack_require__(7);
-  self.settingsForm = __webpack_require__(8);
-  self.toggler = __webpack_require__(9);
-  self.keyboard = __webpack_require__(6);
+  self.notifier = __webpack_require__(11);
+  self.event = __webpack_require__(6);
+  self.eventPopup = __webpack_require__(5);
+  self.appender = __webpack_require__(8);
+  self.settingsForm = __webpack_require__(9);
+  self.toggler = __webpack_require__(10);
+  self.keyboard = __webpack_require__(7);
+  self.chooseFileDialog = __webpack_require__(3);
 
   var delegate = function delegate(element) {
     var modulesRequired = void 0;

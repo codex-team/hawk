@@ -1,21 +1,10 @@
 <div class="project">
-        <form  class="project__logo" action="/garage/settings/set_icon?id={{ project.id  }}" method="post" name="load_icon" enctype="multipart/form-data" id="file-form-{{ project.id }}">
-            <input type="file" accept=".png,.jpg" name="file-{{ project.id }}" id="file-{{ project.id }}" style="display: none" onchange="onFileChooseDialogOpen{{ project.id  }}();" />
-            <img id="logo-{{ project.id }}" style="cursor: pointer;width: inherit; height: inherit;" src="{{ project.logo }}" onclick="iconClick{{ project.id  }}();"/>
-            <div id="progress-logo-{{ project.id }}" class="spinner" style="visibility: hidden; top: -50%;"></div>
-        </form>
-
-    <!-- Project icon logic -->
-    <script type="application/javascript">
-        function onFileChooseDialogOpen{{ project.id  }}() {
-          document.getElementById('logo-{{ project.id }}').src = '/static/images/miss-image.png';
-          document.getElementById('progress-logo-{{ project.id }}').style.visibility = 'visible';
-          document.getElementById('file-form-{{ project.id }}').submit();
-        }
-        function iconClick{{ project.id  }}() {
-          document.getElementById('file-{{ project.id }}').click();
-        }
-    </script>
+    <div class="project__logo" name="load_icon" enctype="multipart/form-data" id="file-form-{{ project.id }}">
+        <img id="logo-{{ project.id }}" style="cursor: pointer;width: inherit; height: inherit;"
+             src="{{ project.logo }}"
+             onclick="hawk.chooseFileDialog.runChooseFileDialog('settings/loadIcon','{{ project.id }}');"/>
+        <div id="progress-logo-{{ project.id }}" class="spinner" style="visibility: hidden; top: -50%;"></div>
+    </div>
     <h3 class="project__name">{{ project.name }}</h3>
     <div class="project__info">
         <span class="project__description">{{ project.description }}</span>
@@ -38,8 +27,8 @@
                                 {{ member.email }}
                             </span>
                 {% set canGrantAdminAccess = member.role == 'member'
-                and not member.is_pending
-                and project.user.role == 'admin' %}
+                    and not member.is_pending
+                    and project.user.role == 'admin' %}
                 <span class="project__member-role
                                         project__member-role--{{ member.role }}
                                         {{ member.is_pending ? 'project__member-role--pending' : '' }}
@@ -55,7 +44,7 @@
                                     {% if member.is_pending %}
                                         Invitation sent
                                     {% else %}
-                                        {{ project.user.role == 'admin' ? 'Grant admin access' : 'Member'}}
+                                        {{ project.user.role == 'admin' ? 'Grant admin access' : 'Member' }}
                                     {% endif %}
                                 {% endif %}
                             </span>
@@ -88,7 +77,7 @@
             <label name="custom-checkbox"
                    class="form__checkbox"
                    data-name="email"
-                    {{ project.user.notifies.email ? 'data-checked="true"' :}}
+                    {{ project.user.notifies.email ? 'data-checked="true"' : }}
                    onclick="hawk.settingsForm.saveNotifiesPreferences(
                            this,
                            '{{ project.id }}',
@@ -98,7 +87,7 @@
             <label name="custom-checkbox"
                    class="form__checkbox"
                    data-name="tg"
-                    {{ project.user.notifies.tg ? 'data-checked="true"' :}}
+                    {{ project.user.notifies.tg ? 'data-checked="true"' : }}
                    onclick="hawk.settingsForm.saveNotifiesPreferences(
                            this,
                            '{{ project.id }}',
@@ -108,7 +97,7 @@
             <label name="custom-checkbox"
                    class="form__checkbox"
                    data-name="slack"
-                    {{ project.user.notifies.slack ? 'data-checked="true"' :}}
+                    {{ project.user.notifies.slack ? 'data-checked="true"' : }}
                    onclick="hawk.settingsForm.saveNotifiesPreferences(
                            this,
                            '{{ project.id }}',
@@ -162,7 +151,9 @@
                                 </span>
             </fieldset>
             <div class="project__integrations-link">
-                Read more about <a class="inline-link" href="https://github.com/codex-bot/Webhooks/blob/master/README.md">Telegram and Slack integrations</a>
+                Read more about <a class="inline-link"
+                                   href="https://github.com/codex-bot/Webhooks/blob/master/README.md">Telegram and Slack
+                    integrations</a>
             </div>
         </div>
     </div>
