@@ -27,7 +27,7 @@ let md5 = function (input) {
  */
 let formatStack = function (debugBacktrace) {
   let result = [];
-  var res = debugBacktrace.split('\n');
+  let res = debugBacktrace.split('\n');
   for (let i = 0; i < res.length - 1; i++) {
     var location = res[i].match(/\(.*\)/).toString();
     location = location.substr(1, location.length - 2);
@@ -37,7 +37,6 @@ let formatStack = function (debugBacktrace) {
       'location': location
     };
   }
-  console.log(result);
   return result;
 };
 
