@@ -2,8 +2,7 @@
     <div class="project__logo" name="load_icon" enctype="multipart/form-data" id="file-form-{{ project.id }}">
         <img id="logo-{{ project.id }}" style="cursor: pointer;width: inherit; height: inherit;"
              src="{{ project.logo }}"
-             onclick="hawk.chooseFileDialog.runChooseFileDialog('settings/loadIcon','{{ project.id }}');"/>
-        <div id="progress-logo-{{ project.id }}" class="spinner" style="visibility: hidden; top: -50%;"></div>
+             onclick="hawk.chooseFileDialog.showChooseFileDialog('settings/loadIcon','{{ project.id }}');"/>
     </div>
     <h3 class="project__name">{{ project.name }}</h3>
     <div class="project__info">

@@ -338,16 +338,25 @@ module.exports = function () {
 "use strict";
 
 
+/**
+ * Use for choose file from standard file explorer
+ *
+ * @type {{showChooseFileDialog}}
+ */
+
 module.exports = function () {
+  /**
+   * @usage hawk.showChooseFileDialog(post url address,current project id);
+   */
   var transport = __webpack_require__(13);
 
   /**
-   * Run choose file dialog by post method with project id.
+   * Show choose file dialog by post method with project id.
    *
-   * @param {String} url
-   * @param {String} projectId
+   * @param {String} url address to post data on server
+   * @param {String} projectId current project id
    */
-  var runChooseFileDialog = function runChooseFileDialog(url, projectId) {
+  var showChooseFileDialog = function showChooseFileDialog(url, projectId) {
     transport.init({
       url: url,
       multiple: false,
@@ -355,15 +364,15 @@ module.exports = function () {
       data: {
         'projectId': projectId
       },
-      before: function before() {},
-      progress: function progress(percentage) {
-        document.getElementById('logo-' + projectId).src = '/static/images/miss-image.png';
-        document.getElementById('progress-logo-' + projectId).style.visibility = 'visible';
+      before: function before() {
+        document.getElementById('file-form-' + projectId).classList.add('spinner');
+        document.getElementById('logo-' + projectId).style.visibility = 'hidden';
+        document.getElementById('logo-' + projectId).src = '';
       },
+      progress: function progress(percentage) {},
       success: function success(response) {
         if (response.status == 200) {
           document.getElementById('logo-' + projectId).src = response.logoUrl;
-          document.getElementById('progress-logo-' + projectId).style.visibility = 'hidden';
         } else {
           window.location.href = '/garage/settings?success=0&message=' + response.message;
         }
@@ -371,12 +380,15 @@ module.exports = function () {
       error: function error(response) {
         window.location.href = '/garage/settings?success=0&message=Fatal error. Try again';
       },
-      after: function after() {}
+      after: function after() {
+        document.getElementById('file-form-' + projectId).classList.remove('spinner');
+        document.getElementById('logo-' + projectId).style.visibility = 'visible';
+      }
     });
   };
 
   return {
-    runChooseFileDialog: runChooseFileDialog
+    showChooseFileDialog: showChooseFileDialog
   };
 }();
 

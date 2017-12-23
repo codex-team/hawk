@@ -18,16 +18,17 @@ let multipartMiddleware = multipart();
 let uploadIcon = function (req, res) {
     let file = req.files['file'];
 
-    if(!checkImageValid(file, res)) {
+    if (!checkImageValid(file, res)) {
       return;
     }
 
     uploader.uploadImageToCapella(file.path, function (err, resp, body) {
-      let json;
+      let logoUrl;
       try {
+        let json;
         json = JSON.parse(body);
-      }
-      catch (exception) {
+        logoUrl = json.url;
+      } catch (exception) {
         let message = 'Fatal error. Try again';
         res.send({
           status: 500,
@@ -35,7 +36,6 @@ let uploadIcon = function (req, res) {
         });
         return;
       }
-      let logoUrl = json.url;
 
       project.setIcon(req.body.projectId, logoUrl).then(function (resolve) {
         res.send({

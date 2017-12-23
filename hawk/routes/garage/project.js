@@ -76,7 +76,7 @@ let add = function (req, res) {
  */
 let inviteMember = function (req, res) {
   let userEmail = req.body.email,
-    projectId = req.body.projectId
+    projectId = req.body.projectId;
 
   if (!userEmail) {
     res.json({

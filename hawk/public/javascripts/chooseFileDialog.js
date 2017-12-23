@@ -1,13 +1,22 @@
+/**
+ * Use for choose file from standard file explorer
+ *
+ * @type {{showChooseFileDialog}}
+ */
+
 module.exports = function () {
+  /**
+   * @usage hawk.showChooseFileDialog(post url address,current project id);
+   */
   let transport = require('codex.transport');
 
   /**
-   * Run choose file dialog by post method with project id.
+   * Show choose file dialog by post method with project id.
    *
-   * @param {String} url
-   * @param {String} projectId
+   * @param {String} url address to post data on server
+   * @param {String} projectId current project id
    */
-  let runChooseFileDialog = function (url, projectId) {
+  let showChooseFileDialog = function (url, projectId) {
     transport.init({
       url: url,
       multiple: false,
@@ -15,15 +24,16 @@ module.exports = function () {
       data: {
         'projectId': projectId
       },
-      before: function () {},
+      before: function () {
+        document.getElementById('file-form-' + projectId).classList.add('spinner');
+        document.getElementById('logo-' + projectId).style.visibility = 'hidden';
+        document.getElementById('logo-' + projectId).src = '';
+      },
       progress: function (percentage) {
-        document.getElementById('logo-' + projectId).src = '/static/images/miss-image.png';
-        document.getElementById('progress-logo-' + projectId).style.visibility = 'visible';
       },
       success: function (response) {
         if (response.status == 200) {
           document.getElementById('logo-' + projectId).src = response.logoUrl;
-          document.getElementById('progress-logo-' + projectId).style.visibility = 'hidden';
         } else {
           window.location.href = '/garage/settings?success=0&message=' + response.message;
         }
@@ -31,11 +41,14 @@ module.exports = function () {
       error: function (response) {
         window.location.href = '/garage/settings?success=0&message=Fatal error. Try again';
       },
-      after: function () {}
+      after: function () {
+        document.getElementById('file-form-' + projectId).classList.remove('spinner');
+        document.getElementById('logo-' + projectId).style.visibility = 'visible';
+      }
     });
   };
 
   return {
-    runChooseFileDialog: runChooseFileDialog
+    showChooseFileDialog: showChooseFileDialog
   };
 }();
