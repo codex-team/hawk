@@ -25,6 +25,7 @@ let add = function (req, res) {
     return;
   }
 
+  /** @const {String} */
   let coverIconPath = process.env.SERVER_URL + '/static/svg/project-icon-cover.svg';
 
   let data = {
@@ -58,13 +59,13 @@ let add = function (req, res) {
           '',
           html
         );
-      })
+      });
 
       let message = insertedProject.name + ' was successfully added';
 
       res.redirect('/garage/settings?success=1&message=' + message);
     });
-}
+};
 
 /**
  * POST /project/inviteMember handler
@@ -82,26 +83,26 @@ let inviteMember = function (req, res) {
     res.json({
       success: 0,
       message: 'Please, pass user email'
-    })
+    });
   }
 
   user.getByParams({email: userEmail})
     .then(function (foundUser) {
 
       if (!foundUser) {
-        throw Error('User not found')
+        throw Error('User not found');
       }
 
       return project.get(projectId)
         .then(function (foundProject) {
-          return {foundProject, foundUser}
-        })
+          return {foundProject, foundUser};
+        });
     })
     .then(function ({foundProject, foundUser}) {
       return project.addMember(foundProject._id, foundProject.uri, foundUser._id)
         .then(function () {
-          return {foundProject, foundUser}
-        })
+          return {foundProject, foundUser};
+        });
     })
     .then(function ({foundProject, foundUser}) {
       let inviteHash = project.generateInviteHash(foundUser._id, foundProject._id),
@@ -111,31 +112,31 @@ let inviteMember = function (req, res) {
         renderParams = {
           project: foundProject,
           inviteLink: inviteLink
-        }
+        };
 
       Twig.renderFile('views/notifies/email/projectInvite.twig', renderParams, function (err, html) {
         if (err) {
-          logger.error('Error while rendering email template %o' % err)
-          return
+          logger.error('Error while rendering email template %o' % err);
+          return;
         }
 
-        email.send(userEmail, 'Invitation to ' + foundProject.name, '', html)
-      })
+        email.send(userEmail, 'Invitation to ' + foundProject.name, '', html);
+      });
     })
     .then(function () {
       res.json({
         success: 1,
         message: 'Invitation for ' + userEmail + ' was sent'
-      })
+      });
     })
     .catch(function (e) {
-      logger.error('Error while sending project invitation ', e)
+      logger.error('Error while sending project invitation ', e);
       res.json({
         success: 0,
         message: e.message
-      })
-    })
-}
+      });
+    });
+};
 
 /**
  * POST project/editNotifies handler
@@ -145,23 +146,23 @@ let inviteMember = function (req, res) {
  * @param res
  */
 let editNotifies = function (req, res) {
-  let post = req.body
+  let post = req.body;
 
   project.editNotifies(post.projectId, post.userId, post.type, post.value)
     .then(function () {
       res.json({
         success: 1,
         message: 'Preferences was saved'
-      })
+      });
     })
     .catch(function (e) {
-      logger.error('Error while saving notification preferences ', e)
+      logger.error('Error while saving notification preferences ', e);
       res.json({
         success: 0,
         message: 'Can\'t save notification preferences because of server error'
-      })
-    })
-}
+      });
+    });
+};
 
 /**
  * POST /project/saveWebhook handler
@@ -171,23 +172,23 @@ let editNotifies = function (req, res) {
  * @param res
  */
 let saveWebhook = function (req, res) {
-  let post = req.body
+  let post = req.body;
 
   project.saveWebhook(post.projectId, post.userId, post.type, post.value)
     .then(function () {
       res.json({
         success: 1,
         message: 'Webhook was saved'
-      })
+      });
     })
     .catch(function (e) {
-      logger.error('Error while saving notifications webhook ', e)
+      logger.error('Error while saving notifications webhook ', e);
       res.json({
         success: 0,
         message: 'Can\'t save webhook because of server error'
-      })
-    })
-}
+      });
+    });
+};
 
 /**
  * POST /project/grantAdminAccess handler
@@ -198,28 +199,28 @@ let saveWebhook = function (req, res) {
  * @param res
  */
 let granAdminAccess = function (req, res) {
-  let post = req.body
+  let post = req.body;
 
   project.grantAdminAccess(post.projectId, post.userId)
     .then(function () {
       res.json({
         success: 1,
         message: 'Access granted'
-      })
+      });
     })
     .catch(function (e) {
-      logger.error('Error while granting admin access ', e)
+      logger.error('Error while granting admin access ', e);
       res.json({
         success: 0,
         message: 'Can\'t grant access because of server error'
-      })
-    })
-}
+      });
+    });
+};
 
-router.post('/project/add', add)
-router.post('/project/inviteMember', inviteMember)
-router.post('/project/editNotifies', editNotifies)
-router.post('/project/saveWebhook', saveWebhook)
-router.post('/project/grantAdminAccess', granAdminAccess)
+router.post('/project/add', add);
+router.post('/project/inviteMember', inviteMember);
+router.post('/project/editNotifies', editNotifies);
+router.post('/project/saveWebhook', saveWebhook);
+router.post('/project/grantAdminAccess', granAdminAccess);
 
-module.exports = router
+module.exports = router;

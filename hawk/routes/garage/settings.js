@@ -16,33 +16,33 @@ let multipartMiddleware = multipart();
  * @param res
  */
 let uploadIcon = function (req, res) {
-    let file = req.files['file'];
+  let file = req.files['file'];
 
-    if (!checkImageValid(file, res)) {
+  if (!checkImageValid(file, res)) {
+    return;
+  }
+
+  uploader.uploadImageToCapella(file.path, function (err, resp, body) {
+    let logoUrl;
+    try {
+      let json;
+      json = JSON.parse(body);
+      logoUrl = json.url;
+    } catch (exception) {
+      let message = 'Error. Please, try again or later';
+      res.send({
+        status: 500,
+        message: message
+      });
       return;
     }
 
-    uploader.uploadImageToCapella(file.path, function (err, resp, body) {
-      let logoUrl;
-      try {
-        let json;
-        json = JSON.parse(body);
-        logoUrl = json.url;
-      } catch (exception) {
-        let message = 'Fatal error. Try again';
-        res.send({
-          status: 500,
-          message: message
-        });
-        return;
-      }
-
-      project.setIcon(req.body.projectId, logoUrl).then(function (resolve) {
-        res.send({
-          status: 200,
-          logoUrl: logoUrl
-        });
+    project.setIcon(req.body.projectId, logoUrl).then(function (resolve) {
+      res.send({
+        status: 200,
+        logoUrl: logoUrl
       });
+    });
   });
 };
 
@@ -53,11 +53,11 @@ let uploadIcon = function (req, res) {
  * @param res
  * @returns {boolean}
  */
-let checkImageValid = function(file, res) {
-  let availableExtensions= ['image/png', 'image/jpeg', 'image/jpg'];
+let checkImageValid = function (file, res) {
+  let availableExtensions = ['image/png', 'image/jpeg', 'image/jpg'];
 
-  if(!availableExtensions.includes(file.type)) {
-    let message = 'Invalid icon format. Please, use jpg or png';
+  if (!availableExtensions.includes(file.type)) {
+    let message = 'This file extension is not supported. Please, use jpg or png instead';
     res.send({
       status: 500,
       message: message
@@ -67,8 +67,8 @@ let checkImageValid = function(file, res) {
 
   //max bytes image size (15MB)
   let maxSize = 15 * 1024 * 1024;
-  if(file.size > maxSize) {
-    let message = 'Image too big. Max size is 15MB';
+  if (file.size > maxSize) {
+    let message = 'File is too big. Please try another one under 15MB';
     res.send({
       status: 500,
       message: message
@@ -88,8 +88,8 @@ let index = function (req, res) {
   let params = {
     user: res.locals.user,
     csrfToken: req.csrfToken(),
-    meta : {
-      title : 'User settings'
+    meta: {
+      title: 'User settings'
     },
     success: req.query.success,
     message: req.query.message,
@@ -131,12 +131,12 @@ let update = function (req, res) {
         res.redirect('/garage/settings?success=1&message=' + message);
       });
   } catch (e) {
-    res.redirect('/garage/settings?success=0&message='+e.message);
+    res.redirect('/garage/settings?success=0&message=' + e.message);
   }
 };
 
 router.get('/settings', csrf, index);
 router.post('/settings/save', csrf, update);
-router.post('/settings/loadIcon',multipartMiddleware, uploadIcon);
+router.post('/settings/loadIcon', multipartMiddleware, uploadIcon);
 
 module.exports = router;

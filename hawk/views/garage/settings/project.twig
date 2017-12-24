@@ -1,8 +1,8 @@
 <div class="project">
-    <div class="project__logo" name="load_icon" enctype="multipart/form-data" id="file-form-{{ project.id }}">
-        <img id="logo-{{ project.id }}" style="cursor: pointer;width: inherit; height: inherit;"
-             src="{{ project.logo }}"
-             onclick="hawk.chooseFileDialog.showChooseFileDialog('settings/loadIcon','{{ project.id }}');"/>
+
+    <div class="project__logo js_project_logo" id="project-logo-{{ project.id }}">
+        <img class="project__logo" enctype="multipart/form-data" id="logo-{{ project.id }}-img" src="{{ project.logo }}"
+             data-projectId="{{ project.id }}"/>
     </div>
     <h3 class="project__name">{{ project.name }}</h3>
     <div class="project__info">
@@ -76,7 +76,7 @@
             <label name="custom-checkbox"
                    class="form__checkbox"
                    data-name="email"
-                    {{ project.user.notifies.email ? 'data-checked="true"' : }}
+                    {{ project.user.notifies.email ? 'data-checked="true"' : '' }}
                    onclick="hawk.settingsForm.saveNotifiesPreferences(
                            this,
                            '{{ project.id }}',
@@ -86,7 +86,7 @@
             <label name="custom-checkbox"
                    class="form__checkbox"
                    data-name="tg"
-                    {{ project.user.notifies.tg ? 'data-checked="true"' : }}
+                    {{ project.user.notifies.tg ? 'data-checked="true"' : '' }}
                    onclick="hawk.settingsForm.saveNotifiesPreferences(
                            this,
                            '{{ project.id }}',
@@ -96,7 +96,7 @@
             <label name="custom-checkbox"
                    class="form__checkbox"
                    data-name="slack"
-                    {{ project.user.notifies.slack ? 'data-checked="true"' : }}
+                    {{ project.user.notifies.slack ? 'data-checked="true"' : '' }}
                    onclick="hawk.settingsForm.saveNotifiesPreferences(
                            this,
                            '{{ project.id }}',

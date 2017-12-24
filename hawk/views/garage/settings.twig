@@ -46,13 +46,14 @@
     <script>
         var tokenCopied = function (e) {
 
-              hawk.notifier.show({
-                message: 'Token was copied',
-                style: 'success'
-              })
+          hawk.notifier.show({
+            message: 'Token was copied',
+            style: 'success'
+          })
 
         }
 
+        hawk.docReady(hawk.fileController.init);
         hawk.docReady(hawk.checkbox.init);
         hawk.docReady(hawk.toggler.init);
         hawk.docReady(hawk.copyable.init.bind(null, tokenCopied));

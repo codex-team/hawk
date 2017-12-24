@@ -22,6 +22,7 @@
         width: 44px;
         height: 44px;
         margin: 0 25px 15px 0;
+        cursor: pointer;
     }
 
     &__info {

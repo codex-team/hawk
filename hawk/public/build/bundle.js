@@ -64,7 +64,7 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 16);
+/******/ 	return __webpack_require__(__webpack_require__.s = 14);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -332,67 +332,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Use for choose file from standard file explorer
- *
- * @type {{showChooseFileDialog}}
- */
-
-module.exports = function () {
-  /**
-   * @usage hawk.showChooseFileDialog(post url address,current project id);
-   */
-  var transport = __webpack_require__(13);
-
-  /**
-   * Show choose file dialog by post method with project id.
-   *
-   * @param {String} url address to post data on server
-   * @param {String} projectId current project id
-   */
-  var showChooseFileDialog = function showChooseFileDialog(url, projectId) {
-    transport.init({
-      url: url,
-      multiple: false,
-      accept: 'image/*',
-      data: {
-        'projectId': projectId
-      },
-      before: function before() {
-        document.getElementById('file-form-' + projectId).classList.add('spinner');
-        document.getElementById('logo-' + projectId).style.visibility = 'hidden';
-        document.getElementById('logo-' + projectId).src = '';
-      },
-      progress: function progress(percentage) {},
-      success: function success(response) {
-        if (response.status == 200) {
-          document.getElementById('logo-' + projectId).src = response.logoUrl;
-        } else {
-          window.location.href = '/garage/settings?success=0&message=' + response.message;
-        }
-      },
-      error: function error(response) {
-        window.location.href = '/garage/settings?success=0&message=Fatal error. Try again';
-      },
-      after: function after() {
-        document.getElementById('file-form-' + projectId).classList.remove('spinner');
-        document.getElementById('logo-' + projectId).style.visibility = 'visible';
-      }
-    });
-  };
-
-  return {
-    showChooseFileDialog: showChooseFileDialog
-  };
-}();
-
-/***/ }),
+/* 3 */,
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1040,7 +980,7 @@ module.exports = function () {
 "use strict";
 
 
-var _class = __webpack_require__(15);
+var _class = __webpack_require__(13);
 
 module.exports = function (self) {
   self.init = function (settings) {
@@ -1481,150 +1421,6 @@ module.exports = notifier;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-!function (t, e) {
-  "object" == ( false ? "undefined" : _typeof(exports)) && "object" == ( false ? "undefined" : _typeof(module)) ? module.exports = e() :  true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (e),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : "object" == (typeof exports === "undefined" ? "undefined" : _typeof(exports)) ? exports.transport = e() : t.transport = e();
-}(undefined, function () {
-  return function (t) {
-    function e(r) {
-      if (n[r]) return n[r].exports;var o = n[r] = { i: r, l: !1, exports: {} };return t[r].call(o.exports, o, o.exports, e), o.l = !0, o.exports;
-    }var n = {};return e.m = t, e.c = n, e.d = function (t, n, r) {
-      e.o(t, n) || Object.defineProperty(t, n, { configurable: !1, enumerable: !0, get: r });
-    }, e.n = function (t) {
-      var n = t && t.__esModule ? function () {
-        return t.default;
-      } : function () {
-        return t;
-      };return e.d(n, "a", n), n;
-    }, e.o = function (t, e) {
-      return Object.prototype.hasOwnProperty.call(t, e);
-    }, e.p = "", e(e.s = 0);
-  }([function (t, e, n) {
-    "use strict";
-    var r = "function" == typeof Symbol && "symbol" == _typeof(Symbol.iterator) ? function (t) {
-      return typeof t === "undefined" ? "undefined" : _typeof(t);
-    } : function (t) {
-      return t && "function" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? "symbol" : typeof t === "undefined" ? "undefined" : _typeof(t);
-    },
-        o = n(1);t.exports = function (t) {
-      var e = null;t.input = null;var n = function n() {
-        t.input.click();
-      },
-          u = function u() {
-        e.before(t.input.files);
-      },
-          a = function a() {
-        var n = e.url,
-            a = e.data,
-            i = u,
-            c = e.progress,
-            f = e.success,
-            s = e.error,
-            p = e.after,
-            l = new FormData(),
-            d = t.input.files;if (d.length > 1) for (var y = 0; y < d.length; y++) {
-          l.append("files[]", d[y], d[y].name);
-        } else l.append("file", d[0], d[0].name);if (null !== a && "object" === (void 0 === a ? "undefined" : r(a))) for (var b in a) {
-          l.append(b, a[b]);
-        }o.call({ type: "POST", data: l, url: n, before: i, progress: c, success: f, error: s, after: p });
-      };return t.init = function (r) {
-        if (!r.url) return void console.log("Can't send request because `url` is missed");e = r;var o = document.createElement("INPUT");o.type = "file", e && e.multiple && o.setAttribute("multiple", "multiple"), e && e.accept && o.setAttribute("accept", e.accept), o.addEventListener("change", a, !1), t.input = o, n();
-      }, t;
-    }({});
-  }, function (t, e, n) {
-    !function (e, n) {
-      t.exports = n();
-    }(0, function () {
-      return function (t) {
-        function e(r) {
-          if (n[r]) return n[r].exports;var o = n[r] = { i: r, l: !1, exports: {} };return t[r].call(o.exports, o, o.exports, e), o.l = !0, o.exports;
-        }var n = {};return e.m = t, e.c = n, e.d = function (t, n, r) {
-          e.o(t, n) || Object.defineProperty(t, n, { configurable: !1, enumerable: !0, get: r });
-        }, e.n = function (t) {
-          var n = t && t.__esModule ? function () {
-            return t.default;
-          } : function () {
-            return t;
-          };return e.d(n, "a", n), n;
-        }, e.o = function (t, e) {
-          return Object.prototype.hasOwnProperty.call(t, e);
-        }, e.p = "", e(e.s = 0);
-      }([function (t, e, n) {
-        "use strict";
-        t.exports = function () {
-          var t = function t(_t) {
-            return _t instanceof FormData;
-          };return { call: function call(e) {
-              if (e && e.url) {
-                var n = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject("Microsoft.XMLHTTP"),
-                    r = e.progress || null,
-                    o = e.success || function () {},
-                    u = e.error || function () {},
-                    a = e.before || null,
-                    i = e.after ? e.after.bind(null, e.data) : null;if (e.async = !0, e.type = e.type || "GET", e.data = e.data || "", e["content-type"] = e["content-type"] || "application/json; charset=utf-8", "GET" === e.type && e.data && (e.url = /\?/.test(e.url) ? e.url + "&" + e.data : e.url + "?" + e.data), e.withCredentials && (n.withCredentials = !0), a && "function" == typeof a && !1 === a(e.data)) return;if (n.open(e.type, e.url, e.async), !t(e.data)) {
-                  var c = new FormData();for (var f in e.data) {
-                    c.append(f, e.data[f]);
-                  }e.data = c;
-                }r && "function" == typeof r && n.upload.addEventListener("progress", function (t) {
-                  var e = parseInt(t.loaded / t.total * 100);r(e);
-                }, !1), n.setRequestHeader("X-Requested-With", "XMLHttpRequest"), n.onreadystatechange = function () {
-                  if (4 === n.readyState) {
-                    var t = n.responseText;try {
-                      t = JSON.parse(t);
-                    } catch (t) {}200 === n.status ? o(t) : u(t), i && "function" == typeof i && i();
-                  }
-                }, n.send(e.data);
-              }
-            } };
-        }();
-      }]);
-    });
-  }]);
-});
-//# sourceMappingURL=bundle.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)(module)))
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = function (module) {
-	if (!module.webpackPolyfill) {
-		module.deprecate = function () {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if (!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function get() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function get() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
@@ -1781,15 +1577,15 @@ var Appender = exports.Appender = function () {
 }();
 
 /***/ }),
-/* 16 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 /**
-* Require CSS build
-*/
+ * Require CSS build
+ */
 __webpack_require__(12);
 
 var hawk = function (self) {
@@ -1802,6 +1598,7 @@ var hawk = function (self) {
     self.settingsForm.init();
 
     /** Custom keyboard events **/
+
     self.keyboard.init();
 
     console.log('Hawk app initialized');
@@ -1817,7 +1614,7 @@ var hawk = function (self) {
   self.settingsForm = __webpack_require__(9);
   self.toggler = __webpack_require__(10);
   self.keyboard = __webpack_require__(7);
-  self.chooseFileDialog = __webpack_require__(3);
+  self.fileController = __webpack_require__(20);
 
   var delegate = function delegate(element) {
     var modulesRequired = void 0;
@@ -1871,6 +1668,248 @@ hawk.docReady = function (f) {
 };
 
 module.exports = hawk;
+
+/***/ }),
+/* 15 */,
+/* 16 */,
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+!function (t, e) {
+  "object" == ( false ? "undefined" : _typeof(exports)) && "object" == ( false ? "undefined" : _typeof(module)) ? module.exports = e() :  true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (e),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : "object" == (typeof exports === "undefined" ? "undefined" : _typeof(exports)) ? exports.transport = e() : t.transport = e();
+}(undefined, function () {
+  return function (t) {
+    function e(r) {
+      if (n[r]) return n[r].exports;var o = n[r] = { i: r, l: !1, exports: {} };return t[r].call(o.exports, o, o.exports, e), o.l = !0, o.exports;
+    }var n = {};return e.m = t, e.c = n, e.d = function (t, n, r) {
+      e.o(t, n) || Object.defineProperty(t, n, { configurable: !1, enumerable: !0, get: r });
+    }, e.n = function (t) {
+      var n = t && t.__esModule ? function () {
+        return t.default;
+      } : function () {
+        return t;
+      };return e.d(n, "a", n), n;
+    }, e.o = function (t, e) {
+      return Object.prototype.hasOwnProperty.call(t, e);
+    }, e.p = "", e(e.s = 0);
+  }([function (t, e, n) {
+    "use strict";
+    var r = "function" == typeof Symbol && "symbol" == _typeof(Symbol.iterator) ? function (t) {
+      return typeof t === "undefined" ? "undefined" : _typeof(t);
+    } : function (t) {
+      return t && "function" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? "symbol" : typeof t === "undefined" ? "undefined" : _typeof(t);
+    },
+        o = n(1);t.exports = function (t) {
+      var e = null;t.input = null;var n = function n() {
+        t.input.click();
+      },
+          u = function u() {
+        e.before(t.input.files);
+      },
+          a = function a() {
+        var n = e.url,
+            a = e.data,
+            i = u,
+            c = e.progress,
+            f = e.success,
+            s = e.error,
+            p = e.after,
+            l = new FormData(),
+            d = t.input.files;if (d.length > 1) for (var y = 0; y < d.length; y++) {
+          l.append("files[]", d[y], d[y].name);
+        } else l.append("file", d[0], d[0].name);if (null !== a && "object" === (void 0 === a ? "undefined" : r(a))) for (var b in a) {
+          l.append(b, a[b]);
+        }o.call({ type: "POST", data: l, url: n, before: i, progress: c, success: f, error: s, after: p });
+      };return t.init = function (r) {
+        if (!r.url) return void console.log("Can't send request because `url` is missed");e = r;var o = document.createElement("INPUT");o.type = "file", e && e.multiple && o.setAttribute("multiple", "multiple"), e && e.accept && o.setAttribute("accept", e.accept), o.addEventListener("change", a, !1), t.input = o, n();
+      }, t;
+    }({});
+  }, function (t, e, n) {
+    !function (e, n) {
+      t.exports = n();
+    }(0, function () {
+      return function (t) {
+        function e(r) {
+          if (n[r]) return n[r].exports;var o = n[r] = { i: r, l: !1, exports: {} };return t[r].call(o.exports, o, o.exports, e), o.l = !0, o.exports;
+        }var n = {};return e.m = t, e.c = n, e.d = function (t, n, r) {
+          e.o(t, n) || Object.defineProperty(t, n, { configurable: !1, enumerable: !0, get: r });
+        }, e.n = function (t) {
+          var n = t && t.__esModule ? function () {
+            return t.default;
+          } : function () {
+            return t;
+          };return e.d(n, "a", n), n;
+        }, e.o = function (t, e) {
+          return Object.prototype.hasOwnProperty.call(t, e);
+        }, e.p = "", e(e.s = 0);
+      }([function (t, e, n) {
+        "use strict";
+        t.exports = function () {
+          var t = function t(_t) {
+            return _t instanceof FormData;
+          };return { call: function call(e) {
+              if (e && e.url) {
+                var n = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject("Microsoft.XMLHTTP"),
+                    r = e.progress || null,
+                    o = e.success || function () {},
+                    u = e.error || function () {},
+                    a = e.before || null,
+                    i = e.after ? e.after.bind(null, e.data) : null;if (e.async = !0, e.type = e.type || "GET", e.data = e.data || "", e["content-type"] = e["content-type"] || "application/json; charset=utf-8", "GET" === e.type && e.data && (e.url = /\?/.test(e.url) ? e.url + "&" + e.data : e.url + "?" + e.data), e.withCredentials && (n.withCredentials = !0), a && "function" == typeof a && !1 === a(e.data)) return;if (n.open(e.type, e.url, e.async), !t(e.data)) {
+                  var c = new FormData();for (var f in e.data) {
+                    c.append(f, e.data[f]);
+                  }e.data = c;
+                }r && "function" == typeof r && n.upload.addEventListener("progress", function (t) {
+                  var e = parseInt(t.loaded / t.total * 100);r(e);
+                }, !1), n.setRequestHeader("X-Requested-With", "XMLHttpRequest"), n.onreadystatechange = function () {
+                  if (4 === n.readyState) {
+                    var t = n.responseText;try {
+                      t = JSON.parse(t);
+                    } catch (t) {}200 === n.status ? o(t) : u(t), i && "function" == typeof i && i();
+                  }
+                }, n.send(e.data);
+              }
+            } };
+        }();
+      }]);
+    });
+  }]);
+});
+//# sourceMappingURL=bundle.js.map
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function (module) {
+	if (!module.webpackPolyfill) {
+		module.deprecate = function () {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if (!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function get() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function get() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+/***/ }),
+/* 19 */,
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Use manage file working in project
+ *
+ * @type {{showChooseFileDialog}}
+ */
+
+module.exports = function () {
+  var transport = __webpack_require__(17);
+
+  /**
+   * Show choose file dialog by post method with project id.
+   *
+   * @param {String} url address to post data on server
+   * @param {String} projectId current project id
+   */
+  var showChooseFileDialog = function showChooseFileDialog(args) {
+    transport.init({
+      url: args.url,
+      multiple: args.multiple,
+      accept: args.multiple,
+      data: args.data,
+      before: args.before,
+      progress: args.process,
+      success: args.success,
+      error: args.error,
+      after: args.after
+    });
+  };
+
+  /**
+   * Call chhose file dialog with define parameters. Use codex.transport
+   *
+   * @param  {projectId: projectId} data logo description
+   */
+  function logoHolderClicked(event) {
+    var projectId = event.target.dataset['projectid'];
+
+    console.info(event.target);
+    transport.init({
+      url: 'settings/loadIcon',
+      multiple: false,
+      accept: 'image/*',
+      data: {
+        'projectId': projectId
+      },
+      before: function before() {
+        document.getElementById('project-logo-' + projectId).classList.add('spinner');
+        document.getElementById('logo-' + projectId + '-img').style.visibility = 'hidden';
+        document.getElementById('logo-' + projectId + '-img').src = '';
+      },
+      progress: function progress(percentage) {},
+      success: function success(response) {
+        if (response.status == 200) {
+          document.getElementById('logo-' + projectId + '-img').src = response.logoUrl;
+        } else {
+          window.location.href = '/garage/settings?success=0&message=' + response.message;
+        }
+      },
+      error: function error(response) {
+        window.location.href = '/garage/settings?success=0&message=Fatal error. ' + response;
+      },
+      after: function after() {
+        document.getElementById('project-logo-' + projectId).classList.remove('spinner');
+        document.getElementById('logo-' + projectId + '-img').style.visibility = 'visible';
+      }
+    });
+  }
+
+  /**
+   * Init all project logo icon
+   */
+  var init = function init() {
+    var logoHolders = document.querySelectorAll('.js_project_logo');
+
+    if (logoHolders) {
+      for (var i = 0; i < logoHolders.length; i++) {
+        var logoHolder = logoHolders[i];
+
+        logoHolder.addEventListener('click', logoHolderClicked, false);
+      }
+    }
+  };
+
+  return {
+    init: init
+  };
+}();
 
 /***/ })
 /******/ ]);

@@ -1,18 +1,19 @@
 /**
-* Require CSS build
-*/
+ * Require CSS build
+ */
 require('../stylesheets/hawk.css');
 
-let hawk = (function ( self ) {
+let hawk = (function (self) {
   'use strict';
 
-  self.init = function ( ) {
+  self.init = function () {
     delegate();
 
     /** Settings-form checker for validity */
     self.settingsForm.init();
 
     /** Custom keyboard events **/
+
     self.keyboard.init();
 
     console.log('Hawk app initialized');
@@ -20,15 +21,15 @@ let hawk = (function ( self ) {
 
   self.checkbox = require('./checkbox');
   self.copyable = require('./copyable');
-  self.ajax     = require('./ajax');
+  self.ajax = require('./ajax');
   self.notifier = require('exports-loader?notifier!codex-notifier');
-  self.event    = require('./event');
-  self.eventPopup   = require('./event-popup');
-  self.appender     = require('./module.appender');
+  self.event = require('./event');
+  self.eventPopup = require('./event-popup');
+  self.appender = require('./module.appender');
   self.settingsForm = require('./settings-form');
   self.toggler = require('./toggler');
   self.keyboard = require('./keyboard');
-  self.chooseFileDialog = require('./chooseFileDialog');
+  self.fileController = require('./fileController');
 
   let delegate = function (element) {
     let modulesRequired;
