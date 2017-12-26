@@ -10,14 +10,12 @@ module.exports = function () {
   /**
    * Call choose file dialog with define parameters. Use codex.transport
    *
-   * @param event information about clicked object
+   * @param {MouseEvent} event information about clicked object
    */
-  function logoHolderClicked(event) {
-    let projectId = event.target.dataset['projectId'];
-    let cssLoaderClass = event.target.dataset['cssLoaderClass'];
+  function logoHolderClicked(logoHolder) {
+    let projectId = logoHolder.dataset['projectId'];
 
-    let projectLogo = document.getElementById('project-logo-' + projectId);
-    let projectLogoImg = document.getElementById('logo-' + projectId + '-img');
+    let projectLogoImg = logoHolder.querySelector('img');
 
     transport.init({
       url: 'settings/loadIcon',
@@ -27,8 +25,7 @@ module.exports = function () {
         'projectId': projectId
       },
       before: function () {
-        projectLogo.classList.add(cssLoaderClass);
-        projectLogoImg.style.visibility = 'hidden';
+        logoHolder.classList.add('project__logo-wrapper--loading');
       },
       progress: function (percentage) {
       },
@@ -36,67 +33,27 @@ module.exports = function () {
         if (response.status == 200) {
           projectLogoImg.src = response.logoUrl;
           projectLogoImg.onload = function () {
-            uploadProjectIconResult({
-              status: response.status,
-              response: response,
-              projectLogoImg: projectLogoImg,
-              projectLogo: projectLogo,
-              cssLoaderClass: cssLoaderClass
-            });
+            logoHolder.classList.remove('project__logo-wrapper--loading');
           };
         } else {
-          uploadProjectIconResult({
-            status: response.status,
-            response: response.message,
-            projectLogoImg: projectLogoImg,
-            projectLogo: projectLogo,
-            cssLoaderClass: cssLoaderClass
+          hawk.notifier.show({
+            message: response.message,
+            style: 'error'
           });
+          logoHolder.classList.remove('project__logo-wrapper--loading');
         }
       },
       error: function (response) {
-        uploadProjectIconResult({
-          status: 500,
-          response: response,
-          projectLogoImg: projectLogoImg,
-          projectLogo: projectLogo,
-          cssLoaderClass: cssLoaderClass
+        hawk.notifier.show({
+          message: response,
+          style: 'error'
         });
+        logoHolder.classList.remove('project__logo-wrapper--loading');
       },
       after: function () {
       }
     });
   }
-
-  /**
-   *
-   * {Int} status - operation result code. 500 - error, 200 - done
-   * {String} response -  error message
-   * {Document element} projectLogoImg - projectLogoImg document element
-   * {Document element} projectLogo - projectLogo document element
-   * {String} cssLoaderClass - css loader class name
-   *
-   * Example
-   * {
-          status: 500,
-          response: response,
-          projectLogoImg: projectLogoImg,
-          projectLogo: projectLogo,
-          cssLoaderClass: cssLoaderClass
-     }
-
-   * @param {JSON} data information about upload operation. Use JSON format above.
-   *
-   */
-  let uploadProjectIconResult = function (data) {
-    if (data.status == 500)
-      hawk.notifier.show({
-        message: data.response,
-        style: 'error'
-      });
-    data.projectLogo.classList.remove(data.cssLoaderClass);
-    data.projectLogoImg.style.visibility = 'visible';
-  };
 
   /**
    * Init all project logo icon
@@ -108,7 +65,9 @@ module.exports = function () {
       for (var i = 0; i < logoHolders.length; i++) {
         let logoHolder = logoHolders[i];
 
-        logoHolder.addEventListener('click', logoHolderClicked, false);
+        logoHolder.addEventListener('click', function () {
+          logoHolderClicked(this);
+        }, false);
       }
     }
   };
