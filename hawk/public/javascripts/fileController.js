@@ -1,5 +1,5 @@
 /**
- * Use manage file working in project
+ * Work with files
  *
  * @type {{showChooseFileDialog}}
  */
@@ -34,6 +34,7 @@ module.exports = function () {
           projectLogoImg.src = response.logoUrl;
           projectLogoImg.onload = function () {
             logoHolder.classList.remove('project__logo-wrapper--loading');
+            projectLogoImg.classList.remove('project__logo-img--empty');
           };
         } else {
           hawk.notifier.show({
@@ -64,6 +65,14 @@ module.exports = function () {
     if (logoHolders) {
       for (var i = 0; i < logoHolders.length; i++) {
         let logoHolder = logoHolders[i];
+        let projectLogoImg = logoHolder.querySelector('img');
+
+        console.log(projectLogoImg.src);
+
+        if(projectLogoImg.getAttribute('src') == '') {
+          projectLogoImg.src = '/static/svg/project-icon-cover.svg';
+          projectLogoImg.classList.add('project__logo-img--empty');
+        }
 
         logoHolder.addEventListener('click', function () {
           logoHolderClicked(this);

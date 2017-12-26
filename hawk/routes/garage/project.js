@@ -25,9 +25,6 @@ let add = function (req, res) {
     return;
   }
 
-  /** @const {String} */
-  const coverIconPath = process.env.SERVER_URL + '/static/svg/project-icon-cover.svg';
-
   let data = {
     name: post.name,
     description: post.description,
@@ -35,7 +32,7 @@ let add = function (req, res) {
     dt_added: new Date(),
     uid_added: res.locals.user._id,
     token: token,
-    logo: coverIconPath,
+    logo: '',
     uri: translit(post.name, true)
   };
 
