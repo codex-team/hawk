@@ -2,7 +2,7 @@ let request = require('request');
 let fs = require('fs');
 
 /**
- * Use capella API for the image uploading
+ * Use Capella API for the image uploading
  *
  * {@link https://github.com/codex-team/capella}
  *

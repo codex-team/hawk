@@ -15,7 +15,7 @@ let multipartMiddleware = multipart();
  * @param req
  * @param res
  */
-let uploadIcon = function (req, res) {
+let uploadLogo = function (req, res) {
   let file = req.files['file'];
 
   if (!checkImageValid(file, res)) {
@@ -137,6 +137,6 @@ let update = function (req, res) {
 
 router.get('/settings', csrf, index);
 router.post('/settings/save', csrf, update);
-router.post('/settings/loadIcon', multipartMiddleware, uploadIcon);
+router.post('/settings/loadIcon', multipartMiddleware, uploadLogo);
 
 module.exports = router;
