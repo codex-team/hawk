@@ -10,7 +10,7 @@ let multipart = require('connect-multiparty');
 let multipartMiddleware = multipart();
 
 /**
- * Upload icon to capella and change icon path in database
+ * Upload Project Logo to the Capella and save an URL
  *
  * @param req
  * @param res

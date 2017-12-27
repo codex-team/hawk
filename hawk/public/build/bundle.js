@@ -912,99 +912,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Work with files
- *
- * @type {{showChooseFileDialog}}
- */
-
-module.exports = function () {
-  var transport = __webpack_require__(13);
-
-  /**
-   * Call choose file dialog with define parameters. Use codex.transport
-   *
-   * @param {MouseEvent} event information about clicked object
-   */
-  function logoHolderClicked(logoHolder) {
-    var projectId = logoHolder.dataset['projectId'];
-
-    var projectLogoImg = logoHolder.querySelector('img');
-
-    transport.init({
-      url: 'settings/loadIcon',
-      multiple: false,
-      accept: 'image/*',
-      data: {
-        'projectId': projectId
-      },
-      before: function before() {
-        logoHolder.classList.add('project__logo-wrapper--loading');
-      },
-      progress: function progress(percentage) {},
-      success: function success(response) {
-        if (response.status == 200) {
-          projectLogoImg.src = response.logoUrl;
-          projectLogoImg.onload = function () {
-            logoHolder.classList.remove('project__logo-wrapper--loading');
-            projectLogoImg.classList.remove('project__logo-img--empty');
-          };
-        } else {
-          hawk.notifier.show({
-            message: response.message,
-            style: 'error'
-          });
-          logoHolder.classList.remove('project__logo-wrapper--loading');
-        }
-      },
-      error: function error(response) {
-        hawk.notifier.show({
-          message: response,
-          style: 'error'
-        });
-        logoHolder.classList.remove('project__logo-wrapper--loading');
-      },
-      after: function after() {}
-    });
-  }
-
-  /**
-   * Init all project logo icon
-   */
-  var init = function init() {
-    var logoHolders = document.querySelectorAll('.js_project_logo');
-
-    if (logoHolders) {
-      for (var i = 0; i < logoHolders.length; i++) {
-        var logoHolder = logoHolders[i];
-        var projectLogoImg = logoHolder.querySelector('img');
-
-        console.log(projectLogoImg.src);
-
-        if (projectLogoImg.getAttribute('src') == '') {
-          projectLogoImg.src = '/static/svg/project-icon-cover.svg';
-          projectLogoImg.classList.add('project__logo-img--empty');
-        }
-
-        logoHolder.addEventListener('click', function () {
-          logoHolderClicked(this);
-        }, false);
-      }
-    }
-  };
-
-  return {
-    init: init
-  };
-}();
-
-/***/ }),
+/* 6 */,
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1850,7 +1758,7 @@ var hawk = function (self) {
   self.settingsForm = __webpack_require__(9);
   self.toggler = __webpack_require__(10);
   self.keyboard = __webpack_require__(7);
-  self.fileController = __webpack_require__(6);
+  self.projectSettings = __webpack_require__(19);
 
   var delegate = function delegate(element) {
     var modulesRequired = void 0;
@@ -1904,6 +1812,92 @@ hawk.docReady = function (f) {
 };
 
 module.exports = hawk;
+
+/***/ }),
+/* 17 */,
+/* 18 */,
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Work with projects settings files
+ *
+ * @type {{init}}
+ */
+module.exports = function () {
+  var transport = __webpack_require__(13);
+
+  /**
+   * Call choose file dialog with define parameters. Use codex.transport
+   *
+   * @param {Document element} logo wrapper object
+   */
+  function logoHolderClicked(logoHolder) {
+    var projectId = logoHolder.dataset['projectId'];
+
+    var projectLogoImg = logoHolder.querySelector('img');
+
+    transport.init({
+      url: 'settings/loadIcon',
+      multiple: false,
+      accept: 'image/*',
+      data: {
+        'projectId': projectId
+      },
+      before: function before() {
+        logoHolder.classList.add('project__logo-wrapper--loading');
+      },
+      progress: function progress(percentage) {},
+      success: function success(response) {
+        if (response.status == 200) {
+          projectLogoImg.src = response.logoUrl;
+          projectLogoImg.onload = function () {
+            logoHolder.classList.remove('project__logo-wrapper--loading');
+            projectLogoImg.classList.remove('project__logo-img--empty');
+          };
+        } else {
+          hawk.notifier.show({
+            message: response.message,
+            style: 'error'
+          });
+          logoHolder.classList.remove('project__logo-wrapper--loading');
+        }
+      },
+      error: function error(response) {
+        hawk.notifier.show({
+          message: response,
+          style: 'error'
+        });
+        logoHolder.classList.remove('project__logo-wrapper--loading');
+      },
+      after: function after() {}
+    });
+  }
+
+  /**
+   * Init all projects elements
+   */
+  var init = function init() {
+    var logoHolders = document.querySelectorAll('.js_project_logo');
+
+    if (logoHolders) {
+      for (var i = 0; i < logoHolders.length; i++) {
+        var logoHolder = logoHolders[i];
+
+        logoHolder.addEventListener('click', function () {
+          logoHolderClicked(this);
+        }, false);
+      }
+    }
+  };
+
+  return {
+    init: init
+  };
+}();
 
 /***/ })
 /******/ ]);

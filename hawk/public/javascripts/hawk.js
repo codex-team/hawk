@@ -29,7 +29,7 @@ let hawk = (function (self) {
   self.settingsForm = require('./settings-form');
   self.toggler = require('./toggler');
   self.keyboard = require('./keyboard');
-  self.fileController = require('./fileController');
+  self.projectSettings = require('./projectSettings');
 
   let delegate = function (element) {
     let modulesRequired;

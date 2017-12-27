@@ -4,9 +4,10 @@ let fs = require('fs');
 /**
  * Use capella API for the image uploading
  *
- * @param {String} imagePath
- * @param callback
+ * {@link https://github.com/codex-team/capella}
  *
+ * @param {String} imagePath local path to image
+ * @param {Function} callback action after upload picture
  */
 let uploadImageToCapella = function (imagePath, callback) {
 

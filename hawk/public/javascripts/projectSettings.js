@@ -1,16 +1,15 @@
 /**
- * Work with files
+ * Work with projects settings files
  *
- * @type {{showChooseFileDialog}}
+ * @type {{init}}
  */
-
 module.exports = function () {
   let transport = require('codex.transport');
 
   /**
    * Call choose file dialog with define parameters. Use codex.transport
    *
-   * @param {MouseEvent} event information about clicked object
+   * @param {Document element} logo wrapper object
    */
   function logoHolderClicked(logoHolder) {
     let projectId = logoHolder.dataset['projectId'];
@@ -57,7 +56,7 @@ module.exports = function () {
   }
 
   /**
-   * Init all project logo icon
+   * Init all projects elements
    */
   let init = function () {
     let logoHolders = document.querySelectorAll('.js_project_logo');
@@ -65,14 +64,6 @@ module.exports = function () {
     if (logoHolders) {
       for (var i = 0; i < logoHolders.length; i++) {
         let logoHolder = logoHolders[i];
-        let projectLogoImg = logoHolder.querySelector('img');
-
-        console.log(projectLogoImg.src);
-
-        if(projectLogoImg.getAttribute('src') == '') {
-          projectLogoImg.src = '/static/svg/project-icon-cover.svg';
-          projectLogoImg.classList.add('project__logo-img--empty');
-        }
 
         logoHolder.addEventListener('click', function () {
           logoHolderClicked(this);

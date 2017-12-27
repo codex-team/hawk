@@ -2,9 +2,14 @@
 
     <div class="project__logo-wrapper js_project_logo" id="project-logo-{{ project.id }}"
          data-project-id="{{ project.id }}">
-        <img class="project__logo-img" enctype="multipart/form-data" id="logo-{{ project.id }}-img" src="{{ project.logo }}"
-        />
+        {% if project.logo is empty %}
+            <img class="project__logo-img project__logo-img--empty"
+                 src="/static/svg/upload-logo.svg"/>
+        {% else %}
+            <img class="project__logo-img" src="{{ project.logo }}"/>
+        {% endif %}
     </div>
+
     <h3 class="project__name">{{ project.name }}</h3>
     <div class="project__info">
         <span class="project__description">{{ project.description }}</span>
