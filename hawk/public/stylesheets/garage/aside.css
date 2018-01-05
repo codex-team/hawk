@@ -45,7 +45,7 @@
         font-size: 17px;
 
         &:last-of-type {
-            margin-bottom: 52px;
+            margin-bottom: 57px;
         }
     }
 
@@ -136,7 +136,7 @@
         background: inherit;
 
         &-button {
-            margin: 20px 0 20px 25px;
+            margin: 25px 0 20px 25px;
         }
     }
 }
