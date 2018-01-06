@@ -62,5 +62,5 @@ module.exports = function (string, isUrl=false) {
     translitedString = translitedString.replace(/-+/g, '-');
   }
 
-    return translitedString;
+  return translitedString;
 };
