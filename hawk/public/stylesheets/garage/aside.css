@@ -43,10 +43,6 @@
     &__section {
         margin: 0 0 15px;
         font-size: 17px;
-
-        &:last-of-type {
-            margin-bottom: 57px;
-        }
     }
 
     &__project {
@@ -129,14 +125,6 @@
     }
 
     &__add {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        min-width: inherit;
-        background: inherit;
-
-        &-button {
-            margin: 25px 0 20px 25px;
-        }
+        margin-top: 25px;
     }
 }
