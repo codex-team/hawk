@@ -10,10 +10,10 @@
     &__add-project {
         display: inline-block;
         position: relative;
-        padding: 12px 12px 12px 40px;
+        padding: 11px 16px 11px 40px;
         color: var(--greenText);
-        font-size: 20px;
-        border: 1px solid #cde6e0;
+        font-size: 17px;
+        border: 1px solid color(var(--greenText) alpha(30%));
         border-radius: 3px;
         cursor: pointer;
 

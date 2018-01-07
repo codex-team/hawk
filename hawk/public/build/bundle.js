@@ -912,8 +912,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 6 */,
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -974,7 +973,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1021,6 +1020,110 @@ module.exports = function (self) {
         *
         * Appends after element generates by class "load more button"
         */
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * CodeX Transport
+ * AJAX file-uploading module
+ * @see {@link https://github.com/codex-team/transport}
+ * @copyright CodeX Team (https://github.com/codex-team)
+ */
+var transport = __webpack_require__(13);
+
+/**
+ * Work with projects settings files
+ *
+ * @type {{init}}
+ */
+module.exports = function () {
+  /**
+   * Show file selection window and upload the file
+   *
+   * @param {Element} logoHolder — Project logo wrapper
+   */
+  function logoHolderClicked(logoHolder) {
+    var projectId = logoHolder.dataset.projectId;
+
+    /**
+     * Loading animation class name
+     * @type {string}
+     */
+    var loadingClass = 'project__logo-wrapper--loading';
+
+    transport.init({
+      url: 'settings/loadIcon',
+      multiple: false,
+      accept: 'image/*',
+      data: { projectId: projectId },
+      before: function before() {
+        logoHolder.classList.add(loadingClass);
+      },
+      success: function success(response) {
+        if (response.status !== 200) {
+          hawk.notifier.show({
+            message: response.message,
+            style: 'error'
+          });
+          logoHolder.classList.remove(loadingClass);
+          return;
+        }
+
+        /**
+         * Find or create an image
+         */
+        var img = logoHolder.querySelector('img');
+
+        if (!img) {
+          img = document.createElement('img');
+          logoHolder.appendChild(img);
+        }
+
+        /**
+         * Update image source
+         */
+        img.src = response.logoUrl;
+        img.addEventListener('load', function () {
+          logoHolder.classList.remove(loadingClass);
+        });
+      },
+      error: function error(response) {
+        hawk.notifier.show({
+          message: response,
+          style: 'error'
+        });
+        logoHolder.classList.remove(loadingClass);
+      }
+    });
+  }
+
+  /**
+   * Init all projects elements
+   */
+  var init = function init() {
+    /**
+     * Activate project logo uploading
+     */
+    var logoHolders = document.querySelectorAll('.js_project_logo');
+
+    if (logoHolders) {
+      for (var i = logoHolders.length - 1; i >= 0; i--) {
+        logoHolders[i].addEventListener('click', function () {
+          logoHolderClicked(this);
+        }, false);
+      }
+    }
+  };
+
+  return {
+    init: init
+  };
+}();
 
 /***/ }),
 /* 9 */
@@ -1754,11 +1857,11 @@ var hawk = function (self) {
   self.notifier = __webpack_require__(11);
   self.event = __webpack_require__(5);
   self.eventPopup = __webpack_require__(4);
-  self.appender = __webpack_require__(8);
+  self.appender = __webpack_require__(7);
   self.settingsForm = __webpack_require__(9);
   self.toggler = __webpack_require__(10);
-  self.keyboard = __webpack_require__(7);
-  self.projectSettings = __webpack_require__(19);
+  self.keyboard = __webpack_require__(6);
+  self.projectSettings = __webpack_require__(8);
 
   var delegate = function delegate(element) {
     var modulesRequired = void 0;
@@ -1812,92 +1915,6 @@ hawk.docReady = function (f) {
 };
 
 module.exports = hawk;
-
-/***/ }),
-/* 17 */,
-/* 18 */,
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Work with projects settings files
- *
- * @type {{init}}
- */
-module.exports = function () {
-  var transport = __webpack_require__(13);
-
-  /**
-   * Call choose file dialog with define parameters. Use codex.transport
-   *
-   * @param {Document element} logo wrapper object
-   */
-  function logoHolderClicked(logoHolder) {
-    var projectId = logoHolder.dataset['projectId'];
-
-    var projectLogoImg = logoHolder.querySelector('img');
-
-    transport.init({
-      url: 'settings/loadIcon',
-      multiple: false,
-      accept: 'image/*',
-      data: {
-        'projectId': projectId
-      },
-      before: function before() {
-        logoHolder.classList.add('project__logo-wrapper--loading');
-      },
-      progress: function progress(percentage) {},
-      success: function success(response) {
-        if (response.status == 200) {
-          projectLogoImg.src = response.logoUrl;
-          projectLogoImg.onload = function () {
-            logoHolder.classList.remove('project__logo-wrapper--loading');
-            projectLogoImg.classList.remove('project__logo-img--empty');
-          };
-        } else {
-          hawk.notifier.show({
-            message: response.message,
-            style: 'error'
-          });
-          logoHolder.classList.remove('project__logo-wrapper--loading');
-        }
-      },
-      error: function error(response) {
-        hawk.notifier.show({
-          message: response,
-          style: 'error'
-        });
-        logoHolder.classList.remove('project__logo-wrapper--loading');
-      },
-      after: function after() {}
-    });
-  }
-
-  /**
-   * Init all projects elements
-   */
-  var init = function init() {
-    var logoHolders = document.querySelectorAll('.js_project_logo');
-
-    if (logoHolders) {
-      for (var i = 0; i < logoHolders.length; i++) {
-        var logoHolder = logoHolders[i];
-
-        logoHolder.addEventListener('click', function () {
-          logoHolderClicked(this);
-        }, false);
-      }
-    }
-  };
-
-  return {
-    init: init
-  };
-}();
 
 /***/ })
 /******/ ]);

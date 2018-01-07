@@ -27,7 +27,7 @@ let uploadLogo = function (req, res) {
     try {
       let json;
       json = JSON.parse(body);
-      logoUrl = json.url;
+      logoUrl = json.url + '/crop/200/'; // Crop square thumbnail
     } catch (exception) {
       let message = 'Error. Please, try again or later';
       res.send({
