@@ -121,12 +121,16 @@ module.exports = function () {
     } else if (REGEXPS.FF_SAFARI_OPERA_11.test(stack)) {
       stack = parseSafariOpera11FF();
     } else {
-      /* Unsupported stack format, just split by \n */
-      stack = stack.split('\n').map(function (line) {
-        return {
-          file: line
-        };
-      });
+      try {
+        /* Unsupported stack format, just split by \n */
+        stack = stack.split('\n').map(function (line) {
+          return {
+            file: line
+          };
+        });
+      } catch (err) {
+        console.log(err);
+      }
     }
 
     return stack;
