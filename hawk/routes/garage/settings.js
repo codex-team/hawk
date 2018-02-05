@@ -22,13 +22,12 @@ let uploadLogo = function (req, res) {
     return;
   }
 
-  uploader.uploadImageToCapella(file.path, function (err, resp, body) {
+  uploader.uploadImageToCapella(file.path, function (resp) {
     let logoUrl;
-    try {
-      let json;
-      json = JSON.parse(body);
-      logoUrl = json.url + '/crop/200/'; // Crop square thumbnail
-    } catch (exception) {
+    if(resp.success) {
+      logoUrl = resp.url;
+    }
+    else {
       let message = 'Error. Please, try again or later';
       res.send({
         status: 500,

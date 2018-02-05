@@ -1,5 +1,4 @@
-let request = require('request');
-let fs = require('fs');
+let Capella = require('@codexteam/capella-pics');
 
 /**
  * Use Capella API for the image uploading
@@ -10,11 +9,11 @@ let fs = require('fs');
  * @param {Function} callback action after upload picture
  */
 let uploadImageToCapella = function (imagePath, callback) {
+  let capella = new Capella();
 
-  let req = request.post('https://capella.pics/upload', callback);
-
-  let form = req.form();
-  form.append('file', fs.createReadStream(imagePath));
+  capella.uploadFile(imagePath, function (resp) {
+    callback(resp);
+  });
 };
 
 module.exports = function () {

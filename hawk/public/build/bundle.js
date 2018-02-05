@@ -1087,7 +1087,7 @@ module.exports = function () {
         /**
          * Update image source
          */
-        img.src = response.logoUrl;
+        img.src = response.logoUrl + '/crop/200';
         img.addEventListener('load', function () {
           logoHolder.classList.remove(loadingClass);
         });
