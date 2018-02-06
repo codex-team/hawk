@@ -7,7 +7,7 @@
     left: 0;
     background: var(--darkGrayBg);
     padding: 25px;
-    height: 100%;
+    min-height: 100%;
     min-width: var(--garage-aside-width);
     box-sizing: border-box;
     color: var(--grayOnDark);

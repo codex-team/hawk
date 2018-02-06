@@ -112,21 +112,25 @@ module.exports = function () {
     event = event_;
     stack = event.stack;
 
-    if (REGEXPS.OPERA_9.test(event.message)) {
-      stack = parseOpera9();
-    } else if (REGEXPS.OPERA_10.test(stack)) {
-      stack = parseOpera10();
-    } else if (REGEXPS.CHROME_IE.test(stack)) {
-      stack = parseChromeIE();
-    } else if (REGEXPS.FF_SAFARI_OPERA_11.test(stack)) {
-      stack = parseSafariOpera11FF();
-    } else {
-      /* Unsupported stack format, just split by \n */
-      stack = stack.split('\n').map(function (line) {
-        return {
-          file: line
-        };
-      });
+    try {
+      if (REGEXPS.OPERA_9.test(event.message)) {
+        stack = parseOpera9();
+      } else if (REGEXPS.OPERA_10.test(stack)) {
+        stack = parseOpera10();
+      } else if (REGEXPS.CHROME_IE.test(stack)) {
+        stack = parseChromeIE();
+      } else if (REGEXPS.FF_SAFARI_OPERA_11.test(stack)) {
+        stack = parseSafariOpera11FF();
+      } else {
+        /* Unsupported stack format, just split by \n */
+        stack = stack.split('\n').map(function (line) {
+          return {
+            file: line
+          };
+        });
+      }
+    } catch (err) {
+      console.log(err);
     }
 
     return stack;
