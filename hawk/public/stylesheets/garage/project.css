@@ -1,4 +1,5 @@
 .project {
+    max-width: 800px;
     padding: 30px;
     margin: 30px 0;
     border: 1px solid var(--grayBlueLine);
@@ -12,22 +13,91 @@
 
     &__name {
         margin: 0;
-        font-size: 26px;
+        font-size: 24px;
         line-height: 1.2em;
+        font-weight: 800;
     }
 
     &__logo {
-        float: left;
-        display: inline-block;
-        width: 44px;
-        height: 44px;
-        margin: 0 25px 15px 0;
+        &-wrapper {
+             position: relative;
+             display: inline-block;
+             width: 52px;
+             height: 52px;
+             margin: 0 22px 15px 0;
+             cursor: pointer;
+             box-shadow: inset 0 0 0 1px var(--grayLine);
+             border-radius: 3px;
+             float: left;
+
+            &::before,
+            &::after {
+                content: '';
+                position: absolute;
+                left: 50%;
+                top: 50%;
+             }
+            &::after {
+                background: url('/static/svg/upload-logo.svg');
+                background-size: 100% 100%;
+                width: 20px;
+                height: 20px;
+                opacity: 0.8;
+                transform: translate(-50%, -50%);
+            }
+
+            &::before {
+                width: 24px;
+                height: 24px;
+                border: 2px solid #eaedf3;
+                border-left-color: #61aaff;
+                border-radius: 50%;
+                box-sizing: border-box;
+                visibility: hidden;
+                margin-top: -12px;
+                margin-left: -12px;
+            }
+
+            img {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                z-index: 3;
+            }
+
+            &:hover {
+
+                 &::after {
+                     opacity: 1;
+                 }
+
+                 img {
+                    display: none;
+                 }
+            }
+
+            &--loading {
+                 &::before {
+                      visibility: visible;
+                      animation: rotation 1.2s infinite linear;
+                 }
+
+                 &::after {
+                     visibility: hidden;
+                 }
+
+                 img {
+                     display: none;
+                 }
+            }
+        }
     }
 
     &__info {
         display: flex;
         flex-flow: row nowrap;
-        margin-top: 6px;
+        margin-top: 1px;
+        font-size: 16px;
     }
 
     &__domain {

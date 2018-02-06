@@ -18,9 +18,7 @@
         <a class="garage-settings__add-project" id="add-project">Add new Project</a>
 
         <form class="project" action="/garage/project/add" method="post" name="js-toggle" data-button="add-project">
-            <div class="form__logo-upload fl_r">
 
-            </div>
             <fieldset class="form__section">
                 <label class="form__label">Project Name</label>
                 <input type="text" class="form__width-fixed" placeholder="Google Main Page" name="name" required>
@@ -39,7 +37,7 @@
         {% for project in projects %}
 
             {% if not project.user.is_pending %}
-               {% include 'garage/settings/project.twig' with {user: user, project: project} %}
+               {% include 'garage/settings/project.twig' with {user: user, project: project, csrfToken: csrfToken} %}
             {% endif %}
         {% endfor %}
 
@@ -48,13 +46,14 @@
     <script>
         var tokenCopied = function (e) {
 
-              hawk.notifier.show({
-                message: 'Token was copied',
-                style: 'success'
-              })
+          hawk.notifier.show({
+            message: 'Token was copied',
+            style: 'success'
+          })
 
         }
 
+        hawk.docReady(hawk.projectSettings.init);
         hawk.docReady(hawk.checkbox.init);
         hawk.docReady(hawk.toggler.init);
         hawk.docReady(hawk.copyable.init.bind(null, tokenCopied));

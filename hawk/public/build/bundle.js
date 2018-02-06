@@ -64,7 +64,7 @@ var hawk =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 13);
+/******/ 	return __webpack_require__(__webpack_require__.s = 16);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -979,7 +979,7 @@ module.exports = function () {
 "use strict";
 
 
-var _class = __webpack_require__(12);
+var _class = __webpack_require__(15);
 
 module.exports = function (self) {
   self.init = function (settings) {
@@ -1023,6 +1023,162 @@ module.exports = function (self) {
 
 /***/ }),
 /* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * CodeX Transport
+ * AJAX file-uploading module
+ * @see {@link https://github.com/codex-team/transport}
+ * @copyright  CodeX <team@ifmo.su>
+ */
+var transport = __webpack_require__(13);
+
+/**
+ * Work with projects settings files
+ */
+module.exports = function () {
+  /**
+   * Methods for uploading logo
+   * @type {{clicked(), uploading(), success(), error()}}
+   */
+  var logoUploader = {
+
+    /**
+     * Logo Wrapper
+     */
+    holder: null,
+
+    /**
+     * Show file selection window and upload the file
+     *
+     * @this {Element} Project logo wrapper
+     */
+    clicked: function clicked() {
+      logoUploader.holder = this;
+
+      var projectId = logoUploader.holder.dataset.projectId,
+          _csrf = logoUploader.holder.dataset.csrf;
+
+      transport.init({
+        url: 'settings/loadIcon',
+        multiple: false,
+        accept: 'image/*',
+        data: {
+          projectId: projectId,
+          _csrf: _csrf
+        },
+        before: logoUploader.uploading.start,
+        success: logoUploader.success,
+        error: logoUploader.error
+      });
+    },
+
+
+    /**
+     * Loading indicator
+     */
+    uploading: {
+
+      /**
+       * Loading animation class name
+       * @type {string}
+       */
+      className: 'project__logo-wrapper--loading',
+
+      /**
+       * Show loader
+       */
+      start: function start() {
+        logoUploader.holder.classList.add(logoUploader.uploading.className);
+      },
+
+      /**
+       * Hide loader
+       */
+      stop: function stop() {
+        logoUploader.holder.classList.remove(logoUploader.uploading.className);
+      }
+    },
+
+    /**
+     * Uploading succeeded
+     * @param {object} response
+     * @param {string} response.message - error message
+     * @param {string} response.logoUrl - uploaded logo URL
+     * @param {number} response.status  - response code
+     */
+    success: function success(response) {
+      if (response.status !== 200) {
+        logoUploader.error(response);
+        return;
+      }
+
+      /**
+       * Find or create an image
+       */
+      var img = logoUploader.holder.querySelector('img');
+
+      if (!img) {
+        img = document.createElement('img');
+        logoUploader.holder.appendChild(img);
+      }
+
+      /**
+       * Update image source
+       */
+      img.src = response.logoUrl + '/crop/200';
+      img.addEventListener('load', function () {
+        logoUploader.uploading.stop();
+      });
+    },
+
+
+    /**
+     * Uploading failed
+     * @param {object} response
+     * @param {string} response.message - error message
+     * @param {number} response.status    - response code
+     */
+    error: function error() {
+      var response = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      console.log('Project upload error ', response);
+
+      hawk.notifier.show({
+        message: response.message || 'Uploading failed. Try another file.',
+        style: 'error'
+      });
+
+      logoUploader.uploading.stop();
+    }
+  };
+
+  /**
+   * Init all projects elements
+   */
+  var init = function init() {
+    /**
+     * Activate project logo uploading
+     */
+    var logoHolders = document.querySelectorAll('.js_project_logo');
+
+    if (logoHolders) {
+      for (var i = logoHolders.length - 1; i >= 0; i--) {
+        logoHolders[i].addEventListener('click', logoUploader.clicked, false);
+      }
+    }
+  };
+
+  return {
+    init: init
+  };
+}();
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1238,7 +1394,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1324,7 +1480,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1410,13 +1566,157 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 12 */
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+!function (t, e) {
+  "object" == ( false ? "undefined" : _typeof(exports)) && "object" == ( false ? "undefined" : _typeof(module)) ? module.exports = e() :  true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (e),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : "object" == (typeof exports === "undefined" ? "undefined" : _typeof(exports)) ? exports.transport = e() : t.transport = e();
+}(undefined, function () {
+  return function (t) {
+    function e(r) {
+      if (n[r]) return n[r].exports;var o = n[r] = { i: r, l: !1, exports: {} };return t[r].call(o.exports, o, o.exports, e), o.l = !0, o.exports;
+    }var n = {};return e.m = t, e.c = n, e.d = function (t, n, r) {
+      e.o(t, n) || Object.defineProperty(t, n, { configurable: !1, enumerable: !0, get: r });
+    }, e.n = function (t) {
+      var n = t && t.__esModule ? function () {
+        return t.default;
+      } : function () {
+        return t;
+      };return e.d(n, "a", n), n;
+    }, e.o = function (t, e) {
+      return Object.prototype.hasOwnProperty.call(t, e);
+    }, e.p = "", e(e.s = 0);
+  }([function (t, e, n) {
+    "use strict";
+    var r = "function" == typeof Symbol && "symbol" == _typeof(Symbol.iterator) ? function (t) {
+      return typeof t === "undefined" ? "undefined" : _typeof(t);
+    } : function (t) {
+      return t && "function" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? "symbol" : typeof t === "undefined" ? "undefined" : _typeof(t);
+    },
+        o = n(1);t.exports = function (t) {
+      var e = null;t.input = null;var n = function n() {
+        t.input.click();
+      },
+          u = function u() {
+        e.before(t.input.files);
+      },
+          a = function a() {
+        var n = e.url,
+            a = e.data,
+            i = u,
+            c = e.progress,
+            f = e.success,
+            s = e.error,
+            p = e.after,
+            l = new FormData(),
+            d = t.input.files;if (d.length > 1) for (var y = 0; y < d.length; y++) {
+          l.append("files[]", d[y], d[y].name);
+        } else l.append("file", d[0], d[0].name);if (null !== a && "object" === (void 0 === a ? "undefined" : r(a))) for (var b in a) {
+          l.append(b, a[b]);
+        }o.call({ type: "POST", data: l, url: n, before: i, progress: c, success: f, error: s, after: p });
+      };return t.init = function (r) {
+        if (!r.url) return void console.log("Can't send request because `url` is missed");e = r;var o = document.createElement("INPUT");o.type = "file", e && e.multiple && o.setAttribute("multiple", "multiple"), e && e.accept && o.setAttribute("accept", e.accept), o.addEventListener("change", a, !1), t.input = o, n();
+      }, t;
+    }({});
+  }, function (t, e, n) {
+    !function (e, n) {
+      t.exports = n();
+    }(0, function () {
+      return function (t) {
+        function e(r) {
+          if (n[r]) return n[r].exports;var o = n[r] = { i: r, l: !1, exports: {} };return t[r].call(o.exports, o, o.exports, e), o.l = !0, o.exports;
+        }var n = {};return e.m = t, e.c = n, e.d = function (t, n, r) {
+          e.o(t, n) || Object.defineProperty(t, n, { configurable: !1, enumerable: !0, get: r });
+        }, e.n = function (t) {
+          var n = t && t.__esModule ? function () {
+            return t.default;
+          } : function () {
+            return t;
+          };return e.d(n, "a", n), n;
+        }, e.o = function (t, e) {
+          return Object.prototype.hasOwnProperty.call(t, e);
+        }, e.p = "", e(e.s = 0);
+      }([function (t, e, n) {
+        "use strict";
+        t.exports = function () {
+          var t = function t(_t) {
+            return _t instanceof FormData;
+          };return { call: function call(e) {
+              if (e && e.url) {
+                var n = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject("Microsoft.XMLHTTP"),
+                    r = e.progress || null,
+                    o = e.success || function () {},
+                    u = e.error || function () {},
+                    a = e.before || null,
+                    i = e.after ? e.after.bind(null, e.data) : null;if (e.async = !0, e.type = e.type || "GET", e.data = e.data || "", e["content-type"] = e["content-type"] || "application/json; charset=utf-8", "GET" === e.type && e.data && (e.url = /\?/.test(e.url) ? e.url + "&" + e.data : e.url + "?" + e.data), e.withCredentials && (n.withCredentials = !0), a && "function" == typeof a && !1 === a(e.data)) return;if (n.open(e.type, e.url, e.async), !t(e.data)) {
+                  var c = new FormData();for (var f in e.data) {
+                    c.append(f, e.data[f]);
+                  }e.data = c;
+                }r && "function" == typeof r && n.upload.addEventListener("progress", function (t) {
+                  var e = parseInt(t.loaded / t.total * 100);r(e);
+                }, !1), n.setRequestHeader("X-Requested-With", "XMLHttpRequest"), n.onreadystatechange = function () {
+                  if (4 === n.readyState) {
+                    var t = n.responseText;try {
+                      t = JSON.parse(t);
+                    } catch (t) {}200 === n.status ? o(t) : u(t), i && "function" == typeof i && i();
+                  }
+                }, n.send(e.data);
+              }
+            } };
+        }();
+      }]);
+    });
+  }]);
+});
+//# sourceMappingURL=bundle.js.map
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)(module)))
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function (module) {
+	if (!module.webpackPolyfill) {
+		module.deprecate = function () {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if (!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function get() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function get() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+/***/ }),
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1576,16 +1876,16 @@ var Appender = exports.Appender = function () {
 }();
 
 /***/ }),
-/* 13 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 /**
-* Require CSS build
-*/
-__webpack_require__(11);
+ * Require CSS build
+ */
+__webpack_require__(12);
 
 var hawk = function (self) {
   'use strict';
@@ -1597,6 +1897,7 @@ var hawk = function (self) {
     self.settingsForm.init();
 
     /** Custom keyboard events **/
+
     self.keyboard.init();
 
     console.log('Hawk app initialized');
@@ -1605,13 +1906,14 @@ var hawk = function (self) {
   self.checkbox = __webpack_require__(2);
   self.copyable = __webpack_require__(3);
   self.ajax = __webpack_require__(1);
-  self.notifier = __webpack_require__(10);
+  self.notifier = __webpack_require__(11);
   self.event = __webpack_require__(5);
   self.eventPopup = __webpack_require__(4);
   self.appender = __webpack_require__(7);
-  self.settingsForm = __webpack_require__(8);
-  self.toggler = __webpack_require__(9);
+  self.settingsForm = __webpack_require__(9);
+  self.toggler = __webpack_require__(10);
   self.keyboard = __webpack_require__(6);
+  self.projectSettings = __webpack_require__(8);
 
   var delegate = function delegate(element) {
     var modulesRequired = void 0;

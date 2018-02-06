@@ -2,7 +2,102 @@ let express = require('express');
 let router = express.Router();
 let user = require('../../models/user');
 
+/**
+ * CSRF protection middlewares
+ * @type {module:csrf}
+ */
 let csrf = require('../../modules/csrf');
+
+let uploader = require('../../modules/upload');
+let project = require('../../models/project');
+
+/**
+ * Middleware for parsing form data, including multipart/form-data file upload.
+ * {@link https://github.com/utatti/express-formidable}
+ */
+let formidable = require('express-formidable');
+let multipartMiddleware = formidable();
+
+/**
+ * File system
+ * {@link https://nodejs.org/api/fs.html}
+ */
+const fs = require('fs');
+
+/**
+ * Upload Project Logo to the Capella and save an URL
+ *
+ * @param req
+ * @param res
+ */
+let uploadLogo = function (req, res) {
+  let file = req.files['file'];
+
+  if (!checkImageValid(file, res)) {
+    return;
+  }
+
+  uploader.uploadImageToCapella(file.path, function (resp) {
+
+    /**
+     * Remove temporary file
+     */
+    fs.unlink(file.path);
+
+    if (!resp.success) {
+      res.send({
+        status: 500,
+        message: 'Error. Please, try again or later'
+      });
+      return;
+    }
+
+    let logoUrl = resp.url;
+
+    project.setIcon(req.fields.projectId, logoUrl)
+        .then(function () {
+          res.send({
+            status: 200,
+            logoUrl: logoUrl
+          });
+        });
+  });
+};
+
+/**
+ * Check image valid
+ *
+ * @param {JSON} file
+ * @param res
+ * @returns {boolean}
+ */
+let checkImageValid = function (file, res) {
+  let availableExtensions = ['image/png', 'image/jpeg', 'image/jpg'];
+
+  if (!availableExtensions.includes(file.type)) {
+    let message = 'This file extension is not supported. Please, use jpg or png instead';
+
+    res.send({
+      status: 500,
+      message: message
+    });
+    return false;
+  }
+
+  // max bytes image size (15MB)
+  let maxSize = 15 * 1024 * 1024;
+
+  if (file.size > maxSize) {
+    let message = 'File is too big. Please try another one under 15MB';
+
+    res.send({
+      status: 500,
+      message: message
+    });
+    return false;
+  }
+  return true;
+};
 
 /**
  * Garage settings page
@@ -14,8 +109,8 @@ let index = function (req, res) {
   let params = {
     user: res.locals.user,
     csrfToken: req.csrfToken(),
-    meta : {
-      title : 'User settings'
+    meta: {
+      title: 'User settings'
     },
     success: req.query.success,
     message: req.query.message,
@@ -57,11 +152,12 @@ let update = function (req, res) {
         res.redirect('/garage/settings?success=1&message=' + message);
       });
   } catch (e) {
-    res.redirect('/garage/settings?success=0&message='+e.message);
+    res.redirect('/garage/settings?success=0&message=' + e.message);
   }
 };
 
-router.get('/settings', csrf, index);
-router.post('/settings/save', csrf, update);
+router.get('/settings', csrf.byCookie, index);
+router.post('/settings/save', csrf.byCookie, update);
+router.post('/settings/loadIcon', multipartMiddleware, csrf.byAjaxForm, uploadLogo);
 
 module.exports = router;

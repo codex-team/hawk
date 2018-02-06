@@ -2,7 +2,7 @@ let express = require('express');
 let router = express.Router();
 let uuid = require('uuid');
 let Twig = require('twig');
-let email  = require('../../modules/email');
+let email = require('../../modules/email');
 let project = require('../../models/project');
 let user = require('../../models/user');
 let translit = require('../../modules/translit');
@@ -16,7 +16,7 @@ let translit = require('../../modules/translit');
  */
 let add = function (req, res) {
   let post = req.body,
-      token = uuid.v4();
+    token = uuid.v4();
 
   if (!post.name || !post.name.trim()) {
     let message = 'Please, pass project name';
@@ -32,6 +32,7 @@ let add = function (req, res) {
     dt_added: new Date(),
     uid_added: res.locals.user._id,
     token: token,
+    logo: '',
     uri: translit(post.name, true)
   };
 
@@ -59,7 +60,7 @@ let add = function (req, res) {
 
       let message = insertedProject.name + ' was successfully added';
 
-      res.redirect('/garage/settings?success=1&message='+message);
+      res.redirect('/garage/settings?success=1&message=' + message);
     });
 };
 
@@ -73,7 +74,7 @@ let add = function (req, res) {
  */
 let inviteMember = function (req, res) {
   let userEmail = req.body.email,
-      projectId = req.body.projectId;
+    projectId = req.body.projectId;
 
   if (!userEmail) {
     res.json({
@@ -102,13 +103,13 @@ let inviteMember = function (req, res) {
     })
     .then(function ({foundProject, foundUser}) {
       let inviteHash = project.generateInviteHash(foundUser._id, foundProject._id),
-          inviteLink = process.env.SERVER_URL + '/invite?user=' + foundUser._id
-                                                     + '&project=' + foundProject._id
-                                                     + '&hash=' + inviteHash,
-          renderParams = {
-            project: foundProject,
-            inviteLink: inviteLink
-          };
+        inviteLink = process.env.SERVER_URL + '/invite?user=' + foundUser._id
+          + '&project=' + foundProject._id
+          + '&hash=' + inviteHash,
+        renderParams = {
+          project: foundProject,
+          inviteLink: inviteLink
+        };
 
       Twig.renderFile('views/notifies/email/projectInvite.twig', renderParams, function (err, html) {
         if (err) {
