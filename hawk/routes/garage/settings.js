@@ -1,6 +1,11 @@
 let express = require('express');
 let router = express.Router();
 let user = require('../../models/user');
+
+/**
+ * CSRF protection middlewares
+ * @type {module:csrf}
+ */
 let csrf = require('../../modules/csrf');
 
 let uploader = require('../../modules/upload');
@@ -153,6 +158,6 @@ let update = function (req, res) {
 
 router.get('/settings', csrf.byCookie, index);
 router.post('/settings/save', csrf.byCookie, update);
-router.post('/settings/loadIcon', multipartMiddleware, csrf.byAjax, uploadLogo);
+router.post('/settings/loadIcon', multipartMiddleware, csrf.byAjaxForm, uploadLogo);
 
 module.exports = router;

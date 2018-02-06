@@ -8,9 +8,19 @@
 
 let csurf = require('csurf');
 
+/**
+ * @module csrf
+ * @type {{byCookie: Function, byAjaxForm: Function}}
+ */
 module.exports = {
   byCookie: csurf({cookie: true}),
-  byAjax: csurf({
+
+  /**
+   * For AJAX FormData requests.
+   * Also Requires 'express-formidable' middleware
+   * Pass CSRF token with '_csrf' key
+   */
+  byAjaxForm: csurf({
     cookie: true,
     value: function (req) {
       return req.fields._csrf;
