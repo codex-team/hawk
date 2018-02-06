@@ -45,10 +45,10 @@
     "postcss-nested-ancestors": "^1.0.0",
     "postcss-nesting": "^4.0.1",
     "postcss-smart-import": "^0.7.4",
-    "webpack": "^2.6.1"
+    "webpack": "^2.6.1",
+    "@codexteam/capella-pics": "^1.0.1"
   },
   "dependencies": {
-    "@codexteam/capella-pics": "^1.0.1",
     "body-parser": "~1.17.1",
     "bowser": "^1.7.3",
     "codex-notifier": "^1.0.1",
@@ -61,6 +61,7 @@
     "dotenv": "^4.0.0",
     "exports-loader": "^0.6.4",
     "express": "^4.16.2",
+    "express-formidable": "^1.0.0",
     "mongodb": "^2.2.29",
     "morgan": "~1.8.1",
     "nodemailer": "^4.0.1",

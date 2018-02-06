@@ -1050,7 +1050,6 @@ module.exports = function () {
   function logoHolderClicked(logoHolder) {
     var projectId = logoHolder.dataset.projectId,
         _csrf = logoHolder.dataset.csrf;
-
     /**
      * Loading animation class name
      * @type {string}
@@ -1097,9 +1096,9 @@ module.exports = function () {
         });
       },
       error: function error(response) {
-        console.log('response', response);
+        console.log('Project upload error ', response);
         hawk.notifier.show({
-          message: response,
+          message: 'Upload later. Try again later',
           style: 'error'
         });
         logoHolder.classList.remove(loadingClass);

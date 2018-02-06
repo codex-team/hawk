@@ -6,6 +6,8 @@ let csrf = require('../../modules/csrf');
 let uploader = require('../../modules/upload');
 let project = require('../../models/project');
 
+let formidable = require('express-formidable');
+let multipartMiddleware = formidable();
 /**
  * Upload Project Logo to the Capella and save an URL
  *
@@ -13,10 +15,6 @@ let project = require('../../models/project');
  * @param res
  */
 let uploadLogo = function (req, res) {
-
-  console.log('req.body', req.body);
-  console.log('req.files', req.files);
-
   let file = req.files['file'];
 
   if (!checkImageValid(file, res)) {
@@ -25,11 +23,12 @@ let uploadLogo = function (req, res) {
 
   uploader.uploadImageToCapella(file.path, function (resp) {
     let logoUrl;
-    if(resp.success) {
+
+    if (resp.success) {
       logoUrl = resp.url;
-    }
-    else {
+    } else {
       let message = 'Error. Please, try again or later';
+
       res.send({
         status: 500,
         message: message
@@ -37,7 +36,7 @@ let uploadLogo = function (req, res) {
       return;
     }
 
-    project.setIcon(req.body.projectId, logoUrl).then(function (resolve) {
+    project.setIcon(req.fields.projectId, logoUrl).then(function (resolve) {
       res.send({
         status: 200,
         logoUrl: logoUrl
@@ -58,6 +57,7 @@ let checkImageValid = function (file, res) {
 
   if (!availableExtensions.includes(file.type)) {
     let message = 'This file extension is not supported. Please, use jpg or png instead';
+
     res.send({
       status: 500,
       message: message
@@ -65,10 +65,12 @@ let checkImageValid = function (file, res) {
     return false;
   }
 
-  //max bytes image size (15MB)
+  // max bytes image size (15MB)
   let maxSize = 15 * 1024 * 1024;
+
   if (file.size > maxSize) {
     let message = 'File is too big. Please try another one under 15MB';
+
     res.send({
       status: 500,
       message: message
@@ -135,8 +137,8 @@ let update = function (req, res) {
   }
 };
 
-router.get('/settings', csrf, index);
-router.post('/settings/save', csrf, update);
-router.post('/settings/loadIcon', csrf, uploadLogo);
+router.get('/settings', csrf.csurf, index);
+router.post('/settings/save', csrf.csurf, update);
+router.post('/settings/loadIcon', multipartMiddleware, csrf.csurfAjax, uploadLogo);
 
 module.exports = router;
