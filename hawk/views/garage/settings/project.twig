@@ -1,7 +1,7 @@
 <div class="project">
 
     <div class="project__logo-wrapper js_project_logo" id="project-logo-{{ project.id }}"
-         data-project-id="{{ project.id }}">
+         data-project-id="{{ project.id }}" data-csrf="{{ csrfToken }}">
         {% if project.logo is not empty %}
             <img src="{{ project.logo }}/crop/200">
         {% endif %}

@@ -1048,7 +1048,8 @@ module.exports = function () {
    * @param {Element} logoHolder — Project logo wrapper
    */
   function logoHolderClicked(logoHolder) {
-    var projectId = logoHolder.dataset.projectId;
+    var projectId = logoHolder.dataset.projectId,
+        _csrf = logoHolder.dataset.csrf;
 
     /**
      * Loading animation class name
@@ -1060,7 +1061,10 @@ module.exports = function () {
       url: 'settings/loadIcon',
       multiple: false,
       accept: 'image/*',
-      data: { projectId: projectId },
+      data: {
+        projectId: projectId,
+        _csrf: _csrf
+      },
       before: function before() {
         logoHolder.classList.add(loadingClass);
       },
@@ -1093,6 +1097,7 @@ module.exports = function () {
         });
       },
       error: function error(response) {
+        console.log('response', response);
         hawk.notifier.show({
           message: response,
           style: 'error'

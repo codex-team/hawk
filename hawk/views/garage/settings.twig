@@ -37,7 +37,7 @@
         {% for project in projects %}
 
             {% if not project.user.is_pending %}
-               {% include 'garage/settings/project.twig' with {user: user, project: project} %}
+               {% include 'garage/settings/project.twig' with {user: user, project: project, csrfToken: csrfToken} %}
             {% endif %}
         {% endfor %}
 

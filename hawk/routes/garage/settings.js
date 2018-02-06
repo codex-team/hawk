@@ -6,9 +6,6 @@ let csrf = require('../../modules/csrf');
 let uploader = require('../../modules/upload');
 let project = require('../../models/project');
 
-let multipart = require('connect-multiparty');
-let multipartMiddleware = multipart();
-
 /**
  * Upload Project Logo to the Capella and save an URL
  *
@@ -16,6 +13,10 @@ let multipartMiddleware = multipart();
  * @param res
  */
 let uploadLogo = function (req, res) {
+
+  console.log('req.body', req.body);
+  console.log('req.files', req.files);
+
   let file = req.files['file'];
 
   if (!checkImageValid(file, res)) {
@@ -136,6 +137,6 @@ let update = function (req, res) {
 
 router.get('/settings', csrf, index);
 router.post('/settings/save', csrf, update);
-router.post('/settings/loadIcon', multipartMiddleware, uploadLogo);
+router.post('/settings/loadIcon', csrf, uploadLogo);
 
 module.exports = router;
