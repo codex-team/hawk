@@ -6,8 +6,13 @@ let csrf = require('../../modules/csrf');
 let uploader = require('../../modules/upload');
 let project = require('../../models/project');
 
+/**
+ * Middleware for parsing form data, including multipart/form-data file upload.
+ * {@link https://github.com/utatti/express-formidable}
+ */
 let formidable = require('express-formidable');
 let multipartMiddleware = formidable();
+
 /**
  * Upload Project Logo to the Capella and save an URL
  *
@@ -22,26 +27,23 @@ let uploadLogo = function (req, res) {
   }
 
   uploader.uploadImageToCapella(file.path, function (resp) {
-    let logoUrl;
-
-    if (resp.success) {
-      logoUrl = resp.url;
-    } else {
-      let message = 'Error. Please, try again or later';
-
+    if (!resp.success) {
       res.send({
         status: 500,
-        message: message
+        message: 'Error. Please, try again or later'
       });
       return;
     }
 
-    project.setIcon(req.fields.projectId, logoUrl).then(function (resolve) {
-      res.send({
-        status: 200,
-        logoUrl: logoUrl
-      });
-    });
+    let logoUrl = resp.url;
+
+    project.setIcon(req.fields.projectId, logoUrl)
+        .then(function () {
+          res.send({
+            status: 200,
+            logoUrl: logoUrl
+          });
+        });
   });
 };
 
@@ -137,8 +139,8 @@ let update = function (req, res) {
   }
 };
 
-router.get('/settings', csrf.csurf, index);
-router.post('/settings/save', csrf.csurf, update);
-router.post('/settings/loadIcon', multipartMiddleware, csrf.csurfAjax, uploadLogo);
+router.get('/settings', csrf.byCookie, index);
+router.post('/settings/save', csrf.byCookie, update);
+router.post('/settings/loadIcon', multipartMiddleware, csrf.byAjax, uploadLogo);
 
 module.exports = router;

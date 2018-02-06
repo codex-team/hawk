@@ -311,10 +311,10 @@ module.exports = function () {
   };
 
   /**
-   * Updates project's logo URL
+   * Updates Project's logo URL
    *
-   * @param {String} projectId
-   * @param {String} logoPath
+   * @param {String} projectId - Project's id
+   * @param {String} logoPath  - Logo file URL
    * @returns {Promise.<TResult>|Request}
    */
   let setIcon = function (projectId, logoPath) {

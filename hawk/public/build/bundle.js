@@ -1032,79 +1032,129 @@ module.exports = function (self) {
  * CodeX Transport
  * AJAX file-uploading module
  * @see {@link https://github.com/codex-team/transport}
- * @copyright CodeX Team (https://github.com/codex-team)
+ * @copyright  CodeX <team@ifmo.su>
  */
 var transport = __webpack_require__(13);
 
 /**
  * Work with projects settings files
- *
- * @type {{init}}
  */
 module.exports = function () {
   /**
-   * Show file selection window and upload the file
-   *
-   * @param {Element} logoHolder — Project logo wrapper
+   * Methods for uploading logo
+   * @type {{clicked(), uploading(), success(), error()}}
    */
-  function logoHolderClicked(logoHolder) {
-    var projectId = logoHolder.dataset.projectId,
-        _csrf = logoHolder.dataset.csrf;
+  var logoUploader = {
+
     /**
-     * Loading animation class name
-     * @type {string}
+     * Logo Wrapper
      */
-    var loadingClass = 'project__logo-wrapper--loading';
+    holder: null,
 
-    transport.init({
-      url: 'settings/loadIcon',
-      multiple: false,
-      accept: 'image/*',
-      data: {
-        projectId: projectId,
-        _csrf: _csrf
+    /**
+     * Show file selection window and upload the file
+     *
+     * @this {Element} Project logo wrapper
+     */
+    clicked: function clicked() {
+      logoUploader.holder = this;
+
+      var projectId = logoUploader.holder.dataset.projectId,
+          _csrf = logoUploader.holder.dataset.csrf;
+
+      transport.init({
+        url: 'settings/loadIcon',
+        multiple: false,
+        accept: 'image/*',
+        data: {
+          projectId: projectId,
+          _csrf: _csrf
+        },
+        before: logoUploader.uploading.start,
+        success: logoUploader.success,
+        error: logoUploader.error
+      });
+    },
+
+
+    /**
+     * Loading indicator
+     */
+    uploading: {
+
+      /**
+       * Loading animation class name
+       * @type {string}
+       */
+      className: 'project__logo-wrapper--loading',
+
+      /**
+       * Show loader
+       */
+      start: function start() {
+        logoUploader.holder.classList.add(logoUploader.uploading.className);
       },
-      before: function before() {
-        logoHolder.classList.add(loadingClass);
-      },
-      success: function success(response) {
-        if (response.status !== 200) {
-          hawk.notifier.show({
-            message: response.message,
-            style: 'error'
-          });
-          logoHolder.classList.remove(loadingClass);
-          return;
-        }
 
-        /**
-         * Find or create an image
-         */
-        var img = logoHolder.querySelector('img');
-
-        if (!img) {
-          img = document.createElement('img');
-          logoHolder.appendChild(img);
-        }
-
-        /**
-         * Update image source
-         */
-        img.src = response.logoUrl + '/crop/200';
-        img.addEventListener('load', function () {
-          logoHolder.classList.remove(loadingClass);
-        });
-      },
-      error: function error(response) {
-        console.log('Project upload error ', response);
-        hawk.notifier.show({
-          message: 'Upload later. Try again later',
-          style: 'error'
-        });
-        logoHolder.classList.remove(loadingClass);
+      /**
+       * Hide loader
+       */
+      stop: function stop() {
+        logoUploader.holder.classList.remove(logoUploader.uploading.className);
       }
-    });
-  }
+    },
+
+    /**
+     * Uploading succeeded
+     * @param {object} response
+     * @param {string} response.message - error message
+     * @param {string} response.logoUrl - uploaded logo URL
+     * @param {number} response.status  - response code
+     */
+    success: function success(response) {
+      if (response.status !== 200) {
+        logoUploader.error(response);
+        return;
+      }
+
+      /**
+       * Find or create an image
+       */
+      var img = logoUploader.holder.querySelector('img');
+
+      if (!img) {
+        img = document.createElement('img');
+        logoUploader.holder.appendChild(img);
+      }
+
+      /**
+       * Update image source
+       */
+      img.src = response.logoUrl + '/crop/200';
+      img.addEventListener('load', function () {
+        logoUploader.uploading.stop();
+      });
+    },
+
+
+    /**
+     * Uploading failed
+     * @param {object} response
+     * @param {string} response.message - error message
+     * @param {number} response.status    - response code
+     */
+    error: function error() {
+      var response = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      console.log('Project upload error ', response);
+
+      hawk.notifier.show({
+        message: response.message || 'Uploading failed. Try another file.',
+        style: 'error'
+      });
+
+      logoUploader.uploading.stop();
+    }
+  };
 
   /**
    * Init all projects elements
@@ -1117,9 +1167,7 @@ module.exports = function () {
 
     if (logoHolders) {
       for (var i = logoHolders.length - 1; i >= 0; i--) {
-        logoHolders[i].addEventListener('click', function () {
-          logoHolderClicked(this);
-        }, false);
+        logoHolders[i].addEventListener('click', logoUploader.clicked, false);
       }
     }
   };
