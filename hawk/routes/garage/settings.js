@@ -14,6 +14,12 @@ let formidable = require('express-formidable');
 let multipartMiddleware = formidable();
 
 /**
+ * File system
+ * {@link https://nodejs.org/api/fs.html}
+ */
+const fs = require('fs');
+
+/**
  * Upload Project Logo to the Capella and save an URL
  *
  * @param req
@@ -27,6 +33,12 @@ let uploadLogo = function (req, res) {
   }
 
   uploader.uploadImageToCapella(file.path, function (resp) {
+
+    /**
+     * Remove temporary file
+     */
+    fs.unlink(file.path);
+
     if (!resp.success) {
       res.send({
         status: 500,
