@@ -30,4 +30,6 @@ router.use(php);
 router.use(python);
 router.use(android);
 
+global.logger.debug('Catchers activated');
+
 module.exports = router;

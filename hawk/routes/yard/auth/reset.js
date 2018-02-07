@@ -12,10 +12,12 @@ let Twig = require('twig');
  */
 let reset = {
   get: function (req, res) {
+    global.logger.debug('Reset page visited');
     res.render('yard/auth/reset');
   },
 
   post: function (req, res) {
+    global.logger.debug('Reset page received post data');
     let email = req.body.email;
 
     user.getByParams({email: email})

@@ -48,6 +48,7 @@ let formatStack = function (debugBacktrace) {
  * @param res
  */
 let getAndroidErrors = function (req, res) {
+  global.logger.debug('Android catcher got en error');
   let request = req.body,
     eventGroupPrehashed = request.message;
   let event = {
@@ -70,9 +71,12 @@ let getAndroidErrors = function (req, res) {
     time: request.time
   };
 
+  global.logger.debug('Android catcher parsed en error data');
+
   project.getByToken(event.token)
     .then(function (foundProject) {
       if (!foundProject) {
+        global.logger.debug('Android catcher returns 403');
         res.sendStatus(403);
         return;
       }
@@ -90,9 +94,12 @@ let getAndroidErrors = function (req, res) {
       notifies.send(foundProject, event);
 
       res.sendStatus(200);
+      global.logger.debug('Android catcher returns 200');
     })
-    .catch(function () {
+    .catch(function (error) {
       res.sendStatus(500);
+      global.logger.debug('Android catcher returns 500');
+      global.logger.debug(error);
     });
 };
 

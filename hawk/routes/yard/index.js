@@ -7,6 +7,7 @@ var router = express.Router();
  * Home page
  */
 router.get('/', function (req, res, next) {
+  global.logger.debug('Index page visited');
   res.render('yard/index', {
     user : res.locals.user
   });
@@ -17,6 +18,7 @@ router.get('/', function (req, res, next) {
  * Docs page
  */
 router.get('/docs', function (req, res, next) {
+  global.logger.debug('Docs page visited');
   res.render('yard/docs/index', {
 
     meta : {

@@ -12,6 +12,7 @@ let user = require('../../../models/user');
 let recover = {
 
   get: function (req, res) {
+    global.logger.debug('Recover page received post data');
     let recoverHash = req.params.hash,
         action = '/recover/' + recoverHash;
 
@@ -35,6 +36,7 @@ let recover = {
    * @param res
    */
   post: function (req, res) {
+    global.logger.debug('Recover page received post data');
     let recoverHash = req.params.hash,
         action = '/recover/' + recoverHash,
         password = req.body.password,

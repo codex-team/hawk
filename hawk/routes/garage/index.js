@@ -16,6 +16,7 @@ const EVENT_LIMIT = 8;
  * @param res
  */
 let index = function (req, res) {
+  global.logger.debug('Someone visited a /garage index');
   let currentProject,
       currentTag;
 
@@ -87,6 +88,7 @@ let index = function (req, res) {
  * @private
  */
 let makeResponse_ = function (foundEvents, currentProject, currentTag, canLoadMore) {
+  global.logger.debug('Garage index: makeResponse');
   let {req, res} = this;
 
   if (req.xhr && req.query.page) {
