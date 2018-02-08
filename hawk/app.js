@@ -88,8 +88,8 @@ accessLogger.stream = {
 
 };
 
-
 var app = express();
+global.logger.debug('Express started');
 
 /**
  * User model
@@ -113,6 +113,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('/static', express.static(path.join(__dirname, 'public')));
+global.logger.debug('Widdlewares enabled');
 
 /**
 * Sets response scoped variables
@@ -166,8 +167,11 @@ var catcher = require('./routes/catcher/catcher');
 
 app.use('/catcher', catcher);
 
+global.logger.debug('Routes binded');
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
+  global.logger.debug('404 error exception');
   var err = new Error('Not Found');
 
   err.status = 404;
@@ -176,6 +180,7 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res) {
+  global.logger.debug('Base errors handler: ' + err.message);
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = process.env.ENVIRONMENT === 'DEVELOPMENT' ? err : {};
@@ -207,6 +212,8 @@ app.use(function (err, req, res) {
   }
 
   res.render('yard/errors/error', errorPageData);
+
+  global.logger.debug('404 error exception finish.');
 });
 
 global.app = app;

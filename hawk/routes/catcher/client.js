@@ -86,14 +86,19 @@ let receiver = new WebSocket.Server({
 });
 
 let connection = function (ws) {
+  global.logger.debug('Client catcher: new connection');
+
   function getClientErrors(message) {
+    global.logger.debug('Client catcher starts to handle parsed message');
     let eventGroupPrehashed = message.message;
 
     message.error_location.full = message.error_location.file + ' -> ' +
                                   message.error_location.line + ':' +
                                   message.error_location.col;
 
+    global.logger.debug('Client catcher begins to detect a Device Info');
     let clientInfo = detect(message.navigator.ua);
+    global.logger.debug('Client catcher detected a Device Info');
 
     clientInfo.device.width = message.navigator.frame.width;
     clientInfo.device.height = message.navigator.frame.height;
@@ -115,6 +120,7 @@ let connection = function (ws) {
     project.getByToken(message.token)
       .then( function (foundProject) {
         if (!foundProject) {
+          global.logger.debug('Client catcher returns Access Denied');
           ws.send(JSON.stringify({type: 'warn', message: 'Access denied'}));
           ws.close();
           return;
@@ -130,18 +136,24 @@ let connection = function (ws) {
           return;
         }
 
+        global.logger.debug('Client catcher tries to send a Notify to the project\'s team');
         return notifies.send(foundProject, event);
       })
       .catch( function (e) {
         logger.log('Error while saving client error ', e);
+        global.logger.debug('Client catcher start to stringify an error');
         ws.send(JSON.stringify({type: 'error', message: e.message}));
+        global.logger.debug('Client catcher returns an error');
       });
   }
 
   let receiveMessage = function (message) {
     console.log('Client catcher recieved a message: %o', message);
+    global.logger.debug('Client catcher received a message');
 
-    message = JSON.parse(message);
+    global.logger.debug('Client catcher tries to parse a message');
+    message = JSON.parse(message); // @todo add try catch
+    global.logger.debug('Client catcher parsed a message');
     getClientErrors(message);
   };
 

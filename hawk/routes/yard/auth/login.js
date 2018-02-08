@@ -9,6 +9,7 @@ let login = {
 
   /* Show log in form */
   get: function (req, res, next) {
+    global.logger.debug('Login page visited');
     if (res.locals.user) {
       res.redirect('/garage');
       return;
@@ -35,6 +36,7 @@ let login = {
 
   /* Log in function */
   post: function (req, res, next) {
+    global.logger.debug('Login page received post data');
     if (res.locals.user) {
       res.redirect('/garage');
       return;

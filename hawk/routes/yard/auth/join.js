@@ -12,6 +12,7 @@ let join = {
 
   /* Show join form */
   get: function (req, res, next) {
+    global.logger.debug('Join page visited');
     if (res.locals.user) {
       res.redirect('/garage');
       return;
@@ -22,6 +23,7 @@ let join = {
 
   /* Create new user */
   post: function (req, res, next) {
+    global.logger.debug('Join page received post data');
     if (res.locals.user) {
       res.redirect('/garage');
       return;

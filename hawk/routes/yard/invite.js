@@ -12,6 +12,7 @@ let project = require('../../models/project');
  * @param res
  */
 let confirmInvite = function (req, res) {
+  global.logger.debug('Confirm invite page visited');
   let get = req.query;
 
   let generatedHash = project.generateInviteHash(get.user, get.project);

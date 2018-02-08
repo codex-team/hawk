@@ -5,6 +5,7 @@ let router = express.Router();
 let notifies = require('../../models/notifies');
 
 let unsbscribe = function (req, res) {
+  global.logger.debug('Unsubscribe page visited');
   let userId = req.query.user,
       projectId = req.query.project,
       hash = req.query.hash,

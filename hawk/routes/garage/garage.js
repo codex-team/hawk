@@ -7,6 +7,8 @@ let index = require('./index');
 let project = require('./project');
 
 router.use(function (req, res, next) {
+
+  global.logger.debug('Garage middleware fired');
   /**
    * #TODO
    * Show 'join or log in' page

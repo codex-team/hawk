@@ -58,6 +58,7 @@ let formatDebugBacktrace = function (debugBacktrace) {
 };
 
 let getServerErrors = function (req, res) {
+  global.logger.debug('PHP catcher received a message');
   const tags = {
     1    : 'fatal',    // Error
     2    : 'warnings', // Warning
@@ -109,11 +110,14 @@ let getServerErrors = function (req, res) {
     }
   };
 
+  global.logger.debug('PHP catcher parsed an event message');
+
   logger.info('Got php error from ' + event.location.host);
 
   project.getByToken(event.token)
     .then( function (foundProject) {
       if (!foundProject) {
+        global.logger.debug('PHP catcher returns 403');
         res.sendStatus(403);
         return;
       }
@@ -128,11 +132,15 @@ let getServerErrors = function (req, res) {
         return;
       }
 
+      global.logger.debug('PHP catcher tries to send a Notify to the project\'s team ');
       notifies.send(foundProject, event);
 
+      global.logger.debug('PHP catcher returns 200');
       res.sendStatus(200);
     })
-    .catch( function () {
+    .catch(function (error) {
+      global.logger.debug('PHP catcher returns 500');
+      global.logger.debug(error);
       res.sendStatus(500);
     });
 };

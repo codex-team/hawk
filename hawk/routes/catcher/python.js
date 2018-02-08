@@ -23,6 +23,7 @@ let md5 = function (input) {
  * @param req.body.time
  */
 let getPythonErrors = function (req, res) {
+  global.logger.debug('Python catcher received an Event');
   let request = req.body,
       eventGroupPrehashed = request.message;
 
@@ -37,9 +38,12 @@ let getPythonErrors = function (req, res) {
     time          : request.time
   };
 
+  global.logger.debug('Python catcher parsed an Event');
+
   project.getByToken(event.token)
     .then( function (foundProject) {
       if (!foundProject) {
+        global.logger.debug('Python catcher returns 403');
         res.sendStatus(403);
         return;
       }
@@ -54,11 +58,15 @@ let getPythonErrors = function (req, res) {
         return;
       }
 
+      global.logger.debug('Python catcher tries to send a Notify');
       notifies.send(foundProject, event);
 
+      global.logger.debug('Python catcher returns 200');
       res.sendStatus(200);
     })
-    .catch( function () {
+    .catch( function (error) {
+      global.logger.debug('Python catcher returns 500');
+      global.logger.debug(error);
       res.sendStatus(500);
     });
 };
