@@ -149,3 +149,15 @@ let connection = function (ws) {
 };
 
 receiver.on('connection', connection);
+
+/**
+ * Workaround connection errors.
+ *
+ * @since 2018-08-02
+ * Added due to bug described here {@link https://github.com/websockets/ws/issues/1256}:
+ * Server falls with TCP Connection Error on client disconnection at Chrome 63
+ */
+receiver.on('error', error => {
+  logger.log('Sockets Receiver got an Error: ');
+  logger.log(error);
+});
