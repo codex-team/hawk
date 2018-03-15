@@ -94,7 +94,7 @@ class Archiver {
    * @param {int} number
    * @returns {Promise<array>}
    */
-  static async getOldEventsIdsInCollectionByTag(projectId, tagName, number) {
+  async getOldEventsIdsInCollectionByTag(projectId, tagName, number) {
     /** Get collection name */
     let collectionName = Events.getCollectionName(projectId);
 
@@ -103,7 +103,7 @@ class Archiver {
           tag: tagName
         };
 
-    /** Set -1 to get latest items */
+    /** Set _id:-1 to get latest items */
     let sort = {};
 
     /**
