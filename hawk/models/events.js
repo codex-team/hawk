@@ -19,7 +19,7 @@ module.exports = (function () {
     /* Status equals 1 if event is read otherwise it equals 0  */
     event.status = EVENT_STATUS.unread;
 
-    let collection = collections.EVENTS + ':' + projectId;
+    let collection = getCollectionName(projectId);
 
     return mongo.insertOne(collection, event);
   };
@@ -76,7 +76,7 @@ module.exports = (function () {
       });
     }
 
-    let collection = collections.EVENTS + ':' + projectId;
+    let collection = getCollectionName(projectId);
 
     return mongo.aggregation(collection, pipeline);
   };
@@ -102,7 +102,7 @@ module.exports = (function () {
    * @param projectId
    */
   let countTags = function (projectId) {
-    let collection = collections.EVENTS + ':' + projectId;
+    let collection = getCollectionName(projectId);
 
     return mongo.aggregation(collection, [
       {
@@ -147,11 +147,16 @@ module.exports = (function () {
       });
   };
 
+  let getCollectionName = (projectId) => {
+    return collections.EVENTS + ':' + projectId;
+  } ;
+
   return {
-    add: add,
-    get: get,
-    countTags: countTags,
-    getAll: getAll,
-    markRead: markRead
+    add,
+    get,
+    countTags,
+    getAll,
+    markRead,
+    getCollectionName
   };
 })();

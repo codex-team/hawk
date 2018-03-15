@@ -27,7 +27,7 @@ let mongo = (function () {
       });
   };
 
-  let find = function (c, query, sort) {
+  let find = function (c, query, sort, limit = 0) {
     return getCollection(c)
       .then(function (collection) {
         let cursor = collection.find(query);
@@ -35,6 +35,11 @@ let mongo = (function () {
         if (sort) {
           cursor = cursor.sort(sort);
         }
+
+        if (limit) {
+          cursor = cursor.limit(limit);
+        }
+
         return cursor.toArray();
       });
   };

@@ -1,7 +1,15 @@
 'use strict';
 
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const Archiver = require('../../modules/archiver');
+
+router.get('/clear', async (req, res, next) => {
+  let archiver = new Archiver(),
+      events = await archiver.archive();
+
+  res.send(JSON.stringify(events));
+});
 
 /**
  * Home page
