@@ -1,6 +1,7 @@
 let Project = require('../models/project');
 let Events = require('../models/events');
 let mongo = require('./database');
+let collections = require('../config/collections');
 
 class Archiver {
 
@@ -10,7 +11,7 @@ class Archiver {
    * @returns {int}
    */
   get eventsLimit() {
-    return 100000;
+    return 7000;
   }
 
   /**
@@ -40,17 +41,14 @@ class Archiver {
     /**
      * Get number of events for each tag in target project
      *
-     * @type {array}
-     * [{ "_id":"javascript", "count":number, "unread":number },
-     *  { "_id":"fatal", "count":number, "unread":number },
-     *  { "_id":"warnings", "count":number, "unread":number },
-     *  { "_id":null, "count":number, "unread":number },
-     *  { "_id":"notice", "count":number, "unread":number }]
+     * @typedef {string|null} tagName - 'javascript|fatal|warnings|notice'
+     *
+     * @type {{_id: tagName, count:number, unread:number }[]}
      */
     let tags = await Events.countTags(projectId);
 
     return Promise.all(tags.map(async tag => {
-      return await this.archiveEventsByTag(projectId, tag);
+      return await this.archiveEventsByTag(projectId, tag)
     }));
   }
 
@@ -60,11 +58,17 @@ class Archiver {
    * @param {string} projectId
    * @param {Object} tag
    * @param {string} tag._id - name of tag: fatal, warnings, notice, javascript of null
-   * @param {int} tag.count - number of events in this tag
-   * @param {int} tag.unread - number of unread events
+   * @param {number} tag.count - number of events in this tag
+   * @param {number} tag.unread - number of unread events
    * @returns {Promise<*>|null}
    */
   async archiveEventsByTag(projectId, tag) {
+    /**
+     * Get tag name
+     * @type {string}
+     */
+    let tagName = tag._id;
+
     /**
      * Get number of old events which should be deleted
      *
@@ -72,30 +76,54 @@ class Archiver {
      */
     let needToRemoveThisNumberOfEvents = tag.count - this.eventsLimit;
 
-    if (needToRemoveThisNumberOfEvents > 0) {
-      /**
-       * Get list of old events
-       */
-      let oldEvents = await this.getOldEventsIdsInCollectionByTag(projectId, tag._id, needToRemoveThisNumberOfEvents);
-
-      /**
-       * Get collection name with events for this project
-       */
-      let collection = Events.getCollectionName(projectId);
-
-      return await this.removeEvents(collection, oldEvents);
+    /**
+     * Check if there are staled events
+     */
+    if (needToRemoveThisNumberOfEvents <= 0) {
+      return;
     }
+
+    /**
+     * Get the newest event in the list of old events
+     */
+    let lastEventToArchive = await this.getLastEventOfOlders(projectId, tagName, needToRemoveThisNumberOfEvents);
+
+    if (!lastEventToArchive){
+      return;
+    }
+
+    /**
+     * Mongo _id of the last event
+     * @type {string}
+     */
+    let eventId = lastEventToArchive._id;
+
+    /**
+     * Get collection name with events for this project
+     */
+    let collection = Events.getCollectionName(projectId);
+
+    let removedItems = await this.removeEvents(collection, tagName, eventId);
+
+    /**
+     * Save archived items count
+     */
+    return await this.saveArchivedCount({
+      tag: tagName,
+      removedCount: removedItems ? removedItems.result.n : 0,
+      projectId: projectId
+    })
   }
 
   /**
-   * Get list with old events ids in collection with target items limit
+   * Get list with old events in collection with target items limit
    *
    * @param {string} projectId
    * @param {string} tagName
    * @param {int} number
-   * @returns {Promise<array>}
+   * @returns {Promise<array|null>}
    */
-  async getOldEventsIdsInCollectionByTag(projectId, tagName, number) {
+  async getLastEventOfOlders(projectId, tagName, number) {
     /** Get collection name */
     let collectionName = Events.getCollectionName(projectId);
 
@@ -104,29 +132,78 @@ class Archiver {
           tag: tagName
         };
 
-    /** Set _id:-1 to get latest items */
+    /**
+     * For getting the newest element in the list of old then
+     * we will skip all elements in limit except one
+     */
     let sort = {};
+    let limit = 1;
+    let skip = number - 1;
 
     /**
-     * Get target number of oldest events
+     * Return the last event of old events
      */
-    let events = await mongo.find(collectionName, query, sort, number);
+    let lastEvent = await mongo.find(collectionName, query, sort, limit, skip);
 
-    /**
-     * Return array of events ids
-     */
-    return events.map(event => event._id);
+    return lastEvent.length ? lastEvent.shift() : null;
   }
 
   /**
-   * Remove elements from target collection by ids
+   * Remove old elements from collection
+   * it their time is lower that target timestamp
    *
    * @param {string} collection
-   * @param {array} removeIdsArray
+   * @param {string} tagName
+   * @param {string} eventId
    * @returns {Promise<TResult>}
    */
-  async removeEvents(collection, removeIdsArray) {
-    return await mongo.remove(collection, {_id: {$in: removeIdsArray}});
+  async removeEvents(collection, tagName, eventId) {
+    let query = {
+      _id: {$lte: mongo.ObjectId(eventId)},
+      tag: tagName
+    };
+
+    try {
+      return await mongo.remove(collection, query);
+    } catch (e) {
+      logger.log('Archiver: error removing events', e);
+    }
+  }
+
+  /**
+   *
+   * @param projectId
+   * @param tag
+   * @param removedCount
+   * @returns {Promise<TResult>}
+   */
+  async saveArchivedCount({projectId, tag, removedCount}) {
+    logger.log(`Archiver: archived ${removedCount} events from Project ${projectId}`);
+
+    let query = {
+      project: projectId,
+      tag: tag
+    };
+
+    let update = {
+      $set: {
+        project: projectId,
+        tag: tag
+      },
+      $inc: {
+        archived: removedCount
+      }
+     };
+
+    let options = {
+      upsert: true
+    };
+
+    try {
+      return await mongo.updateMany(collections.ARCHIVE, query, update, options);
+    } catch (e) {
+      console.log(e);
+    }
   }
 }
 

@@ -27,7 +27,7 @@ let mongo = (function () {
       });
   };
 
-  let find = function (c, query, sort, limit = 0) {
+  let find = function (c, query, sort, limit = 0, skip = 0) {
     return getCollection(c)
       .then(function (collection) {
         let cursor = collection.find(query);
@@ -38,6 +38,10 @@ let mongo = (function () {
 
         if (limit) {
           cursor = cursor.limit(limit);
+        }
+
+        if (skip) {
+          cursor = cursor.skip(skip);
         }
 
         return cursor.toArray();
@@ -103,14 +107,14 @@ let mongo = (function () {
   };
 
   return {
-    findOne : findOne,
-    insertOne : insertOne,
-    find: find,
+    findOne,
+    insertOne,
+    find,
     ObjectId: mongodb.ObjectId,
-    aggregation: aggregation,
-    updateOne: updateOne,
-    updateMany: updateMany,
-    remove: remove
+    aggregation,
+    updateOne,
+    updateMany,
+    remove
   };
 })();
 
