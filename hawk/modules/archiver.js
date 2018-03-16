@@ -5,7 +5,7 @@ let mongo = require('./database');
 class Archiver {
 
   /**
-   * Max number of events in one project's tag
+   * Max number of last events stored in one project's tag
    *
    * @returns {int}
    */
@@ -38,13 +38,14 @@ class Archiver {
    */
   async removeEventsByProject(projectId) {
     /**
-     * [{ "_id":"javascript", "count":17396, "unread":17396 },
-     *  { "_id":"fatal", "count":139248, "unread":139246 },
-     *  { "_id":"warnings", "count":37467, "unread":37466 },
-     *  { "_id":null, "count":4, "unread":4 },
-     *  { "_id":"notice", "count":35015, "unread":35010 }]
+     * Get number of events for each tag in target project
      *
-     * @var {array}
+     * @type {array}
+     * [{ "_id":"javascript", "count":number, "unread":number },
+     *  { "_id":"fatal", "count":number, "unread":number },
+     *  { "_id":"warnings", "count":number, "unread":number },
+     *  { "_id":null, "count":number, "unread":number },
+     *  { "_id":"notice", "count":number, "unread":number }]
      */
     let tags = await Events.countTags(projectId);
 
@@ -57,10 +58,10 @@ class Archiver {
    * Remove old events for target tag in the project
    *
    * @param {string} projectId
-   * @param {array} tag
-   * @param {string} tag._id
-   * @param {int} tag.count
-   * @param {int} tag.unread
+   * @param {Object} tag
+   * @param {string} tag._id - name of tag: fatal, warnings, notice, javascript of null
+   * @param {int} tag.count - number of events in this tag
+   * @param {int} tag.unread - number of unread events
    * @returns {Promise<*>|null}
    */
   async archiveEventsByTag(projectId, tag) {
@@ -114,9 +115,7 @@ class Archiver {
     /**
      * Return array of events ids
      */
-    return events.map(event => {
-      return event._id;
-    });
+    return events.map(event => event._id);
   }
 
   /**
