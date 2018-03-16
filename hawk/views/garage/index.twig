@@ -11,7 +11,7 @@
             {% if events.length != 0 %}
 
                 <div class="garage-list__header">
-                    Total {{ currentProject.events.count }} events ordered by date
+                    Total {{ currentTag is defined ? currentProject[currentTag].count : currentProject.events.count }} events ordered by date
                 </div>
 
                 <div {% if canLoadMore %}data-module-required="appender"{% endif %}>
