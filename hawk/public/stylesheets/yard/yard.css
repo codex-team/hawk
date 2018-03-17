@@ -3,6 +3,7 @@
  */
 .yard {
     width: 100%;
-    background: #313543;
-    color: var(--grayOnDark);
+    /*background: #313543;*/
+    background: var(--yardBg);
+    color: var(--yardGrayText);
 }

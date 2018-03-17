@@ -16,7 +16,7 @@
 
     &__title {
         display: block;
-        margin-bottom: 7px;
+        margin-bottom: 5px;
         color: #fff;
         font-size: 27px;
         font-weight: bold;
@@ -28,14 +28,14 @@
     }
 
     &__container {
-        margin: 30px 0;
+        margin: 25px 0;
         background: #fff;
         color: #000;
         padding: 30px;
         border-radius: 2px;
 
         @media (--desktop) {
-            margin: 30px -30px;
+            margin: 25px -30px;
         }
     }
 
@@ -91,17 +91,17 @@
     &__section {
         border: 0;
         padding: 0;
-        margin: 0 0 30px;
+        margin: 0 0 25px;
     }
 
     &__submit {
-        font-size: 18px;
+        font-size: 17px;
     }
 
     &__alt-button {
-         display: inline-block;
-         padding: 10px 24px;
-         color: var(--grayText);
-         font-size: 16px;
+        display: inline-block;
+        padding: 10px 24px;
+        color: var(--grayText);
+        font-size: 16px;
     }
 }

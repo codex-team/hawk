@@ -14,7 +14,7 @@
 
     &__page-title {
         font-weight: bold;
-        font-size: 1.3em;
+        font-size: 1.14em;
         margin: 0 25px 0 0;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -81,6 +81,6 @@
     &__docs {
         margin-left: auto;
         color: #4e37b5;
-        font-size: 18px;
+        font-size: 15.3px;
     }
 }

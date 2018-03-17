@@ -124,6 +124,8 @@
     }
 
     &__add {
-        margin-top: 25px;
+        margin-top: 15px;
+        font-size: 14px;
+        box-shadow: none;
     }
 }
