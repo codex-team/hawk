@@ -1,8 +1,10 @@
 module.exports = (function () {
   'use strict';
 
-  let mongo = require('../modules/database');
-  let collections = require('../config/collections');
+  const mongo = require('../modules/database');
+  const collections = require('../config/collections');
+  const archiver = require('../modules/archiver');
+
 
   const EVENT_STATUS = {
     unread: 0,
@@ -99,20 +101,51 @@ module.exports = (function () {
   /**
    * Count events by tags (fatal, warnings, notice, javascript)
    *
-   * @param projectId
+   * @param {string} projectId
+   * @param {boolean} countArchived
    */
-  let countTags = function (projectId) {
+  let countTags = async function(projectId, countArchived = true) {
+    console.log(countArchived);
     let collection = getCollectionName(projectId);
 
-    return mongo.aggregation(collection, [
+    let events = await mongo.aggregation(collection, [
       {
         $group: {
           _id: '$tag',
           count: {$sum: 1},
           /* To count unread events, we compare status with 1 for each one */
-          unread: {$sum: { $cmp: [EVENT_STATUS.read, '$status']}}
+          unread: {$sum: {$cmp: [EVENT_STATUS.read, '$status']}}
         }
-      } ]);
+      }
+    ]);
+
+    if (!countArchived) {
+      return events;
+    }
+
+    /**
+     * Count archived items too
+     */
+    let archivedEvents = await archiver.getArchivedEvents(projectId);
+
+    console.log(archivedEvents);
+
+    events = events.map((event) => {
+      /**
+       * Get number of archived items and sum it with saved items by tag
+       */
+      archivedEvents.forEach((archivedEvent) => {
+        if (archivedEvent.tag === event._id) {
+          event.count += archivedEvent.archived;
+        }
+      });
+
+      return event;
+    });
+
+    console.log(events);
+
+    return events;
   };
 
   /**

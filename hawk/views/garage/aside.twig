@@ -22,7 +22,7 @@
 
                 {% if events %}
                 <span class="garage-aside__counter garage-aside__counter--{{ errorType }} {% if events.unread %}garage-aside__counter--unread{% endif %}">
-                  {{ events.count }}
+                  {{ events.count >= eventsLimit ? eventsLimit - 1 ~ '+' : events.count }}
                 </span>
                 {% endif %}
               </a>

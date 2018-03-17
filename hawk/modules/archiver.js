@@ -10,8 +10,8 @@ class Archiver {
    *
    * @returns {int}
    */
-  get eventsLimit() {
-    return 7000;
+  static get eventsLimit() {
+    return 6000;
   }
 
   /**
@@ -45,9 +45,16 @@ class Archiver {
      *
      * @type {{_id: tagName, count:number, unread:number }[]}
      */
-    let tags = await Events.countTags(projectId);
+    console.log('countTags');
+    try {
+      let tags = await Events.countTags(projectId, false);
+    } catch (e) {
+      console.log(e);
+    }
+    console.log(tags);
 
     return Promise.all(tags.map(async tag => {
+      console.log('eee');
       return await this.archiveEventsByTag(projectId, tag)
     }));
   }
@@ -68,13 +75,16 @@ class Archiver {
      * @type {string}
      */
     let tagName = tag._id;
+    console.log('ess');
+
+    console.log(Archiver.eventsLimit);
 
     /**
      * Get number of old events which should be deleted
      *
      * @type {int}
      */
-    let needToRemoveThisNumberOfEvents = tag.count - this.eventsLimit;
+    let needToRemoveThisNumberOfEvents = tag.count - Archiver.eventsLimit;
 
     /**
      * Check if there are staled events
@@ -124,13 +134,14 @@ class Archiver {
    * @returns {Promise<array|null>}
    */
   async getLastEventOfOlders(projectId, tagName, number) {
+     console.log(number);
     /** Get collection name */
     let collectionName = Events.getCollectionName(projectId);
 
     /** Find items by tag name */
     let query = {
-          tag: tagName
-        };
+      tag: tagName
+    };
 
     /**
      * For getting the newest element in the list of old then
@@ -143,9 +154,13 @@ class Archiver {
     /**
      * Return the last event of old events
      */
-    let lastEvent = await mongo.find(collectionName, query, sort, limit, skip);
+    try{
+      let lastEvent = await mongo.find(collectionName, query, sort, limit, skip);
 
-    return lastEvent.length ? lastEvent.shift() : null;
+      return lastEvent.length ? lastEvent.shift() : null;
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   /**
@@ -193,7 +208,7 @@ class Archiver {
       $inc: {
         archived: removedCount
       }
-     };
+    };
 
     let options = {
       upsert: true
@@ -201,6 +216,18 @@ class Archiver {
 
     try {
       return await mongo.updateMany(collections.ARCHIVE, query, update, options);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  static async getArchivedEvents(projectId) {
+    let query = {
+      project: projectId
+    };
+
+    try {
+      return await mongo.find(collections.ARCHIVE, query);
     } catch (e) {
       console.log(e);
     }
