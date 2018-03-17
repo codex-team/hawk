@@ -113,7 +113,8 @@ module.exports = function () {
             .then(function (tags) {
               currentProject['events'] = {
                 'count': 0,
-                'unread': 0
+                'unread': 0,
+                'archived': 0
               };
               tags.forEach(function (tag) {
                 currentProject[tag._id] = {
@@ -123,7 +124,7 @@ module.exports = function () {
                 };
                 currentProject['events']['count'] += tag.count;
                 currentProject['events']['unread'] += tag.unread;
-                currentProject['events']['archived'] += tag.archived;
+                currentProject['events']['archived'] += tag.archived || 0;
               });
             }).catch(function (e) {
               logger.error('Events Query composing error: ', e);

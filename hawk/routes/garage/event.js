@@ -75,12 +75,12 @@ let makeResponse_ = function  (currentProject, events, canLoadMore, eventsCount)
 
   /** requiring page via AJAX */
   if (isAjaxRequest && request.query.page) {
-    return loadMoreDataForPagination_.call(response, templatePath + '/events-list', events, canLoadMore, eventsCount);
+    return loadMoreDataForPagination_.call(response, templatePath + '/events-list', events, canLoadMore);
   }
 
   /** If we have ?popup=1 parameter, send JSON answer */
   if (request.query.popup) {
-    return loadDataForPopup_.call(response, templatePath + '/page', currentProject, events, canLoadMore, eventsCount);
+    return loadDataForPopup_.call(response, templatePath + '/page', currentProject, events, canLoadMore);
   } else {
     return loadPageData_.call(response, templatePath + '/page', currentProject, events, canLoadMore, eventsCount);
   }
