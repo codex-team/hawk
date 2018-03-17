@@ -19,14 +19,17 @@
                     {% endif %}
                     events ordered by date
 
-                    <span class="garage-list__header-right">
-                        {% if currentTag is defined %}
-                            {{ currentProject[currentTag].archived|counter}}
-                        {% else %}
-                            {{ currentProject.events.archived|counter }}
-                        {% endif %}
-                        events <a href="/docs#archiving">archived</a>
-                    </span>
+                    {% if currentTag is defined %}
+                        {% set archiveCount = currentProject[currentTag].archived %}
+                    {% else %}
+                        {% set archiveCount = currentProject.events.archived %}
+                    {% endif %}
+
+                    {% if archiveCount > 0 %}
+                        <span class="garage-list__header-right">
+                            {{ archiveCoint|counter }} events <a href="/docs#archiving">archived</a>
+                        </span>
+                    {% endif %}
                 </div>
 
                 <div {% if canLoadMore %}data-module-required="appender"{% endif %}>

@@ -1,13 +1,16 @@
 {# <b>We have catched {{ times > 1 ? times ~ ' errors' : 'an error' }} on {{ project.name }} project</b> #}
-{{ project.name }}: <code>{{ event.message }}</code>
+
+🚨<b>{{ project.name }}</b>: <code>{{ event.message }}</code>
 
 {{ event.errorLocation.full }}
-
 {% if times > 1 %}
-    <b>
-        {{ times }} times
-    </b>
-{% endif % }
+
+    <b>{{ times }} times</b>
+{% endif %}
 
 {% set url = serverUrl ~ '/garage/' ~ userData.projectUri ~ '/event/' ~ event.groupHash %}
-<a href='{{ url }}'>{{ url }}</a>
+--------------------------------------
+<i><a href="{{ url }}">View Traceback</a> | Hawk.so</i>
+>
+{{ url }}
+<

@@ -59,18 +59,8 @@
             display: none;
         }
 
-        &::before {
-            content: '';
-            width: 5px;
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            background: #21ea8e;
-        }
-
         &:hover {
-            background: color(var(--unreadBg) lightness(-3%) );
+            background: color(var(--unreadBg) lightness(+1%) );
         }
     }
 
@@ -97,16 +87,17 @@
 
     &__title {
         margin: 0;
-        font-size: 17px;
+        font-size: 14.5px;
         line-height: 1.5em;
         word-break: break-all;
         font-weight: 700;
     }
 
     &__caption {
-        margin: 7px 0;
+        margin: 4px 0;
+        font-size: 13.4px;
+        letter-spacing: 0.2px;
         color: var(--grayText);
-        font-size: 0.9em;
     }
 
     &__tag {
@@ -139,14 +130,14 @@
     }
 
     &__counter {
-        font-size: 2em;
+        font-size: 19px;
         text-align: center;
         font-weight: 800;
     }
 
     &__counter-text {
-        margin-top: 0.1em;
+        margin-top: 0.2em;
         text-align: center;
-        font-size: 14px;
+        font-size: 13px;
     }
 }

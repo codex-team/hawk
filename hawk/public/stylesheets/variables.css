@@ -10,8 +10,8 @@
     --yardGrayText: #8a97ab;
 
     /** Error types modifiers */
-    --fatalColor: #ff5252;
-    --warningsColor: #ffdd5d;
+    --fatalColor: #ff5151;
+    --warningsColor: #af3232;
     --noticeColor: #717171;
     --javascriptColor: #9786da;
     --javascriptColorOnWhite: #5D49AE;
@@ -26,7 +26,7 @@
     --buttonBg: #c5dff5;
     --submitButtonBg: #4592da;
     --lightGrayBg: #f3f3f3;
-    --unreadBg: #e6f9f6;
+    --unreadBg: #f9f9f9;
     --greenBg: #00bd77;
     --lightGreenBg: #edfff6;
     --yardBg: #1d1d27;
@@ -49,8 +49,8 @@
         background: var(--greenBg);
         font-size: 16.5px;
         font-weight: 700;
-        box-shadow: 0 2px 3px color(var(--greenBg) alpha(40%));
-        border-radius: 7px;
+        box-shadow: 0 4px 5px -3px rgba(0, 189, 119, 0.85);
+        border-radius: 4px;
         cursor: pointer;
 
         &:hover {

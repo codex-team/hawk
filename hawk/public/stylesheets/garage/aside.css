@@ -23,20 +23,17 @@
         margin-bottom: 5px;
     }
 
-    &__settings {
-        margin-top: 5px;
-        font-size: 0.9em;
-    }
-
     &__user {
         font-size: 16px;
+        margin-bottom: 20px;
+        display: block;
     }
 
     &__heading {
         margin-top: 45px;
         margin-bottom: 15px;
-        font-size: 14px;
-        letter-spacing: 0.07em;
+        font-size: 11px;
+        letter-spacing: 0.13em;
     }
 
     &__section {
@@ -48,7 +45,9 @@
         display: block;
         color: #fff;
         margin-bottom: 10px;
-        font-size: 1.18em;
+        font-size: 16.2px;
+        font-weight: 800;
+        letter-spacing: -0.1px;
     }
 
     &__tag {
@@ -99,10 +98,10 @@
         }
 
         &--warnings {
-            color: var(--warningsColor);
+            color: color(var(--warningsColor) lightness(+4%));
 
             &::before {
-                background: var(--warningsColor);
+                background: color(var(--warningsColor) lightness(+4%));
             }
         }
 
@@ -125,7 +124,18 @@
 
     &__add {
         margin-top: 15px;
-        font-size: 14px;
-        box-shadow: none;
+        font-size: 15.4px;
+        letter-spacing: 0.2px;
+
+        &::before {
+            content: '';
+            background: url(/static/svg/plus-white.svg) center no-repeat;
+            background-size: 14px 14px;
+            display: inline-block;
+            vertical-align: bottom;
+            width: 14px;
+            height: 14px;
+            margin: 0 7px 0 -5px;
+        }
     }
 }
