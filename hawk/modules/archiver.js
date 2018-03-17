@@ -45,16 +45,9 @@ class Archiver {
      *
      * @type {{_id: tagName, count:number, unread:number }[]}
      */
-    console.log('countTags');
-    try {
-      let tags = await Events.countTags(projectId, false);
-    } catch (e) {
-      console.log(e);
-    }
-    console.log(tags);
+    let tags = await Events.countTags(projectId, false);
 
     return Promise.all(tags.map(async tag => {
-      console.log('eee');
       return await this.archiveEventsByTag(projectId, tag)
     }));
   }
@@ -75,9 +68,6 @@ class Archiver {
      * @type {string}
      */
     let tagName = tag._id;
-    console.log('ess');
-
-    console.log(Archiver.eventsLimit);
 
     /**
      * Get number of old events which should be deleted
@@ -134,7 +124,6 @@ class Archiver {
    * @returns {Promise<array|null>}
    */
   async getLastEventOfOlders(projectId, tagName, number) {
-     console.log(number);
     /** Get collection name */
     let collectionName = Events.getCollectionName(projectId);
 
@@ -159,7 +148,7 @@ class Archiver {
 
       return lastEvent.length ? lastEvent.shift() : null;
     } catch (e) {
-      console.log(e);
+      logger.log('Archiver: error while getting last event of olders', e);
     }
   }
 
@@ -217,7 +206,7 @@ class Archiver {
     try {
       return await mongo.updateMany(collections.ARCHIVE, query, update, options);
     } catch (e) {
-      console.log(e);
+      logger.log('Archiver: error saving archived counts', e);
     }
   }
 
@@ -229,7 +218,7 @@ class Archiver {
     try {
       return await mongo.find(collections.ARCHIVE, query);
     } catch (e) {
-      console.log(e);
+      logger.log('Archiver: error getting events', e);
     }
   }
 }
