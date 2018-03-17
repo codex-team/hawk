@@ -99,11 +99,13 @@ module.exports = function () {
          * project : {
          *   'events': {
          *     'count': 0,     total number of events for this project
-         *     'unread': 0     total number of unread events for this project
+         *     'unread': 0,    total number of unread events for this project
+         *     'archived': 0   total number of archived events
          *   },
          *   *event_tag*: {
          *     'count': 0,     number of events fot this *event_tag*
-         *     'unread': 0     number of unread events fot this *event_tag*
+         *     'unread': 0,    number of unread events fot this *event_tag*
+         *     'archived': 0   number of archived events
          *   },
          *   ...
          * }
