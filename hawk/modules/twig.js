@@ -82,18 +82,8 @@ module.exports = function () {
      */
     let i = 0;
 
-    /**
-     * How many digits you want to left after dot
-     *
-     * @example 0 => 94 К
-     * @example 1 => 93.4 К
-     * @example 4 => 93.4560 К
-     * @type {number}
-     */
-    let digitsAfterDot = 0;
-
     while (number >= 1000) {
-      number = (number / 1000).toFixed(digitsAfterDot);
+      number = ~~(number / 1000);
       i++;
     }
 
