@@ -106,7 +106,23 @@ let mongo = (function () {
       });
   };
 
+  /**
+   * Count elements in collection by query
+   *
+   * @param {string} c
+   * @param {object} query
+   * @param {object} options
+   * @return {Promise<*>}
+   */
+  let count = async (c, query, options) => {
+    return await getCollection(c)
+      .then(async (collection) => {
+        return await collection.count(query, options)
+      })
+  };
+
   return {
+    count,
     findOne,
     insertOne,
     find,

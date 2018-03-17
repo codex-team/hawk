@@ -1,7 +1,7 @@
-let Project = require('../models/project');
-let Events = require('../models/events');
-let mongo = require('./database');
-let collections = require('../config/collections');
+const Project = require('../models/project');
+const Events = require('../models/events');
+const mongo = require('./database');
+const collections = require('../config/collections');
 
 class Archiver {
 
@@ -11,7 +11,7 @@ class Archiver {
    * @returns {int}
    */
   static get eventsLimit() {
-    return 6000;
+    return 100000;
   }
 
   /**
@@ -25,6 +25,10 @@ class Archiver {
         return Promise.all(projects.map(async (project) => {
           return await this.removeEventsByProject(project._id);
         }));
+      })
+      .then((projects) => {
+        console.log(projects);
+        return projects;
       })
       .catch((e) => {
         logger.log('Error while getting count events of all projects:', e);
@@ -48,7 +52,12 @@ class Archiver {
     let tags = await Events.countTags(projectId, false);
 
     return Promise.all(tags.map(async tag => {
+      try {
       return await this.archiveEventsByTag(projectId, tag)
+
+      } catch (e) {
+        logger.log('Archiver: error while getting last event of olders', e);
+      }
     }));
   }
 
@@ -167,11 +176,7 @@ class Archiver {
       tag: tagName
     };
 
-    try {
-      return await mongo.remove(collection, query);
-    } catch (e) {
-      logger.log('Archiver: error removing events', e);
-    }
+    return await mongo.remove(collection, query);
   }
 
   /**
@@ -203,23 +208,7 @@ class Archiver {
       upsert: true
     };
 
-    try {
-      return await mongo.updateMany(collections.ARCHIVE, query, update, options);
-    } catch (e) {
-      logger.log('Archiver: error saving archived counts', e);
-    }
-  }
-
-  static async getArchivedEvents(projectId) {
-    let query = {
-      project: projectId
-    };
-
-    try {
-      return await mongo.find(collections.ARCHIVE, query);
-    } catch (e) {
-      logger.log('Archiver: error getting events', e);
-    }
+    return await mongo.updateMany(collections.ARCHIVE, query, update, options);
   }
 }
 

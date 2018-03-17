@@ -4,9 +4,7 @@
  */
 
 let twig = require('twig'),
-    fs = require('fs'),
-    Crypto = require('crypto');
-
+    fs = require('fs');
 
 module.exports = function () {
   'use strict';
@@ -49,4 +47,17 @@ module.exports = function () {
         return 'JavaScript Error';
     }
   });
+
+  /**
+   * Beautify numbers
+   * Add spaces between each three digits in number
+   *
+   * @usage {{ events|counter }}
+   *
+   * @example 130000 -> 130 000
+   * @example 145000000 -> 145 000 000
+   */
+  twig.extendFilter('counter', (number) => {
+    return twig.filters.number_format(number, [0, ',', ' ']);
+  })
 }();

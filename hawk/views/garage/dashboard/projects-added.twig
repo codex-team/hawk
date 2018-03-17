@@ -11,9 +11,9 @@
                         <img class="garage-projects-added__img" src="">
                         <span class="garage-projects-added__name">{{ project.name }}</span>
                         {% if project.events.unread %}
-                            <span class="garage-projects-added__new-events">{{ project.events.unread }} new</span>
+                            <span class="garage-projects-added__new-events">{{ project.events.unread|counter }} new</span>
                         {% endif %}
-                        <span class="garage-projects-added__events">{{ project.events.count }} events</span>
+                        <span class="garage-projects-added__events">{{ project.events.count|counter }} events</span>
                     </div>
                 </a>
             {% endfor %}

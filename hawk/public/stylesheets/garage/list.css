@@ -3,6 +3,15 @@
 
     &__header {
         padding: 25px 0;
+
+        &-right {
+            float: right;
+            color: var(--grayText);
+
+            a {
+                border-bottom: 1px solid color(var(--grayText) alpha(50%));
+            }
+        }
     }
 
     &__installation-guide-text {

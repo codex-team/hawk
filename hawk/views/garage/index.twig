@@ -11,7 +11,22 @@
             {% if events.length != 0 %}
 
                 <div class="garage-list__header">
-                    Total {{ currentTag is defined ? currentProject[currentTag].count : currentProject.events.count }} events ordered by date
+                    Total
+                    {% if currentTag is defined %}
+                        {{ currentProject[currentTag].count|counter}}
+                    {% else %}
+                        {{ currentProject.events.count|counter }}
+                    {% endif %}
+                    events ordered by date
+
+                    <span class="garage-list__header-right">
+                        {% if currentTag is defined %}
+                            {{ currentProject[currentTag].archived|counter}}
+                        {% else %}
+                            {{ currentProject.events.archived|counter }}
+                        {% endif %}
+                        events <a href="/docs#archiving">archived</a>
+                    </span>
                 </div>
 
                 <div {% if canLoadMore %}data-module-required="appender"{% endif %}>

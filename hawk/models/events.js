@@ -3,8 +3,6 @@ module.exports = (function () {
 
   const mongo = require('../modules/database');
   const collections = require('../config/collections');
-  const archiver = require('../modules/archiver');
-
 
   const EVENT_STATUS = {
     unread: 0,
@@ -84,6 +82,19 @@ module.exports = (function () {
   };
 
   /**
+   * Get number of events in collection by query
+   *
+   * @param {string} projectId
+   * @param {object} query
+   * @return {Promise<*>}
+   */
+  let getCount = function (projectId, query) {
+    let collection = getCollectionName(projectId);
+
+    return mongo.count(collection, query);
+  };
+
+  /**
    * Marks as read events from collection by id.
    *
    * @param {String} collection - collection name
@@ -101,8 +112,11 @@ module.exports = (function () {
   /**
    * Count events by tags (fatal, warnings, notice, javascript)
    *
+   * @typedef {string|null} tagName - 'javascript|fatal|warnings|notice'
+   *
    * @param {string} projectId
    * @param {boolean} countArchived
+   * @return {{_id: tagName, count:number, unread:number }[]}
    */
   let countTags = async function(projectId, countArchived = true) {
     let collection = getCollectionName(projectId);
@@ -125,7 +139,7 @@ module.exports = (function () {
     /**
      * Count archived items too
      */
-    let archivedEvents = await archiver.getArchivedEvents(projectId);
+    let archivedEvents = await getArchivedEventsCounters(projectId);
 
     events = events.map((event) => {
       /**
@@ -134,6 +148,7 @@ module.exports = (function () {
       archivedEvents.forEach((archivedEvent) => {
         if (archivedEvent.tag === event._id) {
           event.count += archivedEvent.archived;
+          event.archived = archivedEvent.archived;
         }
       });
 
@@ -177,12 +192,31 @@ module.exports = (function () {
 
   let getCollectionName = (projectId) => {
     return collections.EVENTS + ':' + projectId;
-  } ;
+  };
+
+  /**
+   * Get archived events count
+   *
+   * @param {string} projectId
+   * @returns {Promise<{_id:string, project:string, tag:tagName, archived:number }[]>}
+   */
+  let getArchivedEventsCounters = async (projectId) => {
+    let query = {
+      project: projectId
+    };
+
+    try {
+      return await mongo.find(collections.ARCHIVE, query);
+    } catch (e) {
+      logger.log('Error while getting archived events', e);
+    }
+  };
 
   return {
     add,
     get,
     countTags,
+    getCount,
     getAll,
     markRead,
     getCollectionName
