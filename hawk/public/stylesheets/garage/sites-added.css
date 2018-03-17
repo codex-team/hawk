@@ -65,18 +65,15 @@
 
     &__text {
         margin: 20px 0;
-        font-size: 20px;
-        color: #000;
+        font-size: 16.4px;
+        color: #666c7b;
+        line-height: 1.45em;
+        letter-spacing: 0.2px;
     }
 
     &__add-project {
-        padding: 12px;
         margin: 20px 0;
-        display: inline-block;
-        color: #00b693;
-        font-size: 20px;
-        font-weight: 700;
-        border: 1px solid #cde6e0;
-        border-radius: 3px;
+
+        @apply --beautiful-green-button;
     }
 }

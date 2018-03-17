@@ -6,14 +6,6 @@
 
     <div class="garage-settings">
 
-        {% set formParams = {
-          user: user,
-          csrfToken: csrfToken,
-          success: success,
-          message: message,
-        } %}
-        {% include 'garage/settings/form.twig' with formParams %}
-
         <h4 class="garage-settings__header" id="projects">Projects</h4>
         <a class="garage-settings__add-project" id="add-project">Add new Project</a>
 
@@ -40,6 +32,14 @@
                {% include 'garage/settings/project.twig' with {user: user, project: project, csrfToken: csrfToken} %}
             {% endif %}
         {% endfor %}
+
+        {% set formParams = {
+          user: user,
+          csrfToken: csrfToken,
+          success: success,
+          message: message,
+        } %}
+        {% include 'garage/settings/form.twig' with formParams %}
 
     </div>
 

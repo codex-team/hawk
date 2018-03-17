@@ -8,28 +8,24 @@
     }
 
     &__add-project {
-        display: inline-block;
-        position: relative;
-        padding: 11px 16px 11px 40px;
-        color: var(--greenText);
-        font-size: 17px;
-        border: 1px solid color(var(--greenText) alpha(30%));
-        border-radius: 3px;
-        cursor: pointer;
+        @apply --beautiful-green-button;
+        padding-left: 14px;
 
         &::before {
             content: '';
-            background: url(/static/svg/plus.svg) center no-repeat;
-            display: block;
+            background: url(/static/svg/plus-white.svg) center no-repeat;
+            display: inline-block;
+            vertical-align: bottom;
             width: 18px;
             height: 18px;
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
+            margin-right: 8px;
         }
 
 
+    }
+
+    &__account-form {
+        margin-top: 50px;
     }
 
 }

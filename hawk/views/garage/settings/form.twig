@@ -9,7 +9,7 @@
   </script>
 {% endif %}
 
-<form method="POST" action="settings/save" onsubmit="hawk.settingsForm.checkForm(event);">
+<form class="garage-settings__account-form" method="POST" action="settings/save" onsubmit="hawk.settingsForm.checkForm(event);">
 
     {% include 'csrf.twig' with {csrfToken: csrfToken} %}
 
@@ -27,5 +27,5 @@
         <input class="form__width-fixed" type="password" id="repeatedPassword" name="repeatedPassword" placeholder="********">
     </fieldset>
 
-    <input class=" button--submit" type="submit" value="Save">
+    <input class="button--submit" type="submit" value="Save">
 </form>
