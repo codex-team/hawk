@@ -105,7 +105,6 @@ module.exports = (function () {
    * @param {boolean} countArchived
    */
   let countTags = async function(projectId, countArchived = true) {
-    console.log(countArchived);
     let collection = getCollectionName(projectId);
 
     let events = await mongo.aggregation(collection, [
@@ -128,8 +127,6 @@ module.exports = (function () {
      */
     let archivedEvents = await archiver.getArchivedEvents(projectId);
 
-    console.log(archivedEvents);
-
     events = events.map((event) => {
       /**
        * Get number of archived items and sum it with saved items by tag
@@ -142,8 +139,6 @@ module.exports = (function () {
 
       return event;
     });
-
-    console.log(events);
 
     return events;
   };
