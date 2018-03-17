@@ -23,52 +23,71 @@
         </aside>
 
         <h1 id="platform-documentation">Platform documentation</h1>
-        <p>Hawk.so is a clever and easy-to-use error tracker. It collects all your code exceptions and errors and helps you to improve applications.</p>
-        <p>Please, welcome to our simple user guide.</p>
+        <p>Hawk.so is a clever and easy-to-use errors tracker. It collects all your code exceptions and errors and helps you to improve an applications.</p>
+        <p>Please, welcome to the simple user guide.</p>
 
         <h2 id="getting-started">Getting Started</h2>
-        <p>Integration scheme contains three steps. Your need to register, add domain and install one of our Catchers.</p>
+        <p>Integration scheme contains a three steps. Your need to register, add a domain and install one of the Catchers.</p>
 
         <h3 id="create-account">Create an account</h3>
-        <p>Follow <a href="/join">/join</a> link to access registration form. Leave working email, and we will send your password. You can change it any time later.</p>
-        <p>After this you'll be entranced by internal section. We call it Garage.</p>
+        <p>Follow <a href="/join">/join</a> link to access registration form. Leave working email, and we will send you a password. You can change it at any time later.</p>
+        <p>After that you'll be entranced by internal section. We call it the Garage.</p>
 
         <h3 id="register-domain">Register domains</h3>
-        <p>Now, look at the sidebar. There will appear all your registered domains. Touch «<a href="/websites/create">Add domain</a>» button to create your first.</p>
-        <p>Fill domain name and submit form. You are beautiful, that’s it.</p>
+        <p>Now, look at the Sidebar. There will appear all your registered domains. Touch «<a href="/websites/create">Add domain</a>» button to create your first.</p>
+        <p>Fill domain's name and submit a form. You are beautiful, that’s it.</p>
 
         <h2 id="integration">Integration</h2>
-        <p>All registration procedures passed, next step is installation of some error Catchers. They're simple scripts that collect exceptions and deliver them to the Garage.</p>
+        <p>All registration procedures passed, next step is an installation of the some error Catchers. They're simple scripts that collect exceptions and deliver them to the Garage.</p>
 
-        <h3 id="add-server-handler">Add server handler</h3>
+        <h3 id="add-server-handler">Add the Server Handler</h3>
         <p>Currently, we provide Catchers for the next languages:</p>
         <ul>
             <li><a href="https://github.com/codex-team/hawk.php">PHP</a></li>
             <li><a href="https://github.com/codex-team/hawk.python">Python</a></li>
             <li><a href="https://github.com/codex-team/hawk.android">Android</a></li>
             <li><a href="https://github.com/codex-team/hawk.kotlin">Kotlin</a></li>
-            <li>Node.js</li>
+            <li>Node.js — <i>coming soon</i></li>
         </ul>
         <p>This list will be expanded soon. If you can code, you can implement your own Catcher.</p>
 
-        <h3 id="add-client-catcher">Add client handler</h3>
-        <p>To deliver JavaScript errors we provide fast and non-blocking Socket-based Catcher.</p>
+        <h3 id="add-client-catcher">Add the Client Handler</h3>
+        <p>To deliver JavaScript errors we provide the fast and non-blocking Socket-based Catcher.</p>
         <p><a href="https://github.com/codex-team/hawk.client">Get JavaScript Catcher</a></p>
-        <p>How to use. Include <abbr title="HTML script tag">&lt;script&gt;</abbr>tag loaded from CDN or local cloned examplar.</p>
+        <p>How to use. Include <abbr title="HTML script tag">&lt;script&gt;</abbr>tag loaded from the CDN or local cloned examplar.</p>
         <p>
             <pre>&lt;script src="hawk.js" async&gt;&lt;/script&gt;</pre>
         </p>
-        <p>Next, initialize module with your Token.</p>
+        <p>Next, initialize the module with your Token.</p>
         <p>
             <pre>&lt;script&gt;
     hawk.init(“Your Token”);
 &lt;/script&gt;</pre>
         </p>
 
-        <h3 id="notification">Notifications</h3>
+        <h3 id="notifications">Notifications</h3>
+        <p>
+            You can get notifications about catched errors to the Email, Telegram or Slack. For the last two types, we use Webhooks, so you free to use an any webhook bot, for example, our — <a target="_blank" href="https://github.com/codex-bot/Webhooks/blob/master/README.md">@codex_bot</a>.
+        </p>
+        <p>
+            Note about Webhook's query format. It is a POST-request with the <abbr title="POST field">message</abbr> field contains notification's text.
+        </p>
+        <p>
+            To setup a Notifications, open the <a href="https://hawk.so/garage/settings" target="_blank">Settings</a> page, find a Project and click on the «Configure Webhooks» button. Then add Webhook endpoints for the Slack or Telegram and press «Save». Don't forget to activate checkboxes for the selected types.
+        </p>
+
 
         <h3 id="archiving">Archiving</h3>
+        <p>
+            Hawk now in a public beta stage. So we allow to collect up to {{ eventsLimit|counter }} events of different types by a Project. You can have a several Projects at one account.
+        </p>
 
         <h3 id="our-team">Our team</h3>
+        <p>
+            <a href="https://ifmo.su">CodeX</a> is a small team of enthusiasts. We love web-development, build a social and media services and trying to grow ourselves.
+        </p>
+        <p>
+            Please, leave a feedback on the our email <a href="mailto:team@ifmo.su">team@ifmo.su</a>. We REALLY appreciate this. And thanks for reading.
+        </p>
     </article>
 {% endblock %}

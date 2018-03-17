@@ -32,7 +32,8 @@ router.get('/docs', function (req, res, next) {
       title : 'Platform documentation',
       description : 'Guide for integration and usage.'
 
-    }
+    },
+    eventsLimit: Archiver.eventsLimit
 
   });
 });
