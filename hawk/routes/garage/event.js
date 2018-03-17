@@ -5,6 +5,7 @@ let router = express.Router();
 let modelEvents = require('../../models/events');
 let mongo = require('../../modules/database');
 let collections = require('../../config/collections');
+const archiver = require('../../modules/archiver');
 
 /**
  * limit count of events per page
@@ -74,12 +75,12 @@ let makeResponse_ = function  (currentProject, events, canLoadMore, eventsCount)
 
   /** requiring page via AJAX */
   if (isAjaxRequest && request.query.page) {
-    return loadMoreDataForPagination_.call(response, templatePath + '/events-list', events, canLoadMore);
+    return loadMoreDataForPagination_.call(response, templatePath + '/events-list', events, canLoadMore, eventsCount);
   }
 
   /** If we have ?popup=1 parameter, send JSON answer */
   if (request.query.popup) {
-    return loadDataForPopup_.call(response, templatePath + '/page', currentProject, events, canLoadMore);
+    return loadDataForPopup_.call(response, templatePath + '/page', currentProject, events, canLoadMore, eventsCount);
   } else {
     return loadPageData_.call(response, templatePath + '/page', currentProject, events, canLoadMore, eventsCount);
   }
@@ -103,7 +104,8 @@ let loadPageData_ = function (templatePath, project, eventList, canLoadMore, eve
     event  : eventList.shift(),
     events : eventList,
     canLoadMore: canLoadMore,
-    eventsCount: eventsCount
+    eventsCount: eventsCount,
+    eventsLimit: archiver.eventsLimit
   });
 };
 

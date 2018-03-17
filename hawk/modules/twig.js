@@ -52,12 +52,51 @@ module.exports = function () {
    * Beautify numbers
    * Add spaces between each three digits in number
    *
-   * @usage {{ events|counter }}
+   * @usage {{ number|counter }}
    *
    * @example 130000 -> 130 000
    * @example 145000000 -> 145 000 000
    */
   twig.extendFilter('counter', (number) => {
     return twig.filters.number_format(number, [0, ',', ' ']);
-  })
+  });
+
+  /**
+   * Lettering big numbers
+   *
+   * @usage {{ number|lettered-numbers }}
+   *
+   * @example 93456 -> 94K
+   * @example 8567332 -> 9M
+   */
+  twig.extendFilter('lettered-numbers', (number) => {
+    /**
+     * Array of letters by thousands
+     * @type {string[]}
+     */
+    let letters = ['', 'K', 'M', 'G', 'T'];
+
+    /**
+     * Iterator for letter's array
+     * @type {number}
+     */
+    let i = 0;
+
+    /**
+     * How many digits you want to left after dot
+     *
+     * @example 0 => 94 К
+     * @example 1 => 93.4 К
+     * @example 4 => 93.4560 К
+     * @type {number}
+     */
+    let digitsAfterDot = 0;
+
+    while (number >= 1000) {
+      number = (number / 1000).toFixed(digitsAfterDot);
+      i++;
+    }
+
+    return `${number}${letters[i]}`;
+  });
 }();

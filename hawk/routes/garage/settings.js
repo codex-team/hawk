@@ -1,6 +1,7 @@
 let express = require('express');
 let router = express.Router();
 let user = require('../../models/user');
+const archiver = require('../../modules/archiver');
 
 /**
  * CSRF protection middlewares
@@ -114,7 +115,8 @@ let index = function (req, res) {
     },
     success: req.query.success,
     message: req.query.message,
-    projects: res.locals.userProjects
+    projects: res.locals.userProjects,
+    eventsLimit: archiver.eventsLimit
   };
 
   res.render('garage/settings', params);

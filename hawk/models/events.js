@@ -190,12 +190,18 @@ module.exports = (function () {
       });
   };
 
+  /**
+   * Get name for events collection by projectId
+   *
+   * @param {string} projectId
+   * @return {string}
+   */
   let getCollectionName = (projectId) => {
     return collections.EVENTS + ':' + projectId;
   };
 
   /**
-   * Get archived events count
+   * Get archived events counters
    *
    * @param {string} projectId
    * @returns {Promise<{_id:string, project:string, tag:tagName, archived:number }[]>}
