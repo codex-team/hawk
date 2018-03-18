@@ -61,7 +61,7 @@
         }
 
         &:hover {
-            background: color(var(--unreadBg) lightness(+1%) );
+            background: color(var(--unreadBg) lightness(-3%) );
         }
     }
 

@@ -25,9 +25,10 @@
                         {% set archiveCount = currentProject.events.archived %}
                     {% endif %}
 
+
                     {% if archiveCount > 0 %}
                         <span class="garage-list__header-right">
-                            {{ archiveCoint|counter }} events <a href="/docs#archiving">archived</a>
+                            {{ archiveCount|counter }} events <a href="/docs#archiving">archived</a>
                         </span>
                     {% endif %}
                 </div>

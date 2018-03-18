@@ -19,14 +19,16 @@ if (process.env.ARCHIVER_ROUTE) {
     let archivedEvents = await archiver.archive(),
         total = 0;
 
-    let answer = 'Hawk Archiver 🍇 <br>';
+    let answer = 'Hawk Archiver 🍇 \n';
 
     archivedEvents.forEach( project => {
       if (project.archived > 0) {
-        answer += `<br> ${project.archived} events | <b>${project.projectName}</b> ${project.projectId}`;
+        answer += `\n${project.archived} events | <b>${project.projectName}</b> ${project.projectId}`;
         total += project.archived;
       }
     });
+
+    answer += `\n\n${total} total events archived`;
 
     res.send(answer);
 
