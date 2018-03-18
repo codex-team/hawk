@@ -904,8 +904,23 @@ module.exports = function () {
   var toggleStack = function toggleStack(stackButton, eventId) {
     var eventInfo = document.querySelector('.event-info[data-event="' + eventId + '"]');
 
+    /**
+     * Close prevoiusly opened rows
+     */
+    var previouslyOpenedRows = document.querySelectorAll('.event-info--opened'),
+        previouslyOpenedStacks = document.querySelectorAll('.event-info');
+
+    previouslyOpenedRows.forEach(function (row) {
+      return row.classList.remove('event-info--opened');
+    });
+    previouslyOpenedStacks.forEach(function (stack) {
+      return stack.classList.add('hide');
+    });
+
     eventInfo.classList.toggle('hide');
     stackButton.classList.toggle('event-info--opened');
+
+    eventInfo.scrollIntoView();
   };
 
   return {
