@@ -12,10 +12,10 @@
             <div class="event__counter-date">since<br>{{ event.time|date('d M Y') }}</div>
         </div>
         <div class="event__title">
-            {{ event.message }}
+            {{ event.message|escape }}
         </div>
         <div class="event__path">
-            {{ event.errorLocation.full }}
+            {{ event.errorLocation.full|escape }}
         </div>
         <div>
             <span class="event-badge">
@@ -23,7 +23,7 @@
             </span>
             {% if event.request.method %}
                 <span class="event-badge">
-                    {{ event.request.method|upper }}
+                    {{ event.request.method|upper|escape }}
                 </span>
             {% endif %}
         </div>
@@ -42,9 +42,9 @@
     <div class="repeations" {% if events and canLoadMore %}data-module-required="appender"{% endif %}>
       <module-settings>
         {
-          "url" : "/garage/{{ project.user.projectUri }}/event/{{ event.groupHash }}/?page=",
+          "url" : "/garage/{{ project.user.projectUri|escape }}/event/{{ event.groupHash }}/?page=",
           "event" : "{{ event.groupHash }}",
-          "project" : "{{ project.name }}",
+          "project" : "{{ project.name|escape }}",
           "autoloading" : "true",
           "dontWaitFirstClick" : "false"
         }

@@ -12,17 +12,17 @@
             <div class="event__counter-date">since<br>{{ event.time|date('d M Y') }}</div>
         </div>
         <div class="event__title">
-            {{ event.message }}
+            {{ event.message|escape }}
         </div>
         <div class="event__path">
-            {{ event.errorLocation.full }}
+            {{ event.errorLocation.full|escape }}
         </div>
         <div>
-            <span class="event-badge event-badge--{{ event.userAgent.device.type }}">
-                {{ event.userAgent.device.type }}
+            <span class="event-badge event-badge--{{ event.userAgent.device.type|escape }}">
+                {{ event.userAgent.device.type|escape }}
             </span>
             <span class="event-badge event-badge--device-size">
-                {{ event.userAgent.device.width }} x {{ event.userAgent.device.height }}
+                {{ event.userAgent.device.width|escape }} x {{ event.userAgent.device.height|escape }}
             </span>
         </div>
     </div>
@@ -39,8 +39,8 @@
       <module-settings>
         {
           "url" : "/garage/{{ project.user.projectUri }}/event/{{ event.groupHash }}/?page=",
-          "event" : "{{ event.groupHash }}",
-          "project" : "{{ project.name }}",
+          "event" : "{{ event.groupHash|escape }}",
+          "project" : "{{ project.name|escape }}",
           "autoloading" : "true",
           "dontWaitFirstClick" : "false"
         }

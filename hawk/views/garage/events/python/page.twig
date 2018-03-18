@@ -9,13 +9,15 @@
                 </div></div>
                 times
             </div>
-            <div class="event__counter-date">since<br>{{ event.time|date('d M Y') }}</div>
+            <div class="event__counter-date">
+              since<br>{{ event.time|date('d M Y') }}
+            </div>
         </div>
         <div class="event__title">
-            {{ event.message }}
+            {{ event.message|escape }}
         </div>
         <div class="event__path">
-            {{ event.errorLocation.full }}
+            {{ event.errorLocation.full|escape }}
         </div>
         <div>
             <span class="event-badge">
@@ -35,9 +37,9 @@
     <div class="repeations" {% if events and canLoadMore %}data-module-required="appender"{% endif %}>
       <module-settings>
         {
-          "url" : "/garage/{{ project.user.projectUri }}/event/{{ event.groupHash }}/?page=",
+          "url" : "/garage/{{ project.user.projectUri|escape }}/event/{{ event.groupHash }}/?page=",
           "event" : "{{ event.groupHash }}",
-          "project" : "{{ project.name }}",
+          "project" : "{{ project.name|escape }}",
           "autoloading" : "true",
           "dontWaitFirstClick" : "false"
         }

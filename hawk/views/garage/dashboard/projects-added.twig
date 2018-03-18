@@ -6,19 +6,31 @@
 
             {% for project in projects %}
                 {% set url = "/garage/" ~ project.user.projectUri %}
-                <a href="{{ url }}">
+                <a href="{{ url|escape }}">
                     <div class="garage-projects-added__item">
-                        <img class="garage-projects-added__img" src="">
-                        <span class="garage-projects-added__name">{{ project.name }}</span>
-                        {% if project.events.unread %}
-                            <span class="garage-projects-added__new-events">{{ project.events.unread|counter }} new</span>
+                        {% if project.logo %}
+                            <img class="garage-projects-added__img" src="{{ project.logo|escape }}/crop/52">
+                        {% else %}
+                            <span class="garage-projects-added__img"></span>
                         {% endif %}
-                        <span class="garage-projects-added__events">{{ project.events.count|counter }} events</span>
+                        <span class="garage-projects-added__name">
+                            {{ project.name|escape }}
+                        </span>
+                        {% if project.events.unread %}
+                            <span class="garage-projects-added__new-events">
+                                {{ project.events.unread|counter }} new
+                            </span>
+                        {% endif %}
+                        <span class="garage-projects-added__events">
+                            {{ project.events.count|counter }} events
+                        </span>
                     </div>
                 </a>
             {% endfor %}
 
-            <a class="garage-projects-added__add-project" href="/garage/settings#projects">+ Add another project</a>
+            <a class="garage-projects-added__add-project" href="/garage/settings#projects">
+                Add another project
+            </a>
         </div>
     {% endif %}
 

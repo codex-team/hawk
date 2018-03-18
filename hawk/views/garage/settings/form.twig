@@ -2,7 +2,7 @@
   <script>
     hawk.docReady(function () {
       hawk.notifier.show({
-        message: "{{ message ? message : '' }}",
+        message: "{{ message ? message|escape : '' }}",
         style: "{{ success == '1' ? 'success' : 'error' }}"
       })
     });
@@ -16,7 +16,7 @@
     <h4 class="form__header">Account settings</h4>
     <fieldset class="form__section">
         <label class="form__label" for="email">Change email</label>
-        <input class="form__width-fixed" type="email" id="email" name="email" value="{{ user.email }}" required>
+        <input class="form__width-fixed" type="email" id="email" name="email" value="{{ user.email|escape }}" required>
     </fieldset>
     <fieldset class="form__section">
         <label class="form__label" for="password">Select password</label>

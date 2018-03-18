@@ -14,10 +14,14 @@
     }
 
     &__img {
-        margin-right: 10px;
-        height: 30px;
+        display: inline-block;
+        margin-right: 7px;
+        height: 26px;
+        width: 26px;
         vertical-align: middle;
         border-radius: 3px;
+        background: var(--lightGrayLine);
+        border: 0;
     }
 
     &__name {
@@ -48,14 +52,25 @@
     }
 
     &__add-project {
-        padding: 12px;
-        margin: 20px 0;
+        padding: 11px 18px 10px;
         display: inline-block;
         color: #00b693;
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 700;
         border: 1px solid #cde6e0;
         border-radius: 3px;
+        letter-spacing: 0.25px;
+
+        &::before {
+            content: '';
+            background: url(/static/svg/plus.svg) center no-repeat;
+            display: inline-block;
+            vertical-align: middle;
+            width: 14px;
+            height: 14px;
+            background-size: 14px 14px;
+            margin: -2px 7px 0 -5px;
+        }
     }
 }
 

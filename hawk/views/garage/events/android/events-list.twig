@@ -4,18 +4,18 @@
             {{ item.time|date('d M, H:i') }}
         </div>
         <div class="repeations__device">
-             {{ item.deviceInfo.brand }} {{ item.deviceInfo.model }}
+             {{ item.deviceInfo.brand|escape }} {{ item.deviceInfo.model|escape }}
         </div>
         <span class="event-badge">
             {{ svg('/public/svg/android.svg') }}
-            {{ event.deviceInfo.release}}
+            {{ event.deviceInfo.release|escape}}
         </span>
         <div class="repeations__path">
-            {{ item.stack[0].location }}
+            {{ item.stack[0].location|escape }}
         </div>
         {% if item.request.method %}
             <span class="event-badge">
-                {{ item.request.method }}
+                {{ item.request.method|escape }}
             </span>
         {% endif %}
         <div class="repeations__stack" onclick="hawk.event.toggleStack(this, '{{ item._id }}')" style="display: flex">

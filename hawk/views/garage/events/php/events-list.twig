@@ -1,15 +1,30 @@
 {% for item in events %}
-    <div class="repeations__row">
+    <div class="repeations__row" onclick="hawk.event.toggleStack(this, '{{ item._id }}')">
         <div class="repeations__date">
             {{ item.time|date('d M, H:i') }}
         </div>
         {% if item.request.method %}
             <span class="event-badge">
-              {{ item.request.method }}
+              {{ item.request.method|escape }}
+            </span>
+        {% else %}
+            <span class="event-badge">
+                GET
             </span>
         {% endif %}
-        <a href="{{ item.location.url }}" target="_blank" class="repeations__path">{{ item.location.path }}</a>
-        <div class="repeations__stack" onclick="hawk.event.toggleStack(this, '{{ item._id }}')">{{ svg('/public/svg/stack.svg') }} stack</div>
+        {% if item.location.url and item.location.url not 'undefined' %}
+            <a href="{{ item.location.url|escape }}" target="_blank" class="repeations__path">
+                {{ item.location.path|escape }}
+            </a>
+        {% else %}
+            <span class="repeations__path repeations__path--unknown">
+                Unknown location
+            </span>
+        {% endif %}
+
+        <div class="repeations__stack" title="Show Stack">
+            {{ svg('/public/svg/stack.svg') }} stack
+        </div>
     </div>
     <div class="event-info hide" data-event="{{ item._id }}">
         <h4>Request</h4>

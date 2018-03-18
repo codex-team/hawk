@@ -35,8 +35,8 @@
                 <div {% if canLoadMore %}data-module-required="appender"{% endif %}>
                     <module-settings>
                         {
-                        "url" : "/garage/{{ currentProject.user.projectUri }}{{ currentTag ? '/'~currentTag : '' }}?page=",
-                        "project" : "{{ project.name }}",
+                        "url" : "/garage/{{ currentProject.user.projectUri|escape }}{{ currentTag ? '/'~currentTag : '' }}?page=",
+                        "project" : "{{ project.name|escape }}",
                         "autoloading" : "true",
                         "dontWaitFirstClick" : "false",
                         "onLoadItems": "hawk.eventPopup.update()"

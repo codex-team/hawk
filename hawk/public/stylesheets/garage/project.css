@@ -63,6 +63,7 @@
                 height: 100%;
                 position: absolute;
                 z-index: 3;
+                border-radius: 3px;
             }
 
             &:hover {

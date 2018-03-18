@@ -1,8 +1,8 @@
 {% set eventJson = event|json_encode %}
-<a class="garage-list-item {% if event.status == 0 %}garage-list-item--unread{% endif %}" data-event='{{ eventJson|replace({"'": ""}) }}' data-project='{{ project.name }}' href="/garage/{{ project.user.projectUri }}/event/{{ event._id }}">
+<a class="garage-list-item {% if event.status == 0 %}garage-list-item--unread{% endif %}" data-event='{{ eventJson|replace({"'": ""}) }}' data-project='{{ project.name|escape }}' href="/garage/{{ project.user.projectUri|escape }}/event/{{ event._id }}">
     <div class="garage-list-item__left">
-        <div class="garage-list-item__tag garage-list-item__tag--{{ event.tag }}">
-            {{ event.tag == 'javascript' ? 'JavaScript' : event.tag|capitalize }}
+        <div class="garage-list-item__tag garage-list-item__tag--{{ event.tag|escape }}">
+            {{ event.tag == 'javascript' ? 'JavaScript' : event.tag|capitalize|escape }}
         </div>
         <time class="garage-list-item__time">
             {{ event.time|date('F jS g:ia') }}
@@ -10,15 +10,15 @@
     </div>
     <div class="garage-list-item__content">
         <h3 class="garage-list-item__title" >
-            {{ event.message }}
+            {{ event.message|escape }}
         </h3>
         <div class="garage-list-item__caption">
-            {{ event.errorLocation.full }}
+            {{ event.errorLocation.full|escape }}
         </div>
     </div>
     <div class="garage-list-item__right">
         <div class="garage-list-item__counter">
-            {{ event.count|counter }}
+            {{ event.count|counter|escape }}
         </div>
         <div class="garage-list-item__counter-text">
             times

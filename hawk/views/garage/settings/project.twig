@@ -3,20 +3,30 @@
     <div class="project__logo-wrapper js_project_logo" id="project-logo-{{ project.id }}"
          data-project-id="{{ project.id }}" data-csrf="{{ csrfToken }}">
         {% if project.logo is not empty %}
-            <img src="{{ project.logo }}/crop/200">
+            <img src="{{ project.logo|escape }}/crop/200">
         {% endif %}
     </div>
 
-    <h3 class="project__name">{{ project.name }}</h3>
+    <h3 class="project__name">
+        {{ project.name|escape }}
+    </h3>
     <div class="project__info">
-        <span class="project__description">{{ project.description }}</span>
-        <a class="project__domain" target="_blank" href="{{ project.domain }}">{{ project.domain }}</a>
+        <span class="project__description">
+            {{ project.description|escape }}
+        </span>
+        <a class="project__domain" target="_blank" href="{{ project.domain|escape }}">
+            {{ project.domain|escape }}
+        </a>
     </div>
     <div class="project__section">
         <h4 class="project__section-header">Token</h4>
         <div name="js-copyable-authorize">
-            <span name="js-copyable" class="project__token">{{ project.token }}</span>
-            <span class="project__copy-button">{{ svg('/public/svg/copy.svg') }} Copy</span>
+            <span name="js-copyable" class="project__token">
+                {{ project.token|escape }}
+            </span>
+            <span class="project__copy-button">
+                {{ svg('/public/svg/copy.svg') }} Copy
+            </span>
         </div>
     </div>
     <div class="project__section">
@@ -30,14 +40,14 @@
                 </span>
                 <span class="project__member-email
                     {{ member.is_pending ? 'project__member-email--pending' : '' }}">
-                    {{ member.email }}
+                    {{ member.email|escape }}
                 </span>
                 {% set canGrantAdminAccess = member.role == 'member' and not member.is_pending and project.user.role == 'admin' %}
-                <span class="project__member-role project__member-role--{{ member.role }}
+                <span class="project__member-role project__member-role--{{ member.role|escape }}
                                 {{ member.is_pending ? 'project__member-role--pending' : '' }}
                                 {{ canGrantAdminAccess ? 'project__member-role--can-grant-access' : '' }}"
                         {% if canGrantAdminAccess %}
-                            onclick="hawk.settingsForm.grantAdminAccess('{{ project.id }}', '{{ member.id }}', this)"
+                            onclick="hawk.settingsForm.grantAdminAccess('{{ project.id|escape }}', '{{ member.id|escape }}', this)"
                         {% endif %}
                 >
                         {% if member.role == 'admin' %}
@@ -54,16 +64,16 @@
         {% endfor %}
 
         {% if project.user.role == 'admin' %}
-            <div class="project__add-button" id="add-member-{{ project.id }}">Add member</div>
-            <div class="project__invitation" name="js-toggle" data-button="add-member-{{ project.id }}">
+            <div class="project__add-button" id="add-member-{{ project.id|escape }}">Add member</div>
+            <div class="project__invitation" name="js-toggle" data-button="add-member-{{ project.id|escape }}">
                 <fieldset class="form__section">
                     <label class="form__label form__label--thin">Invite member</label>
                     <input class="form__width-fixed"
-                           id="{{ project.id }}"
+                           id="{{ project.id|escape }}"
                            type="email"
                            placeholder="Enter email"
-                           onenter="hawk.settingsForm.inviteMember('{{ project.id }}', this.parentNode.parentNode)">
-                    <span class="project__save-button" onclick="hawk.settingsForm.inviteMember('{{ project.id }}', this.parentNode.parentNode)">
+                           onenter="hawk.settingsForm.inviteMember('{{ project.id|escape }}', this.parentNode.parentNode)">
+                    <span class="project__save-button" onclick="hawk.settingsForm.inviteMember('{{ project.id|escape }}', this.parentNode.parentNode)">
                         Send invitation {{ svg('/public/svg/arrow-right.svg') }}
                     </span>
                 </fieldset>
@@ -109,7 +119,7 @@
                 <input class="form__width-fixed"
                        name="tg-webhook"
                        type="url"
-                       value="{{ project.user.tgHook }}"
+                       value="{{ project.user.tgHook|escape }}"
                        placeholder="https://notify.bot.ifmo.su/u/DN5N89E3"
                        id="tg-{{ project.id }}"
                        onenter="hawk.settingsForm.saveWebhook('{{ project.id }}', '{{ user._id }}', 'tg')">
@@ -122,7 +132,7 @@
                 <input class="form__width-fixed"
                        name="slack-webhook"
                        type="url"
-                       value="{{ project.user.slackHook }}"
+                       value="{{ project.user.slackHook|escape }}"
                        placeholder="https://notify.bot.ifmo.su/u/VI90Z3NM"
                        id="slack-{{ project.id }}"
                        onenter="hawk.settingsForm.saveWebhook('{{ project.id }}', '{{ user._id }}', 'slack')">

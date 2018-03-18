@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>
-      {{ title }}
+      {{ title|escape }}
     </title>
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
     <meta name="language" content="en-us">
@@ -18,7 +18,7 @@
     <table cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#E7EBF6">
       <tr>
         <td style="padding-bottom: 90px;">
-          <table cellpadding="0" cellspacing="0"  width="90%" align="center" style="max-width: 660px; 
+          <table cellpadding="0" cellspacing="0"  width="90%" align="center" style="max-width: 660px;
            font-family: Lato, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto','Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;">
             <tr>
               <td style="padding-top: 45px; padding-left: 30px;">
@@ -33,7 +33,7 @@
                   Fast and lightweight error tracking service
                 </font>
               </td>
-            </tr> 
+            </tr>
             <tr>
               <td>
                 <div style="background-color: #ffffff; padding: 30px; border: 1px solid #dddeef; border-radius: 3px;">

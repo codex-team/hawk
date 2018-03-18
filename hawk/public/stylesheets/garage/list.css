@@ -3,6 +3,7 @@
 
     &__header {
         padding: 25px 0;
+        font-size: 14.5px;
 
         &-right {
             float: right;
@@ -31,8 +32,8 @@
     }
 
     &__empty {
-        padding: 25px;
-        font-size: 17px;
+        padding: 10px 0;
+        font-size: 15px;
     }
 }
 
