@@ -11,10 +11,25 @@ const Archiver = require('../../modules/archiver');
  */
 if (process.env.ARCHIVER_ROUTE) {
   router.get(`${process.env.ARCHIVER_ROUTE}`, async (req, res, next) => {
-    let archiver = new Archiver(),
-        archivedEventsCount = await archiver.archive();
+    let archiver = new Archiver();
 
-    res.send(`${archivedEventsCount} events succesfully archived 🍇`);
+    /**
+     * @type {{projectId: string, projectName: string, archived: number}[]} removed
+     */
+    let archivedEvents = await archiver.archive(),
+        total = 0;
+
+    let answer = 'Hawk Archiver 🍇 <br>';
+
+    archivedEvents.forEach( project => {
+      if (project.archived > 0) {
+        answer += `<br> ${project.archived} events | <b>${project.projectName}</b> ${project.projectId}`;
+        total += project.archived;
+      }
+    });
+
+    res.send(answer);
+
   });
 }
 

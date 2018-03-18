@@ -23,25 +23,29 @@ class Archiver {
     return Project.getAll()
       .then((projects) => {
         return Promise.all(projects.map(async (project) => {
-          return await this.removeEventsByProject(project._id);
+          /**
+           * @type {number[]} - list of counters for each tag
+           */
+          let removedEventsFromProjectTags = await this.removeEventsByProject(project._id);
+
+          /**
+           * Summ total counter for all tags in Project
+           */
+          let projectTotalArchivedCounter = removedEventsFromProjectTags.reduce((prev, cur) => prev + cur, 0);
+
+          return {
+            projectId: project._id,
+            projectName: project.name,
+            archived: projectTotalArchivedCounter
+          };
         }));
       })
       .then(
         /**
-         * @param  {[number[]]} removed - [[11767,11776,11787],[]]
+         * @param  {{projectId: string, projectName: string, archived: number}[]} removed
          */
         function(removed){
-          let removedItemsCounter = 0;
-
-          removed.forEach(tagsInProject => {
-            tagsInProject.forEach(tag => {
-              if (!isNaN(parseInt(tag, 10))) {
-                removedItemsCounter += tag;
-              }
-            });
-          });
-
-          return removedItemsCounter;
+          return removed;
         }
       )
       .catch((e) => {
@@ -137,7 +141,7 @@ class Archiver {
       tag: tagName,
       removedCount: removedItemsCount,
       projectId: projectId
-    })
+    });
 
     return removedItemsCount;
   }
