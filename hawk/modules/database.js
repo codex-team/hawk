@@ -27,7 +27,7 @@ let mongo = (function () {
       });
   };
 
-  let find = function (c, query, sort) {
+  let find = function (c, query, sort, limit = 0, skip = 0) {
     return getCollection(c)
       .then(function (collection) {
         let cursor = collection.find(query);
@@ -35,6 +35,15 @@ let mongo = (function () {
         if (sort) {
           cursor = cursor.sort(sort);
         }
+
+        if (limit) {
+          cursor = cursor.limit(limit);
+        }
+
+        if (skip) {
+          cursor = cursor.skip(skip);
+        }
+
         return cursor.toArray();
       });
   };
@@ -97,15 +106,31 @@ let mongo = (function () {
       });
   };
 
+  /**
+   * Count elements in collection by query
+   *
+   * @param {string} c
+   * @param {object} query
+   * @param {object} options
+   * @return {Promise<*>}
+   */
+  let count = async (c, query, options) => {
+    return await getCollection(c)
+      .then(async (collection) => {
+        return await collection.count(query, options)
+      })
+  };
+
   return {
-    findOne : findOne,
-    insertOne : insertOne,
-    find: find,
+    count,
+    findOne,
+    insertOne,
+    find,
     ObjectId: mongodb.ObjectId,
-    aggregation: aggregation,
-    updateOne: updateOne,
-    updateMany: updateMany,
-    remove: remove
+    aggregation,
+    updateOne,
+    updateMany,
+    remove
   };
 })();
 

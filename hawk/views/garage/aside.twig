@@ -1,29 +1,35 @@
 <div class="garage-aside">
-    <div class="clearfix">
-        <a class="garage-aside__settings fl_r" href="/garage/settings">Settings</a>
-        <a href="/garage"><div class="garage-aside__logo fl_l">Hawk</div></a>
-    </div>
+    <header class="garage-aside__header">
+        <a class="garage-aside__logo" href="/garage">
+          Hawk
+        </a>
+        <a class="garage-aside__user" href="/garage/settings">
+          {{ user.email|escape }}
+        </a>
+    </header>
 
-    <a class="garage-aside__user" href="/garage">{{ user.email }}</a>
-
-    <h4 class="garage-aside__heading">PROJECTS</h4>
+    {# <h4 class="garage-aside__heading">PROJECTS</h4> #}
 
     {% for project in projects %}
         {% set url = "/garage/" ~ project.user.projectUri %}
         <section class="garage-aside__section">
-            <a class="garage-aside__project" href="{{ url }}">
-                {{ project.name }}
+            <a class="garage-aside__project" href="{{ url|escape }}">
+                {{ project.name|escape }}
             </a>
 
             {% for errorType in ['fatal', 'warnings', 'notice', 'javascript'] %}
               {% set events = attribute(project, errorType) or null %}
-              <a class="garage-aside__tag" href="{{ url }}/{{ errorType }}">
-                {{ errorType }}
+              <a class="garage-aside__tag" href="{{ url|escape }}/{{ errorType|escape }}">
+                {{ errorType|escape }}
 
                 {% if events %}
-                <span class="garage-aside__counter garage-aside__counter--{{ errorType }} {% if events.unread %}garage-aside__counter--unread{% endif %}">
-                  {{ events.count }}
-                </span>
+                  <span class="garage-aside__counter garage-aside__counter--{{ errorType }} {% if events.unread %}garage-aside__counter--unread{% endif %}">
+                    {% if events.count >= eventsLimit %}
+                      {{ (eventsLimit - 1)|lettered-numbers }} +
+                    {% else %}
+                      {{ events.count|counter }}
+                    {% endif %}
+                  </span>
                 {% endif %}
               </a>
             {% endfor %}
@@ -31,6 +37,6 @@
         </section>
     {% endfor %}
 
-    <a class="garage-aside__add button button--bordered" href="/garage/settings#projects">+ Add project</a>
+    <a class="garage-aside__add button button--bordered" href="/garage/settings#projects">Add project</a>
 
 </div>

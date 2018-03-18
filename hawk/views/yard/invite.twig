@@ -4,7 +4,9 @@
     <div class=" invite-page yard">
 
         {{ svg('/public/svg/team.svg') }}
-        <h3 class="invite-page__header">You've joined the {{ project.name }} team</h3>
+        <h3 class="invite-page__header">
+            You've joined the {{ project.name|escape }} team
+        </h3>
         <p class="invite-page__description">
             Now you can setup notifications preferences in the Garage.
             We support email, Slack and Telegram alerts, it's very useful.

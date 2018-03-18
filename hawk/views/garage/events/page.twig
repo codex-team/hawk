@@ -6,8 +6,8 @@
   {% if hideHeader is not defined %}
     <div class="event">
       <div class="event__header">
-        <a class="event__project" href="/garage/{{ project.user.projectUri }}">{{ project.name }}</a>
-        <a class="event__type event__type--{{ event.tag }}" href="/garage/{{ project.user.projectUri }}/{{ event.tag }}">
+        <a class="event__project" href="/garage/{{ project.user.projectUri|escape }}">{{ project.name|escape }}</a>
+        <a class="event__type event__type--{{ event.tag }}" href="/garage/{{ project.user.projectUri|escape }}/{{ event.tag|escape }}">
           {{ event.tag|event-type }}
         </a>
       </div>

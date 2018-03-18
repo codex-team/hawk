@@ -4,9 +4,7 @@
  */
 
 let twig = require('twig'),
-    fs = require('fs'),
-    Crypto = require('crypto');
-
+    fs = require('fs');
 
 module.exports = function () {
   'use strict';
@@ -48,5 +46,47 @@ module.exports = function () {
       case 'javascript':
         return 'JavaScript Error';
     }
+  });
+
+  /**
+   * Beautify numbers
+   * Add spaces between each three digits in number
+   *
+   * @usage {{ number|counter }}
+   *
+   * @example 130000 -> 130 000
+   * @example 145000000 -> 145 000 000
+   */
+  twig.extendFilter('counter', (number) => {
+    return twig.filters.number_format(number, [0, ',', ' ']);
+  });
+
+  /**
+   * Lettering big numbers
+   *
+   * @usage {{ number|lettered-numbers }}
+   *
+   * @example 93456 -> 94K
+   * @example 8567332 -> 9M
+   */
+  twig.extendFilter('lettered-numbers', (number) => {
+    /**
+     * Array of letters by thousands
+     * @type {string[]}
+     */
+    let letters = ['', 'K', 'M', 'G', 'T'];
+
+    /**
+     * Iterator for letter's array
+     * @type {number}
+     */
+    let i = 0;
+
+    while (number >= 1000) {
+      number = ~~(number / 1000);
+      i++;
+    }
+
+    return `${number}${letters[i]}`;
   });
 }();

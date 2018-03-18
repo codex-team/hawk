@@ -16,6 +16,12 @@
         color: #fff;
     }
 
+    &__header {
+        border-bottom: 1px solid color(var(--darkGrayBg) lightness(+10%));
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+    }
+
     &__logo {
         color: #fff;
         font-weight: bold;
@@ -23,45 +29,48 @@
         margin-bottom: 5px;
     }
 
-    &__settings {
-        margin-top: 5px;
-        font-size: 0.9em;
-    }
-
     &__user {
         font-size: 16px;
+        margin-top: 3px;
+        display: block;
     }
 
     &__heading {
         margin-top: 45px;
         margin-bottom: 15px;
-        font-size: 14px;
-        letter-spacing: 0.07em;
+        font-size: 11px;
+        letter-spacing: 0.13em;
     }
 
     &__section {
         margin: 0 0 15px;
-        font-size: 17px;
+        font-size: 15px;
     }
 
     &__project {
         display: block;
         color: #fff;
         margin-bottom: 10px;
-        font-size: 1.18em;
+        font-size: 16.2px;
+        font-weight: 800;
+        letter-spacing: -0.1px;
+
+        &:hover {
+            text-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+        }
     }
 
     &__tag {
         display: flex;
-        padding: 5px 10px;
-        margin: 0 -10px;
+        padding: 5px 7px;
+        margin: 0 -7px;
         border-radius: 2px;
         cursor: pointer;
 
         &::before {
             content: '#';
             display: inline-block;
-            margin-right: 0.5em;
+            margin-right: 0.4em;
             opacity: 0.4;
         }
 
@@ -72,8 +81,9 @@
 
     &__counter {
         display: inline-block;
-        margin-left: auto;
+        margin: auto 0 auto auto;
         font-weight: bold;
+        font-size: 13px;
 
         &--unread {
 
@@ -83,7 +93,7 @@
               width: 5px;
               height: 5px;
               margin-right: 0.3em;
-              margin-top: -0.3em;
+              margin-top: -0.25em;
               vertical-align: middle;
               border-radius: 50%;
           }
@@ -99,10 +109,10 @@
         }
 
         &--warnings {
-            color: var(--warningsColor);
+            color: color(var(--warningsColor) lightness(+4%));
 
             &::before {
-                background: var(--warningsColor);
+                background: color(var(--warningsColor) lightness(+4%));
             }
         }
 
@@ -124,6 +134,19 @@
     }
 
     &__add {
-        margin-top: 25px;
+        font-size: 14px;
+        letter-spacing: 0.2px;
+        padding: 8px 15px;
+
+        &::before {
+            content: '';
+            background: url(/static/svg/plus-white.svg) center no-repeat;
+            background-size: 14px 14px;
+            display: inline-block;
+            vertical-align: bottom;
+            width: 14px;
+            height: 14px;
+            margin: 0 6px 0 -5px;
+        }
     }
 }

@@ -63,6 +63,7 @@
                 height: 100%;
                 position: absolute;
                 z-index: 3;
+                border-radius: 3px;
             }
 
             &:hover {
@@ -263,4 +264,10 @@
         color: var(--noticeColor);
     }
 
+}
+
+.no-data {
+    color: var(--grayText);
+    line-height: 1em;
+    margin: 0 0 20px;
 }

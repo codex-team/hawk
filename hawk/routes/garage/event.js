@@ -5,6 +5,7 @@ let router = express.Router();
 let modelEvents = require('../../models/events');
 let mongo = require('../../modules/database');
 let collections = require('../../config/collections');
+const archiver = require('../../modules/archiver');
 
 /**
  * limit count of events per page
@@ -54,8 +55,11 @@ let markEventsAsRead = function (currentProject, events) {
  * @param {Object} currentProject
  * @param {Array} events
  * @param {Boolean} canLoadMore
+ * @param {number} eventsCount - total number of events in this group
+ * @return {String}
+ * @private
  */
-let makeResponse_ = function  (currentProject, events, canLoadMore) {
+let makeResponse_ = function  (currentProject, events, canLoadMore, eventsCount) {
   /**
    * work with current request context
    * context:
@@ -78,7 +82,7 @@ let makeResponse_ = function  (currentProject, events, canLoadMore) {
   if (request.query.popup) {
     return loadDataForPopup_.call(response, templatePath + '/page', currentProject, events, canLoadMore);
   } else {
-    return loadPageData_.call(response, templatePath + '/page', currentProject, events, canLoadMore);
+    return loadPageData_.call(response, templatePath + '/page', currentProject, events, canLoadMore, eventsCount);
   }
 };
 
@@ -89,16 +93,19 @@ let makeResponse_ = function  (currentProject, events, canLoadMore) {
  * @param project
  * @param {Object} eventList
  * @param canLoadMore
+ * @param {number} eventsCount
  * @return {String} - HTML content
  */
-let loadPageData_ = function (templatePath, project, eventList, canLoadMore) {
+let loadPageData_ = function (templatePath, project, eventList, canLoadMore, eventsCount) {
   let response = this;
 
   return response.render(templatePath, {
     project : project,
     event  : eventList.shift(),
     events : eventList,
-    canLoadMore: canLoadMore
+    canLoadMore: canLoadMore,
+    eventsCount: eventsCount,
+    eventsLimit: archiver.eventsLimit
   });
 };
 
@@ -183,10 +190,15 @@ let event = function (req, res) {
 
   modelEvents.get(currentProject.id, {groupHash: eventGroupHash}, false, false, limit + 1, skip)
     .then(markEventsAsRead.bind(null, currentProject))
-    .then(function (events) {
+    .then(async function (events) {
       let canLoadMore = events.length > limit;
 
-      return makeResponse_.call({req, res}, currentProject, events, canLoadMore);
+      /**
+       * Get count of total events with this groupHash
+       */
+      let eventsCount = await modelEvents.getCount(currentProject.id, {groupHash: eventGroupHash});
+
+      return makeResponse_.call({req, res}, currentProject, events, canLoadMore, eventsCount);
     })
     .catch(function (err) {
       logger.error('Error while handling event-page request: ', err);

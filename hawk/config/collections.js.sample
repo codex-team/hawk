@@ -4,6 +4,7 @@ module.exports = {
   PROJECTS: 'projects',
   MEMBERSHIP: 'membership',
   TEAM: 'team',
-  EVENTS: 'events'
+  EVENTS: 'events',
+  ARCHIVE: 'archive'
 
 };

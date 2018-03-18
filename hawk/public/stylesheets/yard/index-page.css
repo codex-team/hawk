@@ -1,5 +1,6 @@
 .landing-page {
     padding: 60px;
+    padding-bottom: 20px;
     font-size: 20px;
 
     @media (--mobile) {
@@ -12,7 +13,7 @@
     }
 
     &__caption {
-        color: color(#fff alpha(50%));
+        color: var(--yardGrayText);
         line-height: 1.4em;
     }
 
@@ -40,12 +41,36 @@
     }
 
     &__figure {
-        margin: 30px 0 0;
-        color: color(#fff alpha(50%));
+        margin: 0 0 30px;
+        color: var(--yardGrayText);
 
         img {
             margin-top: 1em;
             max-width: 100%;
+        }
+    }
+
+    &__footer {
+        border-top: 1px solid color(var(--yardBg) lightness(+5%));
+        font-size: 15px;
+        padding: 20px 0 0;
+        letter-spacing: 0.18px;
+
+        a {
+            color: var(--greenText);
+            border-bottom: 1px solid color(var(--greenText) alpha(60%));
+
+            &:hover{
+                color: #fff;
+                border-bottom-color:color(#fff alpha(60%));
+            }
+        }
+
+        .fl_r {
+            @media (--mobile) {
+                float: none;
+                margin-top: 8px;
+            }
         }
     }
 }

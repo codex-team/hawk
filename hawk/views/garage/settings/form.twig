@@ -2,21 +2,21 @@
   <script>
     hawk.docReady(function () {
       hawk.notifier.show({
-        message: "{{ message ? message : '' }}",
+        message: "{{ message ? message|escape : '' }}",
         style: "{{ success == '1' ? 'success' : 'error' }}"
       })
     });
   </script>
 {% endif %}
 
-<form method="POST" action="settings/save" onsubmit="hawk.settingsForm.checkForm(event);">
+<form class="garage-settings__account-form" method="POST" action="settings/save" onsubmit="hawk.settingsForm.checkForm(event);">
 
     {% include 'csrf.twig' with {csrfToken: csrfToken} %}
 
     <h4 class="form__header">Account settings</h4>
     <fieldset class="form__section">
         <label class="form__label" for="email">Change email</label>
-        <input class="form__width-fixed" type="email" id="email" name="email" value="{{ user.email }}" required>
+        <input class="form__width-fixed" type="email" id="email" name="email" value="{{ user.email|escape }}" required>
     </fieldset>
     <fieldset class="form__section">
         <label class="form__label" for="password">Select password</label>
@@ -27,5 +27,5 @@
         <input class="form__width-fixed" type="password" id="repeatedPassword" name="repeatedPassword" placeholder="********">
     </fieldset>
 
-    <input class=" button--submit" type="submit" value="Save">
+    <input class="button--submit" type="submit" value="Save">
 </form>

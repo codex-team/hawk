@@ -19,6 +19,15 @@ module.exports = function () {
     return Crypto.createHash('sha256').update(string, 'utf8').digest('hex');
   };
 
+  /**
+   * Get list of all projects
+   *
+   * @returns {*}
+   */
+  let getAll = () => {
+    return mongo.find(collections.PROJECTS, {});
+  };
+
 
   /**
    * Get user projects by userId
@@ -322,18 +331,19 @@ module.exports = function () {
   };
 
   return {
-    add: add,
-    get: get,
-    getByUser: getByUser,
-    getByToken: getByToken,
-    addMember: addMember,
-    editNotifies: editNotifies,
-    saveWebhook: saveWebhook,
-    getTeam: getTeam,
-    generateInviteHash: generateInviteHash,
-    confirmInvitation: confirmInvitation,
-    grantAdminAccess: grantAdminAccess,
-    getUserData: getUserData,
-    setIcon: setIcon
+    add,
+    get,
+    getAll,
+    getByUser,
+    getByToken,
+    addMember,
+    editNotifies,
+    saveWebhook,
+    getTeam,
+    generateInviteHash,
+    confirmInvitation,
+    grantAdminAccess,
+    getUserData,
+    setIcon
   };
 }();

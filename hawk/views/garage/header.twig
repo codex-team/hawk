@@ -4,30 +4,40 @@
 
         {% set url = "/garage/" ~ project.user.projectUri %}
         <h1 class="garage-header__page-title">
-            <a href="{{ url }}">{{ project.name }}</a>
+            <a href="{{ url|escape }}">
+                {{ project.name|escape }}
+            </a>
         </h1>
-        <a class="garage-header__tab garage-header__tab--fatal {% if tab == 'fatal' %}garage-header__tab--current{% endif %}" href="{{ url }}/fatal">
+        <a class="garage-header__tab garage-header__tab--fatal {% if tab == 'fatal' %}garage-header__tab--current{% endif %}" href="{{ url|escape }}/fatal">
             Fatal
             {% if project.fatal.unread %}
-              <span class="counter">{{ project.fatal.unread }} new</span>
+            <span class="counter">
+                {{ project.fatal.unread|counter }} new
+            </span>
             {% endif %}
         </a>
-        <a class="garage-header__tab garage-header__tab--warnings {% if tab == 'warnings' %}garage-header__tab--current{% endif %}" href="{{ url }}/warnings">
+        <a class="garage-header__tab garage-header__tab--warnings {% if tab == 'warnings' %}garage-header__tab--current{% endif %}" href="{{ url|escape }}/warnings">
             Warnings
             {% if project.warnings.unread %}
-              <span class="counter">{{ project.warnings.unread }} new</span>
+            <span class="counter">
+                {{ project.warnings.unread|counter }} new
+            </span>
             {% endif %}
         </a>
-        <a class="garage-header__tab garage-header__tab--notice {% if tab == 'notice' %}garage-header__tab--current{% endif %}" href="{{ url }}/notice">
+        <a class="garage-header__tab garage-header__tab--notice {% if tab == 'notice' %}garage-header__tab--current{% endif %}" href="{{ url|escape }}/notice">
             Notice
             {% if project.notice.unread %}
-              <span class="counter">{{ project.notice.unread }} new</span>
+            <span class="counter">
+                {{ project.notice.unread|counter }} new
+            </span>
             {% endif %}
         </a>
-        <a class="garage-header__tab garage-header__tab--javascript {% if tab == 'javascript' %}garage-header__tab--current{% endif %}" href="{{ url }}/javascript">
+        <a class="garage-header__tab garage-header__tab--javascript {% if tab == 'javascript' %}garage-header__tab--current{% endif %}" href="{{ url|escape }}/javascript">
             JavaScript Errors
             {% if project.javascript.unread %}
-              <span class="counter">{{ project.javascript.unread }} new</span>
+            <span class="counter">
+                {{ project.javascript.unread|counter }} new
+            </span>
             {% endif %}
         </a>
 

@@ -4,8 +4,8 @@
 
   <div class="landing-page yard">
     <div class="error-page">
-      <div class="error-page__title">{{ title }}</div>
-      <div class="error-page__message">{{ message }}</div>
+      <div class="error-page__title">{{ title|escape }}</div>
+      <div class="error-page__message">{{ message|escape }}</div>
     </div>
     <h1 class="landing-page__title">Hawk.so</h1>
     <p class="landing-page__caption">Fast and lightweight<br/>errors tracking service </p>

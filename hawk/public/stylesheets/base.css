@@ -136,19 +136,21 @@ textarea:focus {
     }
 
     &--bordered {
-        background: transparent;
-        padding: 12px;
-        margin: 20px 0;
-        display: inline-block;
+        /*background: transparent;*/
+        /*padding: 12px;*/
+        /*margin: 20px 0;*/
+        /*display: inline-block;
         color: var(--greenText);
         font-size: 15px;
         font-weight: 700;
         border: 1px solid color(var(--greenText) alpha(50%));
-        border-radius: 3px;
+        border-radius: 3px;*/
 
-        &:hover {
+        /*        &:hover {
             background: transparent;
-        }
+        }*/
+
+        @apply --beautiful-green-button;
     }
 
     &--green {

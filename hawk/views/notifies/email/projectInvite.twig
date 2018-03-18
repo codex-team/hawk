@@ -7,14 +7,14 @@
     <tr>
       <td>
         <font color="#000" style="font-size:15px;">
-          You were invited to {{ project.name }} project.
+          You were invited to {{ project.name|escape }} project.
         </font>
       </td>
     </tr>
     <tr>
       <td style="padding-top: 15px;">
         <font color="#000" style="font-size:16px; line-height: 1.5em;">
-            <a href="{{ inviteLink }}">Join {{ project.name }} team</a>
+            <a href="{{ inviteLink }}">Join {{ project.name|escape }} team</a>
         </font>
       </td>
     </tr>

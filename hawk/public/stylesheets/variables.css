@@ -7,10 +7,11 @@
     --greenText: #00b693;
     --pinkColor: #bc1453;
     --errorMessage: #cd4949;
+    --yardGrayText: #8a97ab;
 
     /** Error types modifiers */
-    --fatalColor: #ff5252;
-    --warningsColor: #ffdd5d;
+    --fatalColor: #ff5151;
+    --warningsColor: #af3232;
     --noticeColor: #717171;
     --javascriptColor: #9786da;
     --javascriptColorOnWhite: #5D49AE;
@@ -24,10 +25,11 @@
     --darkGrayBg: #292934;
     --buttonBg: #c5dff5;
     --submitButtonBg: #4592da;
-    --lightGrayBg: #f3f3f3;
-    --unreadBg: #e6f9f6;
-    --greenBg: #00bd95;
+    --lightGrayBg: #f7f8f9;
+    --unreadBg: #effff7;
+    --greenBg: #00bd77;
     --lightGreenBg: #edfff6;
+    --yardBg: #1d1d27;
 
     /** Borders */
     --lightGrayLine: #edebeb;
@@ -39,6 +41,22 @@
 
     /** Left sidebar width */
     --garage-aside-width: 250px;
+
+    --beautiful-green-button {
+        padding: 10px 17px;
+        display: inline-block;
+        color: #fff;
+        background: var(--greenBg);
+        font-size: 16.5px;
+        font-weight: 700;
+        box-shadow: 0 4px 5px -3px rgba(0, 189, 119, 0.85);
+        border-radius: 4px;
+        cursor: pointer;
+
+        &:hover {
+            background: color(var(--greenBg) blackness(+5%));
+        }
+    }
 
 }
 

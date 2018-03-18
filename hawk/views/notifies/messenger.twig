@@ -1,8 +1,17 @@
-🙀 <b>We have catched {{ times > 1 ? times ~ ' errors' : 'an error' }} on {{ project.name }} project</b>
-
-<code>{{ event.message }}</code>
+{# 🚨<b>{{ project.name }}</b>: <code>{{ event.message }}</code>
 
 {{ event.errorLocation.full }}
+{% if times > 1 %}
+
+    <b>{{ times }} times</b>
+{% endif %} #}
+{{ event.message|escape }}
+
+<code>{{ event.errorLocation.full|escape }}</code>
+{% if times > 1 %}
+
+<b>{{ times }} times</b>
+{% endif %}
 
 {% set url = serverUrl ~ '/garage/' ~ userData.projectUri ~ '/event/' ~ event.groupHash %}
-<a href='{{ url }}'>{{ url }}</a>
+<a href="{{ url|escape }}">View Traceback</a> | <b>{{ project.name|escape }}</b> | 🚨 Hawk

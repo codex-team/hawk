@@ -20,4 +20,8 @@
 
 .garage_page {
     padding: 25px;
+
+    h3:first-of-type {
+        margin-top: 0;
+    }
 }

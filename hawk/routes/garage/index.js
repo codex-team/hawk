@@ -1,8 +1,9 @@
 'use strict';
 
-let express = require('express');
-let router = express.Router();
-let events = require('../../models/events');
+const express = require('express');
+const router = express.Router();
+const events = require('../../models/events');
+const archiver = require('../../modules/archiver');
 
 /**
  * limit count of events per page
@@ -110,7 +111,8 @@ let makeResponse_ = function (foundEvents, currentProject, currentTag, canLoadMo
     canLoadMore: canLoadMore,
     meta : {
       title : 'Garage'
-    }
+    },
+    eventsLimit: archiver.eventsLimit
   });
 };
 

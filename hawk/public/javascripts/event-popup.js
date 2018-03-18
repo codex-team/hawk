@@ -246,6 +246,8 @@ let eventPopup = (function ( self ) {
    * @type {Number} event.time - time
    */
   function fillHeader(event, projectName) {
+    event.count = event.count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+
     popup.content.insertAdjacentHTML('afterbegin', `<div class="event">
       <div class="event__header">
         <span class="event__project">${projectName}</span>

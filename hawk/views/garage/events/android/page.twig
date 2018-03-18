@@ -4,21 +4,23 @@
     <div class="event__content clearfix">
         <div class="event__counter">
             <div class="event__counter-number">
-                <div class="event__counter-number--digit">{{ events|length + 1 }}</div>
+                <div class="event__counter-number--digit">
+                    {{ eventsCount|counter }}
+                </div>
                 times
             </div>
             <div class="event__counter-date">since<br>{{ event.time|date('d M Y') }}</div>
         </div>
         <div class="event__title">
-            {{ event.message }}
+            {{ event.message|escape }}
         </div>
         <div class="event__path">
-            {{ event.stack[0].location }}
+            {{ event.stack[0].location|escape }}
         </div>
         <div>
             {% if event.request.method %}
                 <span class="event-badge">
-                    {{ event.request.method|upper }}
+                    {{ event.request.method|upper|escape }}
                 </span>
             {% endif %}
         </div>
@@ -26,17 +28,17 @@
     <div class="event__badges">
         {% if event.deviceInfo %}
             <span class="event-badge">
-                {{ event.deviceInfo.brand }} {{ event.deviceInfo.model }}
+                {{ event.deviceInfo.brand|escape }} {{ event.deviceInfo.model|escape }}
             </span>
             <span class="event-badge">
                 {{ svg('/public/svg/android.svg') }}
-                {{ event.deviceInfo.release }}</span>
+                {{ event.deviceInfo.release|escape }}</span>
             <span class="event-badge">
                 {{ svg('/public/svg/desktop.svg') }}
-                {{ event.deviceInfo.screenSize }}
+                {{ event.deviceInfo.screenSize|escape }}
             </span>
             <span class="event-badge">
-                SDK {{ event.deviceInfo.SDK }}
+                SDK {{ event.deviceInfo.SDK|escape }}
             </span>
         {% endif %}
     </div>
@@ -53,9 +55,9 @@
     <div class="repeations" {% if events and canLoadMore %}data-module-required="appender"{% endif %}>
         <module-settings>
             {
-            "url" : "/garage/{{ project.user.projectUri }}/event/{{ event.groupHash }}/?page=",
+            "url" : "/garage/{{ project.user.projectUri|escape }}/event/{{ event.groupHash }}/?page=",
             "event" : "{{ event.groupHash }}",
-            "project" : "{{ project.name }}",
+            "project" : "{{ project.name|escape }}",
             "autoloading" : "true",
             "dontWaitFirstClick" : "false"
             }
