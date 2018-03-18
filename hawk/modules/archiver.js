@@ -31,7 +31,9 @@ class Archiver {
           /**
            * Summ total counter for all tags in Project
            */
-          let projectTotalArchivedCounter = removedEventsFromProjectTags.reduce((prev, cur) => prev + cur, 0);
+          let projectTotalArchivedCounter = removedEventsFromProjectTags.reduce((prev, cur) => {
+            return cur ? prev + cur : prev;
+          }, 0);
 
           return {
             projectId: project._id,
