@@ -4,14 +4,21 @@ const express = require('express');
 const router = express.Router();
 const Archiver = require('../../modules/archiver');
 
-router.get('/clear', async (req, res, next) => {
-  let archiver = new Archiver(),
-      events = await archiver.archive();
-
-  res.send(JSON.stringify(events));
-});
-
 /**
+ * Route for the Archiver
+ * Archiver removes staled events that exeeded Events Limit (10k)
+ * Fired by Cron every 2 hours
+ */
+if (process.env.ARCHIVER_ROUTE) {
+  router.get(`${process.env.ARCHIVER_ROUTE}`, async (req, res, next) => {
+    let archiver = new Archiver(),
+        archivedEventsCount = await archiver.archive();
+
+    res.send(`${archivedEventsCount} events succesfully archived 🍇`);
+  });
+}
+
+/*
  * Home page
  */
 router.get('/', function (req, res, next) {

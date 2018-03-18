@@ -86,7 +86,7 @@ module.exports = (function () {
    *
    * @param {string} projectId
    * @param {object} query
-   * @return {Promise<*>}
+   * @return {Promise<Number>}
    */
   let getCount = function (projectId, query) {
     let collection = getCollectionName(projectId);
@@ -115,10 +115,10 @@ module.exports = (function () {
    * @typedef {string|null} tagName - 'javascript|fatal|warnings|notice'
    *
    * @param {string} projectId
-   * @param {boolean} countArchived
+   * @param {boolean} includeArchived - is need to sum archived events count
    * @return {{_id: tagName, count:number, unread:number }[]}
    */
-  let countTags = async function(projectId, countArchived = true) {
+  let countTags = async function(projectId, includeArchived = true) {
     let collection = getCollectionName(projectId);
 
     let events = await mongo.aggregation(collection, [
@@ -132,7 +132,7 @@ module.exports = (function () {
       }
     ]);
 
-    if (!countArchived) {
+    if (!includeArchived) {
       return events;
     }
 

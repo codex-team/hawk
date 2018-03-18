@@ -11,7 +11,7 @@ class Archiver {
    * @returns {int}
    */
   static get eventsLimit() {
-    return 100000;
+    return 10000;
   }
 
   /**
@@ -26,20 +26,34 @@ class Archiver {
           return await this.removeEventsByProject(project._id);
         }));
       })
-      .then((projects) => {
-        console.log(projects);
-        return projects;
-      })
+      .then(
+        /**
+         * @param  {[number[]]} removed - [[11767,11776,11787],[]]
+         */
+        function(removed){
+          let removedItemsCounter = 0;
+
+          removed.forEach(tagsInProject => {
+            tagsInProject.forEach(tag => {
+              if (!isNaN(parseInt(tag, 10))) {
+                removedItemsCounter += tag;
+              }
+            });
+          });
+
+          return removedItemsCounter;
+        }
+      )
       .catch((e) => {
         logger.log('Error while getting count events of all projects:', e);
-      })
+      });
   }
 
   /**
    * Remove old events in target project
    *
    * @param {string} projectId
-   * @returns {Promise<*>}
+   * @returns {Promise<number[]>} - removed counters array
    */
   async removeEventsByProject(projectId) {
     /**
@@ -53,10 +67,11 @@ class Archiver {
 
     return Promise.all(tags.map(async tag => {
       try {
-      return await this.archiveEventsByTag(projectId, tag)
+        return await this.archiveEventsByTag(projectId, tag)
 
       } catch (e) {
         logger.log('Archiver: error while getting last event of olders', e);
+        return 0;
       }
     }));
   }
@@ -69,7 +84,7 @@ class Archiver {
    * @param {string} tag._id - name of tag: fatal, warnings, notice, javascript of null
    * @param {number} tag.count - number of events in this tag
    * @param {number} tag.unread - number of unread events
-   * @returns {Promise<*>|null}
+   * @returns {Promise<number>} - count of removed items
    */
   async archiveEventsByTag(projectId, tag) {
     /**
@@ -113,15 +128,18 @@ class Archiver {
     let collection = Events.getCollectionName(projectId);
 
     let removedItems = await this.removeEvents(collection, tagName, eventId);
+    let removedItemsCount = removedItems ? removedItems.result.n : 0;
 
     /**
      * Save archived items count
      */
-    return await this.saveArchivedCount({
+    await this.saveArchivedCount({
       tag: tagName,
-      removedCount: removedItems ? removedItems.result.n : 0,
+      removedCount: removedItemsCount,
       projectId: projectId
     })
+
+    return removedItemsCount;
   }
 
   /**
