@@ -150,6 +150,7 @@
         cursor: pointer;
         border-radius: 3px;
         user-select: none;
+        white-space: nowrap;
 
         &:hover {
             background: var(--lightGrayBg);
@@ -158,6 +159,9 @@
 
     &__cell {
         flex-grow: 1;
+        max-width: 30%;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     &__date {
