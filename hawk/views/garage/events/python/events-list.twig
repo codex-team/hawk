@@ -1,16 +1,18 @@
 {% for item in events %}
-    <div class="repeations__row">
-        <div class="repeations__date">
-            {{ item.time|date('d M, H:i') }}
+    <div class="repeations__row-wrapper">
+        <div class="repeations__row" onclick="hawkso.event.toggleStack(this, '{{ item._id }}')">
+            <div class="repeations__date">
+                {{ item.time|date('d M, H:i') }}
+            </div>
+            <div class="repeations__cell">
+                Location was not specified
+            </div>
+            <div class="repeations__stack">
+                {{ svg('/public/svg/stack.svg') }} stack
+            </div>
         </div>
-        <div class="repeations__cell">
-            Location was not specified
+        <div class="event-info hide" data-event="{{ item._id }}">
+            {% include 'garage/events/python/stack.twig' with {event: item} %}
         </div>
-        <div class="repeations__stack" onclick="hawkso.event.toggleStack(this, '{{ item._id }}')">
-            {{ svg('/public/svg/stack.svg') }} stack
-        </div>
-    </div>
-    <div class="event-info hide" data-event="{{ item._id }}">
-        {% include 'garage/events/python/stack.twig' with {event: item} %}
     </div>
 {% endfor %}

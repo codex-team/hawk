@@ -1,31 +1,34 @@
 {% for item in events %}
-    <div class="repeations__row">
-        <div class="repeations__date">
-            {{ item.time|date('d M, H:i') }}
+    <div class="repeations__row-wrapper">
+        <div class="repeations__row" onclick="hawkso.event.toggleStack(this, '{{ item._id }}')">
+            <div class="repeations__date">
+                {{ item.time|date('d M, H:i') }}
+            </div>
+            <div class="repeations__cell repeations__user-agent">
+                {{ item.userAgent.device.os|escape }},
+                {{ item.userAgent.browser.name|escape }}
+                {{ item.userAgent.browser.version|escape }}
+            </div>
+            <div class="repeations__cell">
+                <span class="event-badge event-badge--{{ item.userAgent.device.type|escape }}">
+                  {{ item.userAgent.device.type|escape}}
+                </span>
+                <span class="event-badge event-badge--device-size">
+                    {{ item.userAgent.device.width|escape }}x{{ item.userAgent.device.height|escape }}
+                </span>
+            </div>
+            <div class="repeations__cell">
+                <a href="{{ item.location.url }}" target="_blank" class="repeations__path">
+                    {{ item.location.path|escape }}
+                </a>
+            </div>
+            <div class="repeations__stack">
+                {{ svg('/public/svg/stack.svg') }} stack
+            </div>
         </div>
-        <div class="repeations__user-agent">
-            {{ item.userAgent.device.os|escape }},
-            {{ item.userAgent.browser.name|escape }}
-            {{ item.userAgent.browser.version|escape }}
-        </div>
-        <div class="repeations__cell">
-            <span class="event-badge event-badge--{{ item.userAgent.device.type|escape }}">
-              {{ item.userAgent.device.type|escape}}
-            </span>
-            <span class="event-badge event-badge--device-size">
-                {{ item.userAgent.device.width|escape }}x{{ item.userAgent.device.height|escape }}
-            </span>
-        </div>
-        <div class="repeations__cell">
-            <a href="{{ item.location.url }}" target="_blank" class="repeations__path">
-                {{ item.location.path|escape }}
-            </a>
-        </div>
-        <div class="repeations__stack" onclick="hawkso.event.toggleStack(this, '{{ item._id }}')">
-            {{ svg('/public/svg/stack.svg') }} stack
+        <div class="event-info hide" data-event="{{ item._id }}">
+            {% include 'garage/events/client/stack.twig' with {event: item} %}
         </div>
     </div>
-    <div class="event-info hide" data-event="{{ item._id }}">
-        {% include 'garage/events/client/stack.twig' with {event: item} %}
-    </div>
+
 {% endfor %}
