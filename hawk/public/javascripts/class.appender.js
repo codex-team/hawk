@@ -79,7 +79,7 @@ export class Appender {
   loadMoreEvents(event) {
     event.preventDefault();
 
-    hawk.ajax.call({
+    hawkso.ajax.call({
       url : this.settings.url + this.nextPage,
       beforeSend : this.beforeSend.bind(this),
       success: this.successCallback.bind(this),

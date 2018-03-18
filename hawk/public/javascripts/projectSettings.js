@@ -113,7 +113,7 @@ module.exports = function () {
     error(response = {}) {
       console.log('Project upload error ', response);
 
-      hawk.notifier.show({
+      hawkso.notifier.show({
         message: response.message || 'Uploading failed. Try another file.',
         style: 'error'
       });
