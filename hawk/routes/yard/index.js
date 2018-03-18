@@ -23,7 +23,7 @@ if (process.env.ARCHIVER_ROUTE) {
 
     archivedEvents.forEach( project => {
       if (project.archived > 0) {
-        answer += `\n${project.archived} events | <b>${project.projectName}</b> ${project.projectId}`;
+        answer += `\n${project.archived} events | <b>${project.projectName}</b> | <code>${project.projectId}</code>`;
         total += project.archived;
       }
     });

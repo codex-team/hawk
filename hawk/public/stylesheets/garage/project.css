@@ -265,3 +265,9 @@
     }
 
 }
+
+.no-data {
+    color: var(--grayText);
+    line-height: 1em;
+    margin: 0 0 20px;
+}
