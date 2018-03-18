@@ -11,7 +11,9 @@
                         {% if project.logo %}
                             <img class="garage-projects-added__img" src="{{ project.logo|escape }}/crop/52">
                         {% else %}
-                            <span class="garage-projects-added__img"></span>
+                            <span class="garage-projects-added__img">
+                                {{ svg('/public/svg/logo-placeholder.svg') }}
+                            </span>
                         {% endif %}
                         <span class="garage-projects-added__name">
                             {{ project.name|escape }}

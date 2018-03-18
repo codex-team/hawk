@@ -47,7 +47,7 @@
                                 {{ member.is_pending ? 'project__member-role--pending' : '' }}
                                 {{ canGrantAdminAccess ? 'project__member-role--can-grant-access' : '' }}"
                         {% if canGrantAdminAccess %}
-                            onclick="hawk.settingsForm.grantAdminAccess('{{ project.id|escape }}', '{{ member.id|escape }}', this)"
+                            onclick="hawkso.settingsForm.grantAdminAccess('{{ project.id|escape }}', '{{ member.id|escape }}', this)"
                         {% endif %}
                 >
                         {% if member.role == 'admin' %}
@@ -72,8 +72,8 @@
                            id="{{ project.id|escape }}"
                            type="email"
                            placeholder="Enter email"
-                           onenter="hawk.settingsForm.inviteMember('{{ project.id|escape }}', this.parentNode.parentNode)">
-                    <span class="project__save-button" onclick="hawk.settingsForm.inviteMember('{{ project.id|escape }}', this.parentNode.parentNode)">
+                           onenter="hawkso.settingsForm.inviteMember('{{ project.id|escape }}', this.parentNode.parentNode)">
+                    <span class="project__save-button" onclick="hawkso.settingsForm.inviteMember('{{ project.id|escape }}', this.parentNode.parentNode)">
                         Send invitation {{ svg('/public/svg/arrow-right.svg') }}
                     </span>
                 </fieldset>
@@ -91,21 +91,21 @@
                    class="form__checkbox"
                    data-name="email"
                     {{ project.user.notifies.email ? 'data-checked="true"' : '' }}
-                   onclick="hawk.settingsForm.saveNotifiesPreferences(this, '{{ project.id }}', '{{ user._id }}')">
+                   onclick="hawkso.settingsForm.saveNotifiesPreferences(this, '{{ project.id }}', '{{ user._id }}')">
                 Email
             </label>
             <label name="custom-checkbox"
                    class="form__checkbox"
                    data-name="tg"
                     {{ project.user.notifies.tg ? 'data-checked="true"' : '' }}
-                   onclick="hawk.settingsForm.saveNotifiesPreferences(this, '{{ project.id }}', '{{ user._id }}')">
+                   onclick="hawkso.settingsForm.saveNotifiesPreferences(this, '{{ project.id }}', '{{ user._id }}')">
                 Telegram
             </label>
             <label name="custom-checkbox"
                    class="form__checkbox"
                    data-name="slack"
                     {{ project.user.notifies.slack ? 'data-checked="true"' : '' }}
-                   onclick="hawk.settingsForm.saveNotifiesPreferences(this, '{{ project.id }}', '{{ user._id }}')">
+                   onclick="hawkso.settingsForm.saveNotifiesPreferences(this, '{{ project.id }}', '{{ user._id }}')">
                 Slack
             </label>
 
@@ -122,8 +122,8 @@
                        value="{{ project.user.tgHook|escape }}"
                        placeholder="https://notify.bot.ifmo.su/u/DN5N89E3"
                        id="tg-{{ project.id }}"
-                       onenter="hawk.settingsForm.saveWebhook('{{ project.id }}', '{{ user._id }}', 'tg')">
-                <span class="project__save-button" onclick="hawk.settingsForm.saveWebhook('{{ project.id }}', '{{ user._id }}', 'tg')">
+                       onenter="hawkso.settingsForm.saveWebhook('{{ project.id }}', '{{ user._id }}', 'tg')">
+                <span class="project__save-button" onclick="hawkso.settingsForm.saveWebhook('{{ project.id }}', '{{ user._id }}', 'tg')">
                     Save {{ svg('/public/svg/arrow-right.svg') }}
                 </span>
             </fieldset>
@@ -135,8 +135,8 @@
                        value="{{ project.user.slackHook|escape }}"
                        placeholder="https://notify.bot.ifmo.su/u/VI90Z3NM"
                        id="slack-{{ project.id }}"
-                       onenter="hawk.settingsForm.saveWebhook('{{ project.id }}', '{{ user._id }}', 'slack')">
-                <span class="project__save-button" onclick="hawk.settingsForm.saveWebhook('{{ project.id }}', '{{ user._id }}', 'slack')">
+                       onenter="hawkso.settingsForm.saveWebhook('{{ project.id }}', '{{ user._id }}', 'slack')">
+                <span class="project__save-button" onclick="hawkso.settingsForm.saveWebhook('{{ project.id }}', '{{ user._id }}', 'slack')">
                     Save {{ svg('/public/svg/arrow-right.svg') }}
                 </span>
             </fieldset>

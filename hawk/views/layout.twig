@@ -13,12 +13,15 @@ errors tracking service.' }}" />
     <script type="text/javascript" src="/static/build/bundle.js"></script>
     <link rel="icon" type="image/png" href="/static/images/favicon.png" />
     <script>
-      hawk.docReady(function () {
-        hawk.init();
+      hawkso.docReady(function () {
+        hawkso.init();
       });
     </script>
   </head>
   <body>
     {% block body %}{% endblock %}
+    {% if env.HAWK_CATCHER_TOKEN is not empty  %}
+      <script src="https://cdn.rawgit.com/codex-team/hawk.client/master/hawk.js" async onload="hawk.init('{{ env.HAWK_CATCHER_TOKEN }}', '{{ env.SERVER_URL }}', {{ env.SOCKET_PORT }}, 'catcher/client', {{ env.ENVIRONMENT == 'DEVELOPMENT' ? 'false' : 'true' }});"></script>
+    {% endif %}
   </body>
 </html>

@@ -123,6 +123,7 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 * @fires user.getInfo
 */
 app.use(function (req, res, next) {
+  res.locals.env = process.env || {};
   res.locals.user = {};
   res.locals.userProjects = {};
 

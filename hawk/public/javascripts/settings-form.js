@@ -29,7 +29,7 @@ module.exports = function () {
     /** if tests were failed */
     if ( Object.keys(errors).length ) {
       for (let error in errors) {
-        hawk.notifier.show({
+        hawkso.notifier.show({
           message: errors[error],
           style: 'error'
         });
@@ -65,21 +65,21 @@ module.exports = function () {
 
     let email = input.value;
 
-    hawk.ajax.call({
+    hawkso.ajax.call({
       type: 'POST',
       url: '/garage/project/inviteMember',
       success: function (result) {
-        hawk.notifier.show({
+        hawkso.notifier.show({
           style: result.success ? 'success' : 'error',
           message: result.message
         });
         if (result.success) {
-          hawk.toggler.toggle(form);
+          hawkso.toggler.toggle(form);
           input.value = '';
         }
       },
       error: function () {
-        hawk.notifier.show({
+        hawkso.notifier.show({
           style: 'error',
           message: 'Something went wrong. Try again later.'
         });
@@ -103,17 +103,17 @@ module.exports = function () {
         value = !input.checked,
         type = checkbox.dataset.name;
 
-    hawk.ajax.call({
+    hawkso.ajax.call({
       type: 'POST',
       url: '/garage/project/editNotifies',
       error: function () {
-        hawk.notifier.show({
+        hawkso.notifier.show({
           style: 'error',
           message: 'Can\'t save notifications preferences. Try again later'
         });
       },
       success: function (result) {
-        hawk.notifier.show({
+        hawkso.notifier.show({
           style: result.success ? 'success' : 'error',
           message: result.message
         });
@@ -138,17 +138,17 @@ module.exports = function () {
     let input = document.getElementById(type + '-' + projectId),
         value = input.value;
 
-    hawk.ajax.call({
+    hawkso.ajax.call({
       type: 'POST',
       url: '/garage/project/saveWebhook',
       error: function () {
-        hawk.notifier.show({
+        hawkso.notifier.show({
           style: 'error',
           message: 'Can\'t save webhook. Try again later'
         });
       },
       success: function (result) {
-        hawk.notifier.show({
+        hawkso.notifier.show({
           style: result.success ? 'success' : 'error',
           message: result.message
         });
@@ -170,17 +170,17 @@ module.exports = function () {
    * @param button
    */
   let grantAdminAccess = function (projectId, userId, button) {
-    hawk.ajax.call({
+    hawkso.ajax.call({
       type: 'POST',
       url: '/garage/project/grantAdminAccess',
       error: function () {
-        hawk.notifier.show({
+        hawkso.notifier.show({
           style: 'error',
           message: 'Can\'t grant access. Try again later'
         });
       },
       success: function (result) {
-        hawk.notifier.show({
+        hawkso.notifier.show({
           style: result.success ? 'success' : 'error',
           message: result.message
         });

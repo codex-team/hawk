@@ -92,6 +92,7 @@
         "global": true,
         "app": true,
         "hawk": true,
+        "hawkso": true,
         "process": true
     }
 }

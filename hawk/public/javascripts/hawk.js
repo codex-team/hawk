@@ -3,7 +3,7 @@
  */
 require('../stylesheets/hawk.css');
 
-let hawk = (function (self) {
+let hawkso = (function (self) {
   'use strict';
 
   self.init = function () {
@@ -75,10 +75,10 @@ let hawk = (function (self) {
   return self;
 })({});
 
-hawk.docReady = function (f) {
+hawkso.docReady = function (f) {
   'use strict';
 
-  return /in/.test(document.readyState) ? window.setTimeout(hawk.docReady, 9, f) : f();
+  return /in/.test(document.readyState) ? window.setTimeout(hawkso.docReady, 9, f) : f();
 };
 
-module.exports = hawk;
+module.exports = hawkso;

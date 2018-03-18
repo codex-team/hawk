@@ -8,16 +8,20 @@
             {{ item.userAgent.browser.name|escape }}
             {{ item.userAgent.browser.version|escape }}
         </div>
-        <span class="event-badge event-badge--{{ item.userAgent.device.type|escape }}">
-          {{ item.userAgent.device.type|escape}}
-        </span>
-        <span class="event-badge event-badge--device-size">
-            {{ item.userAgent.device.width|escape }}x{{ item.userAgent.device.height|escape }}
-        </span>
-        <a href="{{ item.location.url }}" target="_blank" class="repeations__path">
-            {{ item.location.path|escape }}
-        </a>
-        <div class="repeations__stack" onclick="hawk.event.toggleStack(this, '{{ item._id }}')">
+        <div class="repeations__cell">
+            <span class="event-badge event-badge--{{ item.userAgent.device.type|escape }}">
+              {{ item.userAgent.device.type|escape}}
+            </span>
+            <span class="event-badge event-badge--device-size">
+                {{ item.userAgent.device.width|escape }}x{{ item.userAgent.device.height|escape }}
+            </span>
+        </div>
+        <div class="repeations__cell">
+            <a href="{{ item.location.url }}" target="_blank" class="repeations__path">
+                {{ item.location.path|escape }}
+            </a>
+        </div>
+        <div class="repeations__stack" onclick="hawkso.event.toggleStack(this, '{{ item._id }}')">
             {{ svg('/public/svg/stack.svg') }} stack
         </div>
     </div>

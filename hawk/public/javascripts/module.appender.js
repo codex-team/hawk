@@ -30,7 +30,7 @@ module.exports = (function (self) {
         }
       },
       onError : function () {
-        hawk.notifier.show({
+        hawkso.notifier.show({
           message: 'Can\'t load data. Please try again later',
           style: 'error'
         });

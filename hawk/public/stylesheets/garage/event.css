@@ -156,6 +156,10 @@
         }
     }
 
+    &__cell {
+        flex-grow: 1;
+    }
+
     &__date {
         color: var(--grayText);
     }
@@ -173,7 +177,7 @@
     }
 
     .event-badge {
-        margin: 0 10px;
+        margin: 0 1px;
     }
 
     &__path {

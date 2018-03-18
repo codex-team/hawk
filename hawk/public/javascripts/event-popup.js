@@ -231,7 +231,7 @@ let eventPopup = (function ( self ) {
     updateHeaderTime(response.event ? response.event.time : 0);
 
     /** initialize modules inside html response */
-    hawk.initInternalModules(popup.holder);
+    hawkso.initInternalModules(popup.holder);
   };
 
   /**
@@ -308,12 +308,12 @@ let eventPopup = (function ( self ) {
     /** Add loader */
     popup.holder.classList.add(CSS.popupLoading);
 
-    hawk.ajax.call({
+    hawkso.ajax.call({
       url: `${eventUrl}?popup=true`,
       method: 'GET',
       success: handleSuccessResponse_,
       error: err => {
-        hawk.notifier.show({style: 'error', message: 'Cannot load event data'});
+        hawkso.notifier.show({style: 'error', message: 'Cannot load event data'});
         console.log('Event loading error: %o', err);
 
         /** Remove loader */

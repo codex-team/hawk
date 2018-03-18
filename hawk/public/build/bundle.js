@@ -1,4 +1,4 @@
-var hawk =
+var hawkso =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -691,7 +691,7 @@ var eventPopup = function (self) {
     updateHeaderTime(response.event ? response.event.time : 0);
 
     /** initialize modules inside html response */
-    hawk.initInternalModules(popup.holder);
+    hawkso.initInternalModules(popup.holder);
   };
 
   /**
@@ -743,12 +743,12 @@ var eventPopup = function (self) {
     /** Add loader */
     popup.holder.classList.add(CSS.popupLoading);
 
-    hawk.ajax.call({
+    hawkso.ajax.call({
       url: eventUrl + '?popup=true',
       method: 'GET',
       success: handleSuccessResponse_,
       error: function error(err) {
-        hawk.notifier.show({ style: 'error', message: 'Cannot load event data' });
+        hawkso.notifier.show({ style: 'error', message: 'Cannot load event data' });
         console.log('Event loading error: %o', err);
 
         /** Remove loader */
@@ -1005,7 +1005,7 @@ module.exports = function (self) {
         }
       },
       onError: function onError() {
-        hawk.notifier.show({
+        hawkso.notifier.show({
           message: 'Can\'t load data. Please try again later',
           style: 'error'
         });
@@ -1149,7 +1149,7 @@ module.exports = function () {
 
       console.log('Project upload error ', response);
 
-      hawk.notifier.show({
+      hawkso.notifier.show({
         message: response.message || 'Uploading failed. Try another file.',
         style: 'error'
       });
@@ -1217,7 +1217,7 @@ module.exports = function () {
     /** if tests were failed */
     if (Object.keys(errors).length) {
       for (var error in errors) {
-        hawk.notifier.show({
+        hawkso.notifier.show({
           message: errors[error],
           style: 'error'
         });
@@ -1253,21 +1253,21 @@ module.exports = function () {
 
     var email = input.value;
 
-    hawk.ajax.call({
+    hawkso.ajax.call({
       type: 'POST',
       url: '/garage/project/inviteMember',
       success: function success(result) {
-        hawk.notifier.show({
+        hawkso.notifier.show({
           style: result.success ? 'success' : 'error',
           message: result.message
         });
         if (result.success) {
-          hawk.toggler.toggle(form);
+          hawkso.toggler.toggle(form);
           input.value = '';
         }
       },
       error: function error() {
-        hawk.notifier.show({
+        hawkso.notifier.show({
           style: 'error',
           message: 'Something went wrong. Try again later.'
         });
@@ -1291,17 +1291,17 @@ module.exports = function () {
         value = !input.checked,
         type = checkbox.dataset.name;
 
-    hawk.ajax.call({
+    hawkso.ajax.call({
       type: 'POST',
       url: '/garage/project/editNotifies',
       error: function error() {
-        hawk.notifier.show({
+        hawkso.notifier.show({
           style: 'error',
           message: 'Can\'t save notifications preferences. Try again later'
         });
       },
       success: function success(result) {
-        hawk.notifier.show({
+        hawkso.notifier.show({
           style: result.success ? 'success' : 'error',
           message: result.message
         });
@@ -1326,17 +1326,17 @@ module.exports = function () {
     var input = document.getElementById(type + '-' + projectId),
         value = input.value;
 
-    hawk.ajax.call({
+    hawkso.ajax.call({
       type: 'POST',
       url: '/garage/project/saveWebhook',
       error: function error() {
-        hawk.notifier.show({
+        hawkso.notifier.show({
           style: 'error',
           message: 'Can\'t save webhook. Try again later'
         });
       },
       success: function success(result) {
-        hawk.notifier.show({
+        hawkso.notifier.show({
           style: result.success ? 'success' : 'error',
           message: result.message
         });
@@ -1358,17 +1358,17 @@ module.exports = function () {
    * @param button
    */
   var grantAdminAccess = function grantAdminAccess(projectId, userId, button) {
-    hawk.ajax.call({
+    hawkso.ajax.call({
       type: 'POST',
       url: '/garage/project/grantAdminAccess',
       error: function error() {
-        hawk.notifier.show({
+        hawkso.notifier.show({
           style: 'error',
           message: 'Can\'t grant access. Try again later'
         });
       },
       success: function success(result) {
-        hawk.notifier.show({
+        hawkso.notifier.show({
           style: result.success ? 'success' : 'error',
           message: result.message
         });
@@ -1824,7 +1824,7 @@ var Appender = exports.Appender = function () {
     value: function loadMoreEvents(event) {
       event.preventDefault();
 
-      hawk.ajax.call({
+      hawkso.ajax.call({
         url: this.settings.url + this.nextPage,
         beforeSend: this.beforeSend.bind(this),
         success: this.successCallback.bind(this),
@@ -1889,7 +1889,7 @@ var Appender = exports.Appender = function () {
  */
 __webpack_require__(12);
 
-var hawk = function (self) {
+var hawkso = function (self) {
   'use strict';
 
   self.init = function () {
@@ -1961,14 +1961,14 @@ var hawk = function (self) {
   return self;
 }({});
 
-hawk.docReady = function (f) {
+hawkso.docReady = function (f) {
   'use strict';
 
-  return (/in/.test(document.readyState) ? window.setTimeout(hawk.docReady, 9, f) : f()
+  return (/in/.test(document.readyState) ? window.setTimeout(hawkso.docReady, 9, f) : f()
   );
 };
 
-module.exports = hawk;
+module.exports = hawkso;
 
 /***/ })
 /******/ ]);

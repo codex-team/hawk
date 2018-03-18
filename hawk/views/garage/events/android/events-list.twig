@@ -6,19 +6,25 @@
         <div class="repeations__device">
              {{ item.deviceInfo.brand|escape }} {{ item.deviceInfo.model|escape }}
         </div>
-        <span class="event-badge">
-            {{ svg('/public/svg/android.svg') }}
-            {{ event.deviceInfo.release|escape}}
-        </span>
-        <div class="repeations__path">
-            {{ item.stack[0].location|escape }}
-        </div>
-        {% if item.request.method %}
+        <div class="repeations__cell">
             <span class="event-badge">
-                {{ item.request.method|escape }}
+                {{ svg('/public/svg/android.svg') }}
+                {{ event.deviceInfo.release|escape}}
             </span>
-        {% endif %}
-        <div class="repeations__stack" onclick="hawk.event.toggleStack(this, '{{ item._id }}')" style="display: flex">
+        </div>
+        <div class="repeations__cell">
+            <div class="repeations__path">
+                {{ item.stack[0].location|escape }}
+            </div>
+        </div>
+        <div class="repeations__cell">
+            {% if item.request.method %}
+                <span class="event-badge">
+                    {{ item.request.method|escape }}
+                </span>
+            {% endif %}
+        </div>
+        <div class="repeations__stack" onclick="hawkso.event.toggleStack(this, '{{ item._id }}')" style="display: flex">
             {{ svg('/public/svg/stack.svg') }}
             stack
         </div>
