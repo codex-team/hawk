@@ -170,8 +170,8 @@
 
     &__user-agent {
         margin: 0 15px;
-        width: 100px;
-        flex-grow: 1;
+        min-width: 16%;
+        padding-right: 25px;
     }
 
     .event-info {

@@ -3,7 +3,7 @@
         <div class="repeations__date">
             {{ item.time|date('d M, H:i') }}
         </div>
-        <div class="repeations__user-agent">
+        <div class="repeations__cell repeations__user-agent">
             {{ item.userAgent.device.os|escape }},
             {{ item.userAgent.browser.name|escape }}
             {{ item.userAgent.browser.version|escape }}

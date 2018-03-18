@@ -21,7 +21,7 @@ errors tracking service.' }}" />
   <body>
     {% block body %}{% endblock %}
     {% if env.HAWK_CATCHER_TOKEN is not empty  %}
-      <script src="https://cdn.rawgit.com/codex-team/hawk.client/master/hawk.js" async onload="hawk.init('{{ env.HAWK_CATCHER_TOKEN }}', '{{ env.SERVER_URL }}', {{ env.SOCKET_PORT }}, 'catcher/client', {{ env.ENVIRONMENT == 'DEVELOPMENT' ? 'false' : 'true' }});"></script>
+      <script src="https://cdn.rawgit.com/codex-team/hawk.client/master/hawk.js" async onload="hawk.init('{{ env.HAWK_CATCHER_TOKEN }}');"></script>
     {% endif %}
   </body>
 </html>
