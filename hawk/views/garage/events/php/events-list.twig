@@ -1,5 +1,5 @@
 {% for item in events %}
-    <div class="repeations__row" onclick="hawk.event.toggleStack(this, '{{ item._id }}')">
+    <div class="repeations__row" onclick="hawkso.event.toggleStack(this, '{{ item._id }}')">
         <div class="repeations__date">
             {{ item.time|date('d M, H:i') }}
         </div>

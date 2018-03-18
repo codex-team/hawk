@@ -1,7 +1,7 @@
 {% if success is not null %}
   <script>
-    hawk.docReady(function () {
-      hawk.notifier.show({
+    hawkso.docReady(function () {
+      hawkso.notifier.show({
         message: "{{ message ? message|escape : '' }}",
         style: "{{ success == '1' ? 'success' : 'error' }}"
       })
@@ -9,7 +9,7 @@
   </script>
 {% endif %}
 
-<form class="garage-settings__account-form" method="POST" action="settings/save" onsubmit="hawk.settingsForm.checkForm(event);">
+<form class="garage-settings__account-form" method="POST" action="settings/save" onsubmit="hawkso.settingsForm.checkForm(event);">
 
     {% include 'csrf.twig' with {csrfToken: csrfToken} %}
 

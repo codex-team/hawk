@@ -10,7 +10,7 @@ module.exports = {
 
   output: {
     filename: './public/build/bundle.js',
-    library: 'hawk'
+    library: 'hawkso'
   },
 
   module: {

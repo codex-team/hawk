@@ -40,7 +40,7 @@
                         "project" : "{{ project.name|escape }}",
                         "autoloading" : "true",
                         "dontWaitFirstClick" : "false",
-                        "onLoadItems": "hawk.eventPopup.update()"
+                        "onLoadItems": "hawkso.eventPopup.update()"
                         }
                     </module-settings>
                     {% include 'garage/events/list.twig' with { project: currentProject, events: events} %}

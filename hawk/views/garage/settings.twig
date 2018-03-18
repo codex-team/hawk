@@ -46,17 +46,17 @@
     <script>
         var tokenCopied = function (e) {
 
-          hawk.notifier.show({
+          hawkso.notifier.show({
             message: 'Token was copied',
             style: 'success'
           })
 
         }
 
-        hawk.docReady(hawk.projectSettings.init);
-        hawk.docReady(hawk.checkbox.init);
-        hawk.docReady(hawk.toggler.init);
-        hawk.docReady(hawk.copyable.init.bind(null, tokenCopied));
+        hawkso.docReady(hawkso.projectSettings.init);
+        hawkso.docReady(hawkso.checkbox.init);
+        hawkso.docReady(hawkso.toggler.init);
+        hawkso.docReady(hawkso.copyable.init.bind(null, tokenCopied));
     </script>
 
 {% endblock %}
