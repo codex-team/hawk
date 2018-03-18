@@ -3,24 +3,28 @@
         <div class="repeations__date">
             {{ item.time|date('d M, H:i') }}
         </div>
-        {% if item.request.method %}
-            <span class="event-badge">
-              {{ item.request.method|escape }}
-            </span>
-        {% else %}
-            <span class="event-badge">
-                GET
-            </span>
-        {% endif %}
-        {% if item.location.url and item.location.url not 'undefined' %}
-            <a href="{{ item.location.url|escape }}" target="_blank" class="repeations__path">
-                {{ item.location.path|escape }}
-            </a>
-        {% else %}
-            <span class="repeations__path repeations__path--unknown">
-                Unknown location
-            </span>
-        {% endif %}
+        <div class="repeations__cell">
+            {% if item.request.method %}
+                <span class="event-badge">
+                  {{ item.request.method|escape }}
+                </span>
+            {% else %}
+                <span class="event-badge">
+                    GET
+                </span>
+            {% endif %}
+        </div>
+        <div class="repeations__cell">
+            {% if item.location.url and item.location.path %}
+                <a href="{{ item.location.url|escape }}" target="_blank" class="repeations__path">
+                    {{ item.location.path|escape }}
+                </a>
+            {% else %}
+                <span class="repeations__path repeations__path--unknown">
+                    Unknown location
+                </span>
+            {% endif %}
+        </div>
 
         <div class="repeations__stack" title="Show Stack">
             {{ svg('/public/svg/stack.svg') }} stack
