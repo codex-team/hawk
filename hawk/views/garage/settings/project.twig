@@ -21,9 +21,7 @@
     <div class="project__section">
         <h4 class="project__section-header">Token</h4>
         <div name="js-copyable-authorize">
-            <span name="js-copyable" class="project__token">
-                {{ project.token|escape }}
-            </span>
+            <span name="js-copyable" class="project__token">{{ project.token|escape }}</span>
             <span class="project__copy-button">
                 {{ svg('/public/svg/copy.svg') }} Copy
             </span>
