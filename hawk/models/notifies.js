@@ -137,7 +137,7 @@ module.exports = function () {
           });
         });
       });
-  }
+  };
 
   /**
    * Set new Timeout for event and send notification about first event.
