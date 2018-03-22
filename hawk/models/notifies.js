@@ -58,14 +58,14 @@ module.exports = function () {
       .then(function () {
         users.forEach(function (userData) {
           let userId = userData.userId.toString(),
-              renderParams = {
-                event: event,
-                project: project,
-                serverUrl: process.env.SERVER_URL,
-                times: times,
-                userData: userData,
-                unsubscribeHash: generateUnsubscribeHash(userId, project._id)
-              };
+            renderParams = {
+              event: event,
+              project: project,
+              serverUrl: process.env.SERVER_URL,
+              times: times,
+              userData: userData,
+              unsubscribeHash: generateUnsubscribeHash(userId, project._id)
+            };
 
 
           Twig.renderFile(templatesPath + templates.messenger, renderParams, function (err, html) {
@@ -74,41 +74,70 @@ module.exports = function () {
               return;
             }
 
+            /**
+             * Send Telegram notification
+             */
             if (userData.notifies.tg && userData.tgHook) {
-              request.post({url: userData.tgHook, form: {message: html, parse_mode: 'HTML'}});
+              request.post({
+                url: userData.tgHook,
+                form: {
+                  message: html,
+                  parse_mode: 'HTML'
+                }
+              }, (err, httpResponse, body) => {
+                if (err) {
+                  logger.error('Can not send notification to Telegram because of ', err);
+                }
+              });
             }
 
+            /**
+             * Send Slack notification
+             */
             if (userData.notifies.slack && userData.slackHook) {
-              request.post({url: userData.slackHook, form: {message: html, parse_mode: 'HTML'}});
+              request.post({
+                url: userData.slackHook,
+                form: {
+                  message: html,
+                  parse_mode: 'HTML'
+                }
+              }, (err, httpResponse, body) => {
+                if (err) {
+                  logger.error('Can not send notification to Slack because of ', err);
+                }
+              });
+            }
+
+            /**
+             * Send email notification
+             */
+            if (userData.notifies.email) {
+              Twig.renderFile(templatesPath + templates.email, renderParams, function (err, html) {
+                if (err) {
+                  logger.error('Can not render notify template because of ', err);
+                  return;
+                }
+
+                let emailSubject = ' on ' + project.name + ': «' + event.message + '»';
+
+                if (times > 1) {
+                  emailSubject = times + ' errors' + emailSubject;
+                } else {
+                  emailSubject = 'Error' + emailSubject;
+                }
+
+                email.send(
+                  userData.email,
+                  emailSubject,
+                  '',
+                  html
+                );
+              });
             }
           });
-
-          if (userData.notifies.email) {
-            Twig.renderFile(templatesPath + templates.email, renderParams, function (err, html) {
-              if (err) {
-                logger.error('Can not render notify template because of ', err);
-                return;
-              }
-
-              let emailSubject = ' on ' + project.name + ': «' + event.message + '»';
-
-              if (times > 1) {
-                emailSubject = times + ' errors' + emailSubject;
-              } else {
-                emailSubject = 'Error' + emailSubject;
-              }
-
-              email.send(
-                userData.email,
-                emailSubject,
-                '',
-                html
-              );
-            });
-          }
         });
       });
-  };
+  }
 
   /**
    * Set new Timeout for event and send notification about first event.
