@@ -1,10 +1,10 @@
 'use strict';
 
-let express = require('express');
-let router = express.Router();
-let modelEvents = require('../../models/events');
-let mongo = require('../../modules/database');
-let collections = require('../../config/collections');
+const express = require('express');
+const router = express.Router();
+const modelEvents = require('../../models/events');
+const mongo = require('../../modules/database');
+const collections = require('../../config/collections');
 const archiver = require('../../modules/archiver');
 
 /**
@@ -14,17 +14,23 @@ const EVENT_LIMIT = 10;
 
 
 /**
- * Check if user can manage passed domain
- * @return {Promise}
- * @param userProjects
- * @param projectUri
+ * Check if user can manage passed domain.
+ * Returns project's data object or null
+ *
+ * @param {array} userProjects
+ * @param {string} projectUri
+ *
+ * @return {Promise<object>|null}
  */
-let getProjectInfo = function (userProjects, projectUri) {
+let getProjectInfo = (userProjects, projectUri) => {
   for (let i = 0; i < userProjects.length; i++) {
+    console.log(userProjects[i]);
     if (userProjects[i].user.projectUri === projectUri) {
       return userProjects[i];
     }
   }
+
+  return null;
 };
 
 /**
@@ -166,31 +172,39 @@ let loadMoreDataForPagination_ = function (templatePath, events, canLoadMore) {
 };
 
 /**
- * Event page (route /garage/<project>/event/<hash>)
+ * Show event page (route /garage/<project>/event/<hash>)
  *
  * @param req
  * @param res
  */
-let event = function (req, res) {
+let event = (req, res) => {
   /**
    * Current user's project list stored in res.locals.userProjects
    * @see  app.js
    * @type {Array}
    */
-  let userProjects   = res.locals.userProjects,
-    projectUri     = req.params.project,
-    eventGroupHash = req.params.id;
+  let userProjects = res.locals.userProjects,
+      projectUri = req.params.project,
+      eventGroupHash = req.params.id;
 
   /** pagination settings */
-  let page    = req.query.page || 1,
-    limit   = EVENT_LIMIT,
-    skip    = (parseInt(page) - 1) * (limit + 1);
+  let page = req.query.page || 1,
+      limit = EVENT_LIMIT,
+      skip = (parseInt(page) - 1) * (limit + 1);
 
   let currentProject = getProjectInfo(userProjects, projectUri);
 
+  /**
+   * If project was not found in the list of user's projects then return 404
+   */
+  if (!currentProject) {
+    res.sendStatus(404);
+    return;
+  }
+
   modelEvents.get(currentProject.id, {groupHash: eventGroupHash}, false, false, limit + 1, skip)
     .then(markEventsAsRead.bind(null, currentProject))
-    .then(async function (events) {
+    .then(async events => {
       let canLoadMore = events.length > limit;
 
       /**
@@ -200,7 +214,7 @@ let event = function (req, res) {
 
       return makeResponse_.call({req, res}, currentProject, events, canLoadMore, eventsCount);
     })
-    .catch(function (err) {
+    .catch((err) => {
       logger.error('Error while handling event-page request: ', err);
       res.sendStatus(404);
     });
