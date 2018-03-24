@@ -20,11 +20,10 @@ const EVENT_LIMIT = 10;
  * @param {array} userProjects
  * @param {string} projectUri
  *
- * @return {Promise<object>|null}
+ * @return {Object|null}
  */
 let getProjectInfo = (userProjects, projectUri) => {
   for (let i = 0; i < userProjects.length; i++) {
-    console.log(userProjects[i]);
     if (userProjects[i].user.projectUri === projectUri) {
       return userProjects[i];
     }
