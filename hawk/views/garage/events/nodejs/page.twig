@@ -1,0 +1,47 @@
+{% extends 'garage/events/page.twig' %}
+
+{% block eventContent %}
+    <div class="event__content clearfix">
+        <div class="event__counter">
+            <div class="event__counter-number">
+                <div class="event__counter-number--digit">
+                    {{ eventsCount|counter }}
+                </div>
+                times
+            </div>
+            <div class="event__counter-date">since<br>{{ event.time|date('d M Y') }}</div>
+        </div>
+        <div class="event__title">
+            {{ event.message|escape }}
+        </div>
+        <div class="event__path">
+            {{ event.errorLocation.full|escape }}
+        </div>
+        <div>
+            <span class="event-badge">
+                Node.js
+            </span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block eventInfo %}
+    <h3>Traceback</h3>
+    {% include  'garage/events/client/stack.twig' with {event: event} %}
+{% endblock %}
+
+{% block repeations %}
+    {% if events %}<h3>Repeations</h3>{% endif %}
+    <div class="repeations" {% if events and canLoadMore %}data-module-required="appender"{% endif %}>
+      <module-settings>
+        {
+          "url" : "/garage/{{ project.user.projectUri }}/event/{{ event.groupHash }}/?page=",
+          "event" : "{{ event.groupHash|escape }}",
+          "project" : "{{ project.name|escape }}",
+          "autoloading" : "true",
+          "dontWaitFirstClick" : "false"
+        }
+      </module-settings>
+      {% include 'garage/events/nodejs/events-list.twig' with {events: events} %}
+    </div>
+{% endblock %}

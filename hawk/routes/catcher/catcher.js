@@ -24,10 +24,12 @@ let client = require('./client');
 let php = require('./php');
 let python = require('./python');
 let android = require('./android');
+let nodejs = require('./nodejs');
 
 
 router.use(php);
 router.use(python);
 router.use(android);
+router.use(nodejs);
 
 module.exports = router;

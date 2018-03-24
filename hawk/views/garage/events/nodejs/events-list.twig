@@ -1,0 +1,23 @@
+{% for item in events %}
+    <div class="repeations__row-wrapper">
+        <div class="repeations__row" onclick="hawkso.event.toggleStack(this, '{{ item._id }}')">
+            <div class="repeations__date">
+                {{ item.time|date('d M, H:i') }}
+            </div>
+            <div class="repeations__cell">
+                {% if item.comment %}
+                    {{ item.comment }}
+                {% else %}
+                    {{ item.stack[0].file }}
+                {% endif %}
+             </div>
+            <div class="repeations__stack">
+                {{ svg('/public/svg/stack.svg') }} stack
+            </div>
+        </div>
+        <div class="event-info hide" data-event="{{ item._id }}">
+            {% include 'garage/events/client/stack.twig' with {event: item} %}
+        </div>
+    </div>
+
+{% endfor %}
