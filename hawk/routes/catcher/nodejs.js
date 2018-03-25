@@ -3,26 +3,21 @@ let router = express.Router();
 let events   = require('../../models/events');
 let notifies = require('../../models/notifies');
 let stack = require('../../modules/stack');
-let Crypto = require('crypto');
+const BaseCatcher = require('./base-catcher');
 let project = require('../../models/project');
 
-let md5 = function (input) {
-  return Crypto.createHash('md5').update(input, 'utf8').digest('hex');
-};
+let base_catcher = new BaseCatcher();
 
-let normalizeTag = function (tag) {
-  const tags = ['fatal', 'warnings', 'notice'];
-  if (tags.indexOf(tag) > -1) {
-    return tag;
-  } else {
-    return 'fatal';
-  }
-};
-
-let getFullDescription = function (stackElement) {
-  return stackElement.file + ' -> ' + stackElement.line + ':' + stackElement.col;
-};
-
+/**
+ * Convert text error stack to an array of the following params:
+ *  func – function name
+ *  file – file name
+ *  line – error line
+ *  col  – error column
+ *
+ * @param {String} stack – error stack
+ * @returns {Array} – array of each stack's line descriptions
+ */
 let parseErrorStack = function (stack) {
   const REGEX = /^\s*at (.*?) ?\(?(\S+):(\d+):(\d+)\)?/m;
 
@@ -61,19 +56,19 @@ let getNodeJsErrors = function (req, res) {
         line: stackParsed[0].line,
         file: stackParsed[0].file,
         col: stackParsed[0].col,
-        full: getFullDescription(stackParsed[0])
+        full: BaseCatcher.getFullDescription(stackParsed[0])
       };
 
   let event = {
     type          : 'nodejs',
     name          : request.name,
-    tag           : normalizeTag(request.tag),
+    tag           : BaseCatcher.normalizeTag(request.tag),
     token         : request.token,
     message       : request.message,
     comment       : request.comment,
     stack         : stackParsed,
     errorLocation : errorLocation,
-    groupHash     : md5(eventGroupPrehashed),
+    groupHash     : BaseCatcher.md5(eventGroupPrehashed),
     time          : request.time
   };
 
@@ -103,7 +98,7 @@ let getNodeJsErrors = function (req, res) {
     });
 };
 
-/* GET nodejs errors. */
+/* GET Node.js errors. */
 router.post('/nodejs', getNodeJsErrors);
 
 module.exports = router;
