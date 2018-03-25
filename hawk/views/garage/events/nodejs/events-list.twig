@@ -6,7 +6,7 @@
             </div>
             <div class="repeations__cell">
                 {% if item.comment %}
-                    {{ item.comment }}
+                    {{ item.comment|escape }}
                 {% else %}
                     {{ item.stack[0].file }}
                 {% endif %}
