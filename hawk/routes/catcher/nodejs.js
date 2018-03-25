@@ -2,43 +2,12 @@ let express  = require('express');
 let router = express.Router();
 let events   = require('../../models/events');
 let notifies = require('../../models/notifies');
-let stack = require('../../modules/stack');
-const BaseCatcher = require('./base-catcher');
 let project = require('../../models/project');
 
-let base_catcher = new BaseCatcher();
+const BaseCatcher = require('./base-catcher');
 
 /**
- * Convert text error stack to an array of the following params:
- *  func – function name
- *  file – file name
- *  line – error line
- *  col  – error column
- *
- * @param {String} stack – error stack
- * @returns {Array} – array of each stack's line descriptions
- */
-let parseErrorStack = function (stack) {
-  const REGEX = /^\s*at (.*?) ?\(?(\S+):(\d+):(\d+)\)?/m;
-
-  let filtered = stack.split('\n').filter(function (line) {
-    return REGEX.test(line);
-  });
-
-  return filtered.map(function (line) {
-    let matches = REGEX.exec(line);
-
-    return {
-      func: matches[1],
-      file: matches[2],
-      line: matches[3],
-      col: matches[4]
-    };
-  });
-};
-
-/**
- * Server-side receiver for Nodejs's exceptions.
+ * Server-side receiver for Node.js's exceptions.
  * It takes followings json params in request:
  *
  * @param req.body.token
@@ -48,8 +17,8 @@ let parseErrorStack = function (stack) {
  * @param req.body.stack
  */
 let getNodeJsErrors = function (req, res) {
-  let request = req.body,
-    eventGroupPrehashed = request.message;
+
+  let request = req.body;
 
   let stackParsed = parseErrorStack(request.stack),
       errorLocation = {
@@ -61,15 +30,15 @@ let getNodeJsErrors = function (req, res) {
 
   let event = {
     type          : 'nodejs',
-    name          : request.name,
     tag           : BaseCatcher.normalizeTag(request.tag),
-    token         : request.token,
     message       : request.message,
-    comment       : request.comment,
-    stack         : stackParsed,
     errorLocation : errorLocation,
-    groupHash     : BaseCatcher.md5(eventGroupPrehashed),
-    time          : request.time
+    groupHash     : BaseCatcher.md5(request.message),
+    stack         : stackParsed,
+    time          : request.time,
+    name          : request.name,
+    token         : request.token,
+    comment       : request.comment
   };
 
   project.getByToken(event.token)
@@ -98,7 +67,44 @@ let getNodeJsErrors = function (req, res) {
     });
 };
 
+/**
+ * Convert text error stack to an array of the following params:
+ *  func – function name
+ *  file – file name
+ *  line – error line
+ *  col  – error column
+ *
+ * @param {String} stack – error stack
+ * @returns {{file: String, func: String, line: Number, col: Number}[]} – array of each stack's line descriptions
+ */
+let parseErrorStack = function (stack) {
+  const REGEX = /^\s*at (.*?) ?\(?(\S+):(\d+):(\d+)\)?/m;
+
+  let filtered = stack.split('\n').filter(function (line) {
+    return REGEX.test(line);
+  });
+
+  return filtered.map(function (line) {
+    let matches = REGEX.exec(line);
+
+    return {
+      func: matches[1],
+      file: matches[2],
+      line: matches[3],
+      col: matches[4]
+    };
+  });
+};
+
 /* GET Node.js errors. */
 router.post('/nodejs', getNodeJsErrors);
 
+/* Error handler for the Node.js catcher */
+router.use(function(err, req, res, next) {
+  console.log("Error in Node.js catcher: ", err);
+  res.sendStatus(500);
+});
+
+
 module.exports = router;
+
