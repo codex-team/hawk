@@ -6,7 +6,7 @@
             </div>
             <div class="repeations__cell">
                 {% if item.comment %}
-                    {{ item.comment }}
+                    {{ item.comment|escape }}
                 {% else %}
                     {{ item.stack[0].file }}
                 {% endif %}
@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="event-info hide" data-event="{{ item._id }}">
-            {% include 'garage/events/client/stack.twig' with {event: item} %}
+            {% include 'garage/events/nodejs/stack.twig' with {event: item} %}
         </div>
     </div>
 
