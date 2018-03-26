@@ -10,11 +10,11 @@ const BaseCatcher = require('./base-catcher');
  * Server-side receiver for Node.js's exceptions.
  * It takes followings json params in request:
  *
- * @param {string} req.body.token
- * @param {string} req.body.domain
- * @param {string} req.body.type
- * @param {string} req.body.description
- * @param {string} req.body.stack
+ * @param {string} req.body.token - application token
+ * @param {string} req.body.message - error message
+ * @param {string} req.body.stack - error stack
+ * @param {string} req.body.time - error time in ISO format
+ * @param {string} req.body.comment - custom error description
  */
 let getNodeJsErrors = function (req, res) {
 
