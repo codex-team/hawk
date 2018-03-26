@@ -8,13 +8,20 @@ const BaseCatcher = require('./base-catcher');
 
 /**
  * Server-side receiver for Scala's exceptions.
- * It takes followings json params in request:
+ * It takes the following params in request:
  *
- * @param req.body.token
- * @param req.body.domain
- * @param req.body.type
- * @param req.body.description
- * @param req.body.stack
+ * @typedef ErrorStackElement
+ * @type {object}
+ * @property {string} file - file with error
+ * @property {string} line - line with error
+ * @property {string} full - full description of error line in error stack
+ *
+ * @param {string} req.body.token - application token
+ * @param {string} req.body.message - error message
+ * @param {JSON.<Array.<ErrorStackElement>>} req.body.stack - error stack in JSON format
+
+ * @param {string} req.body.time - time in ISO format
+ * @param {string} req.body.comment - custom error description
  */
 let getNodeJsErrors = function (req, res) {
 
@@ -25,7 +32,7 @@ let getNodeJsErrors = function (req, res) {
 
   let event = {
     type          : 'scala',
-    tag           : BaseCatcher.normalizeTag(request.tag),
+    tag           : 'fatal',
     message       : request.message,
     errorLocation : errorLocation,
     groupHash     : BaseCatcher.md5(request.message),

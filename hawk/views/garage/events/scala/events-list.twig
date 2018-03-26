@@ -6,9 +6,9 @@
             </div>
             <div class="repeations__cell">
                 {% if item.comment %}
-                    {{ item.comment }}
+                    {{ item.comment|escape }}
                 {% else %}
-                    {{ item.stack[0].full }}
+                    {{ item.stack[0].full|escape }}
                 {% endif %}
              </div>
             <div class="repeations__stack">
