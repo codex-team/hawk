@@ -8,7 +8,7 @@
                 {% if item.comment %}
                     {{ item.comment|escape }}
                 {% else %}
-                    {{ item.stack[0].file }}
+                    {{ item.stack[0].file|escape }}
                 {% endif %}
              </div>
             <div class="repeations__stack">
