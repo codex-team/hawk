@@ -30,7 +30,7 @@ let getNodeJsErrors = function (req, res) {
 
   let event = {
     type          : 'nodejs',
-    tag           : BaseCatcher.normalizeTag(request.tag),
+    tag           : 'fatal',
     message       : request.message,
     errorLocation : errorLocation,
     groupHash     : BaseCatcher.md5(request.message),
