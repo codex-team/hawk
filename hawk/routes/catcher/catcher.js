@@ -25,11 +25,12 @@ let php = require('./php');
 let python = require('./python');
 let android = require('./android');
 let nodejs = require('./nodejs');
-
+let scala = require('./scala');
 
 router.use(php);
 router.use(python);
 router.use(android);
 router.use(nodejs);
+router.use(scala);
 
 module.exports = router;
