@@ -5,12 +5,12 @@
     width: 100%;
 
     &__aside {
-        min-width: 250px;
+        min-width: var(--garage-aside-width);
         position: relative;
     }
 
     &__content {
-        width: calc(100% - 250px);
+        width: calc(100% - var(--garage-aside-width));
         height: 100%;
         box-sizing: border-box;
         background: #fff;

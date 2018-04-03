@@ -170,7 +170,6 @@
     }
 
     &__cell {
-        //flex-grow: 1;
         max-width: 30%;
         overflow: hidden;
         text-overflow: ellipsis;
