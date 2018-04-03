@@ -1259,14 +1259,26 @@ module.exports = function () {
    * Send request to invite new member to the project
    *
    * @param projectId
-   * @param form
+   * @param emailOrForm
+   * @param resendInvite
    */
-  var inviteMember = function inviteMember(projectId, form) {
-    var input = document.getElementById(projectId);
+  var inviteMember = function inviteMember(projectId, emailOrForm) {
+    var resendInvite = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-    if (!input) return;
+    var input = void 0,
+        email = void 0;
 
-    var email = input.value;
+    if (typeof emailOrForm === 'string') {
+      email = emailOrForm;
+    } else {
+      input = document.getElementById(projectId);
+
+      if (!input) return;
+
+      email = input.value;
+    }
+
+    if (!email) return;
 
     hawkso.ajax.call({
       type: 'POST',
@@ -1276,8 +1288,9 @@ module.exports = function () {
           style: result.success ? 'success' : 'error',
           message: result.message
         });
-        if (result.success) {
-          hawkso.toggler.toggle(form);
+
+        if (result.success && typeof emailOrForm !== 'string') {
+          hawkso.toggler.toggle(emailOrForm);
           input.value = '';
         }
       },
@@ -1289,7 +1302,8 @@ module.exports = function () {
       },
       data: JSON.stringify({
         email: email,
-        projectId: projectId
+        projectId: projectId,
+        resendInvite: resendInvite
       })
     });
   };

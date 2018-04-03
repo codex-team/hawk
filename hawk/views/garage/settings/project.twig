@@ -43,7 +43,7 @@
                 {% set canGrantAdminAccess = member.role == 'member' and not member.is_pending and project.user.role == 'admin' %}
                 <span class="project__member-role project__member-role--{{ member.role|escape }}
                                 {{ member.is_pending ? 'project__member-role--pending' : '' }}
-                                {{ canGrantAdminAccess ? 'project__member-role--can-grant-access' : '' }}"
+                                {{ canGrantAdminAccess ? 'project__member-role--clickable' : '' }}"
                         {% if canGrantAdminAccess %}
                             onclick="hawkso.settingsForm.grantAdminAccess('{{ project.id|escape }}', '{{ member.id|escape }}', this)"
                         {% endif %}
@@ -52,7 +52,7 @@
                             Admin
                         {% else %}
                             {% if member.is_pending %}
-                                Invitation sent
+                    <span class="project__member-role--clickable" onclick="hawkso.settingsForm.inviteMember('{{ project.id|escape }}', '{{ member.email|escape }}', true)">Send invitation again</span>
                             {% else %}
                                 {{ project.user.role == 'admin' ? 'Grant admin access' : 'Member' }}
                             {% endif %}

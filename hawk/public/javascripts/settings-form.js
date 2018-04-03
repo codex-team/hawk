@@ -56,14 +56,23 @@ module.exports = function () {
    * Send request to invite new member to the project
    *
    * @param projectId
-   * @param form
+   * @param emailOrForm
+   * @param resendInvite
    */
-  let inviteMember = function (projectId, form) {
-    let input = document.getElementById(projectId);
+  let inviteMember = function (projectId, emailOrForm, resendInvite = false) {
+    let input, email;
 
-    if (!input) return;
+    if (typeof emailOrForm === 'string') {
+      email = emailOrForm;
+    } else {
+      input = document.getElementById(projectId);
 
-    let email = input.value;
+      if (!input) return;
+
+      email = input.value;
+    }
+
+    if (!email) return;
 
     hawkso.ajax.call({
       type: 'POST',
@@ -73,8 +82,9 @@ module.exports = function () {
           style: result.success ? 'success' : 'error',
           message: result.message
         });
-        if (result.success) {
-          hawkso.toggler.toggle(form);
+
+        if (result.success && typeof emailOrForm !== 'string') {
+          hawkso.toggler.toggle(emailOrForm);
           input.value = '';
         }
       },
@@ -86,7 +96,8 @@ module.exports = function () {
       },
       data: JSON.stringify({
         email: email,
-        projectId: projectId
+        projectId: projectId,
+        resendInvite: resendInvite
       })
     });
   };
