@@ -63,7 +63,6 @@ module.exports = function () {
     let input, email;
 
     if (typeof emailOrForm === 'string') {
-      console.log(emailOrForm);
       email = emailOrForm;
     } else {
       input = document.getElementById(projectId);

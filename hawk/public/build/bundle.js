@@ -1269,7 +1269,6 @@ module.exports = function () {
         email = void 0;
 
     if (typeof emailOrForm === 'string') {
-      console.log(emailOrForm);
       email = emailOrForm;
     } else {
       input = document.getElementById(projectId);
