@@ -10,11 +10,12 @@
     }
 
     &__content {
-        width: 100%;
+        width: calc(100% - 250px);
         height: 100%;
         box-sizing: border-box;
         background: #fff;
         color: #000;
+        word-wrap: break-word;
     }
 }
 
