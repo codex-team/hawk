@@ -5,16 +5,17 @@
     width: 100%;
 
     &__aside {
-        min-width: 250px;
+        min-width: var(--garage-aside-width);
         position: relative;
     }
 
     &__content {
-        width: 100%;
+        width: calc(100% - var(--garage-aside-width));
         height: 100%;
         box-sizing: border-box;
         background: #fff;
         color: #000;
+        word-wrap: break-word;
     }
 }
 
