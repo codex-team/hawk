@@ -170,10 +170,13 @@
     }
 
     &__cell {
-        flex-grow: 1;
         max-width: 30%;
         overflow: hidden;
         text-overflow: ellipsis;
+
+        &--badges {
+            min-width: 200px;
+        }
     }
 
     &__date {
