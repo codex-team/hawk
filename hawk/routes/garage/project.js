@@ -1,11 +1,11 @@
-let express = require('express');
-let router = express.Router();
-let uuid = require('uuid');
-let Twig = require('twig');
-let email = require('../../modules/email');
-let project = require('../../models/project');
-let user = require('../../models/user');
-let translit = require('../../modules/translit');
+const express = require('express');
+const router = express.Router();
+const uuid = require('uuid');
+const Twig = require('twig');
+const email = require('../../modules/email');
+const project = require('../../models/project');
+const user = require('../../models/user');
+const translit = require('../../modules/translit');
 
 /**
  * POST /project/add handler
@@ -74,7 +74,8 @@ let add = function (req, res) {
  */
 let inviteMember = function (req, res) {
   let userEmail = req.body.email,
-    projectId = req.body.projectId;
+    projectId = req.body.projectId,
+    resendInvite = req.body.resendInvite;
 
   if (!userEmail) {
     res.json({
@@ -95,11 +96,20 @@ let inviteMember = function (req, res) {
           return {foundProject, foundUser};
         });
     })
-    .then(function ({foundProject, foundUser}) {
-      return project.addMember(foundProject._id, foundProject.uri, foundUser._id)
-        .then(function () {
-          return {foundProject, foundUser};
-        });
+    .then(async function ({foundProject, foundUser}) {
+      console.log(await project.get(foundProject._id));
+
+      try {
+        await project.addMember(foundProject._id, foundProject.uri, foundUser._id);
+      } catch (e) {
+        console.log('Cannot add a new member because', e);
+
+        if (!resendInvite) {
+          throw new Error(e);
+        }
+      }
+
+      return {foundProject, foundUser};
     })
     .then(function ({foundProject, foundUser}) {
       let inviteHash = project.generateInviteHash(foundUser._id, foundProject._id),

@@ -195,7 +195,7 @@
             color: #da8c05;
         }
 
-        &--can-grant-access {
+        &--clickable {
             cursor: pointer;
         }
     }
