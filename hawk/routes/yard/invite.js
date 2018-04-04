@@ -1,7 +1,8 @@
 let express = require('express');
 let router = express.Router();
 let project = require('../../models/project');
-
+let mongo = require('../../modules/database');
+let collections = require('../../config/collections');
 
 /**
  * GET /project/invite handler
@@ -14,7 +15,7 @@ let project = require('../../models/project');
 let confirmInvite = function (req, res) {
   let get = req.query;
 
-  let generatedHash = project.generateInviteHash(get.user, get.project);
+  let generatedHash = project.generateInviteHash(get.member, get.project);
 
   if (generatedHash !== get.hash) {
     res.render('yard/errors/error.twig', {
@@ -24,14 +25,49 @@ let confirmInvite = function (req, res) {
     return;
   }
 
-  project.confirmInvitation(get.project, get.user)
-    .then(function (foundProject) {
+  let user = res.locals.user;
+
+  if (!user) {
+    let params = {
+      message: {
+        type: 'notify',
+        text: 'You must be logged in to accept an invitation'
+      }
+    };
+
+    res.render('yard/auth/login', params);
+    return;
+  }
+
+  let foundProject;
+
+  project.confirmInvitation(get.project, get.member, user._id)
+    .then(project => {
+      foundProject = project;
+    })
+    .then(() => {
+      console.log(user);
+
+      let userCollection = collections.MEMBERSHIP + ':' + user._id;
+
+      let membershipParams = {
+        project_id: mongo.ObjectId(get.project),
+        notifies: {
+          email: true,
+          tg: false,
+          slack: false
+        }
+      };
+
+      return mongo.insertOne(userCollection, membershipParams);
+    })
+    .then(() => {
       res.render('yard/invite', {
-        user: res.locals.user,
+        user: user,
         project: foundProject
       });
     })
-    .catch(function (e) {
+    .catch((e) => {
       logger.error('Error while confirm project invitation ', e);
       res.sendStatus(500);
     });

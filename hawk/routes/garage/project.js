@@ -6,6 +6,8 @@ let email = require('../../modules/email');
 let project = require('../../models/project');
 let user = require('../../models/user');
 let translit = require('../../modules/translit');
+let collections = require('../../config/collections');
+let mongo = require('../../modules/database');
 
 /**
  * POST /project/add handler
@@ -26,6 +28,7 @@ let add = function (req, res) {
   }
 
   let data = {
+    user: res.locals.user,
     name: post.name,
     description: post.description,
     domain: post.domain,
@@ -72,9 +75,9 @@ let add = function (req, res) {
  * @param req
  * @param res
  */
-let inviteMember = function (req, res) {
+let inviteMember = async function (req, res) {
   let userEmail = req.body.email,
-    projectId = req.body.projectId;
+      projectId = req.body.projectId;
 
   if (!userEmail) {
     res.json({
@@ -83,56 +86,55 @@ let inviteMember = function (req, res) {
     });
   }
 
-  user.getByParams({email: userEmail})
-    .then(function (foundUser) {
+  try {
+    let foundProject = await project.get(projectId);
 
-      if (!foundUser) {
-        throw Error('User not found');
+    let foundUser = await user.getByParams({email: userEmail});
+
+    if (foundUser) {
+      let userCollection = collections.MEMBERSHIP + ':' + foundUser._id;
+
+      let isMember = await mongo.findOne(userCollection, {project_id: mongo.ObjectId(foundProject._id)});
+
+      if (isMember) {
+        throw Error('User is already in team');
+      }
+    };
+
+    let newMemberRequest = await project.addMember(foundProject._id, foundProject.uri, null, null, userEmail);
+
+    let inviteHash = project.generateInviteHash(newMemberRequest.insertedId, foundProject._id);
+
+    let inviteLink = process.env.SERVER_URL + '/invite'
+      + '?member=' + newMemberRequest.insertedId
+      + '&project=' + foundProject._id
+      + '&hash=' + inviteHash;
+
+    let renderParams = {
+      project: foundProject,
+      inviteLink: inviteLink
+    };
+
+    Twig.renderFile('views/notifies/email/projectInvite.twig', renderParams, (err, html) => {
+      if (err) {
+        logger.error('Error while rendering email template %o' % err);
+        return;
       }
 
-      return project.get(projectId)
-        .then(function (foundProject) {
-          return {foundProject, foundUser};
-        });
-    })
-    .then(function ({foundProject, foundUser}) {
-      return project.addMember(foundProject._id, foundProject.uri, foundUser._id)
-        .then(function () {
-          return {foundProject, foundUser};
-        });
-    })
-    .then(function ({foundProject, foundUser}) {
-      let inviteHash = project.generateInviteHash(foundUser._id, foundProject._id),
-        inviteLink = process.env.SERVER_URL + '/invite?user=' + foundUser._id
-          + '&project=' + foundProject._id
-          + '&hash=' + inviteHash,
-        renderParams = {
-          project: foundProject,
-          inviteLink: inviteLink
-        };
-
-      Twig.renderFile('views/notifies/email/projectInvite.twig', renderParams, function (err, html) {
-        if (err) {
-          logger.error('Error while rendering email template %o' % err);
-          return;
-        }
-
-        email.send(userEmail, 'Invitation to ' + foundProject.name, '', html);
-      });
-    })
-    .then(function () {
-      res.json({
-        success: 1,
-        message: 'Invitation for ' + userEmail + ' was sent'
-      });
-    })
-    .catch(function (e) {
-      logger.error('Error while sending project invitation ', e);
-      res.json({
-        success: 0,
-        message: e.message
-      });
+      email.send(userEmail, 'Invitation to ' + foundProject.name, '', html);
     });
+
+    await res.json({
+      success: 1,
+      message: 'Invitation for ' + userEmail + ' was sent'
+    });
+  } catch (e) {
+    logger.error('Error while sending project invitation ', e);
+    await res.json({
+      success: 0,
+      message: e.message
+    });
+  };
 };
 
 /**

@@ -7,14 +7,14 @@ module.exports = function () {
   const WEBHOOK_FIELDS ='Hook';
 
   /**
-   * Generate sha256 hash from user id and project id
+   * Generate sha256 hash from member id and project id
    *
-   * @param {String} userId
+   * @param {String} memberId
    * @param {String} projectId
    * @returns {String} hash
    */
-  let generateInviteHash = function (userId, projectId) {
-    let string = userId + process.env.SALT + projectId;
+  let generateInviteHash = function (memberId, projectId) {
+    let string = memberId + process.env.SALT + projectId;
 
     return Crypto.createHash('sha256').update(string, 'utf8').digest('hex');
   };
@@ -63,6 +63,7 @@ module.exports = function () {
             getTeam(projects[i].id)
               .then(function (team) {
                 projects[i].team = team;
+                console.log(team);
               })
           );
 
@@ -88,52 +89,31 @@ module.exports = function () {
    *
    * @param {String} projectId
    * @param {String} projectUri
-   * @param {String} userId
-   * @param {Boolean} isOwner (optional) if true, user will be added with admin access
+   * @param {String} userId (optional)
+   * @param {Boolean} isOwner (optional) if true, user will be added with
+   * admin access
+   * @param {String} email - (optional) save email for invited users
+   *
    * @returns {Promise.<TResult>}
    */
-  let addMember = function (projectId, projectUri, userId, isOwner=false) {
+  let addMember = async (projectId, projectUri, userId = null, isOwner = false, email = null) => {
     let role = isOwner ? 'admin' : 'member',
-        userCollection = collections.MEMBERSHIP + ':' + userId,
         projectCollection = collections.TEAM + ':' + projectId;
 
-    let membershipParams = {
-      project_id: mongo.ObjectId(projectId),
-      notifies: {
-        email: true,
-        tg: false,
-        slack: false
-      }
-    };
-
     let teamParams = {
-      user_id: mongo.ObjectId(userId),
+      email: email,
+      user_id: userId,
       role: role,
       is_pending: !isOwner
     };
 
-    return mongo.findOne(projectCollection, {user_id: mongo.ObjectId(userId)})
-      .then(function (result) {
-        if (result) {
-          throw Error('User is already in project');
-        }
-      })
-      .then(function () {
-        return getProjectUriByUser(userId, projectUri);
-      })
-      .then(function (uri) {
-        membershipParams.project_uri = uri;
-
-        return mongo.insertOne(userCollection, membershipParams);
-      })
-      .then(function () {
-        return mongo.insertOne(projectCollection, teamParams);
-      });
+    return await mongo.insertOne(projectCollection, teamParams);
   };
 
   /**
    * Add new project to the database
    *
+   * @param {Object} data.user
    * @param {String} data.name
    * @param {String} data.description
    * @param {String} data.domain
@@ -147,13 +127,27 @@ module.exports = function () {
    */
   let add = function (data) {
     return mongo.insertOne(collections.PROJECTS, data)
-      .then(function (result) {
+      .then(async function (result) {
         let insertedProject = result.ops[0];
 
-        return addMember(insertedProject._id, insertedProject.uri, insertedProject.uid_added, true)
-          .then(function () {
-            return insertedProject;
-          });
+        let user = data.user;
+
+        await addMember(insertedProject._id, insertedProject.uri, user._id, true);
+
+        let userCollection = collections.MEMBERSHIP + ':' + user._id;
+
+        let membershipParams = {
+          project_id: mongo.ObjectId(insertedProject._id),
+          notifies: {
+            email: true,
+            tg: false,
+            slack: false
+          }
+        };
+
+        await mongo.insertOne(userCollection, membershipParams);
+
+        return insertedProject;
       });
   };
 
@@ -226,21 +220,33 @@ module.exports = function () {
     let projectCollection = collections.TEAM + ':' + projectId;
 
     return mongo.aggregation(projectCollection, [
-      {$lookup: {
-        from: collections.USERS,
-        localField: 'user_id',
-        foreignField: '_id',
-        as: 'user'
-      }},
-      {$project: {
-        id: '$user_id',
-        role: 1,
-        is_pending: 1,
-        notifies: 1,
-        tgHook: 1,
-        slackHook: 1,
-        email: '$user.email'
-      }}
+      {
+        $lookup: {
+          from: collections.USERS,
+          localField: 'user_id',
+          foreignField: '_id',
+          as: 'user'
+        }
+      },
+      {
+        "$unwind": {
+          path: "$user",
+          "preserveNullAndEmptyArrays": true
+        }
+      },
+      {
+        $project: {
+          id: '$user_id',
+          role: 1,
+          is_pending: 1,
+          notifies: 1,
+          tgHook: 1,
+          slackHook: 1,
+          email: {
+            $cond: [ { $not: ['$user.email'] }, '$email', '$user.email' ]
+          }
+        }
+      }
     ]);
   };
 
@@ -248,12 +254,24 @@ module.exports = function () {
    * Set is_pending field to false for user with userId in project team collection
    *
    * @param {String} projectId
+   * @param {String} memberId
    * @param {String} userId
    */
-  let confirmInvitation = function (projectId, userId) {
+  let confirmInvitation = function (projectId, memberId, userId) {
     let projectCollection = collections.TEAM + ':' + projectId;
 
-    return mongo.updateOne(projectCollection, {user_id: mongo.ObjectId(userId)}, {$set: {is_pending: false}})
+    let query = {
+      _id: mongo.ObjectId(memberId)
+    };
+
+    let data = {
+      $set: {
+        user_id: mongo.ObjectId(userId),
+        is_pending: false
+      }
+    };
+
+    return mongo.updateOne(projectCollection, query, data)
       .then(function () {
         return get(projectId);
       });
