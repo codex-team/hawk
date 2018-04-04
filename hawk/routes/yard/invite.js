@@ -13,19 +13,10 @@ let modelProject = require('../../models/project');
  */
 let confirmInvite = function (req, res) {
   let get = req.query;
-  let cookies = req.cookies;
 
-  let memberId = cookies.member || get.member;
-  let projectId = cookies.project || get.project;
-  let hash = cookies.hash || get.hash;
+  let generatedHash = project.generateInviteHash(get.member, get.project);
 
-  res.clearCookie('inviteMember');
-  res.clearCookie('inviteProject');
-  res.clearCookie('inviteHash');
-
-  let generatedHash = project.generateInviteHash(memberId, projectId);
-
-  if (generatedHash !== hash) {
+  if (generatedHash !== get.hash) {
     res.render('yard/errors/error.twig', {
       title: 'Invalid link',
       message: 'Sorry, this link doesn\'t work. Request new from team leader'
@@ -43,9 +34,6 @@ let confirmInvite = function (req, res) {
       }
     };
 
-    res.cookie('inviteMember', memberId);
-    res.cookie('inviteProject', projectId);
-    res.cookie('inviteHash', hash);
     res.cookie('redirect', req.originalUrl);
 
     res.render('yard/auth/login', params);
