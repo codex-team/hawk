@@ -1,8 +1,7 @@
 let express = require('express');
 let router = express.Router();
 let project = require('../../models/project');
-let mongo = require('../../modules/database');
-let collections = require('../../config/collections');
+let modelProject = require('../../models/project');
 
 /**
  * GET /project/invite handler
@@ -45,22 +44,7 @@ let confirmInvite = function (req, res) {
     .then(project => {
       foundProject = project;
     })
-    .then(() => {
-      console.log(user);
-
-      let userCollection = collections.MEMBERSHIP + ':' + user._id;
-
-      let membershipParams = {
-        project_id: mongo.ObjectId(get.project),
-        notifies: {
-          email: true,
-          tg: false,
-          slack: false
-        }
-      };
-
-      return mongo.insertOne(userCollection, membershipParams);
-    })
+    .then(() => modelProject.addProjectToUserProjects(user._id, get.project))
     .then(() => {
       res.render('yard/invite', {
         user: user,

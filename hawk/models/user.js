@@ -218,13 +218,13 @@ module.exports = function () {
   };
 
   return {
-    current: current,
-    getByParams: getByParams,
-    add: add,
-    get: get,
-    getInfo: getInfo,
-    update: update,
-    checkParamUniqueness: checkParamUniqueness,
-    saveRecoverHash: saveRecoverHash
+    current,
+    getByParams,
+    add,
+    get,
+    getInfo,
+    update,
+    checkParamUniqueness,
+    saveRecoverHash
   };
 }();

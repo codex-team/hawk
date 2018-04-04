@@ -133,6 +133,8 @@ module.exports = function () {
 
         await addMember(insertedProject._id, insertedProject.uri, user._id, true);
 
+        // await
+
         let userCollection = collections.MEMBERSHIP + ':' + user._id;
 
         let membershipParams = {
@@ -347,7 +349,31 @@ module.exports = function () {
     return mongo.updateOne(collections.PROJECTS, {_id: mongo.ObjectId(projectId)}, {$set:{logo: logoPath}});
   };
 
+  /**
+   * Add project to user's projects list
+   *
+   * @param {String} userId
+   * @param {String} projectId
+   *
+   * @return {Promise<*>}
+   */
+  let addProjectToUserProjects = async (userId, projectId) => {
+    let userCollection = collections.MEMBERSHIP + ':' + userId;
+
+    let membershipParams = {
+      project_id: mongo.ObjectId(projectId),
+      notifies: {
+        email: true,
+        tg: false,
+        slack: false
+      }
+    };
+
+    return mongo.insertOne(userCollection, membershipParams);
+  };
+
   return {
+    addProjectToUserProjects,
     add,
     get,
     getAll,
