@@ -63,7 +63,6 @@ module.exports = function () {
             getTeam(projects[i].id)
               .then(function (team) {
                 projects[i].team = team;
-                console.log(team);
               })
           );
 
