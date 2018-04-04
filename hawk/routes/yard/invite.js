@@ -44,7 +44,17 @@ let confirmInvite = function (req, res) {
     .then(project => {
       foundProject = project;
     })
-    .then(() => modelProject.addProjectToUserProjects(user._id, get.project))
+    .then(() => {
+      res.locals.userProjects.forEach(project => {
+        console.log(project.id, get.project);
+          if (project.id == get.project) {;
+            res.redirect('/garage');
+          }
+        }
+      );
+
+      modelProject.addProjectToUserProjects(user._id, get.project);
+    })
     .then(() => {
       res.render('yard/invite', {
         user: user,
