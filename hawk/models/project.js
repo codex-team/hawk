@@ -133,20 +133,7 @@ module.exports = function () {
 
         await addMember(insertedProject._id, insertedProject.uri, user._id, true);
 
-        // await
-
-        let userCollection = collections.MEMBERSHIP + ':' + user._id;
-
-        let membershipParams = {
-          project_id: mongo.ObjectId(insertedProject._id),
-          notifies: {
-            email: true,
-            tg: false,
-            slack: false
-          }
-        };
-
-        await mongo.insertOne(userCollection, membershipParams);
+        await addProjectToUserProjects(user._id, insertedProject._id);
 
         return insertedProject;
       });
