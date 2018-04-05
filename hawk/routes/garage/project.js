@@ -111,7 +111,6 @@ let inviteMember = async function (req, res) {
       throw Error('Invitation is already send');
     }
 
-
     let newMemberRequest = await project.addMember(foundProject._id, foundProject.uri, null, null, userEmail);
 
     let inviteHash = project.generateInviteHash(newMemberRequest.insertedId, foundProject._id);
@@ -135,17 +134,17 @@ let inviteMember = async function (req, res) {
       email.send(userEmail, 'Invitation to ' + foundProject.name, '', html);
     });
 
-    await res.json({
+    res.json({
       success: 1,
       message: 'Invitation for ' + userEmail + ' was sent'
     });
   } catch (e) {
     logger.error('Error while sending project invitation ', e);
-    await res.json({
+    res.json({
       success: 0,
       message: e.message
     });
-  };
+  }
 };
 
 /**
