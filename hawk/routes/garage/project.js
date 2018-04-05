@@ -89,15 +89,28 @@ let inviteMember = async function (req, res) {
   try {
     let foundProject = await project.get(projectId);
 
+    /**
+     * Check if user already in team
+     */
     let foundUser = await user.getByParams({email: userEmail});
 
     if (foundUser) {
-      let isMember = await project.checkMembership(foundUser._id, foundProject._id);
+      let isMember = await project.checkMembershipByUserId(foundUser._id, foundProject._id);
 
       if (isMember) {
         throw Error('User is already in team');
       }
-    };
+    }
+
+    /**
+     * Check if user was invited
+     */
+    let isInvited = await project.checkMembershipByEmail(userEmail, foundProject._id);
+
+    if (isInvited) {
+      throw Error('Invitation is already send');
+    }
+
 
     let newMemberRequest = await project.addMember(foundProject._id, foundProject.uri, null, null, userEmail);
 

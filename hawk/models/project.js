@@ -245,7 +245,13 @@ module.exports = function () {
    * @param {String} memberId
    * @param {String} userId
    */
-  let confirmInvitation = function (projectId, memberId, userId) {
+  let confirmInvitation = async function (projectId, memberId, userId) {
+    let isMember = await checkMembershipByUserId(userId, projectId);
+
+    if (isMember) {
+      return Promise.reject('You already have joined this team');
+    }
+
     let projectCollection = collections.TEAM + ':' + projectId;
 
     let query = {
@@ -369,7 +375,7 @@ module.exports = function () {
    * @param {String} projectId
    * @return {Boolean}
    */
-  let checkMembership = async (userId, projectId) => {
+  let checkMembershipByUserId = async (userId, projectId) => {
     let userCollection = collections.MEMBERSHIP + ':' + userId;
 
     let foundProject = await mongo.find(userCollection, {project_id: mongo.ObjectId(projectId)}, null, 1);
@@ -377,9 +383,25 @@ module.exports = function () {
     return !!foundProject.length;
   };
 
+  /**
+   * Check if invitation has been send to this email
+   *
+   * @param {String} email
+   * @param {String} projectId
+   * @return {Boolean}
+   */
+  let checkMembershipByEmail = async (email, projectId) => {
+    let teamCollection = collections.TEAM + ':' + projectId;
+
+    let foundMember = await mongo.find(teamCollection, {email: email}, null, 1);
+
+    return !!foundMember.length;
+  };
+
   return {
     addProjectToUserProjects,
-    checkMembership,
+    checkMembershipByUserId,
+    checkMembershipByEmail,
     add,
     get,
     getAll,

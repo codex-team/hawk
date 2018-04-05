@@ -11,7 +11,7 @@ let modelProject = require('../../models/project');
  * @param req
  * @param res
  */
-let confirmInvite = function (req, res) {
+let confirmInvite = async function (req, res) {
   let get = req.query;
 
   let generatedHash = project.generateInviteHash(get.member, get.project);
@@ -42,29 +42,31 @@ let confirmInvite = function (req, res) {
 
   let foundProject;
 
-  project.confirmInvitation(get.project, get.member, user._id)
-    .then(project => {
-      foundProject = project;
-    })
-    .then(async () => {
-      let isMember = await modelProject.checkMembership(user._id, get.project);
+  /**
+   * Try to confirm invitation
+   */
+  try {
+    foundProject = await project.confirmInvitation(get.project, get.member, user._id);
+  } catch (e) {
+    logger.info('Invitation was not confirmed:', e);
+    res.redirect('/garage');
+    return;
+  }
 
-      if (isMember) {
-        res.redirect('/garage');
-        return;
-      }
+  /**
+   * Try to add project to user's projects list
+   */
+  try {
+    await modelProject.addProjectToUserProjects(user._id, get.project);
 
-      await modelProject.addProjectToUserProjects(user._id, get.project);
-
-      res.render('yard/invite', {
-        user: user,
-        project: foundProject
-      });
-    })
-    .catch((e) => {
-      logger.error('Error while confirm project invitation ', e);
-      res.sendStatus(500);
+    res.render('yard/invite', {
+      user: user,
+      project: foundProject
     });
+  } catch (e) {
+    logger.error('Error while confirm project invitation ', e);
+    res.sendStatus(500);
+  }
 };
 
 router.get('/', confirmInvite);
