@@ -46,7 +46,7 @@ let confirmInvite = async function (req, res) {
    * Try to confirm invitation
    */
   try {
-    await project.confirmInvitation(get.project, get.member, user._id);
+    await project.confirmInvitation(foundProject._id, get.member, user._id);
   } catch (e) {
     logger.info('Invitation was not confirmed:', e);
     res.redirect('/garage');
