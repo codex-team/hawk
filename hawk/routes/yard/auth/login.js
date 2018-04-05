@@ -45,7 +45,7 @@ let login = {
 
     let newUser = {
       'email': email,
-      // 'password': auth.generateHash(password)
+      'password': auth.generateHash(password)
     };
 
     user.getByParams(newUser)
