@@ -197,6 +197,10 @@
 
         &--can-grant-access {
             cursor: pointer;
+
+            &:hover {
+                color: color(var(--noticeColor) blackness(+40%));
+            }
         }
     }
 

@@ -52,6 +52,15 @@ let login = {
       .then(function (result) {
         if (result) {
           auth.authUser(res, result);
+
+          let redirectUri = req.cookies.redirect;
+
+          if (redirectUri) {
+            res.clearCookie('redirect');
+            res.redirect(redirectUri);
+            return;
+          }
+
           res.redirect('/garage');
         } else {
           let params = {

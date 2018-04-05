@@ -4,7 +4,7 @@
   <form class="yard-form__container" method="POST" action="{{ action|escape }}">
     <div class="yard-form__header">{{ title|escape }}</div>
     {% if message %}
-      <div class="yard-form__message yard-form__message--{{ message.type|escape }}">{{ message.text|escape }}</div>
+      <div class="yard-form__message yard-form__message--{{ message.type }}">{{ message.text }}</div>
     {% endif %}
     {% for field in fields %}
       <fieldset class="yard-form__section">
