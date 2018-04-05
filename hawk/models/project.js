@@ -367,12 +367,14 @@ module.exports = function () {
    *
    * @param {String} userId
    * @param {String} projectId
-   * @return {Object|null}
+   * @return {Boolean}
    */
   let checkMembership = async (userId, projectId) => {
     let userCollection = collections.MEMBERSHIP + ':' + userId;
 
-    return await mongo.findOne(userCollection, {project_id: mongo.ObjectId(projectId)});
+    let foundProject = await mongo.findOne(userCollection, {project_id: mongo.ObjectId(projectId)});
+
+    return !!foundProject;
   };
 
   return {
