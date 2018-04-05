@@ -244,6 +244,8 @@ module.exports = function () {
    * @param {String} projectId
    * @param {String} memberId
    * @param {String} userId
+   *
+   * @return {Promise<>}
    */
   let confirmInvitation = async function (projectId, memberId, userId) {
     let isMember = await checkMembershipByUserId(userId, projectId);
@@ -268,10 +270,7 @@ module.exports = function () {
       }
     };
 
-    return mongo.updateOne(projectCollection, query, data)
-      .then(function () {
-        return get(projectId);
-      });
+    return mongo.updateOne(projectCollection, query, data);
   };
 
   /**
