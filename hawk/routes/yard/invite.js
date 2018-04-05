@@ -19,7 +19,7 @@ let confirmInvite = function (req, res) {
   if (generatedHash !== get.hash) {
     res.render('yard/errors/error.twig', {
       title: 'Invalid link',
-      message: 'Sorry, this link doesn\'t work. Request new from team leader'
+      message: 'Sorry, this link doesn\'t work. Request a new one from your team leader'
     });
     return;
   }
