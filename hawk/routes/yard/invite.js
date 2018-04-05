@@ -27,16 +27,8 @@ let confirmInvite = function (req, res) {
   let user = res.locals.user;
 
   if (!user) {
-    let params = {
-      message: {
-        type: 'notify',
-        text: 'You must be logged in to accept an invitation'
-      }
-    };
-
     res.cookie('redirect', req.originalUrl);
-
-    res.render('yard/auth/login', params);
+    res.redirect('/join');
     return;
   }
 
