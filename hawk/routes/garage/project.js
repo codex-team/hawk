@@ -108,7 +108,7 @@ let inviteMember = async function (req, res) {
     let isInvited = await project.checkMembershipByEmail(userEmail, foundProject._id);
 
     if (isInvited) {
-      throw Error('Invitation is already send');
+      throw Error('Invitation is already sent');
     }
 
     let newMemberRequest = await project.addMember(foundProject._id, foundProject.uri, null, null, userEmail);
