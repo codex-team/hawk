@@ -358,7 +358,7 @@ module.exports = function () {
    * Add project to user's projects list
    *
    * @param {String} userId
-   * @param {{_id, uri} project - new project
+   * @param {{_id, uri}} project - new project
    *
    * @return {Promise<*>}
    */
