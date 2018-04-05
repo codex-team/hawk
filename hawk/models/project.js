@@ -367,7 +367,7 @@ module.exports = function () {
    *
    * @param {String} userId
    * @param {String} projectId
-   * @return {Boolean}
+   * @return {Object|null}
    */
   let checkMembership = async (userId, projectId) => {
     let userCollection = collections.MEMBERSHIP + ':' + userId;
