@@ -58,6 +58,7 @@ let login = {
           if (redirectUri) {
             res.clearCookie('redirect');
             res.redirect(redirectUri);
+            return;
           }
 
           res.redirect('/garage');

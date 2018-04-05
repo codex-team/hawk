@@ -307,6 +307,10 @@ module.exports = function () {
             userData.slackHook = projectData.slackHook;
             return userData;
           });
+      })
+      .catch(e => {
+        logger.error('Can not get user data cause ', e);
+        return {};
       });
   };
 

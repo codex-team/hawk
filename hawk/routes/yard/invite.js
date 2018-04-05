@@ -11,7 +11,7 @@ let modelProject = require('../../models/project');
  * @param req
  * @param res
  */
-let confirmInvite = async function (req, res) {
+let confirmInvite = function (req, res) {
   let get = req.query;
 
   let generatedHash = project.generateInviteHash(get.member, get.project);
@@ -40,33 +40,38 @@ let confirmInvite = async function (req, res) {
     return;
   }
 
-  let foundProject = project.get(get.project);
+  let foundProject, redirect;
 
-  /**
-   * Try to confirm invitation
-   */
-  try {
-    await project.confirmInvitation(foundProject._id, get.member, user._id);
-  } catch (e) {
-    logger.info('Invitation was not confirmed:', e);
-    res.redirect('/garage');
-    return;
-  }
+  project.get(get.project)
+    .then(project => {
+      foundProject = project
+    })
+    .then(() => {
+      return project.confirmInvitation(foundProject._id, get.member, user._id)
+    })
+    .catch(e => {
+      logger.info('Invitation was not confirmed:', e);
+      redirect = '/garage';
 
-  /**
-   * Try to add project to user's projects list
-   */
-  try {
-    await modelProject.addProjectToUserProjects(user._id, get.project);
-
-    res.render('yard/invite', {
-      user: user,
-      project: foundProject
+      throw Error(e);
+    })
+    .then(() => {
+      return modelProject.addProjectToUserProjects(user._id, get.project);
+    })
+    .then(() => {
+      res.render('yard/invite', {
+        user: user,
+        project: foundProject
+      });
+    })
+    .catch(e => {
+      if (redirect) {
+        res.redirect(redirect);
+      } else {
+        logger.error('Error while confirm project invitation ', e);
+        res.sendStatus(500);
+      }
     });
-  } catch (e) {
-    logger.error('Error while confirm project invitation ', e);
-    res.sendStatus(500);
-  }
 };
 
 router.get('/', confirmInvite);
