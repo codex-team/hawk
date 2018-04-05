@@ -87,7 +87,6 @@ module.exports = function () {
    * Add member to the project
    *
    * @param {String} projectId
-   * @param {String} projectUri
    * @param {String} userId (optional)
    * @param {Boolean} isOwner (optional) if true, user will be added with
    * admin access
@@ -95,7 +94,7 @@ module.exports = function () {
    *
    * @returns {Promise.<TResult>}
    */
-  let addMember = async (projectId, projectUri, userId = null, isOwner = false, email = null) => {
+  let addMember = async (projectId, userId = null, isOwner = false, email = null) => {
     let role = isOwner ? 'admin' : 'member',
         projectCollection = collections.TEAM + ':' + projectId;
 
@@ -131,9 +130,9 @@ module.exports = function () {
 
         let user = data.user;
 
-        await addMember(insertedProject._id, insertedProject.uri, user._id, true);
+        await addMember(insertedProject._id, user._id, true);
 
-        await addProjectToUserProjects(user._id, insertedProject._id);
+        await addProjectToUserProjects(user._id, insertedProject);
 
         return insertedProject;
       });
@@ -359,15 +358,16 @@ module.exports = function () {
    * Add project to user's projects list
    *
    * @param {String} userId
-   * @param {String} projectId
+   * @param {{_id, uri} project - new project
    *
    * @return {Promise<*>}
    */
-  let addProjectToUserProjects = async (userId, projectId) => {
+  let addProjectToUserProjects = async (userId, project) => {
     let userCollection = collections.MEMBERSHIP + ':' + userId;
 
     let membershipParams = {
-      project_id: mongo.ObjectId(projectId),
+      project_id: mongo.ObjectId(project._id),
+      project_uri: getProjectUriByUser(userId, project.uri),
       notifies: {
         email: true,
         tg: false,
