@@ -32,7 +32,7 @@ let confirmInvite = function (req, res) {
     return;
   }
 
-  let foundProject, redirect;
+  let foundProject;
 
   project.get(get.project)
     .then(project => {
@@ -40,12 +40,6 @@ let confirmInvite = function (req, res) {
     })
     .then(() => {
       return project.confirmInvitation(foundProject._id, get.member, user._id)
-    })
-    .catch(e => {
-      logger.info('Invitation was not confirmed:', e);
-      redirect = '/garage';
-
-      throw Error(e);
     })
     .then(() => {
       return modelProject.addProjectToUserProjects(user._id, get.project);
@@ -57,12 +51,11 @@ let confirmInvite = function (req, res) {
       });
     })
     .catch(e => {
-      if (redirect) {
-        res.redirect(redirect);
-      } else {
-        logger.error('Error while confirm project invitation ', e);
-        res.sendStatus(500);
-      }
+      logger.error('Error while confirm project invitation ', e);
+      res.render('yard/errors/error.twig', {
+        title: 'Something went wrong',
+        message: e
+      });
     });
 };
 
