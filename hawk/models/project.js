@@ -243,12 +243,12 @@ module.exports = function () {
    *
    * @param {String} projectId
    * @param {String} memberId
-   * @param {String} userId
+   * @param {{_id, email}} user — current user
    *
    * @return {Promise<>}
    */
-  let confirmInvitation = async function (projectId, memberId, userId) {
-    let isMember = await checkMembershipByUserId(userId, projectId);
+  let confirmInvitation = async function (projectId, memberId, user) {
+    let isMember = await checkMembershipByUserId(user._id, projectId);
 
     if (isMember) {
       return Promise.reject('You have already joined this team');
@@ -265,8 +265,9 @@ module.exports = function () {
 
     let data = {
       $set: {
-        user_id: mongo.ObjectId(userId),
-        is_pending: false
+        user_id: mongo.ObjectId(user._id),
+        is_pending: false,
+        email: user.email, // update email from invitation with actual acceptor's email
       }
     };
 

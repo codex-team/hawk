@@ -39,7 +39,7 @@ let confirmInvite = function (req, res) {
       foundProject = project
     })
     .then(() => {
-      return project.confirmInvitation(foundProject._id, get.member, user._id)
+      return project.confirmInvitation(foundProject._id, get.member, user)
     })
     .then(() => {
       return modelProject.addProjectToUserProjects(user._id, get.project);
