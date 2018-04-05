@@ -251,7 +251,7 @@ module.exports = function () {
     let isMember = await checkMembershipByUserId(userId, projectId);
 
     if (isMember) {
-      return Promise.reject('You already have joined this team');
+      return Promise.reject('You have already joined this team');
     }
 
     let projectCollection = collections.TEAM + ':' + projectId;
@@ -297,9 +297,9 @@ module.exports = function () {
         projectCollection = collections.TEAM + ':' + projectId;
 
     return mongo.findOne(projectCollection, {user_id: mongo.ObjectId(userId)})
-      .then(function (userData) {
+      .then(function (userData = {}) {
         return mongo.findOne(userCollection, {project_id: mongo.ObjectId(projectId)})
-          .then(function (projectData) {
+          .then(function (projectData = {}) {
             userData.projectUri = projectData.project_uri;
             userData.userId = userId;
             userData.notifies = projectData.notifies;
