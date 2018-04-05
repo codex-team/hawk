@@ -4,7 +4,7 @@
   <div class="yard">
     {% include 'yard/form.twig' with {
       action: '/join',
-      title: 'Create account',
+      title: 'Create an account',
       fields: [
         {
           label: 'Enter your email',
@@ -15,7 +15,7 @@
         }
       ],
       submitText: 'Register',
-      disclaimer: 'Already have an account? <a href="/login">Login</a>, you, beauty.',
+      disclaimer: 'Already have an account? <a href="/login">Login</a>, you, beauty <span style="display: inline-block; vertical-align: middle;"> 😏 </span>',
       message: message.type and message.text ? {type: message.type, text: message.text} : null,
     } %}
   </div>
