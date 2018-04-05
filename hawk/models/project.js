@@ -270,7 +270,13 @@ module.exports = function () {
       }
     };
 
-    return mongo.updateOne(projectCollection, query, data);
+    let confirmedInvitation = await mongo.updateOne(projectCollection, query, data);
+
+    if (!confirmedInvitation.modifiedCount) {
+      return Promise.reject('This invite link was already used. Request a new one from your team leader.');
+    }
+
+    return Promise.resolve();
   };
 
   /**
