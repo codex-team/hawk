@@ -325,7 +325,7 @@ module.exports = function () {
    *
    * @param {String} userId
    * @param {String} uri
-   * @returns {Request|Promise.<TResult>}
+   * @returns {Promise.<TResult>}
    */
   let getProjectUriByUser = function (userId, uri) {
     let userCollection = collections.MEMBERSHIP + ':' + userId,
@@ -365,9 +365,11 @@ module.exports = function () {
   let addProjectToUserProjects = async (userId, project) => {
     let userCollection = collections.MEMBERSHIP + ':' + userId;
 
+    let uri = await getProjectUriByUser(userId, project.uri);
+
     let membershipParams = {
       project_id: mongo.ObjectId(project._id),
-      project_uri: getProjectUriByUser(userId, project.uri),
+      project_uri: uri,
       notifies: {
         email: true,
         tg: false,
