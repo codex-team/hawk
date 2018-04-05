@@ -92,9 +92,7 @@ let inviteMember = async function (req, res) {
     let foundUser = await user.getByParams({email: userEmail});
 
     if (foundUser) {
-      let userCollection = collections.MEMBERSHIP + ':' + foundUser._id;
-
-      let isMember = await mongo.findOne(userCollection, {project_id: mongo.ObjectId(foundProject._id)});
+      let isMember = await project.checkMembership(foundUser._id, foundProject._id);
 
       if (isMember) {
         throw Error('User is already in team');

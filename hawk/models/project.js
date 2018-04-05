@@ -249,7 +249,10 @@ module.exports = function () {
     let projectCollection = collections.TEAM + ':' + projectId;
 
     let query = {
-      _id: mongo.ObjectId(memberId)
+      _id: mongo.ObjectId(memberId),
+
+      /** If user_id is not null then invitation link was used once */
+      user_id: null
     };
 
     let data = {
@@ -356,11 +359,25 @@ module.exports = function () {
       }
     };
 
-    return mongo.insertOne(userCollection, membershipParams);
+    return await mongo.insertOne(userCollection, membershipParams);
+  };
+
+  /**
+   * Check if user in project's team
+   *
+   * @param {String} userId
+   * @param {String} projectId
+   * @return {Boolean}
+   */
+  let checkMembership = async (userId, projectId) => {
+    let userCollection = collections.MEMBERSHIP + ':' + userId;
+
+    return await mongo.findOne(userCollection, {project_id: mongo.ObjectId(projectId)});
   };
 
   return {
     addProjectToUserProjects,
+    checkMembership,
     add,
     get,
     getAll,
