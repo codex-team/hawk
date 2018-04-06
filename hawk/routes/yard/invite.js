@@ -42,7 +42,7 @@ let confirmInvite = function (req, res) {
       return project.confirmInvitation(foundProject._id, get.member, user)
     })
     .then(() => {
-      return modelProject.addProjectToUserProjects(user._id, get.project);
+      return modelProject.addProjectToUserProjects(user._id, foundProject);
     })
     .then(() => {
       res.render('yard/invite', {
