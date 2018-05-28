@@ -56,7 +56,7 @@ module.exports = (function () {
      * Set cookies lifetime
      * @type {number}
      */
-    let tenYears = 315360000000;
+    let tenYears = 1000 * 60 * 60 * 24 * 365 * 10;
 
     res.cookie('user_id', uid, { expires: new Date(Date.now() + tenYears) });
     res.cookie('user_hash', uhash, { expires: new Date(Date.now() + tenYears) });
