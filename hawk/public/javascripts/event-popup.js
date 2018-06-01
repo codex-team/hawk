@@ -37,7 +37,8 @@ let eventPopup = (function ( self ) {
     popupLoading: 'traceback-popup--loading',
 
     // events list
-    eventRow: 'garage-list-item'
+    eventRow: 'garage-list-item',
+    unreadRow: 'garage-list-item--unread'
   };
 
   /**
@@ -329,7 +330,7 @@ let eventPopup = (function ( self ) {
 
   /**
    * Event row click handler
-   * @param  {event} clickEvent - onclick event
+   * @param {event} clickEvent - onclick event
    */
   function eventRowClicked(clickEvent) {
     let row = this;
@@ -364,6 +365,9 @@ let eventPopup = (function ( self ) {
      * Require other information
      */
     sendPopupRequest_(event, eventUrl);
+
+    /** Unmark row */
+    row.classList.remove(CSS.unreadRow);
 
     /**
      * Disable link segue
