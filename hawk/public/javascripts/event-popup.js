@@ -341,6 +341,8 @@ let eventPopup = (function ( self ) {
     let isMouseWheelClicked = clickEvent.which && ( clickEvent.which === 2 || clickEvent.button === 4 );
 
     if (clickEvent.ctrlKey || clickEvent.metaKey || isMouseWheelClicked) {
+      /** Unmark row */
+      row.classList.remove(CSS.unreadRow);
       return;
     }
 
