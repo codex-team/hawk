@@ -2,12 +2,41 @@ let events   = require('../../models/events');
 let notifies = require('../../models/notifies');
 let WebSocket = require('ws');
 let Crypto = require('crypto');
+let sourceMap = require('source-map');
 let stack = require('../../modules/stack');
 let project = require('../../models/project');
+const JSSource = require('../../models/js-source');
+
+/**
+ * @typedef {object} JSCatcherInput
+ * @property {string}   token - Project's Token
+ * @property {string}   message - main Error text
+ * @property {object}   error_location
+ * @property {string}   error_location.file
+ * @property {number}   error_location.line
+ * @property {number}   error_location.col
+ * @property {string}   error_location.revision  - bundle's revision
+ * @property {object}   location
+ * @property {string}   location.url
+ * @property {string}   location.origin
+ * @property {string}   location.host
+ * @property {string}   location.path
+ * @property {string}   location.port
+ * @property {string}   stack
+ * @property {string}   time
+ * @property {object}   navigator
+ * @property {string}   navigator.ui
+ * @property {object}   navigator.frame
+ * @property {object}   navigator.frame.width
+ * @property {object}   navigator.frame.height
+ */
 
 let md5 = function (input) {
   return Crypto.createHash('md5').update(input, 'utf8').digest('hex');
 };
+
+
+
 
 /**
  * Get info about user browser and platform
@@ -85,70 +114,159 @@ let receiver = new WebSocket.Server({
   port: process.env.SOCKET_PORT
 });
 
-let connection = function (ws) {
-  function getClientErrors(message) {
-    let eventGroupPrehashed = message.message;
 
-    message.error_location.full = message.error_location.file + ' -> ' +
-                                  message.error_location.line + ':' +
-                                  message.error_location.col;
-
-    let clientInfo = detect(message.navigator.ua);
-
-    clientInfo.device.width = message.navigator.frame.width;
-    clientInfo.device.height = message.navigator.frame.height;
-
-    let event = {
-      type          : 'client',
-      tag           : 'javascript',
-      message       : message.message,
-      errorLocation : message.error_location,
-      location      : message.location,
-      stack         : stack.parse(message),
-      groupHash     : md5(eventGroupPrehashed),
-      userAgent     : clientInfo,
-      time          : Math.floor(message.time / 1000)
-    };
-
-    logger.info('Got javascript error from ' + event.location.host);
-
-    project.getByToken(message.token)
-      .then( function (foundProject) {
-        if (!foundProject) {
-          ws.send(JSON.stringify({type: 'warn', message: 'Access denied'}));
-          ws.close();
-          return;
-        }
-
-        return events.add(foundProject._id, event)
-          .then(function () {
-            return foundProject;
-          });
-      })
-      .then(function (foundProject) {
-        if (!foundProject) {
-          return;
-        }
-
-        return notifies.send(foundProject, event);
-      })
-      .catch( function (e) {
-        logger.log('Error while saving client error ', e);
-        ws.send(JSON.stringify({type: 'error', message: e.message}));
-      });
-  }
-
-  let receiveMessage = function (message) {
-    console.log('Client catcher recieved a message: %o', message);
-
-    message = JSON.parse(message);
-    getClientErrors(message);
-  };
-
-  ws.on('message', receiveMessage);
+const rawSourceMap = {
+  version: 3,
+  file: 'min.js',
+  names: ['bar', 'baz', 'n'],
+  sources: ['one.js', 'two.js'],
+  sourceRoot: 'http://example.com/www/js/',
+  mappings: 'CAAC,IAAI,IAAM,SAAUA,GAClB,OAAOC,IAAID;CCDb,IAAI,IAAM,SAAUE,GAClB,OAAOA'
 };
 
-receiver.on('connection', connection);
+sourceMap.SourceMapConsumer.with(rawSourceMap, null, consumer => {
+
+  console.log('sources', consumer.sources);
+  // [ 'http://example.com/www/js/one.js',
+  //   'http://example.com/www/js/two.js' ]
+
+  console.log(consumer.originalPositionFor({
+    line: 2,
+    column: 28
+  }));
+  // { source: 'http://example.com/www/js/two.js',
+  //   line: 2,
+  //   column: 10,
+  //   name: 'n' }
+
+  console.log('position',consumer.generatedPositionFor({
+    source: 'http://example.com/www/js/two.js',
+    line: 2,
+    column: 10
+  }));
+  // { line: 2, column: 28 }
+
+  consumer.eachMapping(function (m) {
+    // console.log('mapping', m);
+  });
+
+  // return computeWhatever();
+});
+
+
+async function downloadSource(projectId, url, revision) {
+  let source = new JSSource({projectId, url, revision});
+
+  await source.load();
+
+  // console.log('source');
+  // console.log(source);
+
+
+}
+
+const ERR_TYPES = {
+  accessDenied: 'Access denied'
+};
+
+
+/**
+ * Handler for socket messages
+ * @param {JSCatcherInput} message
+ * @throws {Error} - Access denied
+ * @return {Promise}
+ */
+function handleMessage(message) {
+
+  console.log(message);
+
+  return project.getByToken(message.token)
+    .then(foundProject => {
+      if (!foundProject) {
+        throw new Error(ERR_TYPES.accessDenied);
+      }
+      return foundProject;
+    })
+    .then(foundProject => {
+      return downloadSource(foundProject._id, message.error_location.file, message.error_location.revision);
+    });
+
+  return;
+  let eventGroupPrehashed = message.message;
+
+  message.error_location.full = message.error_location.file + ' -> ' +
+    message.error_location.line + ':' +
+    message.error_location.col;
+
+  let clientInfo = detect(message.navigator.ua);
+
+  clientInfo.device.width = message.navigator.frame.width;
+  clientInfo.device.height = message.navigator.frame.height;
+
+  let event = {
+    type          : 'client',
+    tag           : 'javascript',
+    message       : message.message,
+    errorLocation : message.error_location,
+    location      : message.location,
+    stack         : stack.parse(message),
+    groupHash     : md5(eventGroupPrehashed),
+    userAgent     : clientInfo,
+    time          : Math.floor(message.time / 1000)
+  };
+
+  logger.info('Got javascript error from ' + event.location.host);
+
+  project.getByToken(message.token)
+    .then( function (foundProject) {
+      if (!foundProject) {
+        // ws.send(JSON.stringify({type: 'warn', message: 'Access denied'}));
+        // ws.close();
+        throw new Error(ERR_TYPES.accessDenied);
+        return;
+      }
+
+      return events.add(foundProject._id, event)
+        .then(function () {
+          return foundProject;
+        });
+    })
+    .then(function (foundProject) {
+      if (!foundProject) {
+        return;
+      }
+
+      return notifies.send(foundProject, event);
+    });
+    // .catch( function (e) {
+      // logger.log('Error while saving client error ', e);
+      // ws.send(JSON.stringify({type: 'error', message: e.message}));
+    // });
+}
+
+/**
+ * Socket connection handler
+ * @param ws
+ */
+function socketConnected (ws) {
+  ws.on('message', function (message) {
+    console.log('Client catcher received a message: %o', message);
+
+    Promise.resolve(message)
+      .then(JSON.parse)
+      .then( message => {
+        return handleMessage(message);
+      })
+      .catch( error => {
+        ws.send(JSON.stringify({type: 'error', message: error.message}));
+        if (error.message === ERR_TYPES.accessDenied){
+          ws.close();
+        }
+      })
+  });
+}
+
+receiver.on('connection', socketConnected);
 
 /**
  * Workaround connection errors.
