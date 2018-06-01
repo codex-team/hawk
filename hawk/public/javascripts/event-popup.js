@@ -246,14 +246,18 @@ let eventPopup = (function ( self ) {
    * @type {Number} event.time - time
    */
   function fillHeader(event, projectName) {
-	  let escapedMessage = dom.escapeHTML(event.message);
+    let escaped = {
+      message : dom.escapeHTML(event.message),
+      errorLocation : dom.escapeHTML(event.errorLocation.full),
+      tag : dom.escapeHTML(event.tag)
+    };
 
     event.count = event.count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     popup.content.insertAdjacentHTML('afterbegin', `<div class="event">
       <div class="event__header">
         <span class="event__project">${projectName}</span>
-        <span class="event__type event__type--${event.tag}">
-          ${event.tag === 'javascript' ? 'JavaScript Error' : event.tag}
+        <span class="event__type event__type--${escaped.tag}">
+          ${escaped.tag === 'javascript' ? 'JavaScript Error' : escaped.tag}
         </span>
       </div>
       <div class="event__content clearfix">
@@ -268,10 +272,10 @@ let eventPopup = (function ( self ) {
           </div>
         </div>
         <div class="event__title">
-          ${escapedMessage}
+           ${escaped.message}
         </div>
         <div class="event__path">
-          ${event.errorLocation.full}
+           ${escaped.errorLocation}
         </div>
       </div>
     </div>`);
