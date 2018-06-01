@@ -1,31 +1,31 @@
 'use strict';
 
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var twigExtensions = require('./modules/twig');
+let express = require('express');
+let path = require('path');
+let favicon = require('serve-favicon');
+let cookieParser = require('cookie-parser');
+let bodyParser = require('body-parser');
+let twigExtensions = require('./modules/twig');
 
 require('dotenv').config();
 
 /** * Loggers ***/
 /* Main logger */
-var winston = require('winston');
+let winston = require('winston');
 
 /* Allow rotate log files by date */
 require('winston-daily-rotate-file');
 
 /* Express middleware logger */
-var morgan = require('morgan');
+let morgan = require('morgan');
 /** */
 
 /* File system */
-var fs = require('fs');
+let fs = require('fs');
 
 /** Setup loggers **/
 
-var logsDir = './logs',
+let logsDir = './logs',
     accessDir = logsDir + '/access',
     errorsDir = logsDir + '/errors';
 
@@ -89,7 +89,7 @@ accessLogger.stream = {
 };
 
 
-var app = express();
+let app = express();
 
 /**
  * User model
@@ -143,17 +143,17 @@ app.use(function (req, res, next) {
 /**
  * Garage
  */
-var garage = require('./routes/garage/garage');
+let garage = require('./routes/garage/garage');
 
 app.use('/garage', garage);
 
 /**
  * Yard
  */
-var index = require('./routes/yard/index');
-var auth = require('./routes/yard/auth/auth');
-var unsubscribe = require('./routes/yard/unsubscribe');
-var invite = require('./routes/yard/invite');
+let index = require('./routes/yard/index');
+let auth = require('./routes/yard/auth/auth');
+let unsubscribe = require('./routes/yard/unsubscribe');
+let invite = require('./routes/yard/invite');
 
 app.use('/', index);
 app.use('/', auth);
@@ -163,13 +163,13 @@ app.use('/unsubscribe', unsubscribe);
 /**
  * Catcher
  */
-var catcher = require('./routes/catcher/catcher');
+let catcher = require('./routes/catcher/catcher');
 
 app.use('/catcher', catcher);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  var err = new Error('Not Found');
+  let err = new Error('Not Found');
 
   err.status = 404;
   next(err);

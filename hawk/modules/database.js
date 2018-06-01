@@ -114,7 +114,7 @@ let mongo = (function () {
    * @param {object} options
    * @return {Promise<*>}
    */
-  let count = async (c, query, options) => {
+  let count = async (c, query, options = {}) => {
     return await getCollection(c)
       .then(async (collection) => {
         return await collection.count(query, options)
