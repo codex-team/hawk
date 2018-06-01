@@ -21,7 +21,7 @@ let hawkso = (function (self) {
 
   self.checkbox = require('./checkbox');
   self.copyable = require('./copyable');
-  self.ajax = require('./ajax');
+  self.ajax = require('codex.ajax');
   self.notifier = require('exports-loader?notifier!codex-notifier');
   self.event = require('./event');
   self.eventPopup = require('./event-popup');

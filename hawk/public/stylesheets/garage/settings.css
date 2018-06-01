@@ -20,12 +20,9 @@
             height: 18px;
             margin-right: 8px;
         }
-
-
     }
 
     &__account-form {
         margin-top: 50px;
     }
-
 }

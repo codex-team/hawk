@@ -197,12 +197,41 @@ module.exports = function () {
     });
   };
 
+  let resendInvitation = function (projectId, userId, button) {
+    hawkso.ajax.call({
+      type: 'POST',
+      url: '/garage/project/resendInvitation',
+      data: {
+        projectId: projectId,
+        userId: userId
+      },
+      error: function () {
+        hawkso.notifier.show({
+          style: 'error',
+          message: 'Can not resend the invitation. Try again later'
+        });
+      },
+      success: function (result) {
+        hawkso.notifier.show({
+          style: result.success ? 'success' : 'error',
+          message: result.message
+        });
+        if (result.success) {
+          // button.classList.add('project__member-role--admin');
+          // button.classList.remove('project__member-role--member');
+          // button.textContent = 'Admin';
+        }
+      }
+    });
+  };
+
   return {
-    init : init,
-    checkForm : checkForm,
-    inviteMember: inviteMember,
-    saveNotifiesPreferences: saveNotifiesPreferences,
-    saveWebhook: saveWebhook,
-    grantAdminAccess: grantAdminAccess
+    init,
+    checkForm,
+    inviteMember,
+    saveNotifiesPreferences,
+    saveWebhook,
+    grantAdminAccess,
+    resendInvitation
   };
 }();

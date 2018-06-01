@@ -154,16 +154,38 @@
             height: 1px;
             border-bottom: 1px solid #fff;
         }
+    }
 
+    &__member-icon {
+        &--user {
+            display: block;
+            background: url(/static/svg/user.svg) center no-repeat;
+            width: 22px;
+            height: 22px;
+            margin-top: 2px;
+        }
+
+        &--retry {
+            display: block;
+            background: url(/static/svg/retry-arrows.svg) center no-repeat;
+            width: 22px;
+            height: 20px;
+            margin-top: 2px;
+            cursor: pointer;
+            transition: all 200ms ease;
+
+            &:hover {
+                transform: rotate(30deg);
+            }
+        }
     }
 
     &__member-email {
-        margin-left: 16px;
+        margin-left: 14px;
 
         &--pending {
             color: var(--noticeColor);
         }
-
     }
 
     &__member-role {
@@ -173,7 +195,7 @@
         &--admin {
             color: var(--greenText);
 
-                &::before {
+            &::before {
                 content: '';
                 background: url(/static/svg/check.svg) center no-repeat;
                 display: block;
@@ -184,7 +206,6 @@
                 top: 50%;
                 transform: translate(-180%, -50%);
             }
-
         }
 
         &--member {

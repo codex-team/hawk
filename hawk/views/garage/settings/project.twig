@@ -33,9 +33,7 @@
         </h4>
         {% for member in project.team %}
             <div class="project__member">
-                <span class="project__member-icon">
-                    {{ svg('/public/svg/user.svg') }}
-                </span>
+                <span class="project__member-icon project__member-icon--{{ member.is_pending ? 'retry' : 'user' }}" onclick="hawkso.settingsForm.resendInvitation('{{ project.id|escape }}', '{{ member._id|escape }}', this)"></span>
                 <span class="project__member-email
                     {{ member.is_pending ? 'project__member-email--pending' : '' }}">
                     {{ member.email|escape }}

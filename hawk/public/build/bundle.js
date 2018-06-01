@@ -74,6 +74,36 @@ var hawkso =
 "use strict";
 
 
+module.exports = function (module) {
+	if (!module.webpackPolyfill) {
+		module.deprecate = function () {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if (!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function get() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function get() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -139,96 +169,71 @@ var DOM = function () {
 exports.default = DOM;
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/**
- * AJAX module
- */
-module.exports = function () {
-  /**
-   * @usage codex.ajax.call();
-   */
-  var call = function call(data) {
-    if (!data || !data.url) return;
-
-    var XMLHTTP = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject('Microsoft.XMLHTTP'),
-        successFunction = function successFunction() {},
-        errorFunction = function errorFunction() {};
-
-    data.async = true;
-    data.type = data.type || 'GET';
-    data.data = data.data || '';
-    data['content-type'] = data['content-type'] || 'application/json; charset=utf-8';
-    successFunction = data.success || successFunction;
-    errorFunction = data.error || errorFunction;
-
-    if (data.type === 'GET' && data.data) {
-      data.url = /\?/.test(data.url) ? data.url + '&' + data.data : data.url + '?' + data.data;
-    }
-
-    if (data.withCredentials) {
-      XMLHTTP.withCredentials = true;
-    }
-
-    if (data.beforeSend && typeof data.beforeSend === 'function') {
-      if (data.beforeSend.call() === false) {
-        return;
-      }
-    }
-
-    XMLHTTP.open(data.type, data.url, data.async);
-
-    /**
-     * If we send FormData, we need no content-type header
-     */
-    if (!isFormData_(data.data)) {
-      XMLHTTP.setRequestHeader('Content-type', data['content-type']);
-    }
-
-    XMLHTTP.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    XMLHTTP.onreadystatechange = function () {
-      if (XMLHTTP.readyState === 4) {
-        if (XMLHTTP.status === 200) {
-          var result = void 0;
-
-          try {
-            result = JSON.parse(XMLHTTP.responseText);
-          } catch (e) {
-            result = XMLHTTP.responseText;
+!function (t, e) {
+  "object" == ( false ? "undefined" : _typeof(exports)) && "object" == ( false ? "undefined" : _typeof(module)) ? module.exports = e() :  true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (e),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : "object" == (typeof exports === "undefined" ? "undefined" : _typeof(exports)) ? exports.ajax = e() : t.ajax = e();
+}(undefined, function () {
+  return function (t) {
+    function e(r) {
+      if (n[r]) return n[r].exports;var a = n[r] = { i: r, l: !1, exports: {} };return t[r].call(a.exports, a, a.exports, e), a.l = !0, a.exports;
+    }var n = {};return e.m = t, e.c = n, e.d = function (t, n, r) {
+      e.o(t, n) || Object.defineProperty(t, n, { configurable: !1, enumerable: !0, get: r });
+    }, e.n = function (t) {
+      var n = t && t.__esModule ? function () {
+        return t.default;
+      } : function () {
+        return t;
+      };return e.d(n, "a", n), n;
+    }, e.o = function (t, e) {
+      return Object.prototype.hasOwnProperty.call(t, e);
+    }, e.p = "", e(e.s = 0);
+  }([function (t, e, n) {
+    "use strict";
+    t.exports = function () {
+      var t = function t(_t) {
+        return _t instanceof FormData;
+      };return { call: function call(e) {
+          if (e && e.url) {
+            var n = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject("Microsoft.XMLHTTP"),
+                r = e.progress || null,
+                a = e.success || function () {},
+                o = e.error || function () {},
+                u = e.before || null,
+                i = e.after ? e.after.bind(null, e.data) : null;if (e.async = !0, e.type = e.type || "GET", e.data = e.data || "", e["content-type"] = e["content-type"] || "application/json; charset=utf-8", "GET" === e.type && e.data && (e.url = /\?/.test(e.url) ? e.url + "&" + e.data : e.url + "?" + e.data), e.withCredentials && (n.withCredentials = !0), u && "function" == typeof u) {
+              if (!1 === u(e.data)) return;
+            }if (n.open(e.type, e.url, e.async), !t(e.data)) {
+              var c = new FormData();for (var f in e.data) {
+                c.append(f, e.data[f]);
+              }e.data = c;
+            }r && "function" == typeof r && n.upload.addEventListener("progress", function (t) {
+              var e = parseInt(t.loaded / t.total * 100);r(e);
+            }, !1), n.setRequestHeader("X-Requested-With", "XMLHttpRequest"), n.onreadystatechange = function () {
+              if (4 === n.readyState) {
+                var t = n.responseText;try {
+                  t = JSON.parse(t);
+                } catch (t) {}200 === n.status ? a(t) : o(t), i && "function" == typeof i && i();
+              }
+            }, n.send(e.data);
           }
-
-          successFunction(result);
-        } else {
-          errorFunction(XMLHTTP.statusText);
-        }
-      }
-    };
-
-    XMLHTTP.send(data.data);
-  };
-
-  /**
-   * Function for checking is it FormData object to send.
-   * @param {Object} object to check
-   * @return boolean
-   */
-  var isFormData_ = function isFormData_(object) {
-    return object instanceof FormData;
-  };
-
-  return {
-
-    call: call
-
-  };
-}();
+        } };
+    }();
+  }]);
+});
+//# sourceMappingURL=bundle.js.map
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -332,7 +337,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -446,7 +451,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -469,7 +474,7 @@ var eventPopup = function (self) {
    * @type {Class}
    */
 
-  var dom = __webpack_require__(0).default;
+  var dom = __webpack_require__(1).default;
 
   /**
    * Module holder element
@@ -888,7 +893,7 @@ var eventPopup = function (self) {
 module.exports = eventPopup;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -929,7 +934,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -990,7 +995,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1039,7 +1044,7 @@ module.exports = function (self) {
         */
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1051,7 +1056,7 @@ module.exports = function (self) {
  * @see {@link https://github.com/codex-team/transport}
  * @copyright  CodeX <team@ifmo.su>
  */
-var transport = __webpack_require__(13);
+var transport = __webpack_require__(14);
 
 /**
  * Work with projects settings files
@@ -1195,7 +1200,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1400,18 +1405,47 @@ module.exports = function () {
     });
   };
 
+  var resendInvitation = function resendInvitation(projectId, userId, button) {
+    hawkso.ajax.call({
+      type: 'POST',
+      url: '/garage/project/resendInvitation',
+      data: {
+        projectId: projectId,
+        userId: userId
+      },
+      error: function error() {
+        hawkso.notifier.show({
+          style: 'error',
+          message: 'Can not resend the invitation. Try again later'
+        });
+      },
+      success: function success(result) {
+        hawkso.notifier.show({
+          style: result.success ? 'success' : 'error',
+          message: result.message
+        });
+        if (result.success) {
+          // button.classList.add('project__member-role--admin');
+          // button.classList.remove('project__member-role--member');
+          // button.textContent = 'Admin';
+        }
+      }
+    });
+  };
+
   return {
     init: init,
     checkForm: checkForm,
     inviteMember: inviteMember,
     saveNotifiesPreferences: saveNotifiesPreferences,
     saveWebhook: saveWebhook,
-    grantAdminAccess: grantAdminAccess
+    grantAdminAccess: grantAdminAccess,
+    resendInvitation: resendInvitation
   };
 }();
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1497,7 +1531,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1583,13 +1617,13 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1700,37 +1734,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   }]);
 });
 //# sourceMappingURL=bundle.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)(module)))
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = function (module) {
-	if (!module.webpackPolyfill) {
-		module.deprecate = function () {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if (!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function get() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function get() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
 
 /***/ }),
 /* 15 */
@@ -1747,7 +1751,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var dom = __webpack_require__(0).default;
+var dom = __webpack_require__(1).default;
 
 /**
  * Class Appender
@@ -1902,7 +1906,7 @@ var Appender = exports.Appender = function () {
 /**
  * Require CSS build
  */
-__webpack_require__(12);
+__webpack_require__(13);
 
 var hawkso = function (self) {
   'use strict';
@@ -1920,17 +1924,17 @@ var hawkso = function (self) {
     console.log('Hawk app initialized');
   };
 
-  self.checkbox = __webpack_require__(2);
-  self.copyable = __webpack_require__(3);
-  self.ajax = __webpack_require__(1);
-  self.notifier = __webpack_require__(11);
-  self.event = __webpack_require__(5);
-  self.eventPopup = __webpack_require__(4);
-  self.appender = __webpack_require__(7);
-  self.settingsForm = __webpack_require__(9);
-  self.toggler = __webpack_require__(10);
-  self.keyboard = __webpack_require__(6);
-  self.projectSettings = __webpack_require__(8);
+  self.checkbox = __webpack_require__(3);
+  self.copyable = __webpack_require__(4);
+  self.ajax = __webpack_require__(2);
+  self.notifier = __webpack_require__(12);
+  self.event = __webpack_require__(6);
+  self.eventPopup = __webpack_require__(5);
+  self.appender = __webpack_require__(8);
+  self.settingsForm = __webpack_require__(10);
+  self.toggler = __webpack_require__(11);
+  self.keyboard = __webpack_require__(7);
+  self.projectSettings = __webpack_require__(9);
 
   var delegate = function delegate(element) {
     var modulesRequired = void 0;

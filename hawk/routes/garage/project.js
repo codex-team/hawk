@@ -226,10 +226,39 @@ let granAdminAccess = function (req, res) {
     });
 };
 
+let resendInvitation = function (req, res) {
+  let post = req.body;
+
+  console.log(req.body);
+
+  res.json({
+    success: 0,
+    // message: 'Can\'t resent invitation because of server error'
+    message: JSON.stringify(post)
+  });
+
+
+  // project.grantAdminAccess(post.projectId, post.userId)
+  //   .then(function () {
+  //     res.json({
+  //       success: 1,
+  //       message: 'Access granted'
+  //     });
+  //   })
+  //   .catch(function (e) {
+  //     logger.error('Error while granting admin access ', e);
+  //     res.json({
+  //       success: 0,
+  //       message: 'Can\'t grant access because of server error'
+  //     });
+  //   });
+};
+
 router.post('/project/add', add);
 router.post('/project/inviteMember', inviteMember);
 router.post('/project/editNotifies', editNotifies);
 router.post('/project/saveWebhook', saveWebhook);
 router.post('/project/grantAdminAccess', granAdminAccess);
+router.post('/project/resendInvitation', resendInvitation);
 
 module.exports = router;
