@@ -115,7 +115,7 @@ app.use(cookieParser());
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 /**
-* Sets response scoped letiables
+* Sets response scoped variables
 *
 * res.locals.user        — current authored user
 * res.locals.userProjects — projects list for current user
