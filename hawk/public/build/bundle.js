@@ -93,7 +93,7 @@ var DOM = function () {
   }
 
   _createClass(DOM, null, [{
-    key: "make",
+    key: 'make',
 
     /**
      * Helper for making Elements with classname and attributes
@@ -127,9 +127,28 @@ var DOM = function () {
     */
 
   }, {
-    key: "replace",
+    key: 'replace',
     value: function replace(nodeToReplace, replaceWith) {
       return nodeToReplace.parentNode.replaceChild(replaceWith, nodeToReplace);
+    }
+  }, {
+    key: 'escapeHTML',
+    value: function escapeHTML(html) {
+      var htmlEscapes = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        '/': '&#x2F;'
+      };
+
+      // Regex containing the keys listed immediately above.
+      var htmlEscaper = /[&<>"'\/]/g;
+
+      return ('' + html).replace(htmlEscaper, function (match) {
+        return htmlEscapes[match];
+      });
     }
   }]);
 
@@ -706,9 +725,10 @@ var eventPopup = function (self) {
    * @type {Number} event.time - time
    */
   function fillHeader(event, projectName) {
-    event.count = event.count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    var escapedMessage = dom.escapeHTML(event.message);
 
-    popup.content.insertAdjacentHTML('afterbegin', '<div class="event">\n      <div class="event__header">\n        <span class="event__project">' + projectName + '</span>\n        <span class="event__type event__type--' + event.tag + '">\n          ' + (event.tag === 'javascript' ? 'JavaScript Error' : event.tag) + '\n        </span>\n      </div>\n      <div class="event__content clearfix">\n        <div class="event__counter">\n          <div class="event__counter-number">\n            <div class="event__counter-number--digit">' + event.count + '</div>\n            times\n          </div>\n          <div class="event__counter-date">\n            <div class="event__placeholder"></div>\n            <div class="event__placeholder"></div>\n          </div>\n        </div>\n        <div class="event__title">\n          ' + event.message + '\n        </div>\n        <div class="event__path">\n          ' + event.errorLocation.full + '\n        </div>\n      </div>\n    </div>');
+    event.count = event.count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    popup.content.insertAdjacentHTML('afterbegin', '<div class="event">\n      <div class="event__header">\n        <span class="event__project">' + projectName + '</span>\n        <span class="event__type event__type--' + event.tag + '">\n          ' + (event.tag === 'javascript' ? 'JavaScript Error' : event.tag) + '\n        </span>\n      </div>\n      <div class="event__content clearfix">\n        <div class="event__counter">\n          <div class="event__counter-number">\n            <div class="event__counter-number--digit">' + event.count + '</div>\n            times\n          </div>\n          <div class="event__counter-date">\n            <div class="event__placeholder"></div>\n            <div class="event__placeholder"></div>\n          </div>\n        </div>\n        <div class="event__title">\n          ' + escapedMessage + '\n        </div>\n        <div class="event__path">\n          ' + event.errorLocation.full + '\n        </div>\n      </div>\n    </div>');
   }
 
   /**

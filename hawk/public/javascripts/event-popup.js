@@ -246,8 +246,9 @@ let eventPopup = (function ( self ) {
    * @type {Number} event.time - time
    */
   function fillHeader(event, projectName) {
-    event.count = event.count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+	  let escapedMessage = dom.escapeHTML(event.message);
 
+    event.count = event.count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     popup.content.insertAdjacentHTML('afterbegin', `<div class="event">
       <div class="event__header">
         <span class="event__project">${projectName}</span>
@@ -267,7 +268,7 @@ let eventPopup = (function ( self ) {
           </div>
         </div>
         <div class="event__title">
-          ${event.message}
+          ${escapedMessage}
         </div>
         <div class="event__path">
           ${event.errorLocation.full}
