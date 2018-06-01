@@ -155,14 +155,12 @@ sourceMap.SourceMapConsumer.with(rawSourceMap, null, consumer => {
 
 
 async function downloadSource(projectId, url, revision) {
-  let source = new JSSource({projectId, url, revision});
+  /**
+   * @type {JSSourceItem}
+   */
+  let source = new JSSource({projectId, url, revision: 21564216222});
 
-  await source.load();
-
-  // console.log('source');
-  // console.log(source);
-
-
+  return await source.load();
 }
 
 const ERR_TYPES = {
@@ -189,6 +187,33 @@ function handleMessage(message) {
     })
     .then(foundProject => {
       return downloadSource(foundProject._id, message.error_location.file, message.error_location.revision);
+    })
+    .then(jsSource => {
+      if (jsSource.sourceMapBody){
+        sourceMap.SourceMapConsumer.with(jsSource.sourceMapBody, null, consumer => {
+          // console.log('consumer', consumer);
+
+          console.log('\n\nOriginal position');
+          console.log(consumer.originalPositionFor({
+            line: message.error_location.line,
+            column: message.error_location.col
+          }));
+
+          /**
+           * @type {{func, file, line, col}[]}
+           */
+          let parsedStack = stack.parse(message);
+
+          console.log('\n\nStack');
+          parsedStack.forEach(item => {
+            console.log(consumer.originalPositionFor({
+              line: parseInt(item.line),
+              column: parseInt(item.col)
+            }));
+          });
+
+        });
+      }
     });
 
   return;
@@ -209,8 +234,8 @@ function handleMessage(message) {
     message       : message.message,
     errorLocation : message.error_location,
     location      : message.location,
-    stack         : stack.parse(message),
     groupHash     : md5(eventGroupPrehashed),
+    stack         : stack.parse(message),
     userAgent     : clientInfo,
     time          : Math.floor(message.time / 1000)
   };

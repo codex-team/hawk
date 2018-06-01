@@ -52,7 +52,7 @@ module.exports = class JSSource {
    * @return {JSSourceItem}
    */
   get data(){
-    let fields = ['projectId', 'url', 'revision', 'sourceBody', 'sourceMapBody'];
+    let fields = ['projectId', 'url', 'revision', 'sourceBody', 'sourceMapBody', 'sourceMapURL'];
     let output = {};
 
     fields.forEach(item => {
@@ -79,12 +79,12 @@ module.exports = class JSSource {
    * @return {Promise<JSSource>}
    */
   async load(){
-    let alreadyDownloaded = await this.isExists();
+    let alreadyDownloaded = [] ;//await this.isExists();
 
     if (alreadyDownloaded.length) {
       this.data = alreadyDownloaded;
       console.log('Source already downloaded: ', this.data.url);
-      return this;
+      return this.data;
     }
 
     try {
@@ -98,28 +98,29 @@ module.exports = class JSSource {
 
       console.log('sourceMappingURL', sourceMappingURL);
 
-      if (sourceMappingURL) {
-        this.data = {
-          sourceMapURL : sourceMappingURL
-        };
-
-        let sourceMap = await this.download(this.sourceMapURL);
-
-        console.log('Source Map Downloaded: ', sourceMap.length);
-
-        if (sourceMap) {
-          this.sourceMapBody = sourceMap;
-        }
-
-        let savingResponse = await this.save();
-
-        if (savingResponse.insertedId) {
-          console.log('Source saved');
-        } else {
-          console.log('Source was not saved');
-        }
+      if (!sourceMappingURL) {
+        return this;
       }
 
+      this.data = {
+        sourceMapURL : sourceMappingURL
+      };
+
+      let sourceMap = await this.download(this.sourceMapURL);
+
+      console.log('Source Map Downloaded: ', sourceMap.length);
+
+      if (sourceMap) {
+        this.sourceMapBody = sourceMap;
+      }
+
+      let savingResponse = await this.save();
+
+      if (savingResponse.insertedId) {
+        console.log('Source saved');
+      } else {
+        console.log('Source was not saved');
+      }
     } catch (error)  {
       logger.error('JS Source downloading error:', error);
     }
@@ -158,6 +159,9 @@ module.exports = class JSSource {
     if (sourceMappingValue){
       let map = sourceMappingValue[1];
 
+      /**
+       * Relative path to map
+       */
       if (map.substring(0,3) !== 'http') {
 
         /**
@@ -168,6 +172,12 @@ module.exports = class JSSource {
          */
         let staticURL = this.url.match(/(https?:\/\/)\S+\//);
         return staticURL[0] + map;
+
+      /**
+       * Absolute path to map
+       */
+      } else {
+        return map;
       }
     } else {
       return null;
