@@ -33,4 +33,27 @@ export default class DOM {
   static replace(nodeToReplace, replaceWith) {
     return nodeToReplace.parentNode.replaceChild(replaceWith, nodeToReplace);
   }
+
+  /**
+   * Escaping html function
+   * @param html
+   * @return {string}
+   */
+  static escapeHTML(html) {
+    let htmlEscapes = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#x27;',
+      '/': '&#x2F;'
+    };
+
+    // Regex containing the keys listed immediately above.
+    let htmlEscaper = /[&<>"'\/]/g;
+
+    return ('' + html).replace(htmlEscaper, function (match) {
+      return htmlEscapes[match];
+    });
+  }
 }

@@ -37,7 +37,8 @@ let eventPopup = (function ( self ) {
     popupLoading: 'traceback-popup--loading',
 
     // events list
-    eventRow: 'garage-list-item'
+    eventRow: 'garage-list-item',
+    unreadRow: 'garage-list-item--unread'
   };
 
   /**
@@ -246,13 +247,18 @@ let eventPopup = (function ( self ) {
    * @type {Number} event.time - time
    */
   function fillHeader(event, projectName) {
-    event.count = event.count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    let escaped = {
+      message : dom.escapeHTML(event.message),
+      errorLocation : dom.escapeHTML(event.errorLocation.full),
+      tag : dom.escapeHTML(event.tag)
+    };
 
+    event.count = event.count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     popup.content.insertAdjacentHTML('afterbegin', `<div class="event">
       <div class="event__header">
         <span class="event__project">${projectName}</span>
-        <span class="event__type event__type--${event.tag}">
-          ${event.tag === 'javascript' ? 'JavaScript Error' : event.tag}
+        <span class="event__type event__type--${escaped.tag}">
+          ${escaped.tag === 'javascript' ? 'JavaScript Error' : escaped.tag}
         </span>
       </div>
       <div class="event__content clearfix">
@@ -267,10 +273,10 @@ let eventPopup = (function ( self ) {
           </div>
         </div>
         <div class="event__title">
-          ${event.message}
+           ${escaped.message}
         </div>
         <div class="event__path">
-          ${event.errorLocation.full}
+           ${escaped.errorLocation}
         </div>
       </div>
     </div>`);
@@ -324,7 +330,7 @@ let eventPopup = (function ( self ) {
 
   /**
    * Event row click handler
-   * @param  {event} clickEvent - onclick event
+   * @param {event} clickEvent - onclick event
    */
   function eventRowClicked(clickEvent) {
     let row = this;
@@ -335,6 +341,8 @@ let eventPopup = (function ( self ) {
     let isMouseWheelClicked = clickEvent.which && ( clickEvent.which === 2 || clickEvent.button === 4 );
 
     if (clickEvent.ctrlKey || clickEvent.metaKey || isMouseWheelClicked) {
+      /** Unmark row */
+      row.classList.remove(CSS.unreadRow);
       return;
     }
 
@@ -359,6 +367,9 @@ let eventPopup = (function ( self ) {
      * Require other information
      */
     sendPopupRequest_(event, eventUrl);
+
+    /** Unmark row */
+    row.classList.remove(CSS.unreadRow);
 
     /**
      * Disable link segue
