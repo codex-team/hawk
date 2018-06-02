@@ -2,17 +2,17 @@
 
     {% set isEmpty = true %}
 
-    {% if event.reques.ip %}
-        {% set isEmpty = false %}
-        from
-        <a href="http://{{ event.request.ip|escape }}" target="_blank">
-            {{ event.request.ip|escape }}
-        </a>
-    {% endif %}
-    {% if event.request.referrer %}
-        {% set isEmpty = false %}
-        referred by <a href="{{ event.request.referrer|escape }}" target="_blank">{{ event.request.referrer|escape }}</a>
-    {% endif %}
+    {#{% if event.request.ip %}#}
+        {#from#}
+        {#<a href="http://{{ event.request.ip|escape }}" target="_blank">#}
+            {#{{ event.request.ip|escape }}#}
+        {#</a>#}
+    {#{% endif %}#}
+    {##}
+    {#{% if event.request.referrer %}#}
+        {#{% set isEmpty = false %}#}
+        {#referred by <a href="{{ event.request.referrer|escape }}" target="_blank">{{ event.request.referrer|escape }}</a>#}
+    {#{% endif %}#}
 
     {% if event.params.get and event.params.get|length not 0 %}
         {% set isEmpty = false %}
@@ -47,6 +47,35 @@
     {% if isEmpty %}
         <div class="no-data">
             No Request fields or Query params
+        </div>
+    {% endif %}
+
+
+    {% if event.params.cookies and event.params.cookies|length not 0 %}
+        <div class="request-params">
+            <div class="request-params__header">
+                COOKIES
+            </div>
+            {% for field, value in event.params.cookies %}
+                <div class="request-params__item">
+                    <span class="request-params__field">{{ field|escape }}</span>
+                    <span class="request-params__value">{{ value|escape }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if event.params.headers and event.params.headers|length not 0 %}
+        <div class="request-params">
+            <div class="request-params__header">
+                HEADERS
+            </div>
+            {% for field, value in event.params.headers %}
+                <div class="request-params__item">
+                    <span class="request-params__field">{{ field|escape }}</span>
+                    <span class="request-params__value">{{ value|escape }}</span>
+                </div>
+            {% endfor %}
         </div>
     {% endif %}
 

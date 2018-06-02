@@ -131,6 +131,24 @@
         color: var(--lightGrayText);
     }
 
+
+
+    &__source-code {
+        margin: 0 5px 25px;
+    }
+
+    &__code-line {
+        display: block;
+        padding: 0 10px;
+
+        &--highlighted {
+            background-color: rgba(181, 103, 215, 0.13);
+        }
+
+        & pre {
+              margin: 0;
+        }
+    }
 }
 
 /**

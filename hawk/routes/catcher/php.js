@@ -31,7 +31,8 @@ let formatDebugBacktrace = function (debugBacktrace) {
   for (let i = debugBacktrace.length - 1; i >= 0; i--) {
     result[i] = {
       'file': debugBacktrace[i].file,
-      'line': debugBacktrace[i].line
+      'line': debugBacktrace[i].line,
+      'trace': debugBacktrace[i].trace
     };
 
     let args = debugBacktrace[i].args;
@@ -95,7 +96,9 @@ let getServerErrors = function (req, res) {
     },
     params: {
       post: request.POST || [],
-      get : request.GET || []
+      get : request.GET || [],
+      headers : request.HEADERS || [],
+      cookies : request.COOKIES || []
     },
     location: {
       url: 'http' + (server.HTTPS ? 's' : '') + server.SERVER_NAME + server.REQUEST_URI + '?' + server.QUERY_STRING,
