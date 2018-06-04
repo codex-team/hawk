@@ -37,7 +37,8 @@ let eventPopup = (function ( self ) {
     popupLoading: 'traceback-popup--loading',
 
     // events list
-    eventRow: 'garage-list-item'
+    eventRow: 'garage-list-item',
+    unreadRow: 'garage-list-item--unread'
   };
 
   /**
@@ -247,12 +248,11 @@ let eventPopup = (function ( self ) {
    */
   function fillHeader(event, projectName) {
     event.count = event.count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-
     popup.content.insertAdjacentHTML('afterbegin', `<div class="event">
       <div class="event__header">
         <span class="event__project">${projectName}</span>
-        <span class="event__type event__type--${event.tag}">
-          ${event.tag === 'javascript' ? 'JavaScript Error' : event.tag}
+        <span class="event__type event__type--${dom.escapeHTML(event.tag)}">
+          ${event.tag === 'javascript' ? 'JavaScript Error' : dom.escapeHTML(event.tag)}
         </span>
       </div>
       <div class="event__content clearfix">
@@ -267,13 +267,13 @@ let eventPopup = (function ( self ) {
           </div>
         </div>
         <div class="event__title">
-          ${event.message}
+           ${dom.escapeHTML(event.message)}
         </div>
         <div class="event__path">
-          ${event.errorLocation.file}
+          ${dom.escapeHTML(event.errorLocation.file)}
           <span class="event__delimiter"></span>
-          ${event.errorLocation.line}:${event.errorLocation.col}
-          ${event.errorLocation.func ? '<span class="event__delimiter"></span>' + event.errorLocation.func : ''}
+          ${dom.escapeHTML(event.errorLocation.line)}:${dom.escapeHTML(event.errorLocation.col)}
+          ${event.errorLocation.func ? '<span class="event__delimiter"></span>' + dom.escapeHTML(event.errorLocation.func) : ''}
         </div>
       </div>
     </div>`);
@@ -327,7 +327,7 @@ let eventPopup = (function ( self ) {
 
   /**
    * Event row click handler
-   * @param  {event} clickEvent - onclick event
+   * @param {event} clickEvent - onclick event
    */
   function eventRowClicked(clickEvent) {
     let row = this;
@@ -338,6 +338,8 @@ let eventPopup = (function ( self ) {
     let isMouseWheelClicked = clickEvent.which && ( clickEvent.which === 2 || clickEvent.button === 4 );
 
     if (clickEvent.ctrlKey || clickEvent.metaKey || isMouseWheelClicked) {
+      /** Unmark row */
+      row.classList.remove(CSS.unreadRow);
       return;
     }
 
@@ -362,6 +364,9 @@ let eventPopup = (function ( self ) {
      * Require other information
      */
     sendPopupRequest_(event, eventUrl);
+
+    /** Unmark row */
+    row.classList.remove(CSS.unreadRow);
 
     /**
      * Disable link segue

@@ -52,7 +52,7 @@ module.exports = class JSSource {
    * @return {JSSourceItem}
    */
   get data(){
-    let fields = ['projectId', 'url', 'revision', 'sourceBody', 'sourceMapBody', 'sourceMapURL'];
+    let fields = ['projectId', 'url', 'revision', 'sourceMapBody', 'sourceMapURL'];
     let output = {};
 
     fields.forEach(item => {
@@ -100,14 +100,9 @@ module.exports = class JSSource {
     try {
       let source = await this.download(this.url);
 
-      /**
-       * For now, we don't need to save source body
-       * It may be need for showing lines
-       * @type {string}
-       */
-      // this.data = {
-      //   sourceBody: source
-      // };
+      this.data = {
+        sourceBody: source
+      };
 
       let sourceMappingURL = this.getSourceMapURL();
 

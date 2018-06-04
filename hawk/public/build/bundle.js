@@ -93,7 +93,7 @@ var DOM = function () {
   }
 
   _createClass(DOM, null, [{
-    key: "make",
+    key: 'make',
 
     /**
      * Helper for making Elements with classname and attributes
@@ -127,9 +127,35 @@ var DOM = function () {
     */
 
   }, {
-    key: "replace",
+    key: 'replace',
     value: function replace(nodeToReplace, replaceWith) {
       return nodeToReplace.parentNode.replaceChild(replaceWith, nodeToReplace);
+    }
+
+    /**
+     * Escaping html function
+     * @param html
+     * @return {string}
+     */
+
+  }, {
+    key: 'escapeHTML',
+    value: function escapeHTML(html) {
+      var htmlEscapes = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        '/': '&#x2F;'
+      };
+
+      // Regex containing the keys listed immediately above.
+      var htmlEscaper = /[&<>"'\/]/g;
+
+      return ('' + html).replace(htmlEscaper, function (match) {
+        return htmlEscapes[match];
+      });
     }
   }]);
 
@@ -494,7 +520,8 @@ var eventPopup = function (self) {
     popupLoading: 'traceback-popup--loading',
 
     // events list
-    eventRow: 'garage-list-item'
+    eventRow: 'garage-list-item',
+    unreadRow: 'garage-list-item--unread'
   };
 
   /**
@@ -707,8 +734,7 @@ var eventPopup = function (self) {
    */
   function fillHeader(event, projectName) {
     event.count = event.count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-
-    popup.content.insertAdjacentHTML('afterbegin', '<div class="event">\n      <div class="event__header">\n        <span class="event__project">' + projectName + '</span>\n        <span class="event__type event__type--' + event.tag + '">\n          ' + (event.tag === 'javascript' ? 'JavaScript Error' : event.tag) + '\n        </span>\n      </div>\n      <div class="event__content clearfix">\n        <div class="event__counter">\n          <div class="event__counter-number">\n            <div class="event__counter-number--digit">' + event.count + '</div>\n            times\n          </div>\n          <div class="event__counter-date">\n            <div class="event__placeholder"></div>\n            <div class="event__placeholder"></div>\n          </div>\n        </div>\n        <div class="event__title">\n          ' + event.message + '\n        </div>\n        <div class="event__path">\n          ' + event.errorLocation.file + '\n          <span class="event__delimiter"></span>\n          ' + event.errorLocation.line + ':' + event.errorLocation.col + '\n          ' + (event.errorLocation.func ? '<span class="event__delimiter"></span>' + event.errorLocation.func : '') + '\n        </div>\n      </div>\n    </div>');
+    popup.content.insertAdjacentHTML('afterbegin', '<div class="event">\n      <div class="event__header">\n        <span class="event__project">' + projectName + '</span>\n        <span class="event__type event__type--' + dom.escapeHTML(event.tag) + '">\n          ' + (event.tag === 'javascript' ? 'JavaScript Error' : dom.escapeHTML(event.tag)) + '\n        </span>\n      </div>\n      <div class="event__content clearfix">\n        <div class="event__counter">\n          <div class="event__counter-number">\n            <div class="event__counter-number--digit">' + event.count + '</div>\n            times\n          </div>\n          <div class="event__counter-date">\n            <div class="event__placeholder"></div>\n            <div class="event__placeholder"></div>\n          </div>\n        </div>\n        <div class="event__title">\n           ' + dom.escapeHTML(event.message) + '\n        </div>\n        <div class="event__path">\n          ' + dom.escapeHTML(event.errorLocation.file) + '\n          <span class="event__delimiter"></span>\n          ' + dom.escapeHTML(event.errorLocation.line) + ':' + dom.escapeHTML(event.errorLocation.col) + '\n          ' + (event.errorLocation.func ? '<span class="event__delimiter"></span>' + dom.escapeHTML(event.errorLocation.func) : '') + '\n        </div>\n      </div>\n    </div>');
   }
 
   /**
@@ -759,7 +785,7 @@ var eventPopup = function (self) {
 
   /**
    * Event row click handler
-   * @param  {event} clickEvent - onclick event
+   * @param {event} clickEvent - onclick event
    */
   function eventRowClicked(clickEvent) {
     var row = this;
@@ -770,6 +796,8 @@ var eventPopup = function (self) {
     var isMouseWheelClicked = clickEvent.which && (clickEvent.which === 2 || clickEvent.button === 4);
 
     if (clickEvent.ctrlKey || clickEvent.metaKey || isMouseWheelClicked) {
+      /** Unmark row */
+      row.classList.remove(CSS.unreadRow);
       return;
     }
 
@@ -793,6 +821,9 @@ var eventPopup = function (self) {
      * Require other information
      */
     sendPopupRequest_(event, eventUrl);
+
+    /** Unmark row */
+    row.classList.remove(CSS.unreadRow);
 
     /**
      * Disable link segue

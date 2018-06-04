@@ -52,7 +52,7 @@ module.exports = function () {
       'email': userEmail,
       'password': passwordHashed,
       'notifies': {
-        'email': true,
+        'email': false,
         'tg': false,
         'slack': false
       }
