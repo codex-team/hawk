@@ -165,7 +165,7 @@ module.exports = class JSSource {
    * @return {string|null} - full URL
    */
   getSourceMapURL(){
-    if (this.sourceBody.indexOf('//# sourceMappingURL') === -1) {
+    if (!this.sourceBody || this.sourceBody.indexOf('//# sourceMappingURL') === -1) {
       return null;
     }
 

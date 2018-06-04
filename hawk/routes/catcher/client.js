@@ -286,6 +286,7 @@ function handleMessage(message) {
       /**
        * Save event
        */
+      // console.log('Processed event to write in DB', event);
       await events.add(foundProject._id, event);
 
       /**
