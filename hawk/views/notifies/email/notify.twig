@@ -22,7 +22,14 @@
     <tr>
       <td style="padding-top: 15px;">
         <font color="#717171" style="font-size:16px;">
-            <a href="javascript: void(0);" style="color: #717171; text-decoration: none;">{{ event.errorLocation.full|escape }}</a>
+            <a href="javascript: void(0);" style="color: #717171; text-decoration: none;">
+                {{ event.errorLocation.file|escape }} »
+                {{ event.errorLocation.line|escape }}
+                {{ event.errorLocation.col|escape }}
+                {% if event.errorLocation.func is not empty %}
+                  » <i>{{ event.errorLocation.func }}</i>
+                {% endif %}
+            </a>
         </font>
       </td>
     </tr>

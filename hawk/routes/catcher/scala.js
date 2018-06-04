@@ -14,7 +14,6 @@ const BaseCatcher = require('./base-catcher');
  * @type {object}
  * @property {string} file - file with error
  * @property {string} line - line with error
- * @property {string} full - full description of error line in error stack
  *
  * @param {string} req.body.token - application token
  * @param {string} req.body.message - error message

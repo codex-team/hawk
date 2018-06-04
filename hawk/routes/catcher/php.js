@@ -91,7 +91,6 @@ let getServerErrors = function (req, res) {
     errorLocation: {
       file: request.error_file || '',
       line: request.error_line,
-      full: request.error_file + ' -> ' + request.error_line
     },
     params: {
       post: request.POST || [],

@@ -11,7 +11,6 @@ let router = express.Router();
  * - tag           -- one of supported tags (javascript, fatal, warnings, notice)
  * - message       -- error message
  * - errorLocation -- object with file, line (maybe column) where error is located
- *    - full       -- full path to error (for example 'index.js->10:23')
  * - groupHash     -- hash to group same events
  * - stack         -- error backtrace as string
  * - time          -- fall timestamp

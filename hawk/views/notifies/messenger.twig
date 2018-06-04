@@ -1,13 +1,12 @@
 {# 🚨<b>{{ project.name }}</b>: <code>{{ event.message }}</code>
 
-{{ event.errorLocation.full }}
 {% if times > 1 %}
 
     <b>{{ times }} times</b>
 {% endif %} #}
 {{ event.message|escape }}
 
-<code>{{ event.errorLocation.full|escape }}</code>
+<code>{{ event.errorLocation.file|escape }} -> {{ event.errorLocation.line|escape }}:{{ event.errorLocation.file|col }}</code>
 {% if times > 1 %}
 
 <b>{{ times }} times</b>

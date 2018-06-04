@@ -240,7 +240,7 @@ let eventPopup = (function ( self ) {
    * @param {Object} projectName - project name
    * @param {Object} event - traceback header
    * @type {Number} event.count - aggregated event's count
-   * @type {Object} event.errorLocation - event's location
+   * @type {{file, line, col, func, revision}} event.errorLocation - event's location
    * @type {String} event.message - event's message
    * @type {String} event.tag - event's type
    * @type {Number} event.time - time
@@ -270,7 +270,10 @@ let eventPopup = (function ( self ) {
           ${event.message}
         </div>
         <div class="event__path">
-          ${event.errorLocation.full}
+          ${event.errorLocation.file}
+          <span class="event__delimiter"></span>
+          ${event.errorLocation.line}:${event.errorLocation.col}
+          ${event.errorLocation.func ? '<span class="event__delimiter"></span>' + event.errorLocation.func : ''}
         </div>
       </div>
     </div>`);

@@ -100,9 +100,14 @@ module.exports = class JSSource {
     try {
       let source = await this.download(this.url);
 
-      this.data = {
-        sourceBody: source
-      };
+      /**
+       * For now, we don't need to save source body
+       * It may be need for showing lines
+       * @type {string}
+       */
+      // this.data = {
+      //   sourceBody: source
+      // };
 
       let sourceMappingURL = this.getSourceMapURL();
 

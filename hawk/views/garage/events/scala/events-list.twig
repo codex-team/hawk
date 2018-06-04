@@ -8,7 +8,9 @@
                 {% if item.comment %}
                     {{ item.comment|escape }}
                 {% else %}
-                    {{ item.stack[0].full|escape }}
+                    {{ item.stack[0].file|escape }} ->
+                    {{ item.stack[0].line|escape }}:
+                    {{ item.stack[0].col|escape }}
                 {% endif %}
              </div>
             <div class="repeations__stack">

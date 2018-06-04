@@ -93,6 +93,16 @@
         margin: 10px 0 20px;
     }
 
+    &__delimiter {
+        width: 4px;
+        height: 4px;
+        display: inline-block;
+        vertical-align: middle;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        margin: 0 3px;
+    }
+
     &-badge {
         &:not(:first-of-type) {
             margin-left: 20px;
@@ -105,7 +115,7 @@
  */
 .stack-table {
     border-radius: 3px;
-    font-size: 13.6px;
+    font-size: 14.2px;
     line-height: 1.6em;
     color: var(--grayText);
 
@@ -123,6 +133,11 @@
     &__file {
         flex-grow: 1;
         padding-right: 20px;
+        letter-spacing: 0.15px;
+
+        &-function {
+            color: #474f8e;
+        }
     }
 
     &__location {

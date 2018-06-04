@@ -15,7 +15,15 @@
             {{ event.message|escape }}
         </div>
         <div class="event__path">
-            {{ event.errorLocation.full|escape }}
+            {{ event.errorLocation.file|escape }}
+            <span class="event__delimiter"></span>
+            {{ event.errorLocation.line|escape }}:{{ event.errorLocation.col|escape }}
+            {% if event.errorLocation.func is not empty %}
+                <span class="event__delimiter"></span>
+                <span class="event__path-function">
+                    {{ event.errorLocation.func }}
+                </span>
+            {% endif %}
         </div>
         <div>
             <span class="event-badge event-badge--{{ event.userAgent.device.type|escape }}">

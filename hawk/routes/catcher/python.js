@@ -18,7 +18,6 @@ let md5 = function (input) {
  * @param req.body.message
  * @param req.body.errorLocation.file
  * @param req.body.errorLocation.line
- * @param req.body.errorLocation.full
  * @param req.body.stack
  * @param req.body.time
  */

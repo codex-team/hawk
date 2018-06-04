@@ -700,7 +700,7 @@ var eventPopup = function (self) {
    * @param {Object} projectName - project name
    * @param {Object} event - traceback header
    * @type {Number} event.count - aggregated event's count
-   * @type {Object} event.errorLocation - event's location
+   * @type {{file, line, col, func, revision}} event.errorLocation - event's location
    * @type {String} event.message - event's message
    * @type {String} event.tag - event's type
    * @type {Number} event.time - time
@@ -708,7 +708,7 @@ var eventPopup = function (self) {
   function fillHeader(event, projectName) {
     event.count = event.count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
-    popup.content.insertAdjacentHTML('afterbegin', '<div class="event">\n      <div class="event__header">\n        <span class="event__project">' + projectName + '</span>\n        <span class="event__type event__type--' + event.tag + '">\n          ' + (event.tag === 'javascript' ? 'JavaScript Error' : event.tag) + '\n        </span>\n      </div>\n      <div class="event__content clearfix">\n        <div class="event__counter">\n          <div class="event__counter-number">\n            <div class="event__counter-number--digit">' + event.count + '</div>\n            times\n          </div>\n          <div class="event__counter-date">\n            <div class="event__placeholder"></div>\n            <div class="event__placeholder"></div>\n          </div>\n        </div>\n        <div class="event__title">\n          ' + event.message + '\n        </div>\n        <div class="event__path">\n          ' + event.errorLocation.full + '\n        </div>\n      </div>\n    </div>');
+    popup.content.insertAdjacentHTML('afterbegin', '<div class="event">\n      <div class="event__header">\n        <span class="event__project">' + projectName + '</span>\n        <span class="event__type event__type--' + event.tag + '">\n          ' + (event.tag === 'javascript' ? 'JavaScript Error' : event.tag) + '\n        </span>\n      </div>\n      <div class="event__content clearfix">\n        <div class="event__counter">\n          <div class="event__counter-number">\n            <div class="event__counter-number--digit">' + event.count + '</div>\n            times\n          </div>\n          <div class="event__counter-date">\n            <div class="event__placeholder"></div>\n            <div class="event__placeholder"></div>\n          </div>\n        </div>\n        <div class="event__title">\n          ' + event.message + '\n        </div>\n        <div class="event__path">\n          ' + event.errorLocation.file + '\n          <span class="event__delimiter"></span>\n          ' + event.errorLocation.line + ':' + event.errorLocation.col + '\n          ' + (event.errorLocation.func ? '<span class="event__delimiter"></span>' + event.errorLocation.func : '') + '\n        </div>\n      </div>\n    </div>');
   }
 
   /**

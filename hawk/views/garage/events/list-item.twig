@@ -13,7 +13,8 @@
             {{ event.message|escape }}
         </h3>
         <div class="garage-list-item__caption">
-            {{ event.errorLocation.full|escape }}
+            {{ event.errorLocation.file|escape }} ->
+            {{ event.errorLocation.line|escape }}:{{ event.errorLocation.col|escape }}
         </div>
     </div>
     <div class="garage-list-item__right">

@@ -25,7 +25,6 @@ let getNodeJsErrors = function (req, res) {
         line: stackParsed[0].line,
         file: stackParsed[0].file,
         col: stackParsed[0].col,
-        full: BaseCatcher.getFullDescription(stackParsed[0])
       };
 
   let event = {
