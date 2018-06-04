@@ -62,13 +62,23 @@ module.exports = class JSSource {
     return output;
   }
 
-  async isExists(){
-    return await mongo.find(this.collectionName, {
+  /**
+   * Find downloaded source info
+   * @return {Promise<JSSourceItem|undefined>}
+   */
+  async find(){
+    let foundItems = await mongo.find(this.collectionName, {
       url: this.url,
       revision: this.revision,
     }, null, 1);
+
+    return foundItems.pop();
   }
 
+  /**
+   * Saves JS source information to the DB
+   * @return {Promise<*>}
+   */
   async save(){
     return mongo.insertOne(this.collectionName, this.data);
   }
@@ -79,11 +89,11 @@ module.exports = class JSSource {
    * @return {Promise<JSSource>}
    */
   async load(){
-    let alreadyDownloaded = [] ;//await this.isExists();
+    let alreadyDownloaded = await this.find();
 
-    if (alreadyDownloaded.length) {
+    if (alreadyDownloaded) {
       this.data = alreadyDownloaded;
-      console.log('Source already downloaded: ', this.data.url);
+      logger.log('Source already was downloaded: %s ', this.data.url);
       return this.data;
     }
 
@@ -96,10 +106,10 @@ module.exports = class JSSource {
 
       let sourceMappingURL = this.getSourceMapURL();
 
-      console.log('sourceMappingURL', sourceMappingURL);
+      logger.log('Source map URL found: %s', sourceMappingURL);
 
       if (!sourceMappingURL) {
-        return this;
+        return this.data;
       }
 
       this.data = {
@@ -108,7 +118,7 @@ module.exports = class JSSource {
 
       let sourceMap = await this.download(this.sourceMapURL);
 
-      console.log('Source Map Downloaded: ', sourceMap.length);
+      logger.log('Source Map Downloaded: %s', Math.round(sourceMap.length / 1000) + 'k chars');
 
       if (sourceMap) {
         this.sourceMapBody = sourceMap;
@@ -117,15 +127,15 @@ module.exports = class JSSource {
       let savingResponse = await this.save();
 
       if (savingResponse.insertedId) {
-        console.log('Source saved');
+        logger.log('Source saved');
       } else {
-        console.log('Source was not saved');
+        logger.log('Source was not saved');
       }
     } catch (error)  {
       logger.error('JS Source downloading error:', error);
     }
 
-    return this;
+    return this.data;
   }
 
   /**

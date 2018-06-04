@@ -4,7 +4,7 @@ module.exports = function () {
 
   const REGEXPS = {
     /* FF example: throwError@http://localhost:63342/hawk.client/index.html:10:28 */
-    FF_SAFARI_OPERA_11: /(.*)@(\S+)\:(\d+):(\d+)/,
+    FF_SAFARI_OPERA_11: /(.*)@?(\S+)\:(\d+):(\d+)/,
 
     /* Chrome example: at throwError (index.html?_ijt=pnsmb0fcsfavevcnj0g1a9sq:10) */
     CHROME_IE: /^\s*at (.*) \((\S+):(\d+):(\d+)\)/m,
@@ -39,8 +39,8 @@ module.exports = function () {
       return {
         func: matches[1],
         file: matches[2],
-        line: matches[3],
-        col: matches[4]
+        line: parseInt(matches[3], 10),
+        col: parseInt(matches[4], 10)
       };
     });
   };
@@ -63,8 +63,8 @@ module.exports = function () {
       return {
         func: matches[1],
         file: matches[2],
-        line: matches[3],
-        col: matches[4]
+        line: parseInt(matches[3]),
+        col: parseInt(matches[4])
       };
     });
   };
@@ -80,7 +80,7 @@ module.exports = function () {
 
       return {
         file: matches[2],
-        line: matches[1]
+        line: parseInt(matches[1])
       };
     });
   };
@@ -97,7 +97,7 @@ module.exports = function () {
       return {
         func: matches[3] || undefined,
         file: matches[2],
-        line: matches[1]
+        line: parseInt(matches[1])
       };
     });
   };
