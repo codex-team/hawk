@@ -41,12 +41,12 @@
     {% if event.context and event.context|length not 0 %}
         <div class="request-params">
             <div class="request-params__header">
-                Context
+                CONTEXT
             </div>
             {% for field, value in event.context %}
                 <div class="request-params__item">
                     <span class="request-params__field">{{ field|escape }}</span>
-                    <span class="request-params__value">{{ value|escape }}</span>
+                    <span class="request-params__value">{{ value|json_encode() }}</span>
                 </div>
             {% endfor %}
         </div>
@@ -55,7 +55,7 @@
     {% if event.params.cookies and event.params.cookies|length not 0 %}
         <div class="request-params">
             <div class="request-params__header">
-                Cookies
+                COOKIES
             </div>
             {% for field, value in event.params.cookies %}
                 <div class="request-params__item">
@@ -69,7 +69,7 @@
     {% if event.params.headers and event.params.headers|length not 0 %}
         <div class="request-params">
             <div class="request-params__header">
-                Headers
+                HEADERS
             </div>
             {% for field, value in event.params.headers %}
                 <div class="request-params__item">

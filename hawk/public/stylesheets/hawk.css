@@ -26,6 +26,8 @@
 @import url('garage/sites-added.css');
 @import url('garage/loader.css');
 @import url('garage/project.css');
+@import url('garage/stack-table.css');
+@import url('garage/source-code.css');
 
 /**
  * Notifier

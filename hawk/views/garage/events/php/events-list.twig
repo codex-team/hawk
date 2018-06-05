@@ -32,10 +32,10 @@
             </div>
         </div>
         <div class="event-info hide" data-event="{{ item._id }}">
+            <h4>Backtrace</h4>
+            {% include 'garage/events/php/stack.twig' with {event: item} %}
             <h4>Request</h4>
             {% include 'garage/events/php/request.twig' with {event: item} %}
-            <h4>Stack</h4>
-            {% include 'garage/events/php/stack.twig' with {event: item} %}
         </div>
     </div>
 {% endfor %}

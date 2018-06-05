@@ -1,17 +1,20 @@
 <div class="stack-table">
     {% for item in event.stack %}
-        <div class="stack-table__row">
-            <div class="stack-table__file">{{ item.func|escape }} at {{ item.file|escape }}</div>
-            <div class="stack-table__location">line {{ item.line|number_format|escape }}</div>
-        </div>
-
-        {% if item.trace %}
-            <div class="stack-table__source-code">
-                {% for code in item.trace %}
-                    {% set isErrorLine = code.line == item.line %}
-                    <span class="stack-table__code-line {% if isErrorLine %}stack-table__code-line--highlighted{% endif %}"><pre>{{ code.line }}: {{ code.content }}</pre></span>
-                {% endfor %}
+        <div class="stack-table__row-wrap {{ loop.index == 1 ? 'stack-table__row-wrap--expanded' }}">
+            <div class="stack-table__row {{ item.trace is not empty ? 'stack-table__row--expandable' }}" onclick='this.parentNode.classList.toggle("stack-table__row-wrap--expanded")'>
+                <div class="stack-table__file">{{ item.file|escape }}</div>
+                <div class="stack-table__location">line {{ item.line|number_format|escape }}</div>
+                <div class="stack-table__expander"></div>
             </div>
-        {% endif %}
+
+            {% if item.trace %}
+                <div class="source-code" data-module-required="codeStyling">
+                    {% for code in item.trace %}
+                        {% set isErrorLine = code.line == item.line %}
+                        <pre class="source-code__line {% if isErrorLine %}source-code__line--highlighted{% endif %}"><span class="source-code__linenum">{{ code.line }}</span> {{ code.content }}</pre>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
     {% endfor %}
 </div>
