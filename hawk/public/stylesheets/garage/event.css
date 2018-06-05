@@ -101,39 +101,6 @@
 }
 
 /**
- * Stack table
- */
-.stack-table {
-    border-radius: 3px;
-    font-size: 13.6px;
-    line-height: 1.6em;
-    color: var(--grayText);
-
-    &__row {
-        display: flex;
-        flex-flow: row nowrap;
-        justify-content: flex-start;
-        align-items: center;
-        padding: 8px 15px;
-        background: var(--lightGrayBg);
-        margin-bottom: 4px;
-        border-right: 3px;
-    }
-
-    &__file {
-        flex-grow: 1;
-        padding-right: 20px;
-    }
-
-    &__location {
-        margin-left: auto;
-        white-space: nowrap;
-        color: var(--lightGrayText);
-    }
-
-}
-
-/**
  * Repeations list
  */
 .repeations {
@@ -335,12 +302,12 @@
         border: 1px solid var(--lightGrayLine);
         border-radius: 3px;
         margin: 20px 0;
-        padding: 11px 17px;
+        padding: 15px 17px;
 
 
         &__header {
-            margin-bottom: 1px;
-            font-size: 12px;
+            margin-bottom: 10px;
+            font-size: 14px;
             font-weight: 700;
             letter-spacing: 0.6px;
         }
@@ -349,8 +316,8 @@
             display: flex;
             flex-flow: row nowrap;
             justify-content: flex-start;
-            align-items: center;
-            padding: 6px 0;
+            align-items: flex-start;
+            padding: 7px 0;
 
             &:last-child {
                 padding-bottom: 0;
@@ -359,17 +326,20 @@
         }
 
         &__field {
-            width: 150px;
+            width: 250px;
             min-width: 150px;
-            color: var(--grayText);
+            //color: var(--grayText);
+            font-weight: 600;
+            vertical-align: top;
         }
 
         &__value {
             flex-grow: 1;
-            white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis;
             color: var(--grayText);
+            max-width: calc(100% - 250px);
+            box-sizing: border-box;
+            line-height: 1.6em;
         }
 
     }

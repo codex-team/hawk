@@ -1,0 +1,38 @@
+.source-code {
+    border: 5px solid var(--lightGrayBg);
+    box-sizing: border-box;
+    border-radius: 2px;
+    overflow-x: auto;
+
+    &__line {
+        display: block;
+        margin: 0;
+        padding: 1px 0;
+        font-family: var(--font-monospace);
+        font-size: 12.4px;
+        white-space: pre;
+        word-wrap: normal;
+
+        &--highlighted {
+            background-color: rgba(144, 94, 215, 0.09);
+        }
+
+        &num {
+            width: 30px;
+            display: inline-block;
+            padding: 0 10px;
+            color: color(var(--grayText) alpha(50%));
+            font-size: 11px;
+            vertical-align: bottom;
+        }
+
+
+        & pre {
+            margin: 0;
+        }
+    }
+}
+
+.hljs {
+    padding: 0 !important;
+}

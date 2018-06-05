@@ -64,7 +64,7 @@ var hawkso =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 16);
+/******/ 	return __webpack_require__(__webpack_require__.s = 17);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -155,6 +155,73 @@ var DOM = function () {
 
       return ('' + html).replace(htmlEscaper, function (match) {
         return htmlEscapes[match];
+      });
+    }
+
+    /**
+     * Loads static resourse: CSS or JS
+     * @param {string} type  - CSS|JS
+     * @param {string} path  - resource path
+     * @param {string} inctanceName - unique name of resource
+     * @return Promise
+     */
+
+  }, {
+    key: 'loadResource',
+    value: function loadResource(type, path, instanceName) {
+      /**
+       * Imported resource ID prefix
+       * @type {String}
+       */
+      var resourcePrefix = 'cdx-resourse';
+
+      return new Promise(function (resolve, reject) {
+        if (!type || !['JS', 'CSS'].includes(type)) {
+          reject('Unexpected resource type passed. \xABCSS\xBB or \xABJS\xBB expected, \xAB' + type + '\xBB passed');
+        }
+
+        var node = void 0;
+
+        /** Script is already loaded */
+        if (!instanceName) {
+          reject('Instance name is missed');
+        } else if (document.getElementById(resourcePrefix + '-' + type.toLowerCase() + '-' + instanceName)) {
+          resolve(path);
+        }
+
+        if (type === 'JS') {
+          node = document.createElement('script');
+          node.async = true;
+          node.defer = true;
+          node.charset = 'utf-8';
+        } else {
+          node = document.createElement('link');
+          node.rel = 'stylesheet';
+        }
+
+        node.id = resourcePrefix + '-' + type.toLowerCase() + '-' + instanceName;
+
+        var timerLabel = 'Resource loading ' + type + ' ' + instanceName;
+
+        console.time(timerLabel);
+
+        node.onload = function () {
+          console.timeEnd(timerLabel);
+          resolve(path);
+        };
+
+        node.onerror = function () {
+          console.timeEnd(timerLabel);
+          reject(path);
+        };
+
+        if (type === 'JS') {
+          node.src = path;
+        } else {
+          node.href = path;
+        }
+
+        document.head.appendChild(node);
       });
     }
   }]);
@@ -365,6 +432,77 @@ module.exports = function () {
 
 
 /**
+ * Code Styling module
+ */
+module.exports = function codeStyling() {
+  'use strict';
+
+  /**
+   * DOM manipulations helper
+   */
+
+  var $ = __webpack_require__(0).default;
+
+  /**
+   * Loading state
+   * @type {Promise|null}
+   */
+  var resourcesLoading = null;
+
+  /**
+   * Extrnal library for code styling
+   * @link https://highlightjs.org
+   * @type {Object}
+   */
+  var library = {
+    js: '//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js',
+    css: '//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github-gist.min.css'
+  };
+
+  /**
+   * Loads styling library
+   */
+  var prepare = function prepare() {
+    return Promise.all([$.loadResource('JS', library.js, 'highlight'), $.loadResource('CSS', library.css, 'highlight')]).catch(function (err) {
+      return console.warn('Cannot load code styling module: ', err);
+    }).then(function () {
+      return console.log('Code Styling is ready');
+    });
+  };
+
+  /**
+   * Finds code blocks and fires highlighting
+   */
+  var init = function init() {
+    var codeBlock = this;
+
+    if (!resourcesLoading) {
+      resourcesLoading = prepare();
+    }
+
+    resourcesLoading.then(function () {
+      if (!window.hljs) {
+        console.warn('Code Styling script loaded but not ready');
+        return;
+      }
+
+      window.hljs.highlightBlock(codeBlock);
+    });
+  };
+
+  return {
+    init: init
+  };
+}();
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
  * Copyable module allows you to add text to copy buffer by click
  * Just add 'js-copyable' name to element and call init method
  *
@@ -472,7 +610,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -925,7 +1063,7 @@ var eventPopup = function (self) {
 module.exports = eventPopup;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -956,8 +1094,6 @@ module.exports = function () {
 
     eventInfo.classList.toggle('hide');
     stackButton.classList.toggle('event-info--opened');
-
-    eventInfo.scrollIntoView();
   };
 
   return {
@@ -966,7 +1102,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1027,13 +1163,13 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _class = __webpack_require__(15);
+var _class = __webpack_require__(16);
 
 module.exports = function (self) {
   self.init = function (settings) {
@@ -1076,7 +1212,7 @@ module.exports = function (self) {
         */
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1088,7 +1224,7 @@ module.exports = function (self) {
  * @see {@link https://github.com/codex-team/transport}
  * @copyright  CodeX <team@ifmo.su>
  */
-var transport = __webpack_require__(13);
+var transport = __webpack_require__(14);
 
 /**
  * Work with projects settings files
@@ -1232,7 +1368,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1448,7 +1584,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1534,7 +1670,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1620,13 +1756,13 @@ var notifier = function (e) {
 module.exports = notifier;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1737,10 +1873,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   }]);
 });
 //# sourceMappingURL=bundle.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module)))
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1770,7 +1906,7 @@ module.exports = function (module) {
 };
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1930,7 +2066,7 @@ var Appender = exports.Appender = function () {
 }();
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1939,7 +2075,7 @@ var Appender = exports.Appender = function () {
 /**
  * Require CSS build
  */
-__webpack_require__(12);
+__webpack_require__(13);
 
 var hawkso = function (self) {
   'use strict';
@@ -1958,16 +2094,17 @@ var hawkso = function (self) {
   };
 
   self.checkbox = __webpack_require__(2);
-  self.copyable = __webpack_require__(3);
+  self.copyable = __webpack_require__(4);
   self.ajax = __webpack_require__(1);
-  self.notifier = __webpack_require__(11);
-  self.event = __webpack_require__(5);
-  self.eventPopup = __webpack_require__(4);
-  self.appender = __webpack_require__(7);
-  self.settingsForm = __webpack_require__(9);
-  self.toggler = __webpack_require__(10);
-  self.keyboard = __webpack_require__(6);
-  self.projectSettings = __webpack_require__(8);
+  self.notifier = __webpack_require__(12);
+  self.event = __webpack_require__(6);
+  self.eventPopup = __webpack_require__(5);
+  self.appender = __webpack_require__(8);
+  self.settingsForm = __webpack_require__(10);
+  self.toggler = __webpack_require__(11);
+  self.keyboard = __webpack_require__(7);
+  self.projectSettings = __webpack_require__(9);
+  self.codeStyling = __webpack_require__(3);
 
   var delegate = function delegate(element) {
     var modulesRequired = void 0;

@@ -31,10 +31,10 @@
 {% endblock %}
 
 {% block eventInfo %}
-    <h3>Request</h3>
-    {% include 'garage/events/php/request.twig' with {event: event} %}
     <h3>Backtrace</h3>
     {% include 'garage/events/php/stack.twig' with {event: event} %}
+    <h3>Request</h3>
+    {% include 'garage/events/php/request.twig' with {event: event} %}
 {% endblock %}
 
 {% block repeations %}

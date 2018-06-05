@@ -19,8 +19,6 @@ module.exports = function () {
 
     eventInfo.classList.toggle('hide');
     stackButton.classList.toggle('event-info--opened');
-
-    eventInfo.scrollIntoView();
   };
 
   return {
