@@ -476,8 +476,6 @@ module.exports = function codeStyling() {
   var init = function init() {
     var codeBlock = this;
 
-    console.log('codeBlock', codeBlock);
-
     if (!resourcesLoading) {
       resourcesLoading = prepare();
     }
