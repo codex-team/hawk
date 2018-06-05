@@ -302,7 +302,7 @@ function handleMessage(message) {
  */
 function socketConnected (ws) {
   ws.on('message', function (message) {
-    // console.log('Client catcher received a message: %o', message);
+    console.log('Client catcher received a message: %o', message);
     Promise.resolve(message)
       .then(JSON.parse)
       .then( message => {
