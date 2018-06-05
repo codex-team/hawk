@@ -5,6 +5,7 @@ module.exports = {
   MEMBERSHIP: 'membership',
   TEAM: 'team',
   EVENTS: 'events',
-  ARCHIVE: 'archive'
+  ARCHIVE: 'archive',
+  JS_SOURCE: 'js-sources:<projectId>'
 
 };
