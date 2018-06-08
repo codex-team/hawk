@@ -44,6 +44,13 @@ module.exports = function () {
         let queries = [];
 
         team.forEach(function (member) {
+          /**
+           * Skip users who is not in team right now
+           */
+          if (member.is_pending === true) {
+            return;
+          }
+
           let query = projectModel.getUserData(project._id, member.id)
             .then(function (userData) {
               userData.email = member.email;
