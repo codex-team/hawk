@@ -151,7 +151,7 @@ function readSourceLines(consumer, original) {
   let focusedLines = lines.slice(original.line - margin - 1, original.line + margin);
   let output = focusedLines.map((line, idx) => {
     return {
-      line: original.line - margin + idx,
+      line: Math.max(original.line - margin + idx, 1),
       content: line,
     }
   });

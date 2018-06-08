@@ -46,7 +46,8 @@
     "postcss-nested-ancestors": "^1.0.0",
     "postcss-nesting": "^4.0.1",
     "postcss-smart-import": "^0.7.4",
-    "webpack": "^2.6.1"
+    "webpack": "^2.6.1",
+    "webpack-plugin-hash": "^1.0.3"
   },
   "dependencies": {
     "@codexteam/capella-pics": "^1.0.1",
