@@ -166,31 +166,31 @@ module.exports = class JSSource {
 
     let sourceMappingValue = this.sourceBody.match(/\/\/# sourceMappingURL=(\S+)/);
 
-    if (sourceMappingValue){
-      let map = sourceMappingValue[1];
-
-      /**
-       * Relative path to map
-       */
-      if (map.substring(0,3) !== 'http') {
-
-        /**
-         * From source URL
-         * http://v.dtf.osnova.io/static/build/v.dtf.osnova.io/all.min.js?1527864690
-         * get source map URL
-         * http://v.dtf.osnova.io/static/build/v.dtf.osnova.io/all.min.js.map
-         */
-        let staticURL = this.url.match(/(https?:\/\/)\S+\//);
-        return staticURL[0] + map;
-
-      /**
-       * Absolute path to map
-       */
-      } else {
-        return map;
-      }
-    } else {
+    if (!sourceMappingValue){
       return null;
+    }
+
+    let map = sourceMappingValue[1];
+
+    /**
+     * Relative path to map
+     */
+    if (map.substring(0,3) !== 'http') {
+
+      /**
+       * From source URL
+       * http://v.dtf.osnova.io/static/build/v.dtf.osnova.io/all.min.js?1527864690
+       * get source map URL
+       * http://v.dtf.osnova.io/static/build/v.dtf.osnova.io/all.min.js.map
+       */
+      let staticURL = this.url.match(/(https?:\/\/)\S+\//);
+      return staticURL[0] + map;
+
+    /**
+     * Absolute path to map
+     */
+    } else {
+      return map;
     }
   }
 }

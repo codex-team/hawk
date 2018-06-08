@@ -25,7 +25,7 @@ Fast and lightweight errors tracking service.
 <a name="platform-documentation"></a>Platform documentation
 ======================
 
-Hawk.so is a clever and easy-to-use errors tracker. It collects all your code exceptions and errors and helps you to improve an applications.
+Hawk.so is a clever and easy-to-use errors tracker. It collects all your code exceptions and errors and helps you to improve applications.
 
 Please, welcome to the simple user guide.
 
@@ -53,7 +53,7 @@ All registration procedures passed, next step is an installation of the some err
 
 ### <a name="add-server-handler"></a>Add the Server Handler
 
-Currently, we provide Catchers for the next languages:
+Currently, we provide Catchers for the next technologies:
 
 *   [PHP](https://github.com/codex-team/hawk.php)
 *   [Python](https://github.com/codex-team/hawk.python)
@@ -70,7 +70,7 @@ To deliver JavaScript errors we provide the fast and non-blocking Socket-based C
 
 [Get JavaScript Catcher](https://github.com/codex-team/hawk.javascript)
 
-How to use. Include <script>tag loaded from the CDN or local cloned exemplar.
+How to use. Include <script> tag loaded from the CDN or local cloned exemplar.
 
 ```html 
 <script src="hawk.js" async></script>
@@ -102,7 +102,7 @@ You can get notifications about catched errors to the Email, Telegram or Slack. 
 
 Note about Webhook's query format. It is a POST-request with the message field contains notification's text.
 
-To setup a Notifications, open the [Settings](https://hawk.so/garage/settings) page, find a Project and click on the «Configure Webhooks» button. Then add Webhook endpoints for the Slack or Telegram and press «Save». Don't forget to activate checkboxes for the selected types.
+To setup Notifications, open the [Settings](https://hawk.so/garage/settings) page, find a Project and click on the «Configure Webhooks» button. Then add Webhook endpoints for the Slack or Telegram and press «Save». Don't forget to activate checkboxes for the selected types.
 
 ### <a name="archiving"></a>Archiving
 
@@ -110,6 +110,6 @@ Hawk now in a public beta stage. So we allow to collect up to {{ eventsLimit|cou
 
 ### <a name="our-team"></a>Our team
 
-[CodeX](https://ifmo.su) is a small team of enthusiasts. We love web-development, build a social and media services and trying to grow ourselves.
+[CodeX](https://ifmo.su) is a small team of enthusiasts. We love web-development, build social and media services and trying to grow ourselves.
 
 Please, leave a feedback on the our email [team@ifmo.su](mailto:team@ifmo.su?subject=Hawk). We REALLY appreciate this. And thanks for reading.
