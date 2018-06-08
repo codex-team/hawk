@@ -31,7 +31,8 @@ let formatDebugBacktrace = function (debugBacktrace) {
   for (let i = debugBacktrace.length - 1; i >= 0; i--) {
     result[i] = {
       'file': debugBacktrace[i].file,
-      'line': debugBacktrace[i].line
+      'line': debugBacktrace[i].line,
+      'trace': debugBacktrace[i].trace
     };
 
     let args = debugBacktrace[i].args;
@@ -87,6 +88,7 @@ let getServerErrors = function (req, res) {
     groupHash: md5(eventGroupPrehashed),
     message: request.error_description,
     stack: formatDebugBacktrace(request.debug_backtrace),
+    context: request.error_context,
     time: server.REQUEST_TIME,
     errorLocation: {
       file: request.error_file || '',
@@ -94,11 +96,14 @@ let getServerErrors = function (req, res) {
     },
     params: {
       post: request.POST || [],
-      get : request.GET || []
+      get : request.GET || [],
+      headers : request.HEADERS || [],
+      cookies : request.COOKIES || [],
+      http_params : server || []
     },
     location: {
-      url: 'http' + (server.HTTPS ? 's' : '') + server.SERVER_NAME + server.REQUEST_URI + '?' + server.QUERY_STRING,
-      host: server.SERVER_NAME,
+      url: 'http' + (server.HTTPS ? 's' : '') + '://' + server.HTTP_HOST + server.REQUEST_URI,
+      host: server.HTTP_HOST ,
       path: server.REQUEST_URI,
     },
     request: {

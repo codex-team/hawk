@@ -30,6 +30,7 @@ let hawkso = (function (self) {
   self.toggler = require('./toggler');
   self.keyboard = require('./keyboard');
   self.projectSettings = require('./projectSettings');
+  self.codeStyling = require('./code-styling');
 
   let delegate = function (element) {
     let modulesRequired;

@@ -7,7 +7,7 @@
     max-width: 600px;
     margin: 80px auto;
     padding: 15px;
-    font-size: 19px;
+    font-size: 16.8px;
     line-height: 1.5em;
 
     /**
@@ -114,11 +114,23 @@
         font-size: 0.9em;
     }
 
-    ul {
+    ul,
+    ol {
         li {
             margin: 0.6em 0;
-            list-style-type: disc;
             list-style-position: inside;
         }
+    }
+
+    ul li {
+        list-style-type: disc;
+    }
+
+    ol li {
+        list-style-type: decimal;
+    }
+
+    code {
+        color: #888;
     }
 }

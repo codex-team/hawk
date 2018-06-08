@@ -16,6 +16,7 @@ const JSSource = require('../../models/js-source');
  * @property {number}   error_location.line
  * @property {number}   error_location.col
  * @property {string}   error_location.func - function name. Filled after source-map parsing
+ * @property {string}   error_location.fileOrigin - bundle's URL. Filled after source-map parsing
  * @property {string}   error_location.revision  - bundle's revision
  * @property {object}   location
  * @property {string}   location.url
@@ -133,13 +134,49 @@ let detect = function (ua) {
 };
 
 /**
+ * Reads near-placed lines from the original source
+ * @param {BasicSourceMapConsumer} consumer
+ * @param {originalPosition} original
+ * @return {{line: number, content: string}[]|null}
+ */
+function readSourceLines(consumer, original) {
+  let sourceContent = consumer.sourceContentFor(original.source, true);
+
+  if (!sourceContent){
+    return null;
+  }
+
+  const margin = 5;
+  let lines = sourceContent.split(/(?:\r\n|\r|\n)/g);
+  let focusedLines = lines.slice(original.line - margin - 1, original.line + margin);
+  let output = focusedLines.map((line, idx) => {
+    return {
+      line: original.line - margin + idx,
+      content: line,
+    }
+  });
+
+  return output;
+}
+
+/**
  * Loads external js-source with source-map
  * @param {string} projectId
  * @param {string} url
  * @param {string} revision
- * @return {Promise<JSSourceItem>}
+ * @return {Promise<JSSourceItem>|null}
  */
 async function downloadSource(projectId, url, revision) {
+
+  let isAbsoluteURL = /https?:\/\/\S+\.js(\?\S+)?$/.test(url);
+
+  /**
+   * Source code can't be downloaded
+   */
+  if (!isAbsoluteURL){
+    logger.log('JS source downloading skipped because of URL: %s', url);
+    return null;
+  }
 
   let source = new JSSource({
     projectId,
@@ -181,11 +218,16 @@ function handleMessage(message) {
       return foundProject;
     })
     .then(async foundProject => {
+
+      /**
+       * Remember original script location. (It may be overridden by source-map module name)
+       */
+      let bundleLocation = message.error_location.file;
       /**
        * Download source-map
        * @type {JSSourceItem|}
        */
-      let jsSource = await downloadSource(foundProject._id, message.error_location.file, message.error_location.revision);
+      let jsSource = await downloadSource(foundProject._id, bundleLocation, message.error_location.revision);
 
       /**
        * Parse Stack
@@ -230,6 +272,7 @@ function handleMessage(message) {
          */
         if (originalLocation.source){
           message.error_location.file = originalLocation.source;
+          message.error_location.fileOrigin = bundleLocation; // save bundle's URL
         }
         if (originalLocation.line){
           message.error_location.line = originalLocation.line;
@@ -250,11 +293,17 @@ function handleMessage(message) {
             column: item.col
           });
 
+          let trace = null;
+          if (original.source) {
+            trace = readSourceLines(consumer, original);
+          }
+
           return {
             func: original.name || item.func,
             file: original.source || item.file,
             line: original.line || item.line,
-            col: original.column || item.col
+            col: original.column || item.col,
+            trace
           }
         });
       }

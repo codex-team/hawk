@@ -4,7 +4,7 @@ module.exports = function () {
 
   const REGEXPS = {
     /* FF example: throwError@http://localhost:63342/hawk.client/index.html:10:28 */
-    FF_SAFARI_OPERA_11: /(.*)@?(\S+)\:(\d+):(\d+)/,
+    FF_SAFARI_OPERA_11: /(.*)@(\S+)\:(\d+):(\d+)/,
 
     /* Chrome example: at throwError (index.html?_ijt=pnsmb0fcsfavevcnj0g1a9sq:10) */
     CHROME_IE: /^\s*at (.*) \((\S+):(\d+):(\d+)\)/m,

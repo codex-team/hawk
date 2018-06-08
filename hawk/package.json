@@ -1,9 +1,9 @@
 {
   "name": "Hawk",
   "private": true,
-  "version": "1.0.0",
-  "description": "Hawk is open source platform allows you to catch errors",
-  "main": "server.js",
+  "version": "1.2.0",
+  "description": "Hawk is a platform for errors and logs monitoring",
+  "main": "./app.js",
   "scripts": {
     "test": "mocha --recursive tests/",
     "start": "nodemon ./bin/www",

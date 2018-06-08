@@ -9,6 +9,9 @@
     --errorMessage: #cd4949;
     --yardGrayText: #8a97ab;
 
+    /** Font families */
+    --font-monospace: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+
     /** Error types modifiers */
     --fatalColor: #ff5151;
     --warningsColor: #af3232;
