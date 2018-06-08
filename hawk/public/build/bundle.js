@@ -1134,6 +1134,13 @@ module.exports = function () {
   };
 
   var keyDownHandler = function keyDownHandler(event) {
+    /**
+     * Check if an event's code is not empty
+     */
+    if (typeof event === 'undefined' || typeof event.code === 'undefined') {
+      return;
+    }
+
     var eventType = event.code.toLowerCase(),
         target = event.target;
 

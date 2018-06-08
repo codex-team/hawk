@@ -24,6 +24,13 @@ module.exports = function () {
   };
 
   let keyDownHandler = function (event) {
+    /**
+     * Check if an event's code is not empty
+     */
+    if (typeof event === 'undefined' || typeof event.code === 'undefined') {
+      return;
+    }
+
     let eventType = event.code.toLowerCase(),
         target = event.target;
 
