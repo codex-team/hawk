@@ -24,8 +24,11 @@
             color: color(var(--grayText) alpha(50%));
             font-size: 11px;
             vertical-align: bottom;
-        }
 
+            & span {
+                color: inherit;
+            }
+        }
 
         & pre {
             margin: 0;

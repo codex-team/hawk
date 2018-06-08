@@ -1,10 +1,20 @@
 <div class="stack-table">
     {% for item in event.stack %}
-        <div class="stack-table__row">
-            <div class="stack-table__file">
-                {{ item.text|escape }}{{ item.func ? (' in ' ~ item.func)|escape : '' }} at {{ item.file|escape }}
+        <div class="stack-table__row-wrap {{ loop.index == 1 ? 'stack-table__row-wrap--expanded' }}">
+            <div class="stack-table__row {{ item.trace is not empty ? 'stack-table__row--expandable' }}" onclick='this.parentNode.classList.toggle("stack-table__row-wrap--expanded")'>
+                <div class="stack-table__file">{{ item.file|escape }}</div>
+                <div class="stack-table__location">line {{ item.line|number_format|escape }}</div>
+                <div class="stack-table__expander"></div>
             </div>
-            <div class="stack-table__location">line {{ item.line|number_format|escape }}</div>
+
+            {% if item.trace %}
+                <div class="source-code" data-module-required="codeStyling">
+                    {% for code in item.trace %}
+                        {% set isErrorLine = code.line == item.line %}
+                        <pre class="source-code__line {% if isErrorLine %}source-code__line--highlighted{% endif %}"><span class="source-code__linenum">{{ code.line }}</span> {{ code.content }}</pre>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
     {% endfor %}
 </div>
