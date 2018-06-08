@@ -8,10 +8,18 @@ let project = require('./project');
 
 router.use(function (req, res, next) {
   /**
-   * #TODO
-   * Show 'join or log in' page
+   * If user is not authorized then set redirect cookie
+   * and show sign in form
    */
   if (!res.locals.user) {
+    /**
+     * Use originalUrl as redirect url
+     *
+     * req.url                /<project>/event/<event>
+     * req.baseUrl     /garage
+     * req.originalUrl /garage/<project>/event/<event>
+     */
+    res.cookie('redirect', req.originalUrl);
     res.redirect('/login');
     return;
   }
