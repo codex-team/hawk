@@ -4,7 +4,7 @@
  */
 .stack-table {
     border-radius: 3px;
-    font-size: 14.2px;
+    font-size: 13.6px;
     line-height: 1.6em;
     color: var(--grayText);
     word-wrap: break-word;
@@ -18,6 +18,7 @@
         background: var(--lightGrayBg);
         margin-bottom: 4px;
         border-right: 3px;
+        font-family:  var(--font-monospace);
 
         &--expandable:hover {
             cursor: pointer;
@@ -30,7 +31,6 @@
         padding-right: 20px;
         width: 80%;
         overflow: hidden;
-        font-family:  var(--font-monospace);
         font-size: 12px;
         letter-spacing: 0.15px;
 
@@ -46,6 +46,7 @@
         text-align: right;
         white-space: nowrap;
         color: var(--lightGrayText);
+        font-size: 13px;
     }
 
     &__expander {
