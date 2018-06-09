@@ -287,7 +287,7 @@ function handleMessage(message) {
         /**
          * Stack's original position
          */
-        message.stack = message.stack.map(item => {
+        message.stack = !message.stack ? [] : message.stack.map(item => {
           let original = consumer.originalPositionFor({
             line: item.line,
             column: item.col

@@ -112,6 +112,10 @@ module.exports = function () {
     event = event_;
     stack = event.stack;
 
+    if (!stack){
+      return null;
+    }
+
     try {
       if (REGEXPS.OPERA_9.test(event.message)) {
         stack = parseOpera9();
