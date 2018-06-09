@@ -39,8 +39,8 @@ module.exports = function () {
       return {
         func: matches[1],
         file: matches[2],
-        line: matches[3],
-        col: matches[4]
+        line: parseInt(matches[3], 10),
+        col: parseInt(matches[4], 10)
       };
     });
   };
@@ -63,8 +63,8 @@ module.exports = function () {
       return {
         func: matches[1],
         file: matches[2],
-        line: matches[3],
-        col: matches[4]
+        line: parseInt(matches[3]),
+        col: parseInt(matches[4])
       };
     });
   };
@@ -80,7 +80,7 @@ module.exports = function () {
 
       return {
         file: matches[2],
-        line: matches[1]
+        line: parseInt(matches[1])
       };
     });
   };
@@ -97,7 +97,7 @@ module.exports = function () {
       return {
         func: matches[3] || undefined,
         file: matches[2],
-        line: matches[1]
+        line: parseInt(matches[1])
       };
     });
   };
@@ -111,6 +111,10 @@ module.exports = function () {
   let parseStack = function (event_) {
     event = event_;
     stack = event.stack;
+
+    if (!stack){
+      return null;
+    }
 
     try {
       if (REGEXPS.OPERA_9.test(event.message)) {

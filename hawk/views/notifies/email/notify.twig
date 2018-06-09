@@ -7,7 +7,6 @@
     <tr>
       <td>
         <font color="#000000" style="font-size:15px;">
-          <span style="line-height: 0.9em; margin-right: 5px;">🙀</span>
           We have catched {{ times > 1 ? times : 'a' }} {{ event.tag | event-type }}{{ times > 1 ? 's' : '' }} on {{ project.name|escape }} project. Please, take a look.
         </font>
       </td>
@@ -20,9 +19,16 @@
       </td>
     </tr>
     <tr>
-      <td style="padding-top: 15px;">
-        <font color="#717171" style="font-size:16px;">
-            <a href="javascript: void(0);" style="color: #717171; text-decoration: none;">{{ event.errorLocation.full|escape }}</a>
+      <td style="padding-top: 10px;">
+        <font color="#717171" style="font-size:15px;">
+            <a href="javascript: void(0);" style="color: #717171; text-decoration: none;">
+                {{ event.errorLocation.file|escape }} »
+                {{ event.errorLocation.line|escape }}
+                {{ event.errorLocation.col|escape }}
+                {% if event.errorLocation.func is not empty %}
+                  » <i>{{ event.errorLocation.func }}</i>
+                {% endif %}
+            </a>
         </font>
       </td>
     </tr>

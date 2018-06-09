@@ -36,6 +36,7 @@ class BaseCatcher {
    *
    * @param {Map} stackElement – stack element structure
    * @returns {string} – string representation
+   * @deprecated directly use 'file|line|col' at the templates
    */
   static getFullDescription (stackElement) {
     return stackElement.file + ' -> ' + stackElement.line + ':' + stackElement.col;

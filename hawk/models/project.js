@@ -1,3 +1,17 @@
+/**
+ * @typedef {object} Project
+ * @property {string} _id - 5b10ee53c4a89a002a46dd52,
+ * @property {string} name - 'DTF local',
+ * @property {string} description - 'Local server for DTF.ru',
+ * @property {string} domain - 'http://v.dtf.osnova.io',
+ * @property {string} dt_added - 2018-06-01T06:57:23.715Z,
+ * @property {string} uid_added - 598ded1da5b89b75df656a3f,
+ * @property {string} token - 'a432d156-56dc-438f-97e5-37f3493866bd',
+ * @property {string} logo - '',
+ * @property {string} uri - 'dtf-local'
+ * @property {{_id, email, password, notifies, recoverHash}} user @todo store only User ID
+ */
+
 module.exports = function () {
   let mongo = require('../modules/database');
   let collections = require('../config/collections');
@@ -339,6 +353,10 @@ module.exports = function () {
       });
   };
 
+  /**
+   * @param token
+   * @return {Promise.<Project>}
+   */
   let getByToken = function (token) {
     return mongo.findOne(collections.PROJECTS, {token: token});
   };

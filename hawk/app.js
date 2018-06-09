@@ -141,6 +141,19 @@ app.use(function (req, res, next) {
 });
 
 /**
+ * Get current static bundle revision and pass it to the templates
+ */
+app.use(function (req, res, next) {
+  fs.readFile('./public/build/revision.cfg', 'utf8', (err, data) => {
+    if (!err) {
+      res.locals.bundleRevision = data;
+    }
+
+    next();
+  });
+});
+
+/**
  * Garage
  */
 let garage = require('./routes/garage/garage');

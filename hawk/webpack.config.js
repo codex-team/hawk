@@ -1,8 +1,11 @@
 var webpack           = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var fs = require('fs');
+const WebpackPluginHash = require('webpack-plugin-hash');
 
 require('dotenv').config();
 var DevelopmendMode = process.env.ENVIRONMENT === 'DEVELOPMENT';
+
 
 module.exports = {
 
@@ -10,7 +13,8 @@ module.exports = {
 
   output: {
     filename: './public/build/bundle.js',
-    library: 'hawkso'
+    library: 'hawkso',
+    devtoolModuleFilenameTemplate: "[resource-path]"
   },
 
   module: {
@@ -67,7 +71,20 @@ module.exports = {
     ]
   },
   plugins: [
-    new ExtractTextPlugin('public/build/bundle.css')
+    new ExtractTextPlugin('public/build/bundle.css'),
+    new WebpackPluginHash({
+      callback: (error, hash) => {
+        if (!error) {
+          fs.writeFile("./public/build/revision.cfg", hash, function(err) {
+            if(err) {
+              return console.log(err);
+            }
+
+            console.log("Bundle revision saved at the ./public/build/revision.cfg:", hash);
+          });
+        }
+      }
+    }),
   ],
 
   devtool: 'source-map',

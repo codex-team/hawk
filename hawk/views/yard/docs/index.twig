@@ -35,7 +35,7 @@
 
         <h3 id="register-domain">Register domains</h3>
         <p>Now, look at the Sidebar. There will appear all your registered domains. Touch «<a href="/websites/create">Add domain</a>» button to create your first.</p>
-        <p>Fill domain's name and submit a form. You are beautiful, that’s it.</p>
+        <p>Fill domain's name and submit a form. Now you have an <abbr title="It is your personal identifier">Integration Token</abbr>.</p>
 
         <h2 id="integration">Integration</h2>
         <p>All registration procedures passed, next step is an installation of the some error Catchers. They're simple scripts that collect exceptions and deliver them to the Garage.</p>
@@ -54,18 +54,30 @@
 
         <h3 id="add-client-catcher">Add the Client Handler</h3>
         <p>To deliver JavaScript errors we provide the fast and non-blocking Socket-based Catcher.</p>
-        <p><a href="https://github.com/codex-team/hawk.client">Get JavaScript Catcher</a></p>
-        <p>How to use. Include <abbr title="HTML script tag">&lt;script&gt;</abbr>tag loaded from the CDN or local cloned examplar.</p>
+        <p><a href="https://github.com/codex-team/hawk.javascript">Get JavaScript Catcher</a></p>
+        <p>How to use. Include <abbr title="HTML script tag">&lt;script&gt;</abbr>tag loaded from the CDN or local cloned exemplar.</p>
         <p>
             <pre>&lt;script src="hawk.js" async&gt;&lt;/script&gt;</pre>
         </p>
-        <p>Next, initialize the module with your Token.</p>
+        <p>Next, initialize the module with your Integration Token.</p>
         <p>
             <pre>&lt;script&gt;
-    hawk.init(“Your Token”);
+    hawk.init({token: “INTEGRATION_TOKEN”});
 &lt;/script&gt;</pre>
         </p>
 
+        <h4>Source map support</h4>
+        <p>
+            Hawk supports JS SourceMaps for showing more useful information from your minified bundle. There a few conditions:
+        </p>
+        <ol>
+            <li>Bundle ends with line contains anchor to the source map, like <code>//# sourceMappingURL=all.min.js.map</code>. It can be absolute or relative (relatively the bundle) path.</li>
+            <li>Source map are publicly available by its URL.</li>
+            <li>On every rebuilding you are updating the <abbr title="Initialization parameter">revision</abbr> and pass it with `init` method. It can be heximal-hash or simply file's modification timestamp.</li>
+        </ol>
+        <p>
+            <pre>hawk.init({token: 'INTEGRATION_TOKEN', revision: 12345654345})</pre>
+        </p>
         <h3 id="notifications">Notifications</h3>
         <p>
             You can get notifications about catched errors to the Email, Telegram or Slack. For the last two types, we use Webhooks, so you free to use an any webhook bot, for example, our — <a target="_blank" href="https://github.com/codex-bot/Webhooks/blob/master/README.md">@codex_bot</a>.

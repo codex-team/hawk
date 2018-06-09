@@ -865,20 +865,14 @@ var eventPopup = function (self) {
    * @param {Object} projectName - project name
    * @param {Object} event - traceback header
    * @type {Number} event.count - aggregated event's count
-   * @type {Object} event.errorLocation - event's location
+   * @type {{file, line, col, func, revision}} event.errorLocation - event's location
    * @type {String} event.message - event's message
    * @type {String} event.tag - event's type
    * @type {Number} event.time - time
    */
   function fillHeader(event, projectName) {
-    var escaped = {
-      message: dom.escapeHTML(event.message),
-      errorLocation: dom.escapeHTML(event.errorLocation.full),
-      tag: dom.escapeHTML(event.tag)
-    };
-
     event.count = event.count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-    popup.content.insertAdjacentHTML('afterbegin', '<div class="event">\n      <div class="event__header">\n        <span class="event__project">' + projectName + '</span>\n        <span class="event__type event__type--' + escaped.tag + '">\n          ' + (escaped.tag === 'javascript' ? 'JavaScript Error' : escaped.tag) + '\n        </span>\n      </div>\n      <div class="event__content clearfix">\n        <div class="event__counter">\n          <div class="event__counter-number">\n            <div class="event__counter-number--digit">' + event.count + '</div>\n            times\n          </div>\n          <div class="event__counter-date">\n            <div class="event__placeholder"></div>\n            <div class="event__placeholder"></div>\n          </div>\n        </div>\n        <div class="event__title">\n           ' + escaped.message + '\n        </div>\n        <div class="event__path">\n           ' + escaped.errorLocation + '\n        </div>\n      </div>\n    </div>');
+    popup.content.insertAdjacentHTML('afterbegin', '<div class="event">\n      <div class="event__header">\n        <span class="event__project">' + projectName + '</span>\n        <span class="event__type event__type--' + dom.escapeHTML(event.tag) + '">\n          ' + (event.tag === 'javascript' ? 'JavaScript Error' : dom.escapeHTML(event.tag)) + '\n        </span>\n      </div>\n      <div class="event__content clearfix">\n        <div class="event__counter">\n          <div class="event__counter-number">\n            <div class="event__counter-number--digit">' + event.count + '</div>\n            times\n          </div>\n          <div class="event__counter-date">\n            <div class="event__placeholder"></div>\n            <div class="event__placeholder"></div>\n          </div>\n        </div>\n        <div class="event__title">\n           ' + dom.escapeHTML(event.message) + '\n        </div>\n        <div class="event__path">\n          ' + dom.escapeHTML(event.errorLocation.file) + '\n          <span class="event__delimiter"></span>\n          ' + dom.escapeHTML(event.errorLocation.line) + ':' + dom.escapeHTML(event.errorLocation.col) + '\n          ' + (event.errorLocation.func ? '<span class="event__delimiter"></span>' + dom.escapeHTML(event.errorLocation.func) : '') + '\n        </div>\n      </div>\n    </div>');
   }
 
   /**

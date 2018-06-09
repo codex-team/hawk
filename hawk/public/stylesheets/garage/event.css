@@ -68,8 +68,8 @@
     &__title {
         color: #fff;
         overflow: hidden;
-        font-size: 17.3px;
-        line-height: 1.6em;
+        font-size: 21px;
+        line-height: 1.5em;
         font-weight: 700;
     }
 
@@ -93,6 +93,16 @@
         margin: 10px 0 20px;
     }
 
+    &__delimiter {
+        width: 4px;
+        height: 4px;
+        display: inline-block;
+        vertical-align: middle;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        margin: 0 3px;
+    }
+
     &-badge {
         &:not(:first-of-type) {
             margin-left: 20px;
@@ -100,7 +110,7 @@
     }
 }
 
-/**
+/*
  * Repeations list
  */
 .repeations {

@@ -15,7 +15,9 @@
             {{ event.message|escape }}
         </div>
         <div class="event__path">
-            {{ event.errorLocation.full|escape }}
+            {{ event.errorLocation.file|escape }} ->
+            {{ event.errorLocation.line|escape }}:
+            {{ event.errorLocation.col|escape }}
         </div>
         <div>
             <span class="event-badge">

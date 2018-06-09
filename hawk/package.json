@@ -1,9 +1,9 @@
 {
   "name": "Hawk",
   "private": true,
-  "version": "1.0.0",
-  "description": "Hawk is open source platform allows you to catch errors",
-  "main": "server.js",
+  "version": "1.2.0",
+  "description": "Hawk is a platform for errors and logs monitoring",
+  "main": "./app.js",
   "scripts": {
     "test": "mocha --recursive tests/",
     "start": "nodemon ./bin/www",
@@ -46,7 +46,8 @@
     "postcss-nested-ancestors": "^1.0.0",
     "postcss-nesting": "^4.0.1",
     "postcss-smart-import": "^0.7.4",
-    "webpack": "^2.6.1"
+    "webpack": "^2.6.1",
+    "webpack-plugin-hash": "^1.0.3"
   },
   "dependencies": {
     "@codexteam/capella-pics": "^1.0.1",
@@ -68,7 +69,9 @@
     "nodemailer": "^4.0.1",
     "nodemon": "^1.13.3",
     "request": "^2.81.0",
+    "request-promise": "^4.2.2",
     "serve-favicon": "^2.4.5",
+    "source-map": "^0.7.3",
     "twig": "~0.10.3",
     "uuid": "^3.1.0",
     "winston": "^2.3.1",

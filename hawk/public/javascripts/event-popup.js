@@ -241,24 +241,18 @@ let eventPopup = (function ( self ) {
    * @param {Object} projectName - project name
    * @param {Object} event - traceback header
    * @type {Number} event.count - aggregated event's count
-   * @type {Object} event.errorLocation - event's location
+   * @type {{file, line, col, func, revision}} event.errorLocation - event's location
    * @type {String} event.message - event's message
    * @type {String} event.tag - event's type
    * @type {Number} event.time - time
    */
   function fillHeader(event, projectName) {
-    let escaped = {
-      message : dom.escapeHTML(event.message),
-      errorLocation : dom.escapeHTML(event.errorLocation.full),
-      tag : dom.escapeHTML(event.tag)
-    };
-
     event.count = event.count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     popup.content.insertAdjacentHTML('afterbegin', `<div class="event">
       <div class="event__header">
         <span class="event__project">${projectName}</span>
-        <span class="event__type event__type--${escaped.tag}">
-          ${escaped.tag === 'javascript' ? 'JavaScript Error' : escaped.tag}
+        <span class="event__type event__type--${dom.escapeHTML(event.tag)}">
+          ${event.tag === 'javascript' ? 'JavaScript Error' : dom.escapeHTML(event.tag)}
         </span>
       </div>
       <div class="event__content clearfix">
@@ -273,10 +267,13 @@ let eventPopup = (function ( self ) {
           </div>
         </div>
         <div class="event__title">
-           ${escaped.message}
+           ${dom.escapeHTML(event.message)}
         </div>
         <div class="event__path">
-           ${escaped.errorLocation}
+          ${dom.escapeHTML(event.errorLocation.file)}
+          <span class="event__delimiter"></span>
+          ${dom.escapeHTML(event.errorLocation.line)}:${dom.escapeHTML(event.errorLocation.col)}
+          ${event.errorLocation.func ? '<span class="event__delimiter"></span>' + dom.escapeHTML(event.errorLocation.func) : ''}
         </div>
       </div>
     </div>`);

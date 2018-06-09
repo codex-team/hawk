@@ -1,7 +1,7 @@
 <div class="stack-table">
     {% for item in event.stack %}
         <div class="stack-table__row">
-            <div class="stack-table__file">{{ item.full|escape }}</div>
+            <div class="stack-table__file">{{ item.file|escape }} -> {{ item.line|escape }}:{{ item.col|escape }}</div>
             <div class="stack-table__location">line {{ item.line|number_format|escape }}</div>
         </div>
     {% endfor %}
