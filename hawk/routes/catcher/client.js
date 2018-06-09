@@ -339,10 +339,11 @@ function handleMessage(message) {
     })
     .then(async foundProject => {
 
-      const messageCacheKey = getCacheKeyForAMessage(foundProject._id, message);
+      let messageCacheKey = getCacheKeyForAMessage(foundProject._id, message);
 
-      console.log('messageCacheKey', messageCacheKey);
-      console.log('find in cache');
+      console.log('key', messageCacheKey);
+      messageCacheKey = md5(messageCacheKey);
+      console.log('key hashed ', messageCacheKey);
       let processedMessageFromCache = cache.get(messageCacheKey);
 
       if (processedMessageFromCache) {
