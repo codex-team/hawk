@@ -350,11 +350,10 @@ function handleMessage(message) {
         console.log('got from cache!');
         message = processedMessageFromCache;
       } else {
-        console.log('not found in cache :(');
         message = await processMessage(foundProject._id, message);
-        // cache processed error for an 1 hour
-        cache.put(messageCacheKey, message, 3600000);
-        console.log('putted in cache');
+        // cache processed error for an 3 minutes
+        cache.put(messageCacheKey, message, 180000);
+        console.log('putted in cache. Memsize:', cache.memsize());
       }
 
       /**
