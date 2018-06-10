@@ -248,73 +248,79 @@ async function processMessage(projectId, message) {
    * Analyze source map to find original position
    */
   if (jsSource && jsSource.sourceMapBody.length){
-    /**
-     * Accept source map
-     * @type {BasicSourceMapConsumer}
-     */
-    let consumer = await consumeSourceMap(jsSource.sourceMapBody);
+    try {
+      /**
+       * Accept source map
+       * @type {BasicSourceMapConsumer}
+       */
 
-    /**
-     * Error's original position
-     */
-    let originalLocation = consumer.originalPositionFor({
-      line: message.error_location.line,
-      column: message.error_location.col
-    });
+      let consumer = await consumeSourceMap(jsSource.sourceMapBody);
 
-    /**
-     * override error location from this
-     * {
-         *    file: 'http://v.dtf.osnova.io/static/build/v.dtf.osnova.io/all.min.js?1528101883',
-         *    line: 18,
-         *    col: 7658,
-         *    revision: 1528101883,
-         * }
-     *
-     * with parsed location data
-     * {
-         *    source: 'src/Components/MainMenu/js/modules/module.main_menu.js',
-         *    line: 129,
-         *    column: 40,
-         *    name: 'getElementsByName'
-         * }
-     */
-    if (originalLocation.source){
-      message.error_location.file = originalLocation.source;
-      message.error_location.fileOrigin = bundleLocation; // save bundle's URL
-    }
-    if (originalLocation.line){
-      message.error_location.line = originalLocation.line;
-    }
-    if (originalLocation.column){
-      message.error_location.col = originalLocation.column;
-    }
-    if (originalLocation.name){
-      message.error_location.func = originalLocation.name;
-    }
-
-    /**
-     * Stack's original position
-     */
-    message.stack = !message.stack ? [] : message.stack.map(item => {
-      let original = consumer.originalPositionFor({
-        line: item.line,
-        column: item.col
+      /**
+       * Error's original position
+       */
+      let originalLocation = consumer.originalPositionFor({
+        line: message.error_location.line,
+        column: message.error_location.col
       });
 
-      let trace = null;
-      if (original.source) {
-        trace = readSourceLines(consumer, original);
+      /**
+       * override error location from this
+       * {
+           *    file: 'http://v.dtf.osnova.io/static/build/v.dtf.osnova.io/all.min.js?1528101883',
+           *    line: 18,
+           *    col: 7658,
+           *    revision: 1528101883,
+           * }
+       *
+       * with parsed location data
+       * {
+           *    source: 'src/Components/MainMenu/js/modules/module.main_menu.js',
+           *    line: 129,
+           *    column: 40,
+           *    name: 'getElementsByName'
+           * }
+       */
+      if (originalLocation.source){
+        message.error_location.file = originalLocation.source;
+        message.error_location.fileOrigin = bundleLocation; // save bundle's URL
+      }
+      if (originalLocation.line){
+        message.error_location.line = originalLocation.line;
+      }
+      if (originalLocation.column){
+        message.error_location.col = originalLocation.column;
+      }
+      if (originalLocation.name){
+        message.error_location.func = originalLocation.name;
       }
 
-      return {
-        func: original.name || item.func,
-        file: original.source || item.file,
-        line: original.line || item.line,
-        col: original.column || item.col,
-        trace
-      }
-    });
+      /**
+       * Stack's original position
+       */
+      message.stack = !message.stack ? [] : message.stack.map(item => {
+        let original = consumer.originalPositionFor({
+          line: item.line,
+          column: item.col
+        });
+
+        let trace = null;
+        if (original.source) {
+          trace = readSourceLines(consumer, original);
+        }
+
+        return {
+          func: original.name || item.func,
+          file: original.source || item.file,
+          line: original.line || item.line,
+          col: original.column || item.col,
+          trace
+        }
+      });
+    } catch (e) {
+      logger.log('Error while consuming source-map: %o', e);
+      console.log('Error while consuming source-map:', e);
+    }
   }
 
   return message;
@@ -351,8 +357,8 @@ function handleMessage(message) {
         message = processedMessageFromCache;
       } else {
         message = await processMessage(foundProject._id, message);
-        // cache processed error for an 3 minutes
-        cache.put(messageCacheKey, message, 180000);
+        // cache processed error for an 5 minutes
+        cache.put(messageCacheKey, message, 300000);
         console.log('putted in cache. Memsize:', cache.memsize());
       }
 
