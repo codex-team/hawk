@@ -247,7 +247,7 @@ async function processMessage(projectId, message) {
   /**
    * Analyze source map to find original position
    */
-  if (jsSource && jsSource.sourceMapBody.length){
+  if (jsSource && jsSource.sourceMapBody && jsSource.sourceMapBody.length){
     try {
       /**
        * Accept source map
