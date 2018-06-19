@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # Terminate the running Hawk screen
 screen -X -S Hawk quit
 
