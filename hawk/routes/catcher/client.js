@@ -236,7 +236,11 @@ async function processMessage(projectId, message) {
    * Download source-map
    * @type {JSSourceItem|}
    */
-  let jsSource = await downloadSource(projectId, bundleLocation, message.error_location.revision);
+  /**
+   * @since 22 jub 2018
+   * Disable source-map parsing
+   */
+  let jsSource = null; //await downloadSource(projectId, bundleLocation, message.error_location.revision);
 
   /**
    * Parse Stack
@@ -347,19 +351,19 @@ function handleMessage(message) {
 
       let messageCacheKey = getCacheKeyForAMessage(foundProject._id, message);
 
-      console.log('key', messageCacheKey);
+      // console.log('key', messageCacheKey);
       messageCacheKey = md5(messageCacheKey);
-      console.log('key hashed ', messageCacheKey);
+      // console.log('key hashed ', messageCacheKey);
       let processedMessageFromCache = cache.get(messageCacheKey);
 
       if (processedMessageFromCache) {
-        console.log('got from cache!');
+        // console.log('got from cache!');
         message = processedMessageFromCache;
       } else {
         message = await processMessage(foundProject._id, message);
         // cache processed error for an 5 minutes
         cache.put(messageCacheKey, message, 300000);
-        console.log('putted in cache. Memsize:', cache.memsize());
+        // console.log('putted in cache. Memsize:', cache.memsize());
       }
 
       /**
