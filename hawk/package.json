@@ -51,6 +51,7 @@
   },
   "dependencies": {
     "@codexteam/capella-pics": "^1.0.1",
+    "@codexteam/hawk.nodejs": "^1.2.1",
     "body-parser": "~1.17.1",
     "bowser": "^1.7.3",
     "codex-notifier": "^1.0.1",

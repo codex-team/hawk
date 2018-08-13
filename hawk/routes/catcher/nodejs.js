@@ -101,6 +101,7 @@ router.post('/nodejs', getNodeJsErrors);
 /* Error handler for the Node.js catcher */
 router.use(function(err, req, res, next) {
   console.log("Error in Node.js catcher: ", err);
+  global.catchException(err);
   res.sendStatus(500);
 });
 

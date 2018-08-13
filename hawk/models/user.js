@@ -40,6 +40,7 @@ module.exports = function () {
         })
         .catch(function (e) {
           logger.log('error', 'Can\'t check param uniqueness because of error ', e);
+          global.catchException(e);
         });
     });
   };
@@ -69,6 +70,7 @@ module.exports = function () {
           password
         };
       }).catch(function (err) {
+        global.catchException(err);
         logger.log('error', 'Cannot insert user because of ', err);
       });
   };
@@ -129,6 +131,7 @@ module.exports = function () {
                 currentProject['events']['archived'] += tag.archived || 0;
               });
             }).catch(function (e) {
+              global.catchException(e);
               logger.error('Events Query composing error: ', e);
             });
 
@@ -147,6 +150,7 @@ module.exports = function () {
         };
       })
       .catch(function (e) {
+        global.catchException(e);
         if (e) {
           logger.error('Can\'t get user because of ' + e);
         }

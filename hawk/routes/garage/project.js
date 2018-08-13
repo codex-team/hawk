@@ -16,55 +16,60 @@ let mongo = require('../../modules/database');
  * @param req
  * @param res
  */
-let add = function (req, res) {
-  let post = req.body,
-    token = uuid.v4();
+let add = function (req, res, next) {
+  try {
+    let post = req.body,
+      token = uuid.v4();
 
-  if (!post.name || !post.name.trim()) {
-    let message = 'Please, pass project name';
+    if (!post.name || !post.name.trim()) {
+      let message = 'Please, pass project name';
 
-    res.redirect('/garage/settings?success=0&message=' + message);
-    return;
-  }
+      res.redirect('/garage/settings?success=0&message=' + message);
+      return;
+    }
 
-  let data = {
-    user: res.locals.user,
-    name: post.name,
-    description: post.description,
-    domain: post.domain,
-    dt_added: new Date(),
-    uid_added: res.locals.user._id,
-    token: token,
-    logo: '',
-    uri: translit(post.name, true)
-  };
+    let data = {
+      user: res.locals.user,
+      name: post.name,
+      description: post.description,
+      domain: post.domain,
+      dt_added: new Date(),
+      uid_added: res.locals.user._id,
+      token: token,
+      logo: '',
+      uri: translit(post.name, true)
+    };
 
-  project.add(data)
-    .then(function (insertedProject) {
-      let renderParams = {
-        name: insertedProject.name,
-        token: insertedProject.token,
-        serverUrl: process.env.SERVER_URL
-      };
+    project.add(data)
+      .then(function (insertedProject) {
+        let renderParams = {
+          name: insertedProject.name,
+          token: insertedProject.token,
+          serverUrl: process.env.SERVER_URL
+        };
 
-      Twig.renderFile('views/notifies/email/project.twig', renderParams, function (err, html) {
-        if (err) {
-          logger.error('Can not render notify template because of ', err);
-          return;
-        }
+        Twig.renderFile('views/notifies/email/project.twig', renderParams, function (err, html) {
+          if (err) {
+            logger.error('Can not render notify template because of ', err);
+            global.catchException(err);
+            return;
+          }
 
-        email.send(
-          res.locals.user.email,
-          'Integration token for ' + insertedProject.name,
-          '',
-          html
-        );
+          email.send(
+            res.locals.user.email,
+            'Integration token for ' + insertedProject.name,
+            '',
+            html
+          );
+        });
+
+        let message = insertedProject.name + ' was successfully added';
+
+        res.redirect('/garage/settings?success=1&message=' + message);
       });
-
-      let message = insertedProject.name + ' was successfully added';
-
-      res.redirect('/garage/settings?success=1&message=' + message);
-    });
+  } catch (e) {
+    next(e)
+  }
 };
 
 /**
@@ -75,7 +80,7 @@ let add = function (req, res) {
  * @param req
  * @param res
  */
-let inviteMember = async function (req, res) {
+let inviteMember = async function (req, res, next) {
   let userEmail = req.body.email,
       projectId = req.body.projectId;
 
@@ -128,6 +133,7 @@ let inviteMember = async function (req, res) {
     Twig.renderFile('views/notifies/email/projectInvite.twig', renderParams, (err, html) => {
       if (err) {
         logger.error('Error while rendering email template %o' % err);
+        global.catchException(err);
         return;
       }
 
@@ -140,6 +146,7 @@ let inviteMember = async function (req, res) {
     });
   } catch (e) {
     logger.error('Error while sending project invitation ', e);
+    global.catchException(e);
     res.json({
       success: 0,
       message: e.message
@@ -154,23 +161,28 @@ let inviteMember = async function (req, res) {
  * @param req
  * @param res
  */
-let editNotifies = function (req, res) {
-  let post = req.body;
+let editNotifies = function (req, res, next) {
+  try {
+    let post = req.body;
 
-  project.editNotifies(post.projectId, post.userId, post.type, post.value)
-    .then(function () {
-      res.json({
-        success: 1,
-        message: 'Preferences was saved'
+    project.editNotifies(post.projectId, post.userId, post.type, post.value)
+      .then(function () {
+        res.json({
+          success: 1,
+          message: 'Preferences was saved'
+        });
+      })
+      .catch(function (e) {
+        logger.error('Error while saving notification preferences ', e);
+        global.catchException(e);
+        res.json({
+          success: 0,
+          message: 'Can\'t save notification preferences because of server error'
+        });
       });
-    })
-    .catch(function (e) {
-      logger.error('Error while saving notification preferences ', e);
-      res.json({
-        success: 0,
-        message: 'Can\'t save notification preferences because of server error'
-      });
-    });
+  } catch (e) {
+    next(e)
+  }
 };
 
 /**
@@ -180,23 +192,28 @@ let editNotifies = function (req, res) {
  * @param req
  * @param res
  */
-let saveWebhook = function (req, res) {
-  let post = req.body;
+let saveWebhook = function (req, res, next) {
+  try {
+    let post = req.body;
 
-  project.saveWebhook(post.projectId, post.userId, post.type, post.value)
-    .then(function () {
-      res.json({
-        success: 1,
-        message: 'Webhook was saved'
+    project.saveWebhook(post.projectId, post.userId, post.type, post.value)
+      .then(function () {
+        res.json({
+          success: 1,
+          message: 'Webhook was saved'
+        });
+      })
+      .catch(function (e) {
+        logger.error('Error while saving notifications webhook ', e);
+        global.catchException(e);
+        res.json({
+          success: 0,
+          message: 'Can\'t save webhook because of server error'
+        });
       });
-    })
-    .catch(function (e) {
-      logger.error('Error while saving notifications webhook ', e);
-      res.json({
-        success: 0,
-        message: 'Can\'t save webhook because of server error'
-      });
-    });
+  } catch (e) {
+    next(e)
+  }
 };
 
 /**
@@ -207,23 +224,28 @@ let saveWebhook = function (req, res) {
  * @param req
  * @param res
  */
-let granAdminAccess = function (req, res) {
-  let post = req.body;
+let granAdminAccess = function (req, res, next) {
+  try {
+    let post = req.body;
 
-  project.grantAdminAccess(post.projectId, post.userId)
-    .then(function () {
-      res.json({
-        success: 1,
-        message: 'Access granted'
+    project.grantAdminAccess(post.projectId, post.userId)
+      .then(function () {
+        res.json({
+          success: 1,
+          message: 'Access granted'
+        });
+      })
+      .catch(function (e) {
+        logger.error('Error while granting admin access ', e);
+        global.catchException(e);
+        res.json({
+          success: 0,
+          message: 'Can\'t grant access because of server error'
+        });
       });
-    })
-    .catch(function (e) {
-      logger.error('Error while granting admin access ', e);
-      res.json({
-        success: 0,
-        message: 'Can\'t grant access because of server error'
-      });
-    });
+  } catch (e) {
+    next(e)
+  }
 };
 
 router.post('/project/add', add);

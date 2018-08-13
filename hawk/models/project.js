@@ -330,6 +330,7 @@ module.exports = function () {
       })
       .catch(e => {
         logger.error('Can not get user data cause ', e);
+        global.catchException(e);
         return {};
       });
   };

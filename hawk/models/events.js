@@ -214,6 +214,7 @@ module.exports = (function () {
     try {
       return await mongo.find(collections.ARCHIVE, query);
     } catch (e) {
+      global.catchException(e);
       logger.log('Error while getting archived events', e);
     }
   };

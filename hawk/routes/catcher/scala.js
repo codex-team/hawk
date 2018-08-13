@@ -102,6 +102,7 @@ router.post('/scala', getNodeJsErrors);
 /* Error handler for the Scala catcher */
 router.use(function(err, req, res, next) {
   console.log("Error in Scala catcher: ", err);
+  global.catchException(error);
   res.sendStatus(500);
 });
 

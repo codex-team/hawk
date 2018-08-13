@@ -52,6 +52,7 @@ class Archiver {
       )
       .catch((e) => {
         logger.log('Error while getting count events of all projects:', e);
+        global.catchException(e);
       });
   }
 
@@ -77,6 +78,7 @@ class Archiver {
 
       } catch (e) {
         logger.log('Archiver: error while getting last event of olders', e);
+        global.catchException(e);
         return 0;
       }
     }));
@@ -181,6 +183,7 @@ class Archiver {
 
       return lastEvent.length ? lastEvent.shift() : null;
     } catch (e) {
+      global.catchException(e);
       logger.log('Archiver: error while getting last event of olders', e);
     }
   }

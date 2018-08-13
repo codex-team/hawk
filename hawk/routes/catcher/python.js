@@ -57,7 +57,8 @@ let getPythonErrors = function (req, res) {
 
       res.sendStatus(200);
     })
-    .catch( function () {
+    .catch( error => {
+      global.catchException(error);
       res.sendStatus(500);
     });
 };

@@ -176,47 +176,51 @@ let loadMoreDataForPagination_ = function (templatePath, events, canLoadMore) {
  * @param req
  * @param res
  */
-let event = (req, res) => {
-  /**
-   * Current user's project list stored in res.locals.userProjects
-   * @see  app.js
-   * @type {Array}
-   */
-  let userProjects = res.locals.userProjects,
+let event = (req, res, next) => {
+  try {
+    /**
+     * Current user's project list stored in res.locals.userProjects
+     * @see  app.js
+     * @type {Array}
+     */
+    let userProjects = res.locals.userProjects,
       projectUri = req.params.project,
       eventGroupHash = req.params.id;
 
-  /** pagination settings */
-  let page = req.query.page || 1,
+    /** pagination settings */
+    let page = req.query.page || 1,
       limit = EVENT_LIMIT,
       skip = (parseInt(page) - 1) * (limit + 1);
 
-  let currentProject = getProjectInfo(userProjects, projectUri);
+    let currentProject = getProjectInfo(userProjects, projectUri);
 
-  /**
-   * If project was not found in the list of user's projects then return 404
-   */
-  if (!currentProject) {
-    res.sendStatus(404);
-    return;
-  }
-
-  modelEvents.get(currentProject.id, {groupHash: eventGroupHash}, false, false, limit + 1, skip)
-    .then(markEventsAsRead.bind(null, currentProject))
-    .then(async events => {
-      let canLoadMore = events.length > limit;
-
-      /**
-       * Get count of total events with this groupHash
-       */
-      let eventsCount = await modelEvents.getCount(currentProject.id, {groupHash: eventGroupHash});
-
-      return makeResponse_.call({req, res}, currentProject, events, canLoadMore, eventsCount);
-    })
-    .catch((err) => {
-      logger.error('Error while handling event-page request: ', err);
+    /**
+     * If project was not found in the list of user's projects then return 404
+     */
+    if (!currentProject) {
       res.sendStatus(404);
-    });
+      return;
+    }
+
+    modelEvents.get(currentProject.id, {groupHash: eventGroupHash}, false, false, limit + 1, skip)
+      .then(markEventsAsRead.bind(null, currentProject))
+      .then(async events => {
+        let canLoadMore = events.length > limit;
+
+        /**
+         * Get count of total events with this groupHash
+         */
+        let eventsCount = await modelEvents.getCount(currentProject.id, {groupHash: eventGroupHash});
+
+        return makeResponse_.call({req, res}, currentProject, events, canLoadMore, eventsCount);
+      })
+      .catch((err) => {
+        logger.error('Error while handling event-page request: ', err);
+        res.sendStatus(404);
+      });
+  } catch (e) {
+    next(e)
+  }
 };
 
 router.get('/:project/event/:id?', event);

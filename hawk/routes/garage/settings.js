@@ -31,38 +31,46 @@ const fs = require('fs');
  * @param req
  * @param res
  */
-let uploadLogo = function (req, res) {
-  let file = req.files['file'];
+let uploadLogo = function (req, res, next) {
+  try {
+    let file = req.files['file'];
 
-  if (!checkImageValid(file, res)) {
-    return;
-  }
-
-  uploader.uploadImageToCapella(file.path, function (resp) {
-
-    /**
-     * Remove temporary file
-     */
-    fs.unlink(file.path);
-
-    if (!resp.success) {
-      res.send({
-        status: 500,
-        message: 'Error. Please, try again or later'
-      });
+    if (!checkImageValid(file, res)) {
       return;
     }
 
-    let logoUrl = resp.url;
+    uploader.uploadImageToCapella(file.path, (resp) => {
 
-    project.setIcon(req.fields.projectId, logoUrl)
+      /**
+       * Remove temporary file
+       */
+      fs.unlink(file.path);
+
+      if (!resp.success) {
+        global.catchException('Error while uploading logo image', resp);
+        res.send({
+          status: 400,
+          message: 'Error. Please, try again or later'
+        });
+        return;
+      }
+
+      let logoUrl = resp.url;
+
+      project.setIcon(req.fields.projectId, logoUrl)
         .then(function () {
           res.send({
             status: 200,
             logoUrl: logoUrl
           });
+        })
+        .catch(error => {
+          global.catchException(error)
         });
-  });
+    });
+  } catch (e) {
+    next(e)
+  }
 };
 
 /**
@@ -106,20 +114,24 @@ let checkImageValid = function (file, res) {
  * @param req
  * @param res
  */
-let index = function (req, res) {
-  let params = {
-    user: res.locals.user,
-    csrfToken: req.csrfToken(),
-    meta: {
-      title: 'User settings'
-    },
-    success: req.query.success,
-    message: req.query.message,
-    projects: res.locals.userProjects,
-    eventsLimit: archiver.eventsLimit
-  };
+let index = function (req, res, next) {
+  try {
+    let params = {
+      user: res.locals.user,
+      csrfToken: req.csrfToken(),
+      meta: {
+        title: 'User settings'
+      },
+      success: req.query.success,
+      message: req.query.message,
+      projects: res.locals.userProjects,
+      eventsLimit: archiver.eventsLimit
+    };
 
-  res.render('garage/settings', params);
+    res.render('garage/settings', params);
+  } catch (e) {
+    next(e)
+  }
 };
 
 /**
@@ -128,7 +140,7 @@ let index = function (req, res) {
  * @param req
  * @param res
  */
-let update = function (req, res) {
+let update = function (req, res, next) {
   let post = req.body;
 
   try {
@@ -152,8 +164,12 @@ let update = function (req, res) {
         let message = 'Saved 😉';
 
         res.redirect('/garage/settings?success=1&message=' + message);
+      })
+      .catch(error => {
+        next(e)
       });
   } catch (e) {
+    global.catchException(e);
     res.redirect('/garage/settings?success=0&message=' + e.message);
   }
 };
