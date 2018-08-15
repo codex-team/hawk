@@ -8,6 +8,12 @@ let project = require('../../models/project');
 const JSSource = require('../../models/js-source');
 
 /**
+ * @see {@link https://github.com/ptarjan/node-cache}
+ */
+const cache = require('memory-cache');
+
+
+/**
  * @typedef {object} JSCatcherInput
  * @property {string}   token - Project's Token
  * @property {string}   message - main Error text
@@ -201,6 +207,130 @@ async function consumeSourceMap(mapBody) {
 }
 
 /**
+ * Return cache key for a message
+ * @param {string} projectId
+ * @param {JSCatcherInput} message
+ * @return {string}
+ */
+function getCacheKeyForAMessage(projectId, message) {
+  let bundle = message.error_location.file,
+      revision = message.error_location.revision,
+      line = message.error_location.line,
+      col =  message.error_location.col;
+
+  return `js-event-catched:project:${projectId}:bundle:${bundle}:revision:${revision}:line:${line}:col:${col}`;
+}
+
+/**
+ * Consume source-map, parse stack
+ * @param {string} projectId
+ * @param {JSCatcherInput} message
+ * @return {JSCatcherInput}
+ */
+async function processMessage(projectId, message) {
+  /**
+   * Remember original script location. (It may be overridden by source-map module name)
+   */
+  let bundleLocation = message.error_location.file;
+  /**
+   * Download source-map
+   * @type {JSSourceItem|}
+   */
+  /**
+   * @since 22 jub 2018
+   * Disable source-map parsing
+   */
+  let jsSource = null; //await downloadSource(projectId, bundleLocation, message.error_location.revision);
+
+  /**
+   * Parse Stack
+   * @type {StackItem[]}
+   */
+  message.stack = stack.parse(message);
+
+  /**
+   * Analyze source map to find original position
+   */
+  if (jsSource && jsSource.sourceMapBody && jsSource.sourceMapBody.length){
+    try {
+      /**
+       * Accept source map
+       * @type {BasicSourceMapConsumer}
+       */
+
+      let consumer = await consumeSourceMap(jsSource.sourceMapBody);
+
+      /**
+       * Error's original position
+       */
+      let originalLocation = consumer.originalPositionFor({
+        line: message.error_location.line,
+        column: message.error_location.col
+      });
+
+      /**
+       * override error location from this
+       * {
+           *    file: 'http://v.dtf.osnova.io/static/build/v.dtf.osnova.io/all.min.js?1528101883',
+           *    line: 18,
+           *    col: 7658,
+           *    revision: 1528101883,
+           * }
+       *
+       * with parsed location data
+       * {
+           *    source: 'src/Components/MainMenu/js/modules/module.main_menu.js',
+           *    line: 129,
+           *    column: 40,
+           *    name: 'getElementsByName'
+           * }
+       */
+      if (originalLocation.source){
+        message.error_location.file = originalLocation.source;
+        message.error_location.fileOrigin = bundleLocation; // save bundle's URL
+      }
+      if (originalLocation.line){
+        message.error_location.line = originalLocation.line;
+      }
+      if (originalLocation.column){
+        message.error_location.col = originalLocation.column;
+      }
+      if (originalLocation.name){
+        message.error_location.func = originalLocation.name;
+      }
+
+      /**
+       * Stack's original position
+       */
+      message.stack = !message.stack ? [] : message.stack.map(item => {
+        let original = consumer.originalPositionFor({
+          line: item.line,
+          column: item.col
+        });
+
+        let trace = null;
+        if (original.source) {
+          trace = readSourceLines(consumer, original);
+        }
+
+        return {
+          func: original.name || item.func,
+          file: original.source || item.file,
+          line: original.line || item.line,
+          col: original.column || item.col,
+          trace
+        }
+      });
+    } catch (e) {
+      logger.log('Error while consuming source-map: %o', e);
+      console.log('Error while consuming source-map:', e);
+    }
+  }
+
+  return message;
+}
+
+/**
  * Handler for socket messages
  * @param {JSCatcherInput} message
  * @throws {Error} - Access denied
@@ -219,93 +349,21 @@ function handleMessage(message) {
     })
     .then(async foundProject => {
 
-      /**
-       * Remember original script location. (It may be overridden by source-map module name)
-       */
-      let bundleLocation = message.error_location.file;
-      /**
-       * Download source-map
-       * @type {JSSourceItem|}
-       */
-      let jsSource = await downloadSource(foundProject._id, bundleLocation, message.error_location.revision);
+      let messageCacheKey = getCacheKeyForAMessage(foundProject._id, message);
 
-      /**
-       * Parse Stack
-       * @type {StackItem[]}
-       */
-      message.stack = stack.parse(message);
+      // console.log('key', messageCacheKey);
+      messageCacheKey = md5(messageCacheKey);
+      // console.log('key hashed ', messageCacheKey);
+      let processedMessageFromCache = cache.get(messageCacheKey);
 
-      /**
-       * Analyze source map to find original position
-       */
-      if (jsSource && jsSource.sourceMapBody){
-        /**
-         * Accept source map
-         * @type {BasicSourceMapConsumer}
-         */
-        let consumer = await consumeSourceMap(jsSource.sourceMapBody);
-
-        /**
-         * Error's original position
-         */
-        let originalLocation = consumer.originalPositionFor({
-          line: message.error_location.line,
-          column: message.error_location.col
-        });
-
-        /**
-         * override error location from this
-         * {
-         *    file: 'http://v.dtf.osnova.io/static/build/v.dtf.osnova.io/all.min.js?1528101883',
-         *    line: 18,
-         *    col: 7658,
-         *    revision: 1528101883,
-         * }
-         *
-         * with parsed location data
-         * {
-         *    source: 'src/Components/MainMenu/js/modules/module.main_menu.js',
-         *    line: 129,
-         *    column: 40,
-         *    name: 'getElementsByName'
-         * }
-         */
-        if (originalLocation.source){
-          message.error_location.file = originalLocation.source;
-          message.error_location.fileOrigin = bundleLocation; // save bundle's URL
-        }
-        if (originalLocation.line){
-          message.error_location.line = originalLocation.line;
-        }
-        if (originalLocation.column){
-          message.error_location.col = originalLocation.column;
-        }
-        if (originalLocation.name){
-          message.error_location.func = originalLocation.name;
-        }
-
-        /**
-         * Stack's original position
-         */
-        message.stack = !message.stack ? [] : message.stack.map(item => {
-          let original = consumer.originalPositionFor({
-            line: item.line,
-            column: item.col
-          });
-
-          let trace = null;
-          if (original.source) {
-            trace = readSourceLines(consumer, original);
-          }
-
-          return {
-            func: original.name || item.func,
-            file: original.source || item.file,
-            line: original.line || item.line,
-            col: original.column || item.col,
-            trace
-          }
-        });
+      if (processedMessageFromCache) {
+        // console.log('got from cache!');
+        message = processedMessageFromCache;
+      } else {
+        message = await processMessage(foundProject._id, message);
+        // cache processed error for an 5 minutes
+        cache.put(messageCacheKey, message, 300000);
+        // console.log('putted in cache. Memsize:', cache.memsize());
       }
 
       /**
