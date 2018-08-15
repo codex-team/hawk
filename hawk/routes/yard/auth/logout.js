@@ -6,8 +6,12 @@ var auth = require('../../../modules/auth');
 
 
 router.get('/logout', function (req, res) {
-  auth.logout(res);
-  res.redirect('/');
+  try {
+    auth.logout(res);
+    res.redirect('/');
+  } catch (e) {
+    next(e)
+  }
 });
 
 module.exports = router;

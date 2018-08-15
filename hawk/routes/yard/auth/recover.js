@@ -11,21 +11,28 @@ let user = require('../../../models/user');
  */
 let recover = {
 
-  get: function (req, res) {
-    let recoverHash = req.params.hash,
+  get: function (req, res, next) {
+    try {
+      let recoverHash = req.params.hash,
         action = '/recover/' + recoverHash;
 
-    user.getByParams({recoverHash: recoverHash})
-      .then(function (foundUser) {
-        if (!foundUser) {
-          res.render('yard/errors/error', {
-            title: 'This recover link doesn\'t works.',
-            message: 'Try reset your password again.'
-          });
-          return;
-        }
-        res.render('yard/auth/recover', {action: action});
-      });
+      user.getByParams({recoverHash: recoverHash})
+        .then(function (foundUser) {
+          if (!foundUser) {
+            res.render('yard/errors/error', {
+              title: 'This recover link doesn\'t works.',
+              message: 'Try reset your password again.'
+            });
+            return;
+          }
+          res.render('yard/auth/recover', {action: action});
+        })
+        .catch(error => {
+          next(error)
+        });
+    } catch (e) {
+      next(e);
+    }
   },
 
   /**
@@ -34,36 +41,42 @@ let recover = {
    * @param req
    * @param res
    */
-  post: function (req, res) {
-    let recoverHash = req.params.hash,
+  post: function (req, res, next) {
+    try {
+      let recoverHash = req.params.hash,
         action = '/recover/' + recoverHash,
         password = req.body.password,
         repeatPassword = req.body.repeatPassword;
 
+      user.getByParams({recoverHash: recoverHash})
+        .then(function (foundUser) {
+          if (!foundUser) {
+            res.render('yard/errors/error', {
+              title: 'This recover link doesn\'t works.',
+              message: 'Try reset your password again.'
+            });
+            return;
+          }
 
-    user.getByParams({recoverHash: recoverHash})
-      .then(function (foundUser) {
-        if (!foundUser) {
-          res.render('yard/errors/error', {
-            title: 'This recover link doesn\'t works.',
-            message: 'Try reset your password again.'
-          });
-          return;
-        }
+          if (password != repeatPassword) {
+            res.render('yard/auth/recover', {action: action, message: {type: 'error', text: 'Passwords don\'t match'}});
+            return;
+          }
 
-        if (password != repeatPassword) {
-          res.render('yard/auth/recover', {action: action, message: {type: 'error', text: 'Passwords don\'t match'}});
-          return;
-        }
-
-        return user.update(foundUser, {password: password, recoverHash: null})
-          .then(function () {
-            return foundUser.email;
-          });
-      })
-      .then(function (email) {
-        res.redirect('/login?email=' + email);
-      });
+          return user.update(foundUser, {password: password, recoverHash: null})
+            .then(function () {
+              return foundUser.email;
+            });
+        })
+        .then(function (email) {
+          res.redirect('/login?email=' + email);
+        })
+        .catch(error => {
+          next(error);
+        });
+    } catch (e) {
+      next(e)
+    }
   }
 };
 

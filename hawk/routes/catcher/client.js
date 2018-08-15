@@ -421,6 +421,7 @@ function socketConnected (ws) {
           ws.send(JSON.stringify({type: 'error', message: error.message}));
           ws.close();
         } else {
+          global.catchException(error);
           ws.send(JSON.stringify({type: 'error', message: ERR_TYPES.internalError}));
         }
       })

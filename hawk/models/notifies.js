@@ -93,6 +93,7 @@ module.exports = function () {
                 }
               }, (err, httpResponse, body) => {
                 if (err) {
+                  global.catchException(err);
                   logger.error('Can not send notification to Telegram because of ', err);
                 }
               });
@@ -110,6 +111,7 @@ module.exports = function () {
                 }
               }, (err, httpResponse, body) => {
                 if (err) {
+                  global.catchException(err);
                   logger.error('Can not send notification to Slack because of ', err);
                 }
               });
@@ -171,6 +173,7 @@ module.exports = function () {
       /** notify about first event */
       send_(project, event, 1)
         .catch(function (e) {
+          global.catchException(e);
           logger.error('Error while sending notification ', e);
         });
       notFirstError = false;
@@ -187,6 +190,7 @@ module.exports = function () {
         /** notify about pack of errors */
         send_(project, event, timer.times)
           .catch(function (e) {
+            global.catchException(e);
             logger.error('Error while sending notification ', e);
           });
       }

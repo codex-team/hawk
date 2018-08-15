@@ -11,27 +11,30 @@ const Archiver = require('../../modules/archiver');
  */
 if (process.env.ARCHIVER_ROUTE) {
   router.get(`${process.env.ARCHIVER_ROUTE}`, async (req, res, next) => {
-    let archiver = new Archiver();
+    try {
+      let archiver = new Archiver();
 
-    /**
-     * @type {{projectId: string, projectName: string, archived: number}[]} removed
-     */
-    let archivedEvents = await archiver.archive(),
+      /**
+       * @type {{projectId: string, projectName: string, archived: number}[]} removed
+       */
+      let archivedEvents = await archiver.archive(),
         total = 0;
 
-    let answer = 'Hawk Archiver 🍇 \n';
+      let answer = 'Hawk Archiver 🍇 \n';
 
-    archivedEvents.forEach( project => {
-      if (project.archived > 0) {
-        answer += `\n${project.archived} events | <b>${project.projectName}</b> | <code>${project.projectId}</code>`;
-        total += project.archived;
-      }
-    });
+      archivedEvents.forEach(project => {
+        if (project.archived > 0) {
+          answer += `\n${project.archived} events | <b>${project.projectName}</b> | <code>${project.projectId}</code>`;
+          total += project.archived;
+        }
+      });
 
-    answer += `\n\n${total} total events archived`;
+      answer += `\n\n${total} total events archived`;
 
-    res.send(answer);
-
+      res.send(answer);
+    } catch (e) {
+      next(e)
+    }
   });
 }
 
@@ -39,9 +42,13 @@ if (process.env.ARCHIVER_ROUTE) {
  * Home page
  */
 router.get('/', function (req, res, next) {
-  res.render('yard/index', {
-    user : res.locals.user
-  });
+  try {
+    res.render('yard/index', {
+      user : res.locals.user
+    });
+  } catch (e) {
+    next(e)
+  }
 });
 
 
@@ -49,17 +56,21 @@ router.get('/', function (req, res, next) {
  * Docs page
  */
 router.get('/docs', function (req, res, next) {
-  res.render('yard/docs/index', {
+  try {
+    res.render('yard/docs/index', {
 
-    meta : {
+      meta : {
 
-      title : 'Platform documentation',
-      description : 'Guide for integration and usage.'
+        title : 'Platform documentation',
+        description : 'Guide for integration and usage.'
 
-    },
-    eventsLimit: Archiver.eventsLimit
+      },
+      eventsLimit: Archiver.eventsLimit
 
-  });
+    });
+  } catch (e) {
+    next(e)
+  }
 });
 
 module.exports = router;
