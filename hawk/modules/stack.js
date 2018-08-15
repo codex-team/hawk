@@ -134,6 +134,7 @@ module.exports = function () {
         });
       }
     } catch (err) {
+      global.catchException(err);
       console.log(err);
     }
 

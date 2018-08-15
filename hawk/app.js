@@ -9,6 +9,19 @@ let twigExtensions = require('./modules/twig');
 
 require('dotenv').config();
 
+/**
+ * Set up Hawk cacher
+ */
+global.catchException = () => {};
+
+if (process.env.HAWK_CATCHER_TOKEN) {
+  const hawkCatcher = require('@codexteam/hawk.nodejs')({
+    accessToken: process.env.HAWK_CATCHER_TOKEN
+  });
+
+  global.catchException = hawkCatcher.catchException;
+}
+
 /** * Loggers ***/
 /* Main logger */
 let winston = require('winston');
@@ -189,7 +202,7 @@ app.use(function (req, res, next) {
 });
 
 // error handler
-app.use(function (err, req, res) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = process.env.ENVIRONMENT === 'DEVELOPMENT' ? err : {};
@@ -218,6 +231,8 @@ app.use(function (err, req, res) {
       title: ':(',
       message : 'Sorry, dude. Looks like some of our services is busy.'
     };
+
+    global.catchException(err);
   }
 
   res.render('yard/errors/error', errorPageData);

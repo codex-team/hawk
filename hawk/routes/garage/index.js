@@ -16,66 +16,71 @@ const EVENT_LIMIT = 8;
  * @param req
  * @param res
  */
-let index = function (req, res) {
-  let currentProject,
+let index = function (req, res, next) {
+  try {
+    let currentProject,
       currentTag;
 
-  let params = req.params,
+    let params = req.params,
       allowedTags = ['fatal', 'warnings', 'notice', 'javascript'];
 
-  currentProject = params.project;
-  currentTag = params.tag;
+    currentProject = params.project;
+    currentTag = params.tag;
 
-  /** Check if use tag w\o project */
-  if (!currentTag && allowedTags.includes(currentProject)) {
-    currentTag = currentProject;
-    currentProject = null;
-  }
+    /** Check if use tag w\o project */
+    if (!currentTag && allowedTags.includes(currentProject)) {
+      currentTag = currentProject;
+      currentProject = null;
+    }
 
-  if (currentTag && !allowedTags.includes(currentTag)) {
-    res.sendStatus(404);
-    return;
-  }
-
-  if (currentProject) {
-    res.locals.userProjects.forEach(function (project) {
-      if (project.user.projectUri === currentProject) {
-        currentProject = project;
-      }
-    });
-
-    if (!currentProject.name) {
+    if (currentTag && !allowedTags.includes(currentTag)) {
       res.sendStatus(404);
       return;
     }
-  }
 
-  let findParams = {};
-
-  if (currentTag) {
-    findParams.tag = currentTag;
-  }
-
-  /** pagination settings */
-  let page    = req.query.page || 1,
-      limit   = EVENT_LIMIT,
-      skip    = (parseInt(page) - 1) * (limit + 1);
-
-  Promise.resolve().then(function () {
     if (currentProject) {
-      return events.get(currentProject.id, findParams, true, false, limit + 1, skip);
-    } else {
-      return [];
-    }
-  })
-    .then(function (foundEvents) {
-      let canLoadMore = foundEvents.length > limit;
+      res.locals.userProjects.forEach(function (project) {
+        if (project.user.projectUri === currentProject) {
+          currentProject = project;
+        }
+      });
 
-      return makeResponse_.call({req, res}, foundEvents, currentProject, currentTag, canLoadMore);
+      if (!currentProject.name) {
+        res.sendStatus(404);
+        return;
+      }
+    }
+
+    let findParams = {};
+
+    if (currentTag) {
+      findParams.tag = currentTag;
+    }
+
+    /** pagination settings */
+    let page = req.query.page || 1,
+      limit = EVENT_LIMIT,
+      skip = (parseInt(page) - 1) * (limit + 1);
+
+    Promise.resolve().then(function () {
+      if (currentProject) {
+        return events.get(currentProject.id, findParams, true, false, limit + 1, skip);
+      } else {
+        return [];
+      }
     })
-    .catch (function (e) {
-      logger.error('Error while getting user data for main garage page: ', e);
-    });
+      .then(function (foundEvents) {
+        let canLoadMore = foundEvents.length > limit;
+
+        return makeResponse_.call({req, res}, foundEvents, currentProject, currentTag, canLoadMore);
+      })
+      .catch(function (e) {
+        logger.error('Error while getting user data for main garage page: ', e);
+        global.catchException(e);
+      });
+  } catch (e) {
+    next(e)
+  }
 };
 
 /**

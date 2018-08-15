@@ -53,6 +53,7 @@ module.exports = function () {
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
+        global.catchException(error);
         return logger.log('error', 'Error while sending email ', error);
       }
 
