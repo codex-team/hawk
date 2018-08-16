@@ -33,6 +33,10 @@
         font-size: 16px;
         margin-top: 3px;
         display: block;
+        max-width: 200px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
 
     &__heading {
