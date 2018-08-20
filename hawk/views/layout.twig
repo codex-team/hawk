@@ -21,7 +21,7 @@ errors tracking service.' }}" />
   <body>
     {% block body %}{% endblock %}
     {% if env.HAWK_CATCHER_TOKEN is not empty  %}
-      <script src="https://cdn.rawgit.com/codex-team/hawk.javascript/master/hawk.js" async onload="hawk.init({token: '{{ env.HAWK_CATCHER_TOKEN }}', revision: '{{ bundleRevision }}'});"></script>
+      <script src="https://cdn.jsdelivr.net/npm/hawk.javascript@2.0.0/dist/hawk.js" async onload="hawk.init('{{ env.HAWK_CATCHER_TOKEN }}');"></script>
     {% endif %}
     {% if env.YANDEX_METRIKA_ID is not empty %}
       <!-- Yandex.Metrika counter -->
