@@ -143,7 +143,6 @@ app.use(function (req, res, next) {
   user.getInfo(req).then(function (userData) {
     if (userData) {
       res.locals.user = userData.user;
-      console.log(res.locals.user);
       res.locals.userProjects = userData.projects;
     }
 

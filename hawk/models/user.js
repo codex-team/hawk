@@ -88,8 +88,6 @@ module.exports = function () {
       .then(function (currentUser_) {
         currentUser = currentUser_;
 
-        console.log(currentUser_);
-
         if (!currentUser) {
           throw null;
         }
@@ -152,10 +150,10 @@ module.exports = function () {
         };
       })
       .catch(function (e) {
-        global.catchException(e);
         if (e) {
           logger.error('Can\'t get user because of ' + e);
         }
+
         return {};
       });
   };
