@@ -88,6 +88,8 @@ module.exports = function () {
       .then(function (currentUser_) {
         currentUser = currentUser_;
 
+        console.log(currentUser_);
+
         if (!currentUser) {
           throw null;
         }
