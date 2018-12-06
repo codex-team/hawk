@@ -122,8 +122,8 @@ app.use(favicon(path.join(__dirname, 'public/images', 'favicon.ico')));
 /** We use morgan as express middleware to link winston and express **/
 app.use(morgan('combined', { stream: accessLogger.stream }));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit: '5mb'}));
+app.use(bodyParser.urlencoded({ limit: '5mb', extended: false }));
 app.use(cookieParser());
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
