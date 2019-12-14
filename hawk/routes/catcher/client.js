@@ -73,11 +73,11 @@ let receiver = new WebSocket.Server({
   port: process.env.SOCKET_PORT
 });
 
-/* Send client errors to Hawk V2.0 */
+/* Send client errors to Hawk V2 */
 let sender = new WebSocketClient();
 sender.open(process.env.HAWK_MIGRATION_HOST || 'wss://kepler.codex.so:443/ws');
-sender.onopen = function(e){
-  console.log("WebSocketClient connected:", e);
+sender.onopen = function(_){
+  console.log("🔗 WebSocketClient connected");
 };
 sender.onmessage = function incoming(data) {
   console.log(`Got from collector: ${data}`);
@@ -404,6 +404,7 @@ function handleMessage(message) {
         time          : Math.floor(message.time / 1000)
       };
 
+      // If there is migration for the token, send data to Hawk V2
       if (migration.MAPPING[message.token]) {
         let eventV2 = {
           token: migration.MAPPING[message.token],

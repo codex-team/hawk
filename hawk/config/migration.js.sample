@@ -1,10 +1,7 @@
 module.exports = {
 
-  USERS: 'users',
-  PROJECTS: 'projects',
-  MEMBERSHIP: 'membership',
-  TEAM: 'team',
-  EVENTS: 'events',
-  ARCHIVE: 'archive'
+  MAPPING: {
+    'ffd76ab0-76f9-4bdc-9977-ace85182342b': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiI1ZGViNzYxM2YwYTFkMDJjMmM0Yjg5OTgiLCJpYXQiOjE1NzU3MTIyNzV9.jE6zLZY2Z6lFw3YGnMUp3U9wMkMBFw6rKRzLmaJrgy8',
+  }
 
 };
