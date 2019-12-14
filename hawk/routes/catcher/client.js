@@ -8,7 +8,7 @@ let sourceMap = require('source-map');
 let stack = require('../../modules/stack');
 let project = require('../../models/project');
 const JSSource = require('../../models/js-source');
-const URL = require('url').URL;
+const URL = require('url');
 const { Agent } = require('https');
 
 /**
@@ -74,12 +74,12 @@ let receiver = new WebSocket.Server({
 });
 
 /* Send client errors to Hawk V2 */
-let sender = new WebSocketClient();
-sender.open(process.env.HAWK_MIGRATION_HOST || 'wss://kepler.codex.so:443/ws');
-sender.onopen = function(_){
+let senderToHawk2 = new WebSocketClient();
+senderToHawk2.open(process.env.HAWK_MIGRATION_HOST || 'wss://kepler.codex.so:443/ws');
+senderToHawk2.onopen = function(_){
   console.log("🔗 WebSocketClient connected");
 };
-sender.onmessage = function incoming(data) {
+senderToHawk2.onmessage = function incoming(data) {
   console.log(`Got from collector: ${data}`);
 };
 
@@ -415,12 +415,14 @@ function handleMessage(message) {
             timestamp: Math.floor(message.time / 1000),
             context: {},
             user: null,
-            get: getGetParams(message.location.url),
+            get: URL.parse(message.location.url, {
+              parseQueryString: true
+            }).query,
             backtrace: message.stack,
           }
         };
 
-        await sender.send(JSON.stringify(eventV2));
+        await senderToHawk2.send(JSON.stringify(eventV2));
 
       } else {
         console.log(`Unsupported migration for token: ${message.token}`)
@@ -437,27 +439,6 @@ function handleMessage(message) {
        */
       await notifies.send(foundProject, event);
     });
-}
-
-function getGetParams(url) {
-  let searchString = new URL(url).search.substr(1);
-
-  if (!searchString) {
-    return null;
-  }
-
-  /**
-   * Create object from get-params string
-   */
-  const pairs = searchString.split('&');
-
-  return pairs.reduce((accumulator, pair) => {
-    const [key, value] = pair.split('=');
-
-    accumulator[key] = value;
-
-    return accumulator;
-  }, {});
 }
 
 /**
