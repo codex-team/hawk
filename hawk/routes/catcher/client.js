@@ -1,11 +1,14 @@
 let events   = require('../../models/events');
 let notifies = require('../../models/notifies');
+let migration = require('../../config/migration');
 let WebSocket = require('ws');
 let md5 = require('../../modules/utils').md5;
 let sourceMap = require('source-map');
 let stack = require('../../modules/stack');
 let project = require('../../models/project');
 const JSSource = require('../../models/js-source');
+const URL = require('url').URL;
+const { Agent } = require('https');
 
 /**
  * @see {@link https://github.com/ptarjan/node-cache}
@@ -68,6 +71,15 @@ let receiver = new WebSocket.Server({
   path: '/catcher/client',
   port: process.env.SOCKET_PORT
 });
+
+/* Send client errors to Hawk V2.0 */
+let sender = new WebSocket(process.env.HAWK_MIGRATION_HOST || 'wss://kepler.codex.so:443/ws', {
+  rejectUnauthorized: false
+});
+sender.on('message', function incoming(data) {
+  console.log(`Got from collector: ${data}`);
+});
+sender.on('error', console.error);
 
 /**
  * Get info about user browser and platform
@@ -337,7 +349,7 @@ async function processMessage(projectId, message) {
  * @return {Promise}
  */
 function handleMessage(message) {
-  logger.info('Got javascript error from ' + message.location.host);
+  logger.info('Got javascript error from ' + message.location.host + ' with token: ' + message.token);
 
   // load project
   return project.getByToken(message.token)
@@ -390,6 +402,27 @@ function handleMessage(message) {
         time          : Math.floor(message.time / 1000)
       };
 
+      if (migration.MAPPING[message.token]) {
+        let eventV2 = {
+          token: migration.MAPPING[message.token],
+          catcherType: 'errors/javascript',
+          payload: {
+            title: message.message,
+            release: null,
+            timestamp: Math.floor(message.time / 1000),
+            context: {},
+            user: null,
+            get: getGetParams(message.location.url),
+            backtrace: message.stack,
+          }
+        };
+
+        await sender.send(JSON.stringify(eventV2));
+
+      } else {
+        console.log(`Unsupported migration for token: ${message.token}`)
+      }
+
       /**
        * Save event
        */
@@ -401,6 +434,27 @@ function handleMessage(message) {
        */
       await notifies.send(foundProject, event);
     });
+}
+
+function getGetParams(url) {
+  let searchString = new URL(url).search.substr(1);
+
+  if (!searchString) {
+    return null;
+  }
+
+  /**
+   * Create object from get-params string
+   */
+  const pairs = searchString.split('&');
+
+  return pairs.reduce((accumulator, pair) => {
+    const [key, value] = pair.split('=');
+
+    accumulator[key] = value;
+
+    return accumulator;
+  }, {});
 }
 
 /**
