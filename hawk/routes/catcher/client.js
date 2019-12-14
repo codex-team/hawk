@@ -1,11 +1,15 @@
 let events   = require('../../models/events');
 let notifies = require('../../models/notifies');
+let migration = require('../../config/migration');
+let { WebSocketClient } = require('../../modules/websocket');
 let WebSocket = require('ws');
 let md5 = require('../../modules/utils').md5;
 let sourceMap = require('source-map');
 let stack = require('../../modules/stack');
 let project = require('../../models/project');
 const JSSource = require('../../models/js-source');
+const URL = require('url');
+const { Agent } = require('https');
 
 /**
  * @see {@link https://github.com/ptarjan/node-cache}
@@ -68,6 +72,16 @@ let receiver = new WebSocket.Server({
   path: '/catcher/client',
   port: process.env.SOCKET_PORT
 });
+
+/* Send client errors to Hawk V2 */
+let senderToHawk2 = new WebSocketClient();
+senderToHawk2.open(process.env.HAWK_MIGRATION_HOST || 'wss://kepler.codex.so:443/ws');
+senderToHawk2.onopen = function(_){
+  console.log("🔗 WebSocketClient connected");
+};
+senderToHawk2.onmessage = function incoming(data) {
+  console.log(`Got from collector: ${data}`);
+};
 
 /**
  * Get info about user browser and platform
@@ -337,7 +351,7 @@ async function processMessage(projectId, message) {
  * @return {Promise}
  */
 function handleMessage(message) {
-  logger.info('Got javascript error from ' + message.location.host);
+  logger.info('Got javascript error from ' + message.location.host + ' with token: ' + message.token);
 
   // load project
   return project.getByToken(message.token)
@@ -389,6 +403,30 @@ function handleMessage(message) {
         userAgent     : clientInfo,
         time          : Math.floor(message.time / 1000)
       };
+
+      // If there is migration for the token, send data to Hawk V2
+      if (migration.MAPPING[message.token]) {
+        let eventV2 = {
+          token: migration.MAPPING[message.token],
+          catcherType: 'errors/javascript',
+          payload: {
+            title: message.message,
+            release: null,
+            timestamp: Math.floor(message.time / 1000),
+            context: {},
+            user: null,
+            get: URL.parse(message.location.url, {
+              parseQueryString: true
+            }).query,
+            backtrace: message.stack,
+          }
+        };
+
+        await senderToHawk2.send(JSON.stringify(eventV2));
+
+      } else {
+        console.log(`Unsupported migration for token: ${message.token}`)
+      }
 
       /**
        * Save event
