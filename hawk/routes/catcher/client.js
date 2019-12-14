@@ -1,6 +1,7 @@
 let events   = require('../../models/events');
 let notifies = require('../../models/notifies');
 let migration = require('../../config/migration');
+let { WebSocketClient } = require('../../modules/websocket');
 let WebSocket = require('ws');
 let md5 = require('../../modules/utils').md5;
 let sourceMap = require('source-map');
@@ -73,13 +74,14 @@ let receiver = new WebSocket.Server({
 });
 
 /* Send client errors to Hawk V2.0 */
-let sender = new WebSocket(process.env.HAWK_MIGRATION_HOST || 'wss://kepler.codex.so:443/ws', {
-  rejectUnauthorized: false
-});
-sender.on('message', function incoming(data) {
+let sender = new WebSocketClient();
+sender.open(process.env.HAWK_MIGRATION_HOST || 'wss://kepler.codex.so:443/ws');
+sender.onopen = function(e){
+  console.log("WebSocketClient connected:", e);
+};
+sender.onmessage = function incoming(data) {
   console.log(`Got from collector: ${data}`);
-});
-sender.on('error', console.error);
+};
 
 /**
  * Get info about user browser and platform
