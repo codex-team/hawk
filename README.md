@@ -1,6 +1,6 @@
-# Hawk.so
-Fast and lightweight errors tracking service.
+# [Hawk.so](https://hawk.so)
 
+Fast and lightweight errors tracking service.
 
 [Platform documentation](#platform-documentation) 
 
