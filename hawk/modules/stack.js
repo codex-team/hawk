@@ -35,6 +35,11 @@ module.exports = function () {
       }
 
       let matches = REGEXPS.CHROME_IE.exec(line);
+      if (!matches) {
+        return {
+          func: line
+        }
+      }
 
       return {
         func: matches[1],
